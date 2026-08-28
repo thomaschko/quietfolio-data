@@ -1,0 +1,41 @@
+name: Event Theme Radar
+
+# 每個交易日盤後跑一次(台北 16:30 → UTC 08:30)
+# 放在 quietfolio-data repo 自己的 .github/workflows/ 下,讓 data repo 自更新
+on:
+  schedule:
+    - cron: '30 8 * * 1-5'   # 週一到週五 UTC 08:30 = 台北 16:30
+  workflow_dispatch:          # 允許手動觸發測試
+
+permissions:
+  contents: write            # 讓內建 GITHUB_TOKEN 可以 push(關鍵,缺這行會 push 失敗)
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests jieba
+
+      - name: Run radar
+        run: python event_theme_radar.py
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add event_theme_raw.json
+          if git diff --staged --quiet; then
+            echo "無變更,不 commit"
+          else
+            git commit -m "Update event_theme_raw.json $(date -u +%Y-%m-%d)"
+            git push
+          fi
