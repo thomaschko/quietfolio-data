@@ -163,8 +163,13 @@ def detect_fixed_keywords(name2code, now_ts):
         earlier_daily = len(earlier) / (BASELINE_DAYS - RECENT_DAYS) if earlier else 0.01
         ratio = round(recent_daily / earlier_daily, 2) if earlier_daily else 999
 
-        surge = ratio >= SURGE_RATIO and len(recent) >= MIN_RECENT_COUNT
-        flag = "🔥暴增" if surge else ""
+        # 小基數假訊號防護:前段幾乎沒新聞(日均<0.15,約20日內<3則)時,
+        # 近期冒幾則就會爆表,這種不算真暴增,需前段有基礎量才採計
+        enough_base = earlier_daily >= 0.15
+        surge = (ratio >= SURGE_RATIO and len(recent) >= MIN_RECENT_COUNT
+                 and enough_base)
+        flag = "🔥暴增" if surge else ("(基數過小略過)" if ratio >= SURGE_RATIO
+                                       and len(recent) >= MIN_RECENT_COUNT else "")
         print(f"  {kw}: 近{RECENT_DAYS}日={len(recent)} 前段日均={round(earlier_daily,2)} "
               f"暴增比={ratio} {flag}")
 
@@ -187,17 +192,28 @@ def detect_fixed_keywords(name2code, now_ts):
 # 偵測源 2: MOPS 重訊(改用 OpenAPI keyless JSON)
 # ============================================================
 def _mops_index(fields_sample):
-    """依欄位名動態定位 代號/名稱/主旨 欄。"""
+    """依欄位名動態定位 代號/名稱/主旨 欄。
+    上市用中文欄名(公司代號/主旨),上櫃用英文欄名(SecuritiesCompanyCode/CompanyName),
+    兩者都要涵蓋。"""
     idx = {"code": None, "name": None, "subject": None, "date": None}
     for k in fields_sample:
         kk = str(k).replace(" ", "")
-        if idx["code"] is None and ("公司代號" in kk or "代號" in kk):
+        kl = kk.lower()
+        # 股號:中文「公司代號」或英文 SecuritiesCompanyCode / CompanyCode / Code
+        if idx["code"] is None and ("公司代號" in kk or "代號" in kk
+                or "securitiescompanycode" in kl or "companycode" in kl
+                or kl == "code"):
             idx["code"] = k
-        if idx["name"] is None and ("公司名稱" in kk or "公司簡稱" in kk or "名稱" in kk):
+        # 公司名:中文或英文 CompanyName
+        if idx["name"] is None and ("公司名稱" in kk or "公司簡稱" in kk or "名稱" in kk
+                or "companyname" in kl):
             idx["name"] = k
-        if idx["subject"] is None and ("主旨" in kk or "說明" in kk or "標題" in kk):
+        # 主旨
+        if idx["subject"] is None and ("主旨" in kk or "說明" in kk or "標題" in kk
+                or "subject" in kl or "title" in kl):
             idx["subject"] = k
-        if idx["date"] is None and ("發言日期" in kk or "日期" in kk):
+        # 日期
+        if idx["date"] is None and ("發言日期" in kk or "日期" in kk or kl == "date"):
             idx["date"] = k
     return idx
 
