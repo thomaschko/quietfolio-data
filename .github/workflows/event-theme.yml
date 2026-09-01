@@ -39,3 +39,8 @@ jobs:
             git commit -m "Update event_theme_raw.json $(date -u +%Y-%m-%d)"
             git push
           fi
+
+      - name: Run radar
+        run: python event_theme_radar.py
+      - name: Run new theme discovery
+        run: python new_theme_discovery.py
