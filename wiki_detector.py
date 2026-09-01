@@ -94,7 +94,7 @@ def detect_wiki_attention():
             "theme": theme,
             "ratio": a["ratio"],
             "recent_count": a["recent_mean"],
-            "codes": set(cfg["stocks"]),
+            "codes": sorted(set(cfg["stocks"])),
             "source": "wiki",
             "wiki_stage": a["stage"],           # pre-ferment / active
             "baseline_mean": a["baseline_mean"],

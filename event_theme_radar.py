@@ -316,6 +316,11 @@ def main():
             if t.get("wiki_stage"):
                 entry["wiki_stages"].add(t["wiki_stage"])
 
+    # 清洗:所有 theme 的 codes 統一轉 sorted list(src3 產出的是 set,JSON 不能存 set)
+    for t in all_themes:
+        if isinstance(t.get("codes"), set):
+            t["codes"] = sorted(t["codes"])
+
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
         "date": now.strftime("%Y%m%d"),
