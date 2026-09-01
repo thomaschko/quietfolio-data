@@ -1,7 +1,7 @@
 name: Wiki Attention Probe (一次性驗證)
 
 # 純手動觸發:到 Actions 分頁點 "Run workflow" 即可
-# 驗證 Wikipedia 瀏覽量資料源在 GitHub Actions 環境是否可用
+# 跑全量題材探測(讀 themes_watchlist.txt,對中文維基建對照表)
 on:
   workflow_dispatch:
 
@@ -24,16 +24,16 @@ jobs:
         run: pip install requests
 
       - name: Run probe
-        run: python wiki_attention_probe.py
+        run: python wiki_theme_map_builder.py
 
       - name: Commit result (方便回報數字給 Claude)
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
-          git add wiki_probe_result.json || true
+          git add wiki_theme_map_draft.json || true
           if git diff --staged --quiet; then
             echo "無結果檔變更"
           else
-            git commit -m "Wiki probe result $(date -u +%Y-%m-%d)"
+            git commit -m "Wiki theme map draft $(date -u +%Y-%m-%d)"
             git push
           fi
