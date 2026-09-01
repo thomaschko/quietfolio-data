@@ -1,0 +1,39 @@
+name: Wiki Attention Probe (一次性驗證)
+
+# 純手動觸發:到 Actions 分頁點 "Run workflow" 即可
+# 驗證 Wikipedia 瀏覽量資料源在 GitHub Actions 環境是否可用
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run probe
+        run: python wiki_attention_probe.py
+
+      - name: Commit result (方便回報數字給 Claude)
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add wiki_probe_result.json || true
+          if git diff --staged --quiet; then
+            echo "無結果檔變更"
+          else
+            git commit -m "Wiki probe result $(date -u +%Y-%m-%d)"
+            git push
+          fi
