@@ -25,22 +25,26 @@ jobs:
       - name: Install deps
         run: pip install requests jieba
 
+      # 主雷達:src1鉅亨暴增 + src2 MOPS + src3維基關注度
       - name: Run radar
         run: python event_theme_radar.py
+
+      # 偵測源4:新題材發現(獨立產出,不影響主雷達)
+      # 用 continue-on-error:src4 若出錯(如category slug問題)不擋主流程
+      - name: Run new theme discovery
+        continue-on-error: true
+        run: python new_theme_discovery.py
 
       - name: Commit and push
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
-          git add event_theme_raw.json
+          # 把主雷達與新題材兩份產出都納入(存在才 add)
+          git add event_theme_raw.json 2>/dev/null || true
+          [ -f new_theme_candidates.json ] && git add new_theme_candidates.json || true
           if git diff --staged --quiet; then
             echo "無變更,不 commit"
           else
-            git commit -m "Update event_theme_raw.json $(date -u +%Y-%m-%d)"
+            git commit -m "Update radar + new themes $(date -u +%Y-%m-%d)"
             git push
           fi
-
-      - name: Run radar
-        run: python event_theme_radar.py
-      - name: Run new theme discovery
-        run: python new_theme_discovery.py
