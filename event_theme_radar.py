@@ -295,16 +295,26 @@ def main():
     src1 = detect_fixed_keywords(name2code, now_ts)
     src2 = detect_mops_events(name2code, now)
 
-    all_themes = src1 + src2
+    # 偵測源3:維基題材關注度(發酵前緣)。獨立檔,抓不到不影響前兩源。
+    try:
+        from wiki_detector import detect_wiki_attention
+        src3 = detect_wiki_attention()
+    except Exception as e:
+        print(f"  ⚠ 維基偵測源3失敗(不影響其他源): {e}")
+        src3 = []
+
+    all_themes = src1 + src2 + src3
     code_hits = {}
     for t in all_themes:
         for cd in t["codes"]:
             entry = code_hits.setdefault(cd, {"themes": set(), "sources": set(),
-                                              "subjects": []})
+                                              "subjects": [], "wiki_stages": set()})
             entry["themes"].add(t["theme"])
             entry["sources"].add(t["source"])
             if t.get("subject"):
                 entry["subjects"].append(t["subject"])
+            if t.get("wiki_stage"):
+                entry["wiki_stages"].add(t["wiki_stage"])
 
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
@@ -317,6 +327,10 @@ def main():
                 "sources": sorted(v["sources"]),
                 "hit_count": len(v["themes"]),
                 "subjects": v["subjects"][:3],
+                # 發酵標記:pre-ferment 優先(還沒發酵、最有價值),否則取有的第一個
+                "fermentation": ("pre-ferment" if "pre-ferment" in v.get("wiki_stages", set())
+                                 else ("active" if "active" in v.get("wiki_stages", set())
+                                       else None)),
             }
             for cd, v in sorted(code_hits.items(),
                                 key=lambda kv: len(kv[1]["themes"]), reverse=True)
