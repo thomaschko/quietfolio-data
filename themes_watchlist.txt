@@ -91,3 +91,52 @@ ASIC
 併購
 技術授權
 策略聯盟
+
+# ── AI 資料中心 HVDC 事件關鍵字(判定「走到HVDC」用) ──
+# 這些是硬事件/規格詞,靠 src1鉅亨 追首現與加速,不靠維基關注度
+# 判定邏輯:這些詞在鉅亨【首現→加速】= AI資料中心HVDC進程實錘
+800V HVDC
+800VDC
+Kyber
+Vera Rubin
+Mt. Diablo
+sidecar power
+power shelf
+power rack
+固態變壓器
+整流櫃
+BBU
+電池備援單元
+54V
+# (54V 是舊架構,新聞若大量提到「取代54V」也是HVDC轉向訊號)
+
+# ── 記憶體原廠動態(你要追的原廠+規格) ──
+# 靠 src1鉅亨 + src2 MOPS 追這些原廠與產品的新聞/重訊
+# 原廠名(radar 的 extract_codes 會自動對到股號,但關鍵字追新聞熱度)
+華邦電
+旺宏
+南亞科
+群聯
+# 記憶體規格/產品(這些詞在新聞暴增 = 該規格題材發酵)
+HBM
+HBM4
+DRAM
+DDR4
+DDR5
+LPDDR
+NAND
+SLC NAND
+NOR Flash
+eMMC
+UFS
+利基型記憶體
+記憶體漲價
+DRAM合約價
+# 記憶體先進封裝(原廠自研、發酵前題材)
+CUBE
+WoW
+Wafer-on-Wafer
+矽電容
+3DCaaS
+類HBM
+TSV
