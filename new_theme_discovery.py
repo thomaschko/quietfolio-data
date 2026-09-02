@@ -16,6 +16,25 @@ UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
 CNYES_BASE = "https://api.cnyes.com/media/api/v1"
 # 廣詞:必定大量回結果,當作「最新新聞流」的來源
 SEED_QUERIES = ["台股", "AI", "半導體", "輝達", "記憶體", "台積電", "AI伺服器"]
+
+# ── 雜訊過濾:停用詞(盤面術語+泛詞+宏觀,這些不是題材)──
+STOPWORDS = {
+    # 盤面術語(鉅亨固定標籤,非題材)
+    "盤中漲跌速","盤中漲跌幅","盤中漲跌停","領漲跌產業","漲停","跌停","漲跌",
+    "market預估","市場預估","盤前","盤後","收盤","開盤","台股盤","法人",
+    # 泛詞
+    "台灣","台股","eps","出口","匯率","手機","面板","債券","債市","分紅",
+    "拋售","股價","營收","獲利","財報","股利","除息","除權","殖利率","本益比",
+    # 宏觀/國際(非個股題材)
+    "國際油價","油價","日元","日圓","日債","全球債市","美債","美元","通膨",
+    "升息","降息","fed","聯準會","cpi","gdp","景氣",
+    # 大盤指數/機構
+    "msci","台積電","加權指數","道瓊","那斯達克","標普","費半","token",
+}
+
+# 明顯是「個股名/公司名」的線索:出現在 name2code 或含這些詞根 → 不是新題材
+ENTITY_HINTS = {"科","電","控","-ky","半導體","光電","國際","投控","金","銀行","證券"}
+
 RECENT_DAYS, BASELINE_DAYS = 3, 20
 MIN_RECENT_HITS, SURGE_RATIO, MAX_BASELINE_HITS = 3, 2.0, 2
 WATCHLIST_FILE = "themes_watchlist.txt"
@@ -109,6 +128,9 @@ def main():
         for kw in terms:
             k = kw.strip()
             if not k or k.lower() in watchlist: continue
+            if k.lower() in STOPWORDS: continue  # 停用詞過濾
+            if len(k) < 2: continue  # 單字太短
+            if k.isdigit(): continue  # 純數字
             if in_recent:
                 kw_recent[k]+=1; kw_sample.setdefault(k,n["title"])
                 for tk in n["tickers"]: kw_tickers[k][tk]+=1
@@ -128,13 +150,21 @@ def main():
             "ratio":round(ratio,2) if ratio!=float("inf") else None,
             "is_brand_new":bc==0,"related_stocks":[t for t,_ in top],
             "sample_title":kw_sample.get(kw,"")})
-    candidates.sort(key=lambda x:(not x["is_brand_new"],-x["recent_hits"]))
+    # 分兩區:有關聯個股的(高價值)vs 無個股的(參考)
+    with_stocks = [c for c in candidates if c["related_stocks"]]
+    no_stocks = [c for c in candidates if not c["related_stocks"]]
+    with_stocks.sort(key=lambda x:(not x["is_brand_new"],-x["recent_hits"]))
+    no_stocks.sort(key=lambda x:(not x["is_brand_new"],-x["recent_hits"]))
 
     print(f"\n新題材候選:{len(candidates)} 個  (方法:{'jieba斷詞' if use_jieba else 'keyword標籤'})")
-    for c in candidates[:30]:
+    print(f"\n★ 有關聯個股(高價值,{len(with_stocks)}個):")
+    for c in with_stocks[:20]:
         tag="🆕全新" if c["is_brand_new"] else f"暴增{c['ratio']}"
-        stocks=" ".join(c["related_stocks"]) or "(無明確個股)"
-        print(f"  [{tag}] {c['term']}  近{c['recent_hits']}次  股:{stocks}")
+        print(f"  [{tag}] {c['term']}  近{c['recent_hits']}次  股:{' '.join(c['related_stocks'])}")
+    print(f"\n○ 無關聯個股(參考,前10/{len(no_stocks)}個):")
+    for c in no_stocks[:10]:
+        tag="🆕全新" if c["is_brand_new"] else f"暴增{c['ratio']}"
+        print(f"  [{tag}] {c['term']}  近{c['recent_hits']}次")
 
     json.dump({"generated_at":str(now),"method":"jieba" if use_jieba else "keyword",
                "candidates":candidates},
