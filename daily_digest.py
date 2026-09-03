@@ -120,7 +120,10 @@ def build_digest():
     # D. 熱度暴增題材(src1)
     surge_themes = []
     for t in event.get("themes", []):
-        if t.get("source") == "cnyes" and t.get("ratio", 0) >= 1.5:
+        # src1 的 source 是「關鍵字暴增」(非 wiki/MOPS),暴增比達標即納入
+        src = t.get("source", "")
+        is_keyword_src = ("暴增" in src) or ("關鍵字" in src) or (src == "cnyes")
+        if is_keyword_src and t.get("ratio", 0) >= 1.5:
             surge_themes.append({
                 "theme": t["theme"], "ratio": t.get("ratio"),
                 "codes": t.get("codes", []),
@@ -162,7 +165,9 @@ def build_digest():
     # 收集當日有台股訊號的題材(src1暴增 或 src3未發酵)
     tw_active_themes = set()
     for t in event.get("themes", []):
-        if t.get("wiki_stage") == "pre-ferment" or (t.get("source") == "cnyes" and t.get("ratio", 0) >= 1.5):
+        src = t.get("source", "")
+        is_keyword_src = ("暴增" in src) or ("關鍵字" in src) or (src == "cnyes")
+        if t.get("wiki_stage") == "pre-ferment" or (is_keyword_src and t.get("ratio", 0) >= 1.5):
             tw_active_themes.add(t["theme"])
     cross_confirmed = []
     for theme, backing in theme_earnings_backing.items():
