@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-09-03 06:31:36",
+  "generated_at": "2026-09-03 12:58:35",
   "date": "20260903",
   "summary_counts": {
-    "resonance": 10,
+    "resonance": 11,
     "preferment_themes": 2,
     "broker_coverage": 0,
-    "surge_themes": 0,
+    "surge_themes": 17,
     "new_candidates": 15,
     "earnings_rising": 27,
-    "cross_confirmed": 0
+    "cross_confirmed": 2
   },
   "A_multi_source_resonance": [
     {
@@ -28,6 +28,27 @@
       "broker_count": null
     },
     {
+      "code": "2455",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "ASIC",
+        "CoWoS",
+        "HBM",
+        "NOR Flash",
+        "SoIC",
+        "接單",
+        "擴產",
+        "磷化銦",
+        "重訊:投資"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    },
+    {
       "code": "2454",
       "source_count": 2,
       "sources": [
@@ -39,8 +60,25 @@
         "CoWoS",
         "HBM",
         "光通訊",
+        "南亞科",
+        "磷化銦",
         "華邦電",
         "重訊:投資"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    },
+    {
+      "code": "6830",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "矽光子",
+        "重訊:投資",
+        "重訊:投資/重大"
       ],
       "fermentation": null,
       "broker_count": null
@@ -55,20 +93,6 @@
       "themes": [
         "液冷",
         "重訊:投資/重大"
-      ],
-      "fermentation": null,
-      "broker_count": null
-    },
-    {
-      "code": "2455",
-      "source_count": 2,
-      "sources": [
-        "MOPS重訊",
-        "關鍵字暴增"
-      ],
-      "themes": [
-        "NOR Flash",
-        "重訊:投資"
       ],
       "fermentation": null,
       "broker_count": null
@@ -178,84 +202,365 @@
     }
   ],
   "C_broker_coverage": [],
-  "D_surge_themes": [],
+  "D_surge_themes": [
+    {
+      "theme": "SoIC",
+      "ratio": 5.67,
+      "codes": [
+        "2368",
+        "2455",
+        "2464",
+        "3008",
+        "3231",
+        "3661",
+        "3665",
+        "6239"
+      ]
+    },
+    {
+      "theme": "CoWoS",
+      "ratio": 4.64,
+      "codes": [
+        "1459",
+        "1597",
+        "2301",
+        "2308",
+        "2330",
+        "2368",
+        "2454",
+        "2455",
+        "2464",
+        "2504",
+        "3008",
+        "3231",
+        "3406",
+        "3532",
+        "3661",
+        "3665",
+        "4526",
+        "4763",
+        "4958",
+        "6196",
+        "6515"
+      ]
+    },
+    {
+      "theme": "HBM4",
+      "ratio": 4.41,
+      "codes": [
+        "5007",
+        "6239"
+      ]
+    },
+    {
+      "theme": "CoPoS",
+      "ratio": 4.25,
+      "codes": [
+        "2504",
+        "6196"
+      ]
+    },
+    {
+      "theme": "液冷",
+      "ratio": 3.52,
+      "codes": [
+        "1337",
+        "1597",
+        "2301",
+        "2308",
+        "2330",
+        "3008",
+        "3017",
+        "6197",
+        "6933"
+      ]
+    },
+    {
+      "theme": "低軌衛星",
+      "ratio": 3.24,
+      "codes": [
+        "2471",
+        "3380"
+      ]
+    },
+    {
+      "theme": "矽光子",
+      "ratio": 2.02,
+      "codes": [
+        "2026",
+        "2027",
+        "2049",
+        "2385",
+        "4576",
+        "6442",
+        "6830"
+      ]
+    },
+    {
+      "theme": "華邦電",
+      "ratio": 1.95,
+      "codes": [
+        "1303",
+        "1459",
+        "2303",
+        "2324",
+        "2327",
+        "2337",
+        "2344",
+        "2408",
+        "2454",
+        "2845",
+        "2880",
+        "3008",
+        "3406",
+        "3532",
+        "4958",
+        "6770"
+      ]
+    },
+    {
+      "theme": "HBM",
+      "ratio": 1.9,
+      "codes": [
+        "1303",
+        "1459",
+        "2308",
+        "2330",
+        "2344",
+        "2408",
+        "2454",
+        "2455",
+        "2464",
+        "2504",
+        "3008",
+        "3010",
+        "3231",
+        "3406",
+        "3532",
+        "3661",
+        "4763",
+        "4958",
+        "5007",
+        "6239"
+      ]
+    },
+    {
+      "theme": "HBM",
+      "ratio": 1.9,
+      "codes": [
+        "1303",
+        "1459",
+        "2308",
+        "2330",
+        "2344",
+        "2408",
+        "2454",
+        "2455",
+        "2464",
+        "2504",
+        "3008",
+        "3010",
+        "3231",
+        "3406",
+        "3532",
+        "3661",
+        "4763",
+        "4958",
+        "5007",
+        "6239"
+      ]
+    },
+    {
+      "theme": "光通訊",
+      "ratio": 1.84,
+      "codes": [
+        "1459",
+        "2025",
+        "2026",
+        "2027",
+        "2330",
+        "2385",
+        "2454",
+        "3450",
+        "4906",
+        "6197",
+        "6426",
+        "6442"
+      ]
+    },
+    {
+      "theme": "南亞科",
+      "ratio": 1.84,
+      "codes": [
+        "1303",
+        "1459",
+        "2303",
+        "2317",
+        "2330",
+        "2344",
+        "2408",
+        "2454",
+        "2634",
+        "3008",
+        "3406",
+        "3532",
+        "4958",
+        "6770"
+      ]
+    },
+    {
+      "theme": "ASIC",
+      "ratio": 1.78,
+      "codes": [
+        "1459",
+        "1597",
+        "2301",
+        "2308",
+        "2368",
+        "2454",
+        "2455",
+        "2464",
+        "3008",
+        "3035",
+        "3231",
+        "3406",
+        "3532",
+        "3661",
+        "3665",
+        "4958",
+        "6239",
+        "6669",
+        "8227"
+      ]
+    },
+    {
+      "theme": "擴產",
+      "ratio": 1.74,
+      "codes": [
+        "1303",
+        "1337",
+        "2026",
+        "2027",
+        "2049",
+        "2317",
+        "2330",
+        "2344",
+        "2408",
+        "2455",
+        "2464",
+        "2486",
+        "2850",
+        "3008",
+        "3010",
+        "3037",
+        "3189",
+        "3231",
+        "3450",
+        "3583",
+        "4576",
+        "4585",
+        "4763",
+        "5007",
+        "6196",
+        "6515",
+        "8046"
+      ]
+    },
+    {
+      "theme": "接單",
+      "ratio": 1.57,
+      "codes": [
+        "1514",
+        "1590",
+        "2455",
+        "2748",
+        "3563",
+        "4526",
+        "6197",
+        "6426"
+      ]
+    },
+    {
+      "theme": "NOR Flash",
+      "ratio": 1.54,
+      "codes": [
+        "2455",
+        "3006"
+      ]
+    },
+    {
+      "theme": "磷化銦",
+      "ratio": 1.53,
+      "codes": [
+        "1459",
+        "2454",
+        "2455",
+        "2464",
+        "3008",
+        "3231",
+        "4971"
+      ]
+    }
+  ],
   "E_new_candidates": [
     {
-      "term": "基金",
-      "recent_hits": 3,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
-      "term": "非農",
-      "recent_hits": 3,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
-      "term": "新興市場",
-      "recent_hits": 3,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
-      "term": "ESG",
-      "recent_hits": 3,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
-      "term": "永續",
-      "recent_hits": 3,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
-      "term": "自駕車",
-      "recent_hits": 3,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
-      "term": "FOMC",
-      "recent_hits": 3,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
-      "term": "歐洲",
-      "recent_hits": 3,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
-      "term": "晶圓",
-      "recent_hits": 5,
-      "is_brand_new": false,
-      "stocks": []
-    },
-    {
       "term": "台股營收",
-      "recent_hits": 11,
+      "recent_hits": 24,
       "is_brand_new": true,
       "stocks": []
     },
     {
       "term": "營收速報",
-      "recent_hits": 11,
+      "recent_hits": 24,
       "is_brand_new": true,
       "stocks": []
     },
     {
       "term": "8月營收",
-      "recent_hits": 11,
+      "recent_hits": 24,
       "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "台股除權息",
+      "recent_hits": 14,
+      "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "盤後速報",
+      "recent_hits": 14,
+      "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "京元電子",
+      "recent_hits": 3,
+      "is_brand_new": false,
+      "stocks": []
+    },
+    {
+      "term": "台達電",
+      "recent_hits": 3,
+      "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "聯發科",
+      "recent_hits": 11,
+      "is_brand_new": false,
       "stocks": []
     },
     {
       "term": "美國製造",
       "recent_hits": 3,
       "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "機器人",
+      "recent_hits": 3,
+      "is_brand_new": false,
       "stocks": []
     },
     {
@@ -268,6 +573,24 @@
       "term": "盧特尼克",
       "recent_hits": 4,
       "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "戴爾",
+      "recent_hits": 7,
+      "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "半導體展",
+      "recent_hits": 3,
+      "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "Hugging Face",
+      "recent_hits": 3,
+      "is_brand_new": false,
       "stocks": []
     }
   ],
@@ -491,21 +814,6 @@
   ],
   "G_cross_confirmed": [
     {
-      "theme": "記憶體",
-      "intl_companies": [
-        "ASML",
-        "MU",
-        "NVDA",
-        "TSM"
-      ],
-      "intl_keywords": [
-        "DRAM",
-        "memory"
-      ],
-      "tw_active": false,
-      "dual_confirmed": false
-    },
-    {
       "theme": "HBM",
       "intl_companies": [
         "AMD",
@@ -516,8 +824,8 @@
         "HBM",
         "base die"
       ],
-      "tw_active": false,
-      "dual_confirmed": false
+      "tw_active": true,
+      "dual_confirmed": true
     },
     {
       "theme": "CoWoS",
@@ -528,6 +836,21 @@
       "intl_keywords": [
         "Rubin",
         "Vera Rubin"
+      ],
+      "tw_active": true,
+      "dual_confirmed": true
+    },
+    {
+      "theme": "記憶體",
+      "intl_companies": [
+        "ASML",
+        "MU",
+        "NVDA",
+        "TSM"
+      ],
+      "intl_keywords": [
+        "DRAM",
+        "memory"
       ],
       "tw_active": false,
       "dual_confirmed": false
