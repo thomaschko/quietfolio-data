@@ -1,0 +1,399 @@
+{
+  "generated_at": "2026-09-03 03:59:09.781889",
+  "quarters_queried": [
+    "2026Q2",
+    "2026Q1"
+  ],
+  "companies": {
+    "NVDA": {
+      "role": "本尊-需求指引",
+      "sentiments": {
+        "2026Q2": 0.283,
+        "2026Q1": 0.25
+      },
+      "keyword_counts": {
+        "2026Q2": {
+          "silicon photonics": 1,
+          "memory": 3,
+          "Rubin": 17,
+          "Blackwell": 33,
+          "NVLink": 22,
+          "co-design": 1,
+          "supply chain": 3,
+          "capacity": 4,
+          "lead time": 1,
+          "bottleneck": 1,
+          "TSMC": 1
+        },
+        "2026Q1": {
+          "co-packaged": 1,
+          "silicon photonics": 1,
+          "advanced packaging": 1,
+          "HBM": 1,
+          "memory": 1,
+          "Blackwell": 22,
+          "NVLink": 12,
+          "supply chain": 4,
+          "foundry": 1,
+          "lead time": 1,
+          "yield": 3,
+          "TSMC": 3,
+          "Taiwan": 3,
+          "Alchip": 1,
+          "MediaTek": 2
+        }
+      }
+    },
+    "TSM": {
+      "role": "上游-晶圓封裝(CoWoS)",
+      "sentiments": {
+        "2026Q2": 0.163,
+        "2026Q1": 0.266
+      },
+      "keyword_counts": {
+        "2026Q2": {
+          "CoWoS": 4,
+          "advanced packaging": 11,
+          "glass substrate": 2,
+          "DRAM": 1,
+          "memory": 8,
+          "supply chain": 2,
+          "foundry": 7,
+          "capacity": 37,
+          "lead time": 2,
+          "bottleneck": 2,
+          "yield": 1,
+          "TSMC": 45,
+          "Taiwan": 5
+        },
+        "2026Q1": {
+          "CoWoS": 4,
+          "SoIC": 5,
+          "CoPoS": 5,
+          "advanced packaging": 10,
+          "panel-level": 1,
+          "HBM": 3,
+          "DRAM": 1,
+          "memory": 2,
+          "Vera Rubin": 1,
+          "Rubin": 1,
+          "supply chain": 3,
+          "foundry": 5,
+          "capacity": 44,
+          "lead time": 1,
+          "bottleneck": 1,
+          "yield": 2,
+          "TSMC": 56,
+          "Taiwan": 6
+        }
+      }
+    },
+    "MU": {
+      "role": "上游-記憶體(HBM)",
+      "sentiments": {
+        "2026Q2": 0.295,
+        "2026Q1": 0.197
+      },
+      "keyword_counts": {
+        "2026Q2": {
+          "advanced packaging": 1,
+          "HBM": 48,
+          "HBM4": 10,
+          "HBM4E": 2,
+          "DRAM": 33,
+          "LPDDR": 4,
+          "NAND": 28,
+          "base die": 3,
+          "memory": 30,
+          "Vera Rubin": 3,
+          "Rubin": 3,
+          "capacity": 18,
+          "lead time": 1,
+          "yield": 2
+        },
+        "2026Q1": {
+          "HBM": 64,
+          "HBM4": 15,
+          "HBM4E": 1,
+          "DRAM": 38,
+          "LPDDR": 4,
+          "NAND": 30,
+          "memory": 21,
+          "capacity": 10,
+          "lead time": 2,
+          "yield": 8
+        }
+      }
+    },
+    "AMD": {
+      "role": "競爭-GPU/ASIC",
+      "sentiments": {
+        "2026Q2": 0.322,
+        "2026Q1": 0.409
+      },
+      "keyword_counts": {
+        "2026Q2": {
+          "chiplet": 1,
+          "HBM": 7,
+          "DRAM": 1,
+          "memory": 14,
+          "supply chain": 6,
+          "capacity": 9,
+          "yield": 5
+        },
+        "2026Q1": {
+          "advanced packaging": 1,
+          "HBM": 1,
+          "memory": 14,
+          "co-design": 1,
+          "supply chain": 10,
+          "capacity": 6
+        }
+      }
+    },
+    "ASML": {
+      "role": "上游-設備(產能領先)",
+      "sentiments": {
+        "2026Q2": 0.257,
+        "2026Q1": 0.315
+      },
+      "keyword_counts": {
+        "2026Q2": {
+          "HBM": 5,
+          "DRAM": 14,
+          "memory": 4,
+          "immersion": 18,
+          "supply chain": 7,
+          "foundry": 2,
+          "capacity": 36,
+          "lead time": 3,
+          "TSMC": 1
+        },
+        "2026Q1": {
+          "DRAM": 2,
+          "memory": 5,
+          "immersion": 5,
+          "capacity": 11
+        }
+      }
+    }
+  },
+  "rising_keywords": [
+    {
+      "symbol": "ASML",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 36,
+      "prev_count": 11,
+      "delta": 25
+    },
+    {
+      "symbol": "NVDA",
+      "keyword": "Rubin",
+      "category": "平台/網通/供應鏈",
+      "this_count": 17,
+      "prev_count": 0,
+      "delta": 17
+    },
+    {
+      "symbol": "ASML",
+      "keyword": "immersion",
+      "category": "AI電源/散熱",
+      "this_count": 18,
+      "prev_count": 5,
+      "delta": 13
+    },
+    {
+      "symbol": "ASML",
+      "keyword": "DRAM",
+      "category": "記憶體",
+      "this_count": 14,
+      "prev_count": 2,
+      "delta": 12
+    },
+    {
+      "symbol": "NVDA",
+      "keyword": "Blackwell",
+      "category": "平台/網通/供應鏈",
+      "this_count": 33,
+      "prev_count": 22,
+      "delta": 11
+    },
+    {
+      "symbol": "NVDA",
+      "keyword": "NVLink",
+      "category": "平台/網通/供應鏈",
+      "this_count": 22,
+      "prev_count": 12,
+      "delta": 10
+    },
+    {
+      "symbol": "MU",
+      "keyword": "memory",
+      "category": "記憶體",
+      "this_count": 30,
+      "prev_count": 21,
+      "delta": 9
+    },
+    {
+      "symbol": "MU",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 18,
+      "prev_count": 10,
+      "delta": 8
+    },
+    {
+      "symbol": "ASML",
+      "keyword": "supply chain",
+      "category": "平台/網通/供應鏈",
+      "this_count": 7,
+      "prev_count": 0,
+      "delta": 7
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "memory",
+      "category": "記憶體",
+      "this_count": 8,
+      "prev_count": 2,
+      "delta": 6
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "HBM",
+      "category": "記憶體",
+      "this_count": 7,
+      "prev_count": 1,
+      "delta": 6
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "yield",
+      "category": "平台/網通/供應鏈",
+      "this_count": 5,
+      "prev_count": 0,
+      "delta": 5
+    },
+    {
+      "symbol": "ASML",
+      "keyword": "HBM",
+      "category": "記憶體",
+      "this_count": 5,
+      "prev_count": 0,
+      "delta": 5
+    },
+    {
+      "symbol": "NVDA",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 4,
+      "prev_count": 0,
+      "delta": 4
+    },
+    {
+      "symbol": "MU",
+      "keyword": "base die",
+      "category": "記憶體",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3
+    },
+    {
+      "symbol": "MU",
+      "keyword": "Vera Rubin",
+      "category": "平台/網通/供應鏈",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3
+    },
+    {
+      "symbol": "MU",
+      "keyword": "Rubin",
+      "category": "平台/網通/供應鏈",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 9,
+      "prev_count": 6,
+      "delta": 3
+    },
+    {
+      "symbol": "ASML",
+      "keyword": "lead time",
+      "category": "平台/網通/供應鏈",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3
+    },
+    {
+      "symbol": "NVDA",
+      "keyword": "memory",
+      "category": "記憶體",
+      "this_count": 3,
+      "prev_count": 1,
+      "delta": 2
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "glass substrate",
+      "category": "先進封裝/光互連",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "foundry",
+      "category": "平台/網通/供應鏈",
+      "this_count": 7,
+      "prev_count": 5,
+      "delta": 2
+    },
+    {
+      "symbol": "ASML",
+      "keyword": "foundry",
+      "category": "平台/網通/供應鏈",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "advanced packaging",
+      "category": "先進封裝/光互連",
+      "this_count": 11,
+      "prev_count": 10,
+      "delta": 1
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "lead time",
+      "category": "平台/網通/供應鏈",
+      "this_count": 2,
+      "prev_count": 1,
+      "delta": 1
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "bottleneck",
+      "category": "平台/網通/供應鏈",
+      "this_count": 2,
+      "prev_count": 1,
+      "delta": 1
+    },
+    {
+      "symbol": "MU",
+      "keyword": "HBM4E",
+      "category": "記憶體",
+      "this_count": 2,
+      "prev_count": 1,
+      "delta": 1
+    }
+  ]
+}
