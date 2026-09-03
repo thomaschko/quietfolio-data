@@ -181,22 +181,25 @@ def main():
         qs = list(d["quarters"].keys())
         if len(qs) < 2:
             continue
-        this_q, prev_q = qs[0], qs[1]
+        # 明確排序:年季字串排序後,較新的在後(2026Q2 > 2026Q1)
+        qs_sorted = sorted(qs)  # ['2026Q1','2026Q2']
+        prev_q, this_q = qs_sorted[0], qs_sorted[-1]  # prev=舊, this=新
         this_c = d["quarters"][this_q]
         prev_c = d["quarters"][prev_q]
         for kw, info in this_c.items():
             now_n = info["count"]
             prev_n = prev_c.get(kw, {}).get("count", 0)
-            if now_n > prev_n and now_n >= 2:  # 有上升且至少提2次
+            if now_n > prev_n and now_n >= 2:  # 新季頻率高於舊季,且至少2次
                 rising.append({
                     "symbol": symbol, "keyword": kw, "category": info["category"],
                     "this_count": now_n, "prev_count": prev_n,
                     "delta": now_n - prev_n,
+                    "this_q": this_q, "prev_q": prev_q,
                 })
     rising.sort(key=lambda x: -x["delta"])
     for r in rising[:25]:
         newflag = "🆕新提及" if r["prev_count"] == 0 else f"↑{r['prev_count']}→{r['this_count']}"
-        print(f"  {r['symbol']:5s} {r['keyword']:20s} [{r['category']}] {newflag}")
+        print(f"  {r['symbol']:5s} {r['keyword']:20s} [{r['category']}] {newflag} ({r['prev_q']}→{r['this_q']})")
 
     # ── 輸出(只有數字,版權安全)──
     out = {
