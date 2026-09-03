@@ -1,14 +1,13 @@
 name: Event Theme Radar
 
 # 每個交易日盤後跑一次(台北 16:30 → UTC 08:30)
-# 放在 quietfolio-data repo 自己的 .github/workflows/ 下,讓 data repo 自更新
 on:
   schedule:
     - cron: '30 8 * * 1-5'   # 週一到週五 UTC 08:30 = 台北 16:30
   workflow_dispatch:          # 允許手動觸發測試
 
 permissions:
-  contents: write            # 讓內建 GITHUB_TOKEN 可以 push(關鍵,缺這行會 push 失敗)
+  contents: write
 
 jobs:
   radar:
@@ -29,22 +28,28 @@ jobs:
       - name: Run radar
         run: python event_theme_radar.py
 
-      # 偵測源4:新題材發現(獨立產出,不影響主雷達)
-      # 用 continue-on-error:src4 若出錯(如category slug問題)不擋主流程
+      # 偵測源4:新題材發現(獨立產出,出錯不擋主流程)
       - name: Run new theme discovery
         continue-on-error: true
         run: python new_theme_discovery.py
+
+      # 每日摘要整合:匯整 src1-6 輸出成 daily_digest.json(A-G區)
+      # 讀 event_theme_raw.json + new_theme_candidates.json + broker_coverage.json + earnings_keywords.json
+      # 缺任何一個都不報錯(對應區塊留空),所以放最後
+      - name: Build daily digest
+        continue-on-error: true
+        run: python daily_digest.py
 
       - name: Commit and push
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
-          # 把主雷達與新題材兩份產出都納入(存在才 add)
           git add event_theme_raw.json 2>/dev/null || true
           [ -f new_theme_candidates.json ] && git add new_theme_candidates.json || true
+          [ -f daily_digest.json ] && git add daily_digest.json || true
           if git diff --staged --quiet; then
             echo "無變更,不 commit"
           else
-            git commit -m "Update radar + new themes $(date -u +%Y-%m-%d)"
+            git commit -m "Daily radar + digest $(date -u +%Y-%m-%d)"
             git push
           fi
