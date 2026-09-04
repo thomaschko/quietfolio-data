@@ -152,9 +152,22 @@ def detect_fixed_keywords(name2code, now_ts):
     base_start = now_ts - BASELINE_DAYS * 86400
     results = []
 
+    # 補充來源(中央社+MoneyDJ)今日標題,當「當日新聞加成」計入 recent
+    try:
+        from news_sources import fetch_supplement_titles
+        supplement_titles = fetch_supplement_titles()
+        print(f"  補充來源(中央社+MoneyDJ): {len(supplement_titles)} 則今日標題")
+    except Exception as e:
+        print(f"  ⚠ 補充來源抓取失敗(不影響鉅亨): {e}")
+        supplement_titles = []
+
     for kw in keywords:
         news = cnyes_search(kw, base_start)   # 一次抓20日內全部
         recent = [n for n in news if n["publishAt"] >= recent_start]
+        # 補充來源:標題含此關鍵字的,計入近期(視為今日新聞)
+        supp_hits = [t for t in supplement_titles if kw in t]
+        if supp_hits:
+            recent = recent + [{"title": t, "summary": "", "publishAt": now_ts} for t in supp_hits]
         base = news   # 20日內全部(含近3日)
         recent_daily = len(recent) / RECENT_DAYS
         base_daily = len(base) / BASELINE_DAYS if base else 0.01
