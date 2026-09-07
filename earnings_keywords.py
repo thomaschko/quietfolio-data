@@ -38,13 +38,31 @@ AV_URL = "https://www.alphavantage.co/query"
 # ── 監控公司:NVDA 生態系(上下游+競爭+客戶)──
 # 角色標註幫你解讀:不同角色講的話領先性不同
 COMPANIES = {
+    # ── 核心供應鏈(你持股的上游/同業)──
     "NVDA": "本尊-需求指引",
     "TSM":  "上游-晶圓封裝(CoWoS)",
     "MU":   "上游-記憶體(HBM)",
     "AMD":  "競爭-GPU/ASIC",
     "ASML": "上游-設備(產能領先)",
-    # 之後可加:AVGO博通 MRVL邁威爾(競爭/ASIC), MSFT GOOGL META(客戶capex)
+    "AVGO": "競爭-ASIC/網通",
+    "MRVL": "競爭-ASIC/光通訊",
+    # ── 光通訊/CPO 美國同業(對應你的CPO/矽光子研究)──
+    "LITE": "光通訊-雷射(Lumentum)",
+    "COHR": "光通訊-元件(Coherent)",
+    "AAOI": "光通訊-光模組(AAOI)",
+    # ── 雲端客戶(capex 指引,需求面領先)──
+    "AAPL": "客戶-蘋果",
+    "MSFT": "客戶-微軟(capex)",
+    "AMZN": "客戶-亞馬遜(AWS)",
+    "META": "客戶-Meta(capex)",
+    "GOOGL": "客戶-Alphabet(capex)",
+    "TSLA": "客戶-特斯拉(AI/機器人)",
+    # 註:SpaceX 未上市無法說,無法納入
 }
+
+# 額度控制:免費 AV 25次/天。16家 × 1季 = 16次(在額度內)。
+# 每家只抓最近1季(季度對比降級:有前季就比,沒有就單季)
+QUARTERS_PER_COMPANY = 1
 
 # ── 五層關鍵詞表(對應你的持股與研究)──
 KEYWORDS = {
@@ -68,6 +86,16 @@ KEYWORDS = {
     ],
     "台廠點名": [
         "TSMC", "Taiwan", "Alchip", "eMemory", "MediaTek",
+    ],
+    "光通訊/CPO": [
+        "optical", "photonics", "laser", "transceiver", "EML", "DFB",
+        "800G", "1.6T", "linear drive", "LPO", "optical engine", "coherent",
+        "datacom", "InP", "indium phosphide",
+    ],
+    "客戶capex/需求": [
+        "capex", "capital expenditure", "data center", "datacenter",
+        "AI infrastructure", "custom silicon", "TPU", "accelerator",
+        "training", "inference", "cluster", "GPU",
     ],
 }
 # 攤平成單一 list 供統計,同時保留分類供輸出
@@ -139,11 +167,11 @@ def count_keywords(text):
 
 
 def analyze_company(symbol, role, quarters):
-    """抓最近兩季,做關鍵詞頻率 + 季度對比。"""
+    """抓最近 N 季(QUARTERS_PER_COMPANY 控制額度),做關鍵詞頻率。"""
     print(f"\n■ {symbol} ({role})")
     results = {}
     sentiments = {}
-    for q in quarters[:2]:  # 最近兩季(季度對比用)
+    for q in quarters[:QUARTERS_PER_COMPANY]:  # 額度控制:預設只抓1季
         text, sent = fetch_transcript(symbol, q)
         time.sleep(1)  # 尊重 AV 頻率限制
         if text:
@@ -179,29 +207,58 @@ def main():
     rising = []
     for symbol, d in all_data.items():
         qs = list(d["quarters"].keys())
-        if len(qs) < 2:
-            continue
-        # 明確排序:年季字串排序後,較新的在後(2026Q2 > 2026Q1)
-        qs_sorted = sorted(qs)  # ['2026Q1','2026Q2']
-        prev_q, this_q = qs_sorted[0], qs_sorted[-1]  # prev=舊, this=新
-        this_c = d["quarters"][this_q]
-        prev_c = d["quarters"][prev_q]
-        for kw, info in this_c.items():
-            now_n = info["count"]
-            prev_n = prev_c.get(kw, {}).get("count", 0)
-            if now_n > prev_n and now_n >= 2:  # 新季頻率高於舊季,且至少2次
-                rising.append({
-                    "symbol": symbol, "keyword": kw, "category": info["category"],
-                    "this_count": now_n, "prev_count": prev_n,
-                    "delta": now_n - prev_n,
-                    "this_q": this_q, "prev_q": prev_q,
-                })
+        if len(qs) >= 2:
+            # 兩季:對比找上升
+            qs_sorted = sorted(qs)
+            prev_q, this_q = qs_sorted[0], qs_sorted[-1]
+            this_c = d["quarters"][this_q]
+            prev_c = d["quarters"][prev_q]
+            for kw, info in this_c.items():
+                now_n = info["count"]
+                prev_n = prev_c.get(kw, {}).get("count", 0)
+                if now_n > prev_n and now_n >= 2:
+                    rising.append({
+                        "symbol": symbol, "keyword": kw, "category": info["category"],
+                        "this_count": now_n, "prev_count": prev_n,
+                        "delta": now_n - prev_n, "this_q": this_q, "prev_q": prev_q,
+                    })
+        elif len(qs) == 1:
+            # 單季(額度模式):絕對頻率,提到≥2次就算訊號
+            this_q = qs[0]
+            this_c = d["quarters"][this_q]
+            for kw, info in this_c.items():
+                if info["count"] >= 2:
+                    rising.append({
+                        "symbol": symbol, "keyword": kw, "category": info["category"],
+                        "this_count": info["count"], "prev_count": 0,
+                        "delta": info["count"], "this_q": this_q, "prev_q": "",
+                    })
     rising.sort(key=lambda x: -x["delta"])
     for r in rising[:25]:
-        newflag = "🆕新提及" if r["prev_count"] == 0 else f"↑{r['prev_count']}→{r['this_count']}"
-        print(f"  {r['symbol']:5s} {r['keyword']:20s} [{r['category']}] {newflag} ({r['prev_q']}→{r['this_q']})")
+        newflag = ("提及×" + str(r["this_count"])) if not r["prev_q"] else (
+            "🆕新提及" if r["prev_count"] == 0 else f"↑{r['prev_count']}→{r['this_count']}")
+        qinfo = f"({r['this_q']})" if not r["prev_q"] else f"({r['prev_q']}→{r['this_q']})"
+        print(f"  {r['symbol']:5s} {r['keyword']:20s} [{r['category']}] {newflag} {qinfo}")
 
     # ── 輸出(只有數字,版權安全)──
+    # ── 國際新聞每日熱度(CNBC+Yahoo)——補法說季度空檔 ──
+    intl_heat = []
+    try:
+        from intl_news import fetch_intl_titles
+        intl_titles = fetch_intl_titles()
+        print(f"\n[國際新聞] CNBC+Yahoo: {len(intl_titles)} 則標題")
+        joined = " ".join(intl_titles)
+        for cat, kw in FLAT_KEYWORDS:
+            c = len(re.findall(re.escape(kw), joined, re.IGNORECASE))
+            if c > 0:
+                intl_heat.append({"keyword": kw, "category": cat, "count": c})
+        intl_heat.sort(key=lambda x: -x["count"])
+        print(f"  國際新聞技術詞命中: {len(intl_heat)} 個")
+        for h in intl_heat[:12]:
+            print(f"    {h['keyword']}: {h['count']}")
+    except Exception as e:
+        print(f"  ⚠ 國際新聞抓取失敗(不影響法說): {e}")
+
     out = {
         "generated_at": str(dt.datetime.now()),
         "quarters_queried": quarters[:2],
@@ -211,6 +268,7 @@ def main():
                                              for q, c in d["quarters"].items()}}
                       for s, d in all_data.items()},
         "rising_keywords": rising,
+        "intl_news_heat": intl_heat,   # 國際新聞每日熱度(CNBC+Yahoo)
     }
     with open("earnings_keywords.json", "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
