@@ -31,9 +31,11 @@ CNA_FEEDS = [
     "https://feeds.feedburner.com/rsscna/technology",
 ]
 MONEYDJ_HTML = "https://www.moneydj.com/KMDJ/Common/ListNewArticles.aspx?svc=NW&a=X0100001"
+WEALTH_RSS = "https://www.wealth.com.tw/rss"           # 財訊 RSS(乾淨)
+WAPEOPLE_HTML = "https://www.wa-people.com/"            # Wa-people(半導體/光電硬題材)
 
-# MoneyDJ HTML 導覽雜訊過濾(這些不是新聞標題)
-NOISE = re.compile(r'MoneyDJ社論|MoneyDJ理財網|加入會員|查詢密碼|登入|首頁|更多|下一頁|版權|Cookie|理財網|iQuote|專題報導|個人理財')
+# HTML 導覽雜訊過濾
+NOISE = re.compile(r'MoneyDJ社論|MoneyDJ理財網|加入會員|查詢密碼|登入|首頁|更多|下一頁|版權|Cookie|理財網|iQuote|專題報導|個人理財|商城|水晶|鹽燈|詐騙|澄清聲明|報名|購買|電子報|關於我們|廣告')
 
 
 def _fetch_cna(url):
@@ -69,18 +71,62 @@ def _fetch_moneydj():
         return []
 
 
+def _fetch_wealth():
+    """財訊 RSS(乾淨)。"""
+    try:
+        r = requests.get(WEALTH_RSS, headers=UA, timeout=20)
+        if r.status_code != 200:
+            return []
+        root = ET.fromstring(r.text)
+        return [it.find("title").text.strip() for it in root.iter("item")
+                if it.find("title") is not None and it.find("title").text]
+    except Exception:
+        return []
+
+
+def _fetch_wapeople():
+    """Wa-people HTML(半導體/光電硬題材)。"""
+    try:
+        r = requests.get(WAPEOPLE_HTML, headers=UA, timeout=20)
+        r.encoding = "utf-8"
+        if r.status_code != 200:
+            return []
+        titles = []
+        for m in re.finditer(r'<a[^>]*>([^<]{10,50})</a>', r.text):
+            txt = m.group(1).strip()
+            if re.search(r'[\u4e00-\u9fff]', txt) and not NOISE.search(txt):
+                titles.append(txt)
+        seen, uniq = set(), []
+        for t in titles:
+            if t not in seen:
+                seen.add(t); uniq.append(t)
+        return uniq
+    except Exception:
+        return []
+
+
 def fetch_supplement_titles():
-    """抓中央社+MoneyDJ 今日標題,回傳去重後的 list。"""
+    """抓中央社+MoneyDJ 今日標題,回傳去重後的 list。(src1 用)"""
     titles = []
     for url in CNA_FEEDS:
         titles += _fetch_cna(url)
     titles += _fetch_moneydj()
-    # 全域去重
     seen, uniq = set(), []
     for t in titles:
         if t and t not in seen:
             seen.add(t); uniq.append(t)
     return uniq
+
+
+def fetch_titles_by_source():
+    """回傳 {來源: [標題]},供 src4 做跨源交叉。(src4 用)
+    來源多 = 原料廣;跨源出現的詞 = 更可能是真題材,不是單一媒體用語。"""
+    return {
+        "cna": [t for url in CNA_FEEDS for t in _fetch_cna(url)],
+        "moneydj": _fetch_moneydj(),
+        "wealth": _fetch_wealth(),
+        "wapeople": _fetch_wapeople(),
+    }
 
 
 if __name__ == "__main__":
