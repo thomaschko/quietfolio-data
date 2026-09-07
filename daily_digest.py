@@ -142,6 +142,7 @@ def build_digest():
 
     # F. 國際法說訊號(src6)—— 頻率上升的關鍵詞,依公司整理
     earnings_rising = earnings.get("rising_keywords", [])
+    intl_news_heat = earnings.get("intl_news_heat", [])  # 國際新聞每日熱度(CNBC+Yahoo)
     # 法說關鍵詞 → 你的中文題材對應橋(讓國際訊號對到台股題材)
     KW_TO_THEME = {
         "HBM": "HBM", "HBM4": "HBM", "base die": "HBM", "custom HBM": "HBM",
@@ -152,6 +153,11 @@ def build_digest():
         "800V": "HVDC", "HVDC": "HVDC", "liquid cooling": "液冷",
         "immersion": "浸沒式散熱", "power shelf": "HVDC",
         "Vera Rubin": "CoWoS", "Rubin": "CoWoS",  # Rubin平台帶動先進封裝
+        # 光通訊/CPO(對應 LITE/COHR/AAOI 及你的CPO研究)
+        "optical": "光通訊", "photonics": "矽光子", "laser": "光通訊",
+        "transceiver": "光通訊", "EML": "光通訊", "InP": "磷化銦",
+        "indium phosphide": "磷化銦", "800G": "光通訊", "1.6T": "光通訊",
+        "LPO": "CPO", "optical engine": "CPO",
     }
     # 統計每個「台股題材」被幾家國際大廠法說提及升溫
     theme_earnings_backing = defaultdict(lambda: {"companies": set(), "keywords": set()})
@@ -160,6 +166,12 @@ def build_digest():
         if theme:
             theme_earnings_backing[theme]["companies"].add(r["symbol"])
             theme_earnings_backing[theme]["keywords"].add(r["keyword"])
+    # 國際新聞熱度(CNBC+Yahoo)也算國際背書 —— 用 "新聞" 當來源標記
+    for h in intl_news_heat:
+        theme = KW_TO_THEME.get(h["keyword"])
+        if theme:
+            theme_earnings_backing[theme]["companies"].add("國際新聞")
+            theme_earnings_backing[theme]["keywords"].add(h["keyword"])
 
     # G. 交叉:哪些題材「同時有台股訊號 + 國際法說背書」(最高價值)
     # 收集當日有台股訊號的題材(src1暴增 或 src3未發酵)
@@ -196,6 +208,7 @@ def build_digest():
             "earnings_rising": len(earnings_rising),
             "cross_confirmed": len([c for c in cross_confirmed if c["dual_confirmed"]]),
         },
+        "intl_news_heat": intl_news_heat,
         "A_multi_source_resonance": resonance,
         "B_preferment_themes": preferment_themes,
         "C_broker_coverage": coverage_list,
