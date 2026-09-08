@@ -40,6 +40,11 @@ STOPWORDS = {
     # 雜誌/媒體套語
     "獨家","專訪","專題","封面","焦點","解析","深度","報導","一次看","懶人包",
     "重磅","快訊","即時","最新","熱門","精選","推薦","分析","觀點","評論","社論",
+    # 英文碎詞/停用詞(英文標題被jieba切碎產生,或AI模型名非題材)
+    "as","the","of","to","in","on","for","and","or","by","with","reportedly",
+    "prices","price","says","said","new","update","report","reports","spot",
+    "astra","agi","gpt","llm","chatgpt","gemini","claude","copilot","samsung",
+    "sk","intel","china","us","eu","q1","q2","q3","q4","inc","corp","ltd",
     # 通用碎詞(jieba斷詞產生的高頻通用詞,非題材)
     "一次","風險","全球","代理","模型","億元","台積","智慧","技術","關鍵",
     "企業","經濟","最大","新高","啟動","推出","股盤","應鏈","表格","盤中",
@@ -58,6 +63,18 @@ STOPWORDS = {
 
 # 雜誌/廣告/公告雜訊(標題含這些整條丟棄)
 TITLE_NOISE = re.compile(r'商城|水晶|鹽燈|詐騙|澄清|報名|購買|電子報|廣告|抽獎|活動|優惠|折扣|免費|奶茶|美食|旅遊|餐廳|飯店')
+
+
+# 英文技術詞白名單:英文來源標題直接比對這些完整詞(不靠jieba斷詞)
+EN_TECH_TERMS = [
+    "advanced packaging", "glass substrate", "silicon photonics", "co-packaged",
+    "spot price", "HBM", "HBM4", "DRAM", "NAND", "DDR5", "LPDDR", "base die",
+    "CoWoS", "CoPoS", "FOPLP", "panel-level", "TSV", "interposer", "chiplet",
+    "800G", "1.6T", "transceiver", "EML", "InP", "indium phosphide", "laser",
+    "SiC", "GaN", "power semiconductor", "solid-state battery", "humanoid",
+    "liquid cooling", "immersion cooling", "HVDC", "800V", "data center",
+    "passive component", "MLCC", "substrate", "wafer", "foundry", "yield",
+]
 
 
 def load_watchlist_terms():
@@ -173,13 +190,28 @@ def main():
     try:
         from news_sources import fetch_titles_by_source
         by_source = fetch_titles_by_source()
+        EN_SOURCES = {"trendforce", "eetimes"}  # 英文為主的來源
         for src, titles in by_source.items():
             cnt = 0
             for title in titles:
                 if TITLE_NOISE.search(title): continue
-                for w in jieba.lcut(title):
-                    if len(w) >= 2:
-                        add_term(w, src, True)  # 補充來源標題視為今日
+                # 判斷標題是否以英文為主
+                ascii_ratio = sum(1 for c in title if c.isascii()) / max(len(title), 1)
+                if src in EN_SOURCES or ascii_ratio > 0.6:
+                    # 英文標題:只比對英文技術詞白名單(不靠jieba)
+                    low = title.lower()
+                    for term in EN_TECH_TERMS:
+                        if term.lower() in low:
+                            add_term(term, src, True)
+                    # 中文技術詞也撈(混合標題)
+                    for w in jieba.lcut(title):
+                        if len(w) >= 3 and not w.isascii():
+                            add_term(w, src, True)
+                else:
+                    # 中文標題:jieba斷詞
+                    for w in jieba.lcut(title):
+                        if len(w) >= 2:
+                            add_term(w, src, True)
                 cnt += 1
             print(f"  {src}: {cnt} 則標題")
     except Exception as e:
