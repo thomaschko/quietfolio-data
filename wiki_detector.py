@@ -79,14 +79,20 @@ def detect_wiki_attention():
         return []
     theme_map = get_theme_map()
     today = dt.date.today()
-    start = (today - dt.timedelta(days=BASELINE_DAYS + RECENT_DAYS + 2)).strftime("%Y%m%d")
-    end = today.strftime("%Y%m%d")
+    # Wikipedia pageviews 有 1-2 天延遲,end 往前推 2 天避開缺資料區
+    data_end = today - dt.timedelta(days=2)
+    start = (data_end - dt.timedelta(days=BASELINE_DAYS + RECENT_DAYS + 2)).strftime("%Y%m%d")
+    end = data_end.strftime("%Y%m%d")
 
     results = []
     for theme, cfg in theme_map.items():
         vals = _get_pageviews(cfg["wiki"], start, end)
         a = _analyze(vals) if vals else None
         if a is None:
+            if vals is None:
+                print(f"    {theme}({cfg['wiki']}): 抓取失敗")
+            elif len(vals) < RECENT_DAYS + 5:
+                print(f"    {theme}({cfg['wiki']}): 資料不足({len(vals)}天)")
             continue
         if a["stage"] == "flat":
             continue  # 平淡不輸出
