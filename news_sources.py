@@ -34,6 +34,8 @@ MONEYDJ_HTML = "https://www.moneydj.com/KMDJ/Common/ListNewArticles.aspx?svc=NW&
 WEALTH_RSS = "https://www.wealth.com.tw/rss"           # 財訊 RSS(乾淨)
 WAPEOPLE_HTML = "https://www.wa-people.com/"            # Wa-people(半導體/光電硬題材)
 TECHNEWS_HTML = "https://technews.tw/"                  # TechNews 科技新報(題材密度高)
+EETIMES_RSS = "https://www.eettaiwan.com/feed/"         # EE Times(電子工程/先進封裝深度)
+TRENDFORCE_RSS = "https://www.trendforce.com/news/feed" # TrendForce英文(研究機構產業情報)
 
 # HTML 導覽雜訊過濾
 NOISE = re.compile(r'MoneyDJ社論|MoneyDJ理財網|加入會員|查詢密碼|登入|首頁|更多|下一頁|版權|Cookie|理財網|iQuote|專題報導|個人理財|商城|水晶|鹽燈|詐騙|澄清聲明|報名|購買|電子報|關於我們|廣告')
@@ -95,6 +97,36 @@ def _fetch_technews():
     return _fetch_html_titles(TECHNEWS_HTML)
 
 
+def _fetch_eetimes():
+    """EE Times Taiwan RSS(電子工程/先進封裝深度,命中率高)。"""
+    try:
+        r = requests.get(EETIMES_RSS, headers=UA, timeout=20)
+        if r.status_code != 200:
+            return []
+        root = ET.fromstring(r.text)
+        return [it.find("title").text.strip() for it in root.iter("item")
+                if it.find("title") is not None and it.find("title").text]
+    except Exception:
+        return []
+
+
+def _fetch_trendforce():
+    """TrendForce 英文 RSS(研究機構第一手產業情報)。去掉[News]/[Insights]前綴。"""
+    try:
+        r = requests.get(TRENDFORCE_RSS, headers=UA, timeout=20)
+        if r.status_code != 200:
+            return []
+        root = ET.fromstring(r.text)
+        titles = []
+        for it in root.iter("item"):
+            t = it.find("title")
+            if t is not None and t.text:
+                titles.append(re.sub(r'^\[[^\]]+\]\s*', '', t.text.strip()))
+        return titles
+    except Exception:
+        return []
+
+
 def _fetch_html_titles(url):
     """通用 HTML 標題抽取(a標籤含中文、過濾導覽雜訊)。"""
     try:
@@ -138,6 +170,8 @@ def fetch_titles_by_source():
         "wealth": _fetch_wealth(),
         "wapeople": _fetch_wapeople(),
         "technews": _fetch_technews(),
+        "eetimes": _fetch_eetimes(),
+        "trendforce": _fetch_trendforce(),
     }
 
 
