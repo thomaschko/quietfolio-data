@@ -33,6 +33,7 @@ CNA_FEEDS = [
 MONEYDJ_HTML = "https://www.moneydj.com/KMDJ/Common/ListNewArticles.aspx?svc=NW&a=X0100001"
 WEALTH_RSS = "https://www.wealth.com.tw/rss"           # 財訊 RSS(乾淨)
 WAPEOPLE_HTML = "https://www.wa-people.com/"            # Wa-people(半導體/光電硬題材)
+TECHNEWS_HTML = "https://technews.tw/"                  # TechNews 科技新報(題材密度高)
 
 # HTML 導覽雜訊過濾
 NOISE = re.compile(r'MoneyDJ社論|MoneyDJ理財網|加入會員|查詢密碼|登入|首頁|更多|下一頁|版權|Cookie|理財網|iQuote|專題報導|個人理財|商城|水晶|鹽燈|詐騙|澄清聲明|報名|購買|電子報|關於我們|廣告')
@@ -86,13 +87,23 @@ def _fetch_wealth():
 
 def _fetch_wapeople():
     """Wa-people HTML(半導體/光電硬題材)。"""
+    return _fetch_html_titles(WAPEOPLE_HTML)
+
+
+def _fetch_technews():
+    """TechNews 科技新報 HTML(題材密度高)。"""
+    return _fetch_html_titles(TECHNEWS_HTML)
+
+
+def _fetch_html_titles(url):
+    """通用 HTML 標題抽取(a標籤含中文、過濾導覽雜訊)。"""
     try:
-        r = requests.get(WAPEOPLE_HTML, headers=UA, timeout=20)
+        r = requests.get(url, headers=UA, timeout=20)
         r.encoding = "utf-8"
         if r.status_code != 200:
             return []
         titles = []
-        for m in re.finditer(r'<a[^>]*>([^<]{10,50})</a>', r.text):
+        for m in re.finditer(r'<a[^>]*>([^<]{10,55})</a>', r.text):
             txt = m.group(1).strip()
             if re.search(r'[\u4e00-\u9fff]', txt) and not NOISE.search(txt):
                 titles.append(txt)
@@ -126,6 +137,7 @@ def fetch_titles_by_source():
         "moneydj": _fetch_moneydj(),
         "wealth": _fetch_wealth(),
         "wapeople": _fetch_wapeople(),
+        "technews": _fetch_technews(),
     }
 
 
