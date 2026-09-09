@@ -20,8 +20,10 @@ theme_tracker.py — 題材追蹤器(新題材 vs 連續追蹤中)
 """
 import json
 import os
+import re
 import datetime as dt
 import glob
+import requests
 
 HISTORY_DIR = "theme_history"
 LOOKBACK_DAYS = 14        # 往回比對幾天(判斷「首見」的視窗)
@@ -36,6 +38,16 @@ STREAK_HIGH_CONFIDENCE = 3   # AI判high信心,連續3天才自動寫入
 STREAK_MEDIUM_CONFIDENCE = 5 # AI判medium信心,連續5天才自動寫入(更保守)
 STREAK_JIEBA_ONLY = 999      # 純jieba版(無AI背書)不自動升格,設極大值等於關閉
 MAX_PROMOTIONS_PER_RUN = 5   # 單次最多自動新增幾個題材,避免異常大量湧入
+
+# ── 國際大廠反查(2026-09-10新增)──
+# 只對「已自動升格進watchlist」的題材做反查,用同一套連續天數邏輯驗證公司候選
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
+GEMINI_MODEL = "gemini-3.5-flash-lite"
+GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+COMPANY_HISTORY_DIR = "company_history"
+COMPANIES_FILE = "earnings_keywords.py"  # src6公司清單所在檔案
+COMPANY_STREAK_THRESHOLD = 3  # 反查公司連續出現3天才自動加進src6(同一題材反覆確認同一家公司)
+MAX_COMPANY_PROMOTIONS_PER_RUN = 3
 
 
 # 追蹤層停用詞(補src4沒擋乾淨的通用詞/符號殘留)
@@ -225,6 +237,155 @@ def auto_promote_to_watchlist(ongoing, today_str):
     return promoted
 
 
+COMPANY_LOOKUP_PROMPT = """你是國際科技產業研究助理。針對給定的產業技術題材,
+找出「美股上市」且與該題材直接相關的主要供應鏈公司(不限龍頭,也可包含中小型專業廠商)。
+
+只回傳美股上市公司(有美股代號的),不要台股/陸股/其他市場公司。
+用純JSON格式回傳(不要有其他文字):
+{"companies":[{"ticker":"股票代號","name":"公司名稱","role":"在此題材扮演角色(10字內)"}]}
+
+如果找不到明確相關的美股公司,回傳 {"companies":[]}。最多列5家最相關的。"""
+
+
+def lookup_companies_for_theme(theme_term, reason=""):
+    """對一個題材問Gemini:國際上有哪些相關美股公司。回傳 [{ticker,name,role}] 或 []。"""
+    if not GEMINI_KEY:
+        return []
+    prompt = f"題材:{theme_term}\n說明:{reason}" if reason else f"題材:{theme_term}"
+    body = {
+        "system_instruction": {"parts": [{"text": COMPANY_LOOKUP_PROMPT}]},
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.1},
+    }
+    try:
+        r = requests.post(
+            GEMINI_URL,
+            headers={"Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY},
+            json=body, timeout=30,
+        )
+        if r.status_code != 200:
+            print(f"    ⚠ 反查「{theme_term}」失敗: HTTP {r.status_code}")
+            return []
+        data = r.json()
+        text = data["candidates"][0]["content"]["parts"][0]["text"]
+        result = json.loads(text)
+        return result.get("companies", [])
+    except Exception as e:
+        print(f"    ⚠ 反查「{theme_term}」錯誤: {e}")
+        return []
+
+
+def load_existing_companies():
+    """讀 earnings_keywords.py 裡現有的 COMPANIES 清單(股票代號set)。"""
+    tickers = set()
+    try:
+        content = open(COMPANIES_FILE, encoding="utf-8").read()
+        for m in re.finditer(r'"([A-Z]{1,5})":\s*"[^"]*"', content):
+            tickers.add(m.group(1))
+    except FileNotFoundError:
+        pass
+    return tickers
+
+
+def save_company_snapshot(candidates, date_str):
+    """存今天反查到的公司候選快照(供連續天數比對)。"""
+    os.makedirs(COMPANY_HISTORY_DIR, exist_ok=True)
+    path = os.path.join(COMPANY_HISTORY_DIR, f"{date_str}.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"date": date_str, "candidates": candidates}, f, ensure_ascii=False)
+
+
+def load_company_history(lookback_days, today_str):
+    """讀最近N天的公司候選快照,回傳 {date: {ticker: info}}。"""
+    history = {}
+    today = dt.datetime.strptime(today_str, "%Y%m%d").date()
+    for i in range(1, lookback_days + 1):
+        d = (today - dt.timedelta(days=i)).strftime("%Y%m%d")
+        path = os.path.join(COMPANY_HISTORY_DIR, f"{d}.json")
+        if os.path.exists(path):
+            try:
+                data = json.load(open(path, encoding="utf-8"))
+                history[d] = {c["ticker"]: c for c in data.get("candidates", [])}
+            except Exception:
+                continue
+    return history
+
+
+def reverse_lookup_and_promote_companies(promoted_themes, today_str):
+    """
+    對「今天自動升格的題材」逐一反查Gemini,問國際相關美股公司。
+    候選公司連續出現達門檻天數才自動加進 earnings_keywords.py 的 COMPANIES。
+    """
+    if not promoted_themes:
+        return []
+
+    existing_tickers = load_existing_companies()
+    today_candidates = []  # 今天反查到的所有候選(供存快照)
+
+    print(f"\n🔍 對 {len(promoted_themes)} 個新升格題材做國際大廠反查:")
+    for theme in promoted_themes:
+        companies = lookup_companies_for_theme(theme["term"], theme.get("reason", ""))
+        for c in companies:
+            ticker = c.get("ticker", "").strip().upper()
+            if not ticker or not re.match(r'^[A-Z]{1,5}$', ticker):
+                continue  # 格式不對,跳過
+            if ticker in existing_tickers:
+                continue  # 已在src6,不用重複反查
+            today_candidates.append({
+                "ticker": ticker, "name": c.get("name", ""),
+                "role": c.get("role", ""), "source_theme": theme["term"],
+            })
+        if companies:
+            names = [f"{c.get('ticker','?')}" for c in companies]
+            print(f"  {theme['term']}: {' '.join(names)}")
+
+    save_company_snapshot(today_candidates, today_str)
+
+    # 比對歷史,算連續出現天數
+    history = load_company_history(COMPANY_STREAK_THRESHOLD + 5, today_str)
+    promoted_companies = []
+    seen_today = {c["ticker"] for c in today_candidates}
+    for ticker in seen_today:
+        streak = 1
+        today = dt.datetime.strptime(today_str, "%Y%m%d").date()
+        for i in range(1, COMPANY_STREAK_THRESHOLD + 5):
+            d_str = (today - dt.timedelta(days=i)).strftime("%Y%m%d")
+            if d_str not in history:
+                break
+            if ticker in history[d_str]:
+                streak += 1
+            else:
+                break
+        if streak >= COMPANY_STREAK_THRESHOLD:
+            info = next(c for c in today_candidates if c["ticker"] == ticker)
+            promoted_companies.append({**info, "streak_days": streak})
+
+    promoted_companies = promoted_companies[:MAX_COMPANY_PROMOTIONS_PER_RUN]
+
+    if promoted_companies:
+        # 寫進 earnings_keywords.py 的 COMPANIES dict(找到 "}" 前插入)
+        content = open(COMPANIES_FILE, encoding="utf-8").read()
+        insert_lines = "".join(
+            '    "%s": "%s(AI反查-%s)",\n' % (
+                c["ticker"], c["role"] or c["name"], c["source_theme"]
+            )
+            for c in promoted_companies
+        )
+        marker = "COMPANIES = {"
+        idx = content.find(marker)
+        if idx != -1:
+            # 找到COMPANIES字典開頭後,插在第一行後面(維持字典語法正確)
+            insert_pos = content.find("\n", idx) + 1
+            content = content[:insert_pos] + insert_lines + content[insert_pos:]
+            with open(COMPANIES_FILE, "w", encoding="utf-8") as f:
+                f.write(content)
+            print(f"\n✅ 自動新增進 src6 COMPANIES({len(promoted_companies)}家):")
+            for c in promoted_companies:
+                print(f"  {c['ticker']} {c['name']}  連續{c['streak_days']}天  源自題材:{c['source_theme']}")
+
+    return promoted_companies
+
+
 def main():
     now = dt.datetime.now()
     today_str = now.strftime("%Y%m%d")
@@ -291,6 +452,9 @@ def main():
         print(f"\n（今日無題材達自動升格門檻:high信心需連續{STREAK_HIGH_CONFIDENCE}天,"
               f"medium需連續{STREAK_MEDIUM_CONFIDENCE}天）")
 
+    # 對「今天新升格的題材」反查國際大廠,連續出現達門檻才自動加進src6
+    promoted_companies = reverse_lookup_and_promote_companies(promoted, today_str)
+
     # 輸出給前端
     output = {
         "generated_at": str(now),
@@ -299,6 +463,7 @@ def main():
         "ongoing": ongoing,
         "lookback_days": LOOKBACK_DAYS,
         "promoted_today": promoted,
+        "promoted_companies_today": promoted_companies,
     }
     with open("theme_tracker.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
