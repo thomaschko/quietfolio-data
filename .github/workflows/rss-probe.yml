@@ -22,4 +22,6 @@ jobs:
         run: pip install requests
 
       - name: Run RSS probe
-        run: python src4_probe_all.py
+        run: python ai_theme_discovery.py --probe
+env:
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
