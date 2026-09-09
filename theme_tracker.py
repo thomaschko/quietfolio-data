@@ -48,12 +48,11 @@ def is_valid_term(term):
     return True
 
 
-def load_today_candidates():
-    """讀今天 src4 的跨源候選,回傳精簡的 {term: {sources, stocks}} 快照。"""
+def _load_one_file(path, key_field="related_stocks"):
+    """讀單一候選檔(AI版或jieba版),回傳 {term: {sources, stocks, hits, method}}。"""
     try:
-        data = json.load(open("new_theme_candidates.json", encoding="utf-8"))
+        data = json.load(open(path, encoding="utf-8"))
     except FileNotFoundError:
-        print("  ⚠ 找不到 new_theme_candidates.json,今日快照為空")
         return {}
     candidates = data.get("multi_source" if ONLY_MULTI_SOURCE else "candidates", [])
     if not candidates and not ONLY_MULTI_SOURCE:
@@ -65,10 +64,34 @@ def load_today_candidates():
             continue
         snapshot[term] = {
             "sources": c.get("sources", []),
-            "stocks": c.get("related_stocks", []),
+            "stocks": c.get(key_field, []),
             "hits": c.get("recent_hits", 0),
+            "reason": c.get("reason", ""),
         }
     return snapshot
+
+
+def load_today_candidates():
+    """整合AI語意版(優先,較準)+jieba跨源版(補充),回傳今日題材快照。
+    同一詞若兩邊都有,合併來源清單、取較高的hits、保留AI的reason說明。"""
+    ai_snap = _load_one_file("ai_theme_candidates.json", key_field="stocks")
+    jieba_snap = _load_one_file("new_theme_candidates.json", key_field="related_stocks")
+    print(f"  AI語意版:{len(ai_snap)}個題材  jieba跨源版:{len(jieba_snap)}個題材")
+
+    merged = {}
+    for term, info in ai_snap.items():
+        merged[term] = dict(info)
+        merged[term]["method"] = "ai"
+    for term, info in jieba_snap.items():
+        if term in merged:
+            # 兩邊都有:合併來源、取較高hits,保留原本(AI)的reason
+            merged[term]["sources"] = sorted(set(merged[term]["sources"]) | set(info["sources"]))
+            merged[term]["hits"] = max(merged[term]["hits"], info["hits"])
+            merged[term]["method"] = "both"
+        else:
+            merged[term] = dict(info)
+            merged[term]["method"] = "jieba"
+    return merged
 
 
 def save_today_snapshot(snapshot, date_str):
@@ -127,7 +150,7 @@ def main():
     now = dt.datetime.now()
     today_str = now.strftime("%Y%m%d")
     print("=" * 60)
-    print(f"題材追蹤器  {today_str}")
+    print(f"題材追蹤器 v2025-09-10-filterfix  {today_str}")
     print("=" * 60)
 
     today_snapshot = load_today_candidates()
@@ -151,6 +174,8 @@ def main():
             "stocks": info["stocks"],
             "hits": info["hits"],
             "streak_days": streak,
+            "method": info.get("method", "jieba"),
+            "reason": info.get("reason", ""),
         }
         if term not in all_history_terms:
             first_seen.append(entry)
@@ -163,12 +188,15 @@ def main():
     print(f"\n🆕 今日首見({len(first_seen)}個):")
     for e in first_seen[:15]:
         stk = " 股:" + " ".join(e["stocks"]) if e["stocks"] else ""
-        print(f"  {e['term']}  {'/'.join(e['sources'])} 近{e['hits']}次{stk}")
+        m = {"ai":"🤖","jieba":"🔤","both":"🤖🔤"}.get(e["method"],"")
+        rs = f" ({e['reason']})" if e.get("reason") else ""
+        print(f"  {m}{e['term']}  {'/'.join(e['sources'])} 近{e['hits']}次{stk}{rs}")
 
     print(f"\n📈 連續追蹤中({len(ongoing)}個):")
     for e in ongoing[:15]:
         stk = " 股:" + " ".join(e["stocks"]) if e["stocks"] else ""
-        print(f"  {e['term']}  連續{e['streak_days']}天  {'/'.join(e['sources'])}{stk}")
+        m = {"ai":"🤖","jieba":"🔤","both":"🤖🔤"}.get(e["method"],"")
+        print(f"  {m}{e['term']}  連續{e['streak_days']}天  {'/'.join(e['sources'])}{stk}")
 
     # 存今天快照(供明天比對用)
     save_today_snapshot(today_snapshot, today_str)
