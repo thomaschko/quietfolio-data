@@ -32,7 +32,18 @@ jobs:
       - name: Run new theme discovery
         continue-on-error: true
         run: python new_theme_discovery.py
-        
+      
+      # AI語意版新題材發現(Gemini,取代jieba易誤判BTC/人名等問題)
+      - name: Run AI theme discovery
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python ai_theme_discovery.py
+
+      # 題材追蹤:分辨今日首見vs連續追蹤中(整合AI版+jieba版)
+      - name: Track theme history
+        continue-on-error: true
+        run: python theme_tracker.py
       # 題材追蹤:分辨今日首見vs連續追蹤中(讀src4輸出,累積歷史到theme_history/)
       - name: Track theme history
         continue-on-error: true
@@ -52,6 +63,7 @@ jobs:
           git add event_theme_raw.json 2>/dev/null || true
           [ -f new_theme_candidates.json ] && git add new_theme_candidates.json || true
           [ -f theme_tracker.json ] && git add theme_tracker.json || true
+          [ -f ai_theme_candidates.json ] && git add ai_theme_candidates.json || true
           git add theme_history/ 2>/dev/null || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
           if git diff --staged --quiet; then
