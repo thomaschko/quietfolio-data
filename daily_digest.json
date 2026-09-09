@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-09-09 05:32:48",
+  "generated_at": "2026-09-09 06:33:24",
   "date": "20260909",
   "summary_counts": {
-    "resonance": 0,
+    "resonance": 3,
     "preferment_themes": 0,
     "broker_coverage": 0,
     "surge_themes": 21,
@@ -32,7 +32,51 @@
       "count": 1
     }
   ],
-  "A_multi_source_resonance": [],
+  "A_multi_source_resonance": [
+    {
+      "code": "8021",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "擴產",
+        "調漲",
+        "重訊:增資"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    },
+    {
+      "code": "3715",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "ASIC",
+        "重訊:投資"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    },
+    {
+      "code": "2338",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "DRAM",
+        "重訊:增資"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    }
+  ],
   "B_preferment_themes": [],
   "C_broker_coverage": [],
   "D_surge_themes": [
@@ -44,17 +88,37 @@
       ]
     },
     {
-      "theme": "華邦電",
-      "ratio": 2.93,
+      "theme": "南亞科",
+      "ratio": 3.09,
       "codes": [
-        "2344"
+        "2408",
+        "1303",
+        "2344",
+        "2330",
+        "2409",
+        "2834"
       ]
     },
     {
-      "theme": "南亞科",
-      "ratio": 2.89,
+      "theme": "旺宏",
+      "ratio": 3.05,
       "codes": [
-        "2408"
+        "2337",
+        "2330"
+      ]
+    },
+    {
+      "theme": "華邦電",
+      "ratio": 3.04,
+      "codes": [
+        "2344",
+        "2330",
+        "3037",
+        "2409",
+        "1216",
+        "1303",
+        "2408",
+        "2303"
       ]
     },
     {
@@ -63,22 +127,39 @@
       "codes": []
     },
     {
-      "theme": "旺宏",
-      "ratio": 2.83,
-      "codes": [
-        "2337"
-      ]
-    },
-    {
       "theme": "群聯",
-      "ratio": 2.52,
+      "ratio": 2.83,
       "codes": []
     },
     {
       "theme": "先進封裝",
-      "ratio": 2.32,
+      "ratio": 2.58,
       "codes": [
+        "6239",
         "6531"
+      ]
+    },
+    {
+      "theme": "DDR5",
+      "ratio": 2.33,
+      "codes": [
+        "6239",
+        "2408",
+        "3260"
+      ]
+    },
+    {
+      "theme": "BBU",
+      "ratio": 2.27,
+      "codes": [
+        "6224"
+      ]
+    },
+    {
+      "theme": "BBU",
+      "ratio": 2.27,
+      "codes": [
+        "6224"
       ]
     },
     {
@@ -91,32 +172,17 @@
       ]
     },
     {
-      "theme": "BBU",
+      "theme": "LPDDR",
       "ratio": 2.06,
-      "codes": [
-        "6224"
-      ]
-    },
-    {
-      "theme": "BBU",
-      "ratio": 2.06,
-      "codes": [
-        "6224"
-      ]
-    },
-    {
-      "theme": "DDR5",
-      "ratio": 2.0,
-      "codes": [
-        "2408",
-        "3260"
-      ]
+      "codes": []
     },
     {
       "theme": "CoWoS",
       "ratio": 1.89,
       "codes": [
-        "6207"
+        "6207",
+        "2330",
+        "1210"
       ]
     },
     {
@@ -126,12 +192,34 @@
     },
     {
       "theme": "DRAM",
-      "ratio": 1.75,
+      "ratio": 1.78,
       "codes": [
+        "5007",
+        "2330",
+        "2338",
         "3532",
         "3260",
         "6531",
         "2344"
+      ]
+    },
+    {
+      "theme": "擴產",
+      "ratio": 1.71,
+      "codes": [
+        "3167",
+        "8021",
+        "2382",
+        "2368",
+        "2330",
+        "2345",
+        "3231",
+        "6426",
+        "6515",
+        "4763",
+        "2344",
+        "6213",
+        "6224"
       ]
     },
     {
@@ -142,58 +230,43 @@
       ]
     },
     {
-      "theme": "擴產",
-      "ratio": 1.67,
-      "codes": [
-        "2382",
-        "2368",
-        "2345",
-        "3231",
-        "6426",
-        "2344",
-        "6213",
-        "6224",
-        "8021",
-        "3167"
-      ]
-    },
-    {
       "theme": "接單",
-      "ratio": 1.65,
+      "ratio": 1.68,
       "codes": [
         "6207",
+        "6166",
         "6426",
         "3260"
       ]
     },
     {
-      "theme": "LPDDR",
-      "ratio": 1.55,
-      "codes": []
+      "theme": "ASIC",
+      "ratio": 1.56,
+      "codes": [
+        "8227",
+        "2368",
+        "6239",
+        "2382",
+        "3715",
+        "6225",
+        "8054",
+        "2303",
+        "6213",
+        "7711"
+      ]
     },
     {
       "theme": "矽光子",
       "ratio": 1.51,
-      "codes": []
-    },
-    {
-      "theme": "ASIC",
-      "ratio": 1.51,
       "codes": [
-        "8227",
-        "2382",
-        "2368",
-        "3715",
-        "6225",
-        "8054",
-        "6213",
-        "7711"
+        "1210"
       ]
     },
     {
       "theme": "調漲",
       "ratio": 1.5,
       "codes": [
+        "2450",
         "8021"
       ]
     }
@@ -201,7 +274,7 @@
   "E_new_candidates": [
     {
       "term": "Cybercab",
-      "recent_hits": 4,
+      "recent_hits": 3,
       "is_brand_new": true,
       "stocks": []
     },
@@ -212,15 +285,15 @@
       "stocks": []
     },
     {
-      "term": "工研院",
-      "recent_hits": 6,
+      "term": "日月光",
+      "recent_hits": 4,
       "is_brand_new": true,
       "stocks": []
     },
     {
-      "term": "ASML",
-      "recent_hits": 5,
-      "is_brand_new": true,
+      "term": "新台幣",
+      "recent_hits": 3,
+      "is_brand_new": false,
       "stocks": []
     },
     {
@@ -236,13 +309,7 @@
       "stocks": []
     },
     {
-      "term": "光模組",
-      "recent_hits": 3,
-      "is_brand_new": true,
-      "stocks": []
-    },
-    {
-      "term": "EUV",
+      "term": "下半年",
       "recent_hits": 3,
       "is_brand_new": true,
       "stocks": []
@@ -250,12 +317,12 @@
     {
       "term": "台股盤中",
       "recent_hits": 54,
-      "is_brand_new": false,
+      "is_brand_new": true,
       "stocks": []
     },
     {
       "term": "金色財經",
-      "recent_hits": 10,
+      "recent_hits": 11,
       "is_brand_new": true,
       "stocks": []
     },
@@ -285,6 +352,12 @@
     },
     {
       "term": "盤後速報",
+      "recent_hits": 5,
+      "is_brand_new": true,
+      "stocks": []
+    },
+    {
+      "term": "工業電腦",
       "recent_hits": 5,
       "is_brand_new": true,
       "stocks": []
