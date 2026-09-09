@@ -44,6 +44,7 @@ def build_digest():
     newtheme = load_json("new_theme_candidates.json") or {}
     broker = load_json("broker_coverage.json") or {}
     earnings = load_json("earnings_keywords.json") or {}  # src6
+    tracker = load_json("theme_tracker.json") or {}  # 題材追蹤(AI語意+jieba整合,含首見/追蹤中)
 
     # 以個股為中心聚合:code -> {sources:set, detail:{}}
     stock_signals = defaultdict(lambda: {"sources": set(), "detail": {}})
@@ -130,15 +131,37 @@ def build_digest():
             })
     surge_themes.sort(key=lambda x: -(x.get("ratio") or 0))
 
-    # E. 新題材候選(src4,只取有價值的前幾個)
+    # E. 新題材候選(優先讀theme_tracker整合結果:AI語意版🤖優先,jieba補充🔤降權)
     new_candidates = []
-    for c in (newtheme.get("candidates", []))[:15]:
-        new_candidates.append({
-            "term": c.get("term"),
-            "recent_hits": c.get("recent_hits"),
-            "is_brand_new": c.get("is_brand_new"),
-            "stocks": c.get("related_stocks", []),
-        })
+    if tracker.get("first_seen") or tracker.get("ongoing"):
+        # 排序:both/ai優先(最可信) > jieba+高次數 > jieba其他;連續追蹤中排前面
+        pool = []
+        for e in tracker.get("ongoing", []):
+            pool.append({**e, "_bucket": 0})  # 連續追蹤中最優先
+        for e in tracker.get("first_seen", []):
+            pool.append({**e, "_bucket": 1})
+        method_rank = {"both": 0, "ai": 1, "jieba": 2}
+        pool.sort(key=lambda x: (x["_bucket"], method_rank.get(x.get("method", "jieba"), 3), -x.get("hits", 0)))
+        for e in pool[:15]:
+            new_candidates.append({
+                "term": e.get("term"),
+                "recent_hits": e.get("hits"),
+                "is_brand_new": e.get("_bucket") == 1,
+                "streak_days": e.get("streak_days", 1),
+                "method": e.get("method", "jieba"),
+                "reason": e.get("reason", ""),
+                "stocks": e.get("stocks", []),
+            })
+    else:
+        # 降級:theme_tracker還沒產出時,退回讀jieba原始版(相容舊資料)
+        for c in (newtheme.get("candidates", []))[:15]:
+            new_candidates.append({
+                "term": c.get("term"),
+                "recent_hits": c.get("recent_hits"),
+                "is_brand_new": c.get("is_brand_new"),
+                "method": "jieba",
+                "stocks": c.get("related_stocks", []),
+            })
 
     # F. 國際法說訊號(src6)—— 頻率上升的關鍵詞,依公司整理
     earnings_rising = earnings.get("rising_keywords", [])
