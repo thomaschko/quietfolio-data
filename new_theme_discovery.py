@@ -168,6 +168,8 @@ def main():
         if k.lower() in watchlist or k.lower() in STOPWORDS: return
         # 過濾:全是通用單字組成的詞(如「一次」「全球」已在STOPWORDS,這裡擋漏網)
         if not has_ascii and len(k) <= 2: return
+        # 過濾:純數字/百分比/純符號(如「30%」「50億」這類斷詞殘留,不是題材)
+        if re.match(r'^[\d.,]+[%億萬元次年月日]*$', k): return
         if in_recent:
             term_recent[k] += 1
             term_sources[k].add(source)
