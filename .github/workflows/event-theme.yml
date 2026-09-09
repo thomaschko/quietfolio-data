@@ -32,7 +32,12 @@ jobs:
       - name: Run new theme discovery
         continue-on-error: true
         run: python new_theme_discovery.py
-
+        
+      # 題材追蹤:分辨今日首見vs連續追蹤中(讀src4輸出,累積歷史到theme_history/)
+      - name: Track theme history
+        continue-on-error: true
+        run: python theme_tracker.py
+        
       # 每日摘要整合:匯整 src1-6 輸出成 daily_digest.json(A-G區)
       # 讀 event_theme_raw.json + new_theme_candidates.json + broker_coverage.json + earnings_keywords.json
       # 缺任何一個都不報錯(對應區塊留空),所以放最後
@@ -46,6 +51,8 @@ jobs:
           git config user.email "actions@github.com"
           git add event_theme_raw.json 2>/dev/null || true
           [ -f new_theme_candidates.json ] && git add new_theme_candidates.json || true
+          [ -f theme_tracker.json ] && git add theme_tracker.json || true
+          git add theme_history/ 2>/dev/null || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
           if git diff --staged --quiet; then
             echo "無變更,不 commit"
