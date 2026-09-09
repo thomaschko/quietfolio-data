@@ -19,7 +19,11 @@ UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
 CNYES_BASE = "https://api.cnyes.com/media/api/v1"
 SEED_QUERIES = ["台股", "AI", "半導體", "輝達", "記憶體", "台積電", "AI伺服器"]
 RECENT_DAYS, BASELINE_DAYS = 3, 20
-MIN_RECENT_HITS, SURGE_RATIO, MAX_BASELINE_HITS = 3, 2.0, 2
+MIN_RECENT_HITS, SURGE_RATIO, MAX_BASELINE_HITS = 2, 1.5, 5
+# 放寬紀錄(2026-09-10):
+#   MIN_RECENT_HITS 3→2:降低候選門檻,讓更多詞進來(雜訊也會增加)
+#   MAX_BASELINE_HITS 2→5:不只抓全新詞,也抓基線期已有但持續熱度上升的詞
+#   SURGE_RATIO 2.0→1.5:配合基線放寬,門檻同步降低(否則基線變大會更難達到暴增比)
 WATCHLIST_FILE = "themes_watchlist.txt"
 
 STOPWORDS = {
