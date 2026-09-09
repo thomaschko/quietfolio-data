@@ -34,25 +34,34 @@ GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_M
 
 WATCHLIST_FILE = "themes_watchlist.txt"
 
-SYSTEM_PROMPT = """你是台股半導體/科技供應鏈研究助理。你會收到今天的財經新聞標題清單(每行一則,格式:編號|標題)。
+SYSTEM_PROMPT = """你是台股半導體/科技供應鏈研究助理。你會收到今天大量財經新聞標題清單(每行一則,格式:編號|標題)。
 
-任務:找出真正值得追蹤的「產業題材」——尤其是還沒被廣泛報導、剛冒頭的技術詞/供應鏈動態。
+任務:深入挖掘值得追蹤的「產業題材」——尤其是還沒被廣泛報導、剛冒頭的技術詞/供應鏈動態。
+不要只挑最明顯的幾個,要仔細看完整份清單,盡量找出所有具體的技術/產業訊號,寧可多列(標明信心度),不要漏掉。
 
 明確排除以下類型(不算題材):
 - 加密貨幣/虛擬貨幣相關(比特幣、BTC、以太幣等)
 - 單純的公司月營收/財報公告(如「XX公司8月營收年增N%」這類例行公告)
-- 人物專訪、人事異動、獲獎新聞
+- 人物專訪、人事異動、獲獎新聞、明星八卦
 - 大盤/指數漲跌描述(如「台股收漲XX點」)
-- 純總體經濟數據(匯率、CPI、失業率)
-- 知名科技巨頭的日常新聞(除非該則新聞代表某個新技術/新供應鏈動向的重大訊號)
+- 純總體經濟數據(匯率、CPI、失業率、聯準會利率決策)
+- 知名科技巨頭的日常營運新聞(股價、法說會時間、產品發表會預告等),除非該則新聞代表某個
+  新技術/新供應鏈動向的重大訊號(例如具體提到某項技術突破、某個產能擴張、某種新規格)
 
-只保留:半導體製程/封裝技術、記憶體規格、光通訊元件、電源/散熱技術、
-機器人/自動化、新能源材料、以及這些領域的具體供應鏈公司動態。
+保留範圍(盡量找,不限於以下但以此為主):
+- 半導體製程/先進封裝技術(如CoWoS、CoPoS、玻璃基板、面板級封裝等具體技術詞)
+- 記憶體規格與供需(HBM世代、DDR規格、記憶體漲價供需變化)
+- 光通訊/矽光子元件(雷射、收發模組、CPO、800G/1.6T等規格)
+- 電源/散熱技術(HVDC、液冷、浸沒式散熱等)
+- 機器人/自動化零組件(減速機、伺服馬達等)
+- 新能源材料(固態電池、鈉離子電池等)
+- 這些領域的具體供應鏈公司動態(擴產、接單、認證、技術授權等具體事件,不是單純營收公告)
 
 用純JSON格式回傳(不要有其他文字說明),格式:
 {"themes":[{"term":"題材名稱(2-8字或英文技術詞)","reason":"為何是題材(15字內)","related_ids":[標題編號,...],"confidence":"high或medium"}]}
 
-只回傳你有信心的題材,寧缺勿濫。沒有值得追蹤的題材時回傳 {"themes":[]}。"""
+盡量找出10-25個題材(high+medium合計),涵蓋當天新聞裡所有具體的技術/產業訊號。
+沒有值得追蹤的題材時才回傳 {"themes":[]},不要為了湊數硬掰。"""
 
 
 def load_watchlist_terms():
@@ -69,8 +78,10 @@ def load_watchlist_terms():
 
 
 def collect_titles():
-    """收集今日多源標題(複用 news_sources.py),回傳 [(idx, title, source)]"""
+    """收集今日多源標題:7個補充來源 + 鉅亨廣詞去重新聞(複用new_theme_discovery的抓法)。
+    回傳 [(title, {sources})]"""
     titles = []
+    # 7個補充來源(中央社/MoneyDJ/財訊/Wa-people/TechNews/EE Times/TrendForce)
     try:
         from news_sources import fetch_titles_by_source
         by_source = fetch_titles_by_source()
@@ -79,6 +90,21 @@ def collect_titles():
                 titles.append((t, src))
     except Exception as e:
         print(f"  ⚠ news_sources 讀取失敗: {e}")
+    # 鉅亨廣詞去重新聞(量最大的來源,之前AI版完全沒看到這塊,是找不到題材的主因)
+    try:
+        from new_theme_discovery import fetch_cnyes, SEED_QUERIES
+        seen_id = set()
+        cnyes_count = 0
+        for q in SEED_QUERIES:
+            for n in fetch_cnyes(q, max_pages=5):  # 稍微降低頁數,控制總量與呼叫時間
+                nid = n.get("newsId")
+                if nid and nid not in seen_id:
+                    seen_id.add(nid)
+                    titles.append((n["title"], "cnyes"))
+                    cnyes_count += 1
+        print(f"  鉅亨廣詞去重新聞: {cnyes_count} 則")
+    except Exception as e:
+        print(f"  ⚠ 鉅亨新聞讀取失敗(不影響其他來源): {e}")
     # 去重(同標題只留一次,但記錄可能多源)
     seen = {}
     for t, src in titles:
