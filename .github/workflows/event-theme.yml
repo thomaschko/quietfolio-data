@@ -32,7 +32,7 @@ jobs:
       - name: Run new theme discovery
         continue-on-error: true
         run: python new_theme_discovery.py
-      
+
       # AI語意版新題材發現(Gemini,取代jieba易誤判BTC/人名等問題)
       - name: Run AI theme discovery
         continue-on-error: true
@@ -41,14 +41,13 @@ jobs:
         run: python ai_theme_discovery.py
 
       # 題材追蹤:分辨今日首見vs連續追蹤中(整合AI版+jieba版)
+      # 含自動升格進watchlist、國際大廠反查自動升格進src6(都需GEMINI_API_KEY)
       - name: Track theme history
         continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python theme_tracker.py
-      # 題材追蹤:分辨今日首見vs連續追蹤中(讀src4輸出,累積歷史到theme_history/)
-      - name: Track theme history
-        continue-on-error: true
-        run: python theme_tracker.py
-        
+
       # 每日摘要整合:匯整 src1-6 輸出成 daily_digest.json(A-G區)
       # 讀 event_theme_raw.json + new_theme_candidates.json + broker_coverage.json + earnings_keywords.json
       # 缺任何一個都不報錯(對應區塊留空),所以放最後
@@ -65,10 +64,16 @@ jobs:
           [ -f theme_tracker.json ] && git add theme_tracker.json || true
           [ -f ai_theme_candidates.json ] && git add ai_theme_candidates.json || true
           git add theme_history/ 2>/dev/null || true
+          git add company_history/ 2>/dev/null || true
+          [ -f theme_promotions.json ] && git add theme_promotions.json || true
+          [ -f themes_watchlist.txt ] && git add themes_watchlist.txt || true
+          [ -f earnings_keywords.py ] && git add earnings_keywords.py || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
           if git diff --staged --quiet; then
             echo "無變更,不 commit"
           else
             git commit -m "Daily radar + digest $(date -u +%Y-%m-%d)"
+            # 保護:push前先同步遠端,避免因任何原因造成的race condition讓push失敗
+            git pull --rebase origin main || true
             git push
           fi
