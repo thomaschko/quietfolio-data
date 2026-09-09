@@ -181,6 +181,14 @@ def build_digest():
         "transceiver": "光通訊", "EML": "光通訊", "InP": "磷化銦",
         "indium phosphide": "磷化銦", "800G": "光通訊", "1.6T": "光通訊",
         "LPO": "CPO", "optical engine": "CPO",
+        # AI語意版(Gemini)新發現題材對應 2026-09-09
+        "High-NA": "High-NA EUV", "EUV": "High-NA EUV", "lithography": "微影設備",
+        "passive component": "被動元件", "MLCC": "MLCC", "glass fiber": "玻纖布",
+        "XPU": "XPU", "custom silicon": "客製化晶片", "custom ASIC": "客製化晶片",
+        "satellite": "衛星通訊", "LEO": "低軌衛星頻譜",
+        "drone": "無人機", "counter-drone": "反無人機",
+        "smart glasses": "智慧眼鏡", "AR": "AR光學", "waveguide": "波導技術",
+        "agentic": "代理式AI", "edge computing": "邊緣運算", "on-device": "端側模型",
     }
     # 統計每個「台股題材」被幾家國際大廠法說提及升溫
     theme_earnings_backing = defaultdict(lambda: {"companies": set(), "keywords": set()})
