@@ -28,6 +28,15 @@ LOOKBACK_DAYS = 14        # 往回比對幾天(判斷「首見」的視窗)
 MIN_STREAK_TO_SHOW = 2    # 連續追蹤中至少要幾天才顯示(1天=剛冒出,不算追蹤)
 ONLY_MULTI_SOURCE = True  # 只追蹤跨源候選(單源雜訊太多,不進歷史)
 
+# ── 自動升格進 themes_watchlist.txt 的門檻(2026-09-10新增)──
+# 用「連續追蹤天數」當自動化守門員,比單日AI信心度更可靠(排除曇花一現的誤判)
+WATCHLIST_FILE_PATH = "themes_watchlist.txt"
+PROMOTE_LOG_FILE = "theme_promotions.json"  # 稽核日誌:記錄每次自動新增,方便事後檢視/撤回
+STREAK_HIGH_CONFIDENCE = 3   # AI判high信心,連續3天才自動寫入
+STREAK_MEDIUM_CONFIDENCE = 5 # AI判medium信心,連續5天才自動寫入(更保守)
+STREAK_JIEBA_ONLY = 999      # 純jieba版(無AI背書)不自動升格,設極大值等於關閉
+MAX_PROMOTIONS_PER_RUN = 5   # 單次最多自動新增幾個題材,避免異常大量湧入
+
 
 # 追蹤層停用詞(補src4沒擋乾淨的通用詞/符號殘留)
 TRACKER_STOPWORDS = {
@@ -67,6 +76,7 @@ def _load_one_file(path, key_field="related_stocks"):
             "stocks": c.get(key_field, []),
             "hits": c.get("recent_hits", 0),
             "reason": c.get("reason", ""),
+            "confidence": c.get("confidence", ""),  # AI版才有;jieba版為空字串
         }
     return snapshot
 
@@ -84,7 +94,7 @@ def load_today_candidates():
         merged[term]["method"] = "ai"
     for term, info in jieba_snap.items():
         if term in merged:
-            # 兩邊都有:合併來源、取較高hits,保留原本(AI)的reason
+            # 兩邊都有:合併來源、取較高hits,保留原本(AI)的reason與confidence
             merged[term]["sources"] = sorted(set(merged[term]["sources"]) | set(info["sources"]))
             merged[term]["hits"] = max(merged[term]["hits"], info["hits"])
             merged[term]["method"] = "both"
@@ -146,6 +156,75 @@ def compute_streak(term, today_str, history_dates_sorted):
     return streak
 
 
+def load_watchlist_terms_raw():
+    """讀現有watchlist的所有詞(小寫set,判斷是否已存在,避免重複新增)。"""
+    terms = set()
+    try:
+        with open(WATCHLIST_FILE_PATH, encoding="utf-8") as f:
+            for ln in f:
+                ln = ln.strip()
+                if ln and not ln.startswith("#"):
+                    terms.add(ln.lower())
+    except FileNotFoundError:
+        pass
+    return terms
+
+
+def auto_promote_to_watchlist(ongoing, today_str):
+    """
+    自動升格:連續追蹤天數達門檻的AI背書題材,自動寫進 themes_watchlist.txt。
+    用「時間持續性」當守門員,而非單日AI信心度——曇花一現的誤判撐不過連續N天。
+    純jieba版(無AI驗證過)不自動升格,只有 method 為 'ai' 或 'both' 才考慮。
+    每次新增都記錄稽核日誌(theme_promotions.json),方便事後檢視或手動撤回。
+    """
+    existing = load_watchlist_terms_raw()
+    promoted = []
+    for e in ongoing:
+        if len(promoted) >= MAX_PROMOTIONS_PER_RUN:
+            break
+        term = e["term"]
+        if term.lower() in existing:
+            continue  # 已存在,跳過
+        method = e.get("method", "jieba")
+        confidence = e.get("confidence", "")
+        streak = e.get("streak_days", 0)
+
+        if method == "jieba":
+            threshold = STREAK_JIEBA_ONLY  # 無AI背書,實質不升格
+        elif confidence == "high":
+            threshold = STREAK_HIGH_CONFIDENCE
+        else:  # medium 或空
+            threshold = STREAK_MEDIUM_CONFIDENCE
+
+        if streak >= threshold:
+            promoted.append({
+                "term": term, "streak_days": streak, "method": method,
+                "confidence": confidence, "reason": e.get("reason", ""),
+                "promoted_date": today_str,
+            })
+            existing.add(term.lower())  # 避免同批次重複
+
+    if not promoted:
+        return []
+
+    # 寫進 watchlist(附加,不覆蓋既有內容)
+    with open(WATCHLIST_FILE_PATH, "a", encoding="utf-8") as f:
+        f.write(f"\n# ── AI自動升格題材 {today_str}(連續追蹤驗證通過,見theme_promotions.json)──\n")
+        for p in promoted:
+            f.write(f"{p['term']}\n")
+
+    # 寫稽核日誌(累積,方便追溯每次自動新增的原因)
+    log = []
+    try:
+        log = json.load(open(PROMOTE_LOG_FILE, encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+    log.extend(promoted)
+    json.dump(log, open(PROMOTE_LOG_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+
+    return promoted
+
+
 def main():
     now = dt.datetime.now()
     today_str = now.strftime("%Y%m%d")
@@ -202,6 +281,16 @@ def main():
     save_today_snapshot(today_snapshot, today_str)
     cleanup_old_history(LOOKBACK_DAYS + 5)
 
+    # 自動升格:連續追蹤達門檻的AI背書題材,寫進themes_watchlist.txt
+    promoted = auto_promote_to_watchlist(ongoing, today_str)
+    if promoted:
+        print(f"\n✅ 自動升格進 themes_watchlist.txt({len(promoted)}個):")
+        for p in promoted:
+            print(f"  {p['term']}  連續{p['streak_days']}天  信心度{p['confidence'] or 'jieba'}")
+    else:
+        print(f"\n（今日無題材達自動升格門檻:high信心需連續{STREAK_HIGH_CONFIDENCE}天,"
+              f"medium需連續{STREAK_MEDIUM_CONFIDENCE}天）")
+
     # 輸出給前端
     output = {
         "generated_at": str(now),
@@ -209,6 +298,7 @@ def main():
         "first_seen": first_seen,
         "ongoing": ongoing,
         "lookback_days": LOOKBACK_DAYS,
+        "promoted_today": promoted,
     }
     with open("theme_tracker.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
