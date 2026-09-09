@@ -40,6 +40,9 @@ STOPWORDS = {
     # 雜誌/媒體套語
     "獨家","專訪","專題","封面","焦點","解析","深度","報導","一次看","懶人包",
     "重磅","快訊","即時","最新","熱門","精選","推薦","分析","觀點","評論","社論",
+    # 補充停用詞(theme_tracker實測發現的漏網通用詞)
+    "新台幣","發表會","下半年","上半年","本季","上季","下季",
+    "今日","昨日","明日","本週","上週","下週","...","…",
     # 英文碎詞/停用詞(英文標題被jieba切碎產生,或AI模型名非題材)
     "as","the","of","to","in","on","for","and","or","by","with","reportedly",
     "prices","price","says","said","new","update","report","reports","spot",
@@ -130,7 +133,7 @@ def main():
     base_cut = (now - dt.timedelta(days=BASELINE_DAYS + RECENT_DAYS)).timestamp()
     watchlist = load_watchlist_terms()
     print("=" * 64)
-    print(f"新題材發現(多源跨源交叉版)  排除{len(watchlist)}個已知詞")
+    print(f"新題材發現(多源跨源交叉版 v2025-09-10-filterfix)  排除{len(watchlist)}個已知詞")
     print("=" * 64)
 
     import jieba
