@@ -86,14 +86,18 @@ def build_name2code():
 
 
 def extract_codes(text, name2code):
+    """回傳 {code: weight}。有股號格式(1234)=明確點名權重2;純股名比對權重1。"""
     if not text:
-        return set()
-    codes = set()
+        return {}
+    codes = {}
+    # 明確股號格式 (1234) → 高可信度
     for m in re.findall(r"[（(](\d{4})[)）]", text):
-        codes.add(m)
+        codes[m] = 2
+    # 純股名比對 → 低可信度(易誤中,尤其2字股名)
     for nm, cd in name2code.items():
         if len(nm) >= 2 and nm in text:
-            codes.add(cd)
+            if cd not in codes:
+                codes[cd] = 1
     return codes
 
 
@@ -187,14 +191,23 @@ def detect_fixed_keywords(name2code, now_ts):
               f"暴增比={ratio} {flag}")
 
         if surge:
-            codes = set()
+            # 累計每檔股票的可信度分數(跨新聞),過濾雜訊
+            code_score = {}
             for n in recent:
-                codes |= extract_codes(n["title"] + " " + n["summary"], name2code)
+                text = n["title"] + " " + n["summary"]
+                hits = extract_codes(text, name2code)
+                # 綜述新聞(單篇抓>8檔)是「大盤點名」類,個股關聯低 → 該篇權重減半
+                weight_mult = 0.5 if len(hits) > 8 else 1.0
+                for cd, w in hits.items():
+                    code_score[cd] = code_score.get(cd, 0) + w * weight_mult
+            # 只保留分數>=2(被明確股號點名1次,或純股名出現2次以上)
+            codes = sorted([cd for cd, s in code_score.items() if s >= 2],
+                           key=lambda c: -code_score[c])
             results.append({
                 "theme": kw,
                 "ratio": ratio,
                 "recent_count": len(recent),
-                "codes": sorted(codes),
+                "codes": codes,
                 "source": "關鍵字暴增",
             })
         time.sleep(0.3)
