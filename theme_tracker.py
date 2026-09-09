@@ -29,6 +29,25 @@ MIN_STREAK_TO_SHOW = 2    # 連續追蹤中至少要幾天才顯示(1天=剛冒�
 ONLY_MULTI_SOURCE = True  # 只追蹤跨源候選(單源雜訊太多,不進歷史)
 
 
+# 追蹤層停用詞(補src4沒擋乾淨的通用詞/符號殘留)
+TRACKER_STOPWORDS = {
+    "...", "…", "新台幣", "發表會", "下半年", "上半年", "今年", "明年",
+    "本季", "上季", "下季", "今日", "昨日", "明日", "本週", "上週", "下週",
+}
+
+
+def is_valid_term(term):
+    """過濾純符號、過短、明顯通用詞。"""
+    t = term.strip()
+    if not t or t in TRACKER_STOPWORDS:
+        return False
+    if all(c in '.,。，…—-·、' for c in t):  # 純符號
+        return False
+    if len(t) < 2:
+        return False
+    return True
+
+
 def load_today_candidates():
     """讀今天 src4 的跨源候選,回傳精簡的 {term: {sources, stocks}} 快照。"""
     try:
@@ -42,7 +61,7 @@ def load_today_candidates():
     snapshot = {}
     for c in candidates:
         term = c.get("term")
-        if not term:
+        if not term or not is_valid_term(term):
             continue
         snapshot[term] = {
             "sources": c.get("sources", []),
