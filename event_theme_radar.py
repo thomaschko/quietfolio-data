@@ -191,24 +191,43 @@ def detect_fixed_keywords(name2code, now_ts):
               f"暴增比={ratio} {flag}")
 
         if surge:
-            # 累計每檔股票的可信度分數(跨新聞),過濾雜訊
-            code_score = {}
-            for n in recent:
-                text = n["title"] + " " + n["summary"]
-                hits = extract_codes(text, name2code)
-                # 綜述新聞(單篇抓>8檔)是「大盤點名」類,個股關聯低 → 該篇權重減半
-                weight_mult = 0.5 if len(hits) > 8 else 1.0
-                for cd, w in hits.items():
-                    code_score[cd] = code_score.get(cd, 0) + w * weight_mult
-            # 只保留分數>=2(被明確股號點名1次,或純股名出現2次以上)
-            codes = sorted([cd for cd, s in code_score.items() if s >= 2],
-                           key=lambda c: -code_score[c])
+            # 題材→個股關聯,優先順序:
+            #   1. My-TW-Coverage 權威主題檔(人工審核過的供應鏈研究)
+            #   2. 查無對應主題檔 → 退回新聞內文可信度分數法(舊機制)
+            codes_source = "關鍵字暴增"
+            coverage_result = None
+            try:
+                from tw_coverage_lookup import lookup_theme
+                coverage_result = lookup_theme(kw)
+            except Exception as e:
+                print(f"    ⚠ My-TW-Coverage 查詢失敗(退回新聞猜測): {e}")
+
+            if coverage_result:
+                codes = coverage_result["codes"]
+                codes_source = "my-tw-coverage"
+                print(f"    ✓ My-TW-Coverage 找到 {coverage_result['company_count']} 家公司(取代新聞猜測)")
+            else:
+                print(f"    · My-TW-Coverage 查無對應主題檔,退回新聞猜測法")
+                # 退回:累計每檔股票的可信度分數(跨新聞),過濾雜訊
+                code_score = {}
+                for n in recent:
+                    text = n["title"] + " " + n["summary"]
+                    hits = extract_codes(text, name2code)
+                    # 綜述新聞(單篇抓>8檔)是「大盤點名」類,個股關聯低 → 該篇權重減半
+                    weight_mult = 0.5 if len(hits) > 8 else 1.0
+                    for cd, w in hits.items():
+                        code_score[cd] = code_score.get(cd, 0) + w * weight_mult
+                # 只保留分數>=2(被明確股號點名1次,或純股名出現2次以上)
+                codes = sorted([cd for cd, s in code_score.items() if s >= 2],
+                               key=lambda c: -code_score[c])
+
             results.append({
                 "theme": kw,
                 "ratio": ratio,
                 "recent_count": len(recent),
                 "codes": codes,
                 "source": "關鍵字暴增",
+                "codes_source": codes_source,  # 標記這批codes是權威資料庫還是新聞猜測
             })
         time.sleep(0.3)
     return results
