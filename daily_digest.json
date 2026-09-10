@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-09 13:07:33",
-  "date": "20260909",
+  "generated_at": "2026-09-10 08:17:15",
+  "date": "20260910",
   "summary_counts": {
-    "resonance": 5,
-    "preferment_themes": 0,
+    "resonance": 9,
+    "preferment_themes": 1,
     "broker_coverage": 0,
-    "surge_themes": 28,
+    "surge_themes": 31,
     "new_candidates": 15,
     "earnings_rising": 179,
     "cross_confirmed": 5
@@ -34,33 +34,18 @@
   ],
   "A_multi_source_resonance": [
     {
-      "code": "3715",
-      "source_count": 2,
+      "code": "4977",
+      "source_count": 3,
       "sources": [
         "MOPS重訊",
-        "關鍵字暴增"
+        "wiki",
+        "wiki_preferment"
       ],
       "themes": [
-        "ASIC",
-        "漲價",
-        "重訊:投資"
-      ],
-      "fermentation": null,
-      "broker_count": null
-    },
-    {
-      "code": "8021",
-      "source_count": 2,
-      "sources": [
-        "MOPS重訊",
-        "關鍵字暴增"
-      ],
-      "themes": [
-        "擴產",
-        "調漲",
+        "CPO",
         "重訊:增資"
       ],
-      "fermentation": null,
+      "fermentation": "pre-ferment",
       "broker_count": null
     },
     {
@@ -73,90 +58,161 @@
       "themes": [
         "DRAM",
         "High-NA EUV",
+        "先進封裝",
+        "接單",
+        "重訊:處分"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    },
+    {
+      "code": "2408",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "DDR5",
+        "南亞科",
+        "華邦電",
+        "重訊:取得"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    },
+    {
+      "code": "6225",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "ASIC",
         "重訊:增資"
       ],
       "fermentation": null,
       "broker_count": null
     },
     {
-      "code": "6442",
+      "code": "3231",
       "source_count": 2,
       "sources": [
         "MOPS重訊",
         "關鍵字暴增"
       ],
       "themes": [
-        "光通訊",
-        "重訊:投資"
+        "擴產",
+        "重訊:通過"
       ],
       "fermentation": null,
       "broker_count": null
     },
     {
-      "code": "2327",
+      "code": "3081",
       "source_count": 2,
       "sources": [
-        "MOPS重訊",
-        "關鍵字暴增"
+        "wiki",
+        "wiki_preferment"
       ],
       "themes": [
-        "被動元件",
-        "重訊:合作/投資"
+        "CPO"
       ],
-      "fermentation": null,
+      "fermentation": "pre-ferment",
+      "broker_count": null
+    },
+    {
+      "code": "3450",
+      "source_count": 2,
+      "sources": [
+        "wiki",
+        "wiki_preferment"
+      ],
+      "themes": [
+        "CPO"
+      ],
+      "fermentation": "pre-ferment",
+      "broker_count": null
+    },
+    {
+      "code": "4979",
+      "source_count": 2,
+      "sources": [
+        "wiki",
+        "wiki_preferment"
+      ],
+      "themes": [
+        "CPO"
+      ],
+      "fermentation": "pre-ferment",
+      "broker_count": null
+    },
+    {
+      "code": "6869",
+      "source_count": 2,
+      "sources": [
+        "wiki",
+        "wiki_preferment"
+      ],
+      "themes": [
+        "CPO"
+      ],
+      "fermentation": "pre-ferment",
       "broker_count": null
     }
   ],
-  "B_preferment_themes": [],
+  "B_preferment_themes": [
+    {
+      "theme": "CPO",
+      "ratio": 1.69,
+      "baseline": 33.2,
+      "codes": [
+        "3081",
+        "3450",
+        "4977",
+        "4979",
+        "6869"
+      ],
+      "semantic_risk": ""
+    }
+  ],
   "C_broker_coverage": [],
   "D_surge_themes": [
     {
       "theme": "TSV",
-      "ratio": 4.05,
+      "ratio": 4.86,
       "codes": [
         "6207"
       ]
     },
     {
       "theme": "High-NA EUV",
-      "ratio": 4.0,
+      "ratio": 4.67,
       "codes": [
-        "2330",
         "2338",
+        "2330",
         "5007",
         "3680"
       ]
     },
     {
-      "theme": "群聯",
-      "ratio": 3.54,
+      "theme": "旺宏",
+      "ratio": 3.09,
       "codes": [
-        "8299"
-      ]
-    },
-    {
-      "theme": "南亞科",
-      "ratio": 3.51,
-      "codes": [
-        "2408",
-        "1303",
-        "2344",
-        "2330",
-        "2409",
-        "2303",
-        "7792",
-        "2834"
+        "2337",
+        "2330"
       ]
     },
     {
       "theme": "華邦電",
-      "ratio": 3.42,
+      "ratio": 3.08,
       "codes": [
         "2344",
         "2330",
-        "2303",
         "1303",
         "2408",
+        "2887",
         "3037",
         "2409",
         "7792",
@@ -164,65 +220,53 @@
       ]
     },
     {
-      "theme": "旺宏",
-      "ratio": 3.31,
+      "theme": "SiC",
+      "ratio": 3.02,
       "codes": [
-        "2337",
-        "2330"
-      ]
-    },
-    {
-      "theme": "MLCC",
-      "ratio": 3.24,
-      "codes": [
-        "2345",
-        "2330",
-        "2344"
+        "3016",
+        "2026",
+        "2368"
       ]
     },
     {
       "theme": "先進封裝",
-      "ratio": 2.97,
+      "ratio": 2.71,
       "codes": [
         "2330",
-        "6239",
-        "6531"
+        "2338",
+        "6239"
       ]
     },
     {
-      "theme": "CoPoS",
-      "ratio": 2.83,
-      "codes": []
-    },
-    {
-      "theme": "BBU",
-      "ratio": 2.83,
+      "theme": "調漲",
+      "ratio": 2.67,
       "codes": [
-        "6224"
+        "7792",
+        "2450"
       ]
     },
     {
-      "theme": "BBU",
-      "ratio": 2.83,
+      "theme": "接單",
+      "ratio": 2.66,
       "codes": [
-        "6224"
+        "6207",
+        "2338",
+        "3675",
+        "2481",
+        "5425",
+        "4908",
+        "6166",
+        "6426",
+        "3260"
       ]
     },
     {
-      "theme": "DDR4",
-      "ratio": 2.83,
-      "codes": [
-        "5386"
-      ]
-    },
-    {
-      "theme": "SiC",
+      "theme": "併購",
       "ratio": 2.64,
       "codes": [
-        "2026",
-        "2368",
-        "3016",
-        "6531"
+        "6894",
+        "2884",
+        "5314"
       ]
     },
     {
@@ -235,44 +279,71 @@
       ]
     },
     {
-      "theme": "矽光子",
-      "ratio": 2.27,
+      "theme": "南亞科",
+      "ratio": 2.59,
       "codes": [
-        "1210"
+        "2408",
+        "1303",
+        "2344",
+        "2330",
+        "2409",
+        "2303",
+        "7792",
+        "2834"
       ]
     },
     {
-      "theme": "接單",
-      "ratio": 2.11,
+      "theme": "HVDC",
+      "ratio": 2.27,
       "codes": [
-        "6207",
-        "6166",
-        "6426",
+        "3532"
+      ]
+    },
+    {
+      "theme": "光通訊",
+      "ratio": 2.21,
+      "codes": [
+        "6442",
+        "2330",
+        "4807",
+        "6715",
+        "6426"
+      ]
+    },
+    {
+      "theme": "漲價",
+      "ratio": 2.09,
+      "codes": [
+        "3675",
+        "2481",
+        "5425",
+        "2377",
+        "7792",
+        "3715",
         "3260"
       ]
     },
     {
-      "theme": "擴產",
+      "theme": "DRAM",
       "ratio": 2.08,
       "codes": [
-        "2368",
+        "5007",
         "2330",
-        "3167",
-        "8021",
-        "4739",
-        "2303",
-        "3680",
-        "7792",
-        "2382",
-        "2345",
-        "3231",
-        "6426",
-        "6515",
-        "4763",
-        "2344",
-        "6213",
-        "6224"
+        "5386",
+        "2338",
+        "3532",
+        "3260"
       ]
+    },
+    {
+      "theme": "BBU",
+      "ratio": 2.06,
+      "codes": []
+    },
+    {
+      "theme": "BBU",
+      "ratio": 2.06,
+      "codes": []
     },
     {
       "theme": "LPDDR",
@@ -280,250 +351,277 @@
       "codes": []
     },
     {
-      "theme": "CoWoS",
-      "ratio": 2.03,
+      "theme": "800V HVDC",
+      "ratio": 1.89,
       "codes": [
-        "6207",
-        "2330",
-        "1210"
+        "3532"
       ]
     },
     {
-      "theme": "DRAM",
+      "theme": "群聯",
       "ratio": 1.89,
       "codes": [
-        "5007",
-        "2330",
-        "5386",
-        "2338",
-        "3532",
-        "3260",
-        "6531",
-        "2344"
+        "8299"
+      ]
+    },
+    {
+      "theme": "DDR4",
+      "ratio": 1.89,
+      "codes": [
+        "5386"
       ]
     },
     {
       "theme": "ASIC",
-      "ratio": 1.81,
+      "ratio": 1.84,
       "codes": [
-        "2368",
         "8227",
+        "2368",
+        "4763",
+        "1459",
+        "2454",
         "2303",
         "6239",
         "2382",
         "3715",
         "6225",
-        "8054",
-        "6213",
-        "7711"
+        "8054"
       ]
     },
     {
-      "theme": "CPO",
-      "ratio": 1.75,
+      "theme": "HBM",
+      "ratio": 1.78,
       "codes": [
-        "3167",
-        "2303",
+        "5007",
         "2330",
-        "6515",
-        "2368",
+        "1459",
+        "2454",
+        "5386",
         "6239",
-        "6715",
-        "2345",
-        "6426",
-        "3008"
+        "3532"
       ]
     },
     {
-      "theme": "併購",
-      "ratio": 1.75,
+      "theme": "HBM",
+      "ratio": 1.78,
       "codes": [
-        "5314"
-      ]
-    },
-    {
-      "theme": "光通訊",
-      "ratio": 1.71,
-      "codes": [
+        "5007",
         "2330",
-        "4807",
-        "6442",
-        "6715",
-        "6426"
-      ]
-    },
-    {
-      "theme": "被動元件",
-      "ratio": 1.67,
-      "codes": [
-        "2327"
-      ]
-    },
-    {
-      "theme": "調漲",
-      "ratio": 1.65,
-      "codes": [
-        "7792",
-        "2450",
-        "8021"
-      ]
-    },
-    {
-      "theme": "漲價",
-      "ratio": 1.63,
-      "codes": [
-        "7792",
-        "3715",
-        "3260",
-        "3008",
-        "2344",
-        "6213"
+        "1459",
+        "2454",
+        "5386",
+        "6239",
+        "3532"
       ]
     },
     {
       "theme": "NOR Flash",
-      "ratio": 1.51,
+      "ratio": 1.76,
       "codes": [
-        "2344",
-        "3260",
-        "3008"
+        "2330",
+        "3260"
+      ]
+    },
+    {
+      "theme": "CPO",
+      "ratio": 1.69,
+      "codes": [
+        "3167",
+        "2330",
+        "6515",
+        "3376",
+        "3406",
+        "2303",
+        "2368",
+        "6239",
+        "6715",
+        "2345",
+        "6426"
+      ]
+    },
+    {
+      "theme": "矽光子",
+      "ratio": 1.67,
+      "codes": []
+    },
+    {
+      "theme": "碳化矽",
+      "ratio": 1.62,
+      "codes": [
+        "4991"
+      ]
+    },
+    {
+      "theme": "擴產",
+      "ratio": 1.58,
+      "codes": [
+        "2368",
+        "3016",
+        "4739",
+        "3680",
+        "2330",
+        "7792",
+        "2382",
+        "2345",
+        "3231",
+        "6426",
+        "6515"
+      ]
+    },
+    {
+      "theme": "power rack",
+      "ratio": 1.57,
+      "codes": [
+        "3675",
+        "2481",
+        "5425",
+        "3260"
+      ]
+    },
+    {
+      "theme": "玻纖布",
+      "ratio": 1.57,
+      "codes": [
+        "1303",
+        "1301",
+        "4763"
       ]
     }
   ],
   "E_new_candidates": [
     {
-      "term": "HBM與記憶體荒",
-      "recent_hits": 13,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "HBM世代交替與DRAM/NAND供應緊俏",
-      "stocks": []
-    },
-    {
-      "term": "CoWoS與先進封裝",
-      "recent_hits": 8,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "AI先進封測需求與擴產動能強勁",
-      "stocks": []
-    },
-    {
-      "term": "矽光子與CPO",
-      "recent_hits": 8,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "光通訊與CPO量產時程與產業鏈佈局",
-      "stocks": []
-    },
-    {
-      "term": "液冷與散熱技術",
-      "recent_hits": 7,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "AI伺服器帶動水冷板與新型冷卻需求",
-      "stocks": []
-    },
-    {
-      "term": "機器人與Physical AI",
-      "recent_hits": 6,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "人形機器人商業化與智慧製造應用",
-      "stocks": []
-    },
-    {
-      "term": "HVDC與資料中心電力",
-      "recent_hits": 5,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "AI資料中心電力升級與800V/HVDC架構",
-      "stocks": []
-    },
-    {
-      "term": "被動元件漲價",
-      "recent_hits": 5,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "MLCC與電阻交期拉長及報價調升",
-      "stocks": []
-    },
-    {
-      "term": "半導體設備與廠務",
-      "recent_hits": 5,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "設備軍備競賽與廠務工程訂單滿手",
-      "stocks": []
-    },
-    {
-      "term": "AI ASIC晶片",
-      "recent_hits": 4,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "客製化AI晶片與ASIC量產潮升溫",
-      "stocks": []
-    },
-    {
-      "term": "玻纖布與特用材料",
-      "recent_hits": 3,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "低介電材料與電子級玻纖布漲價潮",
-      "stocks": []
-    },
-    {
-      "term": "BTC",
-      "recent_hits": 44,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "jieba",
-      "reason": "",
-      "stocks": []
-    },
-    {
-      "term": "Google",
-      "recent_hits": 8,
-      "is_brand_new": true,
-      "streak_days": 1,
+      "term": "iPhone",
+      "recent_hits": 10,
+      "is_brand_new": false,
+      "streak_days": 2,
       "method": "jieba",
       "reason": "",
       "stocks": []
     },
     {
       "term": "供應鏈",
+      "recent_hits": 8,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "Google",
       "recent_hits": 7,
-      "is_brand_new": true,
-      "streak_days": 1,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "Anthropic",
+      "recent_hits": 6,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "Meta",
+      "recent_hits": 6,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "AMD",
+      "recent_hits": 4,
+      "is_brand_new": false,
+      "streak_days": 2,
       "method": "jieba",
       "reason": "",
       "stocks": []
     },
     {
       "term": "工研院",
-      "recent_hits": 7,
-      "is_brand_new": true,
-      "streak_days": 1,
+      "recent_hits": 4,
+      "is_brand_new": false,
+      "streak_days": 2,
       "method": "jieba",
       "reason": "",
       "stocks": []
     },
     {
-      "term": "台達電",
-      "recent_hits": 6,
-      "is_brand_new": true,
-      "streak_days": 1,
+      "term": "實驗室",
+      "recent_hits": 3,
+      "is_brand_new": false,
+      "streak_days": 2,
       "method": "jieba",
       "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "NVIDIA",
+      "recent_hits": 3,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "CPU",
+      "recent_hits": 3,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "威瑞森",
+      "recent_hits": 2,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "保衛戰",
+      "recent_hits": 2,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "HBM/記憶體",
+      "recent_hits": 16,
+      "is_brand_new": true,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "HBM缺貨與DRAM價格飆漲",
+      "stocks": []
+    },
+    {
+      "term": "摺疊機供應鏈",
+      "recent_hits": 15,
+      "is_brand_new": true,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "蘋果推出摺疊機帶動零組件廠",
+      "stocks": []
+    },
+    {
+      "term": "矽光子/CPO",
+      "recent_hits": 10,
+      "is_brand_new": true,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "矽光子與CPO技術商轉與擴散",
       "stocks": []
     }
   ],
@@ -2358,16 +2456,17 @@
       "dual_confirmed": true
     },
     {
-      "theme": "CoWoS",
+      "theme": "HBM",
       "intl_companies": [
-        "MU",
-        "NVDA",
-        "TSM"
+        "AMD",
+        "ASML",
+        "AVGO",
+        "MU"
       ],
       "intl_keywords": [
-        "CoWoS",
-        "Rubin",
-        "Vera Rubin"
+        "HBM",
+        "HBM4",
+        "base die"
       ],
       "tw_active": true,
       "dual_confirmed": true
@@ -2437,17 +2536,16 @@
       "dual_confirmed": false
     },
     {
-      "theme": "HBM",
+      "theme": "CoWoS",
       "intl_companies": [
-        "AMD",
-        "ASML",
-        "AVGO",
-        "MU"
+        "MU",
+        "NVDA",
+        "TSM"
       ],
       "intl_keywords": [
-        "HBM",
-        "HBM4",
-        "base die"
+        "CoWoS",
+        "Rubin",
+        "Vera Rubin"
       ],
       "tw_active": false,
       "dual_confirmed": false
