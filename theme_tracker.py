@@ -324,6 +324,7 @@ def reverse_lookup_and_promote_companies(promoted_themes, today_str):
 
     print(f"\n🔍 對 {len(promoted_themes)} 個新升格題材做國際大廠反查:")
     for theme in promoted_themes:
+        # 來源1:Gemini背景知識猜測
         companies = lookup_companies_for_theme(theme["term"], theme.get("reason", ""))
         for c in companies:
             ticker = c.get("ticker", "").strip().upper()
@@ -334,10 +335,33 @@ def reverse_lookup_and_promote_companies(promoted_themes, today_str):
             today_candidates.append({
                 "ticker": ticker, "name": c.get("name", ""),
                 "role": c.get("role", ""), "source_theme": theme["term"],
+                "via": "gemini",
             })
         if companies:
             names = [f"{c.get('ticker','?')}" for c in companies]
-            print(f"  {theme['term']}: {' '.join(names)}")
+            print(f"  {theme['term']} [Gemini]: {' '.join(names)}")
+
+        # 來源2:美股喵/日股喵結構化資料(交叉驗證,不取代Gemini)
+        try:
+            from meow_lookup import lookup_theme_all_sites
+            meow_results = lookup_theme_all_sites(theme["term"])
+            for mr in meow_results:
+                for c in mr["companies"]:
+                    ticker = c.get("ticker", "").strip().upper()
+                    if not ticker or not re.match(r'^[A-Z0-9\.]{1,6}$', ticker):
+                        continue
+                    if ticker in existing_tickers:
+                        continue
+                    today_candidates.append({
+                        "ticker": ticker, "name": c.get("name", ""),
+                        "role": mr["theme_name"], "source_theme": theme["term"],
+                        "via": mr["source"],  # meow-us / meow-jp
+                    })
+                if mr["companies"]:
+                    names = [c["ticker"] for c in mr["companies"]]
+                    print(f"  {theme['term']} [{mr['source']}/{mr['theme_name']}]: {' '.join(names)}")
+        except Exception as e:
+            print(f"    ⚠ 美股喵/日股喵查詢失敗(不影響Gemini結果): {e}")
 
     save_company_snapshot(today_candidates, today_str)
 
