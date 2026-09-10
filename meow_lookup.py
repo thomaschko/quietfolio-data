@@ -33,6 +33,7 @@ _lookup_cache = {}       # {(site, theme): result}
 def _fetch(url):
     try:
         r = requests.get(url, headers=UA, timeout=20)
+        r.encoding = "utf-8"  # 明確指定編碼,避免中文主題名/公司名亂碼
         if r.status_code == 200:
             return r.text
         return None
@@ -64,17 +65,19 @@ def _get_theme_index(site):
 
 def _parse_companies(text):
     """解析 concept 頁面的公司清單。
-    用 href="/stock/{TICKER}/" 這個穩定錨點抓代號(不依賴猜測的粗體/標籤結構)。
-    公司名盡量從連結文字擷取,抓不到就留空(代號才是關鍵資料)。"""
+    改用頁面內建的 JSON-LD 結構化資料(schema.org ItemList)——這是SEO用的
+    固定格式,比猜測HTML標籤穩健得多。格式:
+      "name": "公司名(TICKER)", "url": "https://.../stock/TICKER/"
+    """
     companies = []
     seen = set()
-    for m in re.finditer(r'href="/stock/([A-Z0-9\.]+)/"[^>]*>([^<]{0,80})', text):
-        ticker = m.group(1)
-        raw_name = re.sub(r'<[^>]+>', '', m.group(2)).strip()
+    pattern = r'"name":\s*"([^"(]+)\((\w+)\)",\s*"url":\s*"https://[^"]+?/stock/(\w+)/"'
+    for m in re.finditer(pattern, text):
+        name, ticker_in_name, ticker = m.group(1).strip(), m.group(2), m.group(3)
         if ticker in seen:
             continue
         seen.add(ticker)
-        companies.append({"ticker": ticker, "name": raw_name[:60]})
+        companies.append({"ticker": ticker, "name": name})
     return companies
 
 
