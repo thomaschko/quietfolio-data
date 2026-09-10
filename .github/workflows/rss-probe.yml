@@ -24,4 +24,4 @@ jobs:
       - name: Run RSS probe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python meow_probe.py
+        run: python meow_probe2.py
