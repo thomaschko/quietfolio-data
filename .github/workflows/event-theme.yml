@@ -41,13 +41,9 @@ jobs:
         run: python ai_theme_discovery.py
 
       # 偵測源4c:Gemini主動搜尋(2026-09-11新增)
-      # 跟4b不同:直接問Gemini+Google Search grounding即時上網搜尋台美日股上升關鍵字,
-      # 不受限於我們自己收集的新聞池範圍(解決NPO案例暴露的「新聞池沒收到就看不到」問題)
-      - name: Run Gemini active search
-        continue-on-error: true
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python gemini_active_search.py
+      # 偵測源4c:Gemini主動搜尋 — 已移至獨立週排程(gemini-active-search.yml,每週五盤後)
+      # 原因:Search Grounding額度遠比一般文字生成嚴格(每日文字生成7/500,但grounding
+      # 疊加每日其他Gemini呼叫容易撞429),且「新興題材」本來就不需要天天查,改每週一次。
 
       # 題材追蹤:整合三個候選來源(主動搜尋+AI萃取+jieba),分辨今日首見vs連續追蹤中
       # 含自動升格進watchlist、國際大廠反查自動升格進src6(都需GEMINI_API_KEY)
