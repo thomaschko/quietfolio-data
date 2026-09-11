@@ -1,0 +1,46 @@
+name: Gemini Active Search (每週五)
+
+# 台美日股主動搜尋新興關鍵字,獨立於每日主流程之外。
+# 原因:Google Search Grounding 額度遠比一般文字生成嚴格,跟每日其他Gemini
+#      呼叫(ai_theme_discovery/theme_tracker反查)疊加容易撞429。
+#      且「新興題材」不需要天天查,改每週五盤後執行一次,額度壓力大幅降低。
+on:
+  schedule:
+    - cron: '30 9 * * 5'    # 每週五 UTC 09:30 = 台北 17:30(略晚於每日主流程16:30,避免撞在一起)
+  workflow_dispatch:         # 允許手動觸發測試
+
+permissions:
+  contents: write
+
+jobs:
+  active_search:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run Gemini active search
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python gemini_active_search.py
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          [ -f gemini_search_candidates.json ] && git add gemini_search_candidates.json || true
+          if git diff --staged --quiet; then
+            echo "無變更,不 commit"
+          else
+            git commit -m "Weekly Gemini active search $(date -u +%Y-%m-%d)"
+            git pull --rebase origin main || true
+            git push
+          fi
