@@ -32,6 +32,12 @@ CNA_FEEDS = [
 ]
 MONEYDJ_HTML = "https://www.moneydj.com/KMDJ/Common/ListNewArticles.aspx?svc=NW&a=X0100001"
 WEALTH_RSS = "https://www.wealth.com.tw/rss"           # 財訊 RSS(乾淨)
+# 鉅亨分類拉取(2026-09-10新增,補NPO案例暴露的缺口:
+# 正確端點是 newslist/category/{slug},之前src1開發時誤用news/category/失敗過。
+# wd_stock(美股/國際股)這個分類,原本的廣詞搜尋池(台股本位)幾乎不會觸及,
+# 但「國際市場先發生、還沒被主流報導」的訊號常常先出現在這裡。
+CNYES_CATEGORY_BASE = "https://api.cnyes.com/media/api/v1/newslist/category"
+CNYES_CATEGORIES = ["wd_stock", "headline"]  # 美股/國際股, 頭條(綜合廣度備援)
 WAPEOPLE_HTML = "https://www.wa-people.com/"            # Wa-people(半導體/光電硬題材)
 TECHNEWS_HTML = "https://technews.tw/"                  # TechNews 科技新報(題材密度高)
 EETIMES_RSS = "https://www.eettaiwan.com/feed/"         # EE Times(電子工程/先進封裝深度)
@@ -127,6 +133,43 @@ def _fetch_trendforce():
         return []
 
 
+def _fetch_cnyes_category(slug, pages=3):
+    """鉅亨分類拉取(不靠關鍵字,直接拉該分類最新新聞)。
+    正確端點:newslist/category/{slug},非news/category/(曾在src1開發時測試過後者失敗)。
+    """
+    titles = []
+    for page in range(1, pages + 1):
+        url = f"{CNYES_CATEGORY_BASE}/{slug}?page={page}&limit=30"
+        try:
+            r = requests.get(url, headers=UA, timeout=20)
+            if r.status_code != 200:
+                break
+            data = r.json()
+            items = ((data.get("items") or {}).get("data")
+                     or data.get("data") or [])
+            if not items:
+                break
+            for it in items:
+                t = it.get("title")
+                if t:
+                    titles.append(t)
+        except Exception:
+            break
+    return titles
+
+
+def _fetch_cnyes_categories():
+    """抓所有設定的鉅亨分類(美股/頭條),回傳去重標題list。"""
+    titles = []
+    for slug in CNYES_CATEGORIES:
+        titles += _fetch_cnyes_category(slug)
+    seen, uniq = set(), []
+    for t in titles:
+        if t not in seen:
+            seen.add(t); uniq.append(t)
+    return uniq
+
+
 def _fetch_html_titles(url):
     """通用 HTML 標題抽取(a標籤含中文、過濾導覽雜訊)。"""
     try:
@@ -163,8 +206,10 @@ def fetch_supplement_titles():
 
 def fetch_titles_by_source():
     """回傳 {來源: [標題]},供 src4 做跨源交叉。(src4 用)
-    來源多 = 原料廣;跨源出現的詞 = 更可能是真題材,不是單一媒體用語。"""
-    return {
+    來源多 = 原料廣;跨源出現的詞 = 更可能是真題材,不是單一媒體用語。
+    2026-09-10新增cnyes_intl(鉅亨美股/國際分類直拉)+cnbc_yahoo,
+    解決原本廣詞搜尋池台股本位、漏掉國際市場先行訊號的缺口(NPO案例)。"""
+    result = {
         "cna": [t for url in CNA_FEEDS for t in _fetch_cna(url)],
         "moneydj": _fetch_moneydj(),
         "wealth": _fetch_wealth(),
@@ -172,7 +217,14 @@ def fetch_titles_by_source():
         "technews": _fetch_technews(),
         "eetimes": _fetch_eetimes(),
         "trendforce": _fetch_trendforce(),
+        "cnyes_intl": _fetch_cnyes_categories(),
     }
+    try:
+        from intl_news import fetch_intl_titles
+        result["cnbc_yahoo"] = fetch_intl_titles()
+    except Exception:
+        result["cnbc_yahoo"] = []
+    return result
 
 
 if __name__ == "__main__":
