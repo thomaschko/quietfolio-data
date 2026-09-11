@@ -82,8 +82,60 @@ def _extract_json(text):
         return None
 
 
+COMBINED_PROMPT = """請搜尋近3天內的財經新聞、研究報告與產業會議紀要，分別針對【台股】【美股】【日股】
+三個市場，各找出半導體/科技供應鏈相關、剛開始被討論、還不是主流話題的新興關鍵字或題材
+（技術名詞、新規格、新供應鏈動態）。不要列已經是老生常談的詞（如AI、半導體、記憶體這種太泛的詞），
+要列具體、可能還沒被多數投資人注意到的新訊號。
+
+台股：留意半導體供應鏈、先進封裝、記憶體規格變化
+美股：留意外資研究報告（花旗、高盛、摩根士丹利等）提及的技術題材、供應鏈瓶頸轉移
+日股：留意半導體設備、材料、機器人、精密製造領域，特別是與台灣供應鏈有連動的動態
+
+用純JSON格式回傳（不要有其他文字說明、不要用markdown code fence包裹），格式：
+{"themes":[{"term":"題材名稱(2-8字或英文技術詞)","market":"TW或US或JP","reason":"為何是新興題材(20字內)","confidence":"high或medium"}]}
+
+三個市場合計盡量找5-15個題材，寧缺勿濫。若某市場搜尋不到明確新興題材可以少列或不列。"""
+
+
+def search_all_markets_combined():
+    """單次合併查詢三市場(取代原本3次個別呼叫),大幅降低grounding額度壓力。
+    2026-09-11實測發現:Google Search grounding有獨立於一般generateContent的
+    更嚴格額度限制,即使一般額度顯示充足,grounding請求仍可能429。合併成1次呼叫
+    把grounding請求量從3降到1,是目前最直接的緩解方式。"""
+    if not GEMINI_KEY:
+        return []
+    body = {
+        "contents": [{"role": "user", "parts": [{"text": COMBINED_PROMPT}]}],
+        "tools": [{"google_search": {}}],
+        "generationConfig": {"temperature": 0.2},
+    }
+    try:
+        r = requests.post(
+            GEMINI_URL,
+            headers={"Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY},
+            json=body, timeout=60,
+        )
+        if r.status_code != 200:
+            if r.status_code == 429:
+                print(f"  ⚠ 合併查詢額度/頻率限制(429): {r.text[:300]}")
+            else:
+                print(f"  ⚠ 合併查詢失敗: HTTP {r.status_code} {r.text[:200]}")
+            return []
+        data = r.json()
+        text = data["candidates"][0]["content"]["parts"][0]["text"]
+        result = _extract_json(text)
+        if not result:
+            print(f"  ⚠ 回應無法解析為JSON")
+            return []
+        return result.get("themes", [])
+    except Exception as e:
+        print(f"  ⚠ 合併查詢錯誤: {e}")
+        return []
+
+
 def search_market(market_code, market_info):
-    """對單一市場做 Gemini + Google Search grounding 查詢。"""
+    """對單一市場做 Gemini + Google Search grounding 查詢。
+    (保留此函式供未來需要單獨查詢單一市場時使用;預設流程已改用合併查詢)"""
     if not GEMINI_KEY:
         return []
     prompt = market_info["prompt"] + OUTPUT_INSTRUCTION
@@ -132,30 +184,29 @@ def main():
                   ensure_ascii=False, indent=2)
         return
 
+    print("\n■ 合併查詢台/美/日三市場中(單次grounding呼叫)...")
+    themes = search_all_markets_combined()
     all_candidates = []
-    market_items = list(MARKET_QUERIES.items())
-    for i, (code, info) in enumerate(market_items):
-        print(f"\n■ {info['label']}市場搜尋中...")
-        themes = search_market(code, info)
-        for th in themes:
-            term = th.get("term", "").strip()
-            if not term:
-                continue
-            all_candidates.append({
-                "term": term,
-                "reason": th.get("reason", ""),
-                "confidence": th.get("confidence", "medium"),
-                "sources": [f"gemini_search_{code.lower()}"],
-                "market": info["label"],
-                "stocks": [],
-                "recent_hits": 1,  # 主動搜尋沒有「次數」概念,固定給1(供theme_tracker門檻判斷用)
-            })
-            flag = "🔥高信心" if th.get("confidence") == "high" else ""
-            print(f"  {term}  {th.get('reason','')} {flag}")
-        if not themes:
-            print(f"  (無明確新興題材)")
-        if i < len(market_items) - 1:
-            time.sleep(15)  # 間隔15秒,避免連續grounding請求觸發每分鐘頻率限制(429)
+    market_label = {"TW": "台股", "US": "美股", "JP": "日股"}
+    for th in themes:
+        term = th.get("term", "").strip()
+        if not term:
+            continue
+        market = th.get("market", "").strip().upper()
+        market_tag = market if market in market_label else "UNKNOWN"
+        all_candidates.append({
+            "term": term,
+            "reason": th.get("reason", ""),
+            "confidence": th.get("confidence", "medium"),
+            "sources": [f"gemini_search_{market_tag.lower()}"],
+            "market": market_label.get(market, market),
+            "stocks": [],
+            "recent_hits": 1,  # 主動搜尋沒有「次數」概念,固定給1(供theme_tracker門檻判斷用)
+        })
+        flag = "🔥高信心" if th.get("confidence") == "high" else ""
+        print(f"  [{market_label.get(market, market)}] {term}  {th.get('reason','')} {flag}")
+    if not themes:
+        print(f"  (無明確新興題材,或查詢失敗)")
 
     # 跨市場出現同一詞(理論上少見,但若有代表訊號更強)→ 合併sources
     merged = {}
