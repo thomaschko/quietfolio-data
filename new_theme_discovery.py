@@ -17,7 +17,12 @@ from collections import defaultdict
 
 UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
 CNYES_BASE = "https://api.cnyes.com/media/api/v1"
-SEED_QUERIES = ["台股", "AI", "半導體", "輝達", "記憶體", "台積電", "AI伺服器"]
+SEED_QUERIES = [
+    "台股", "AI", "半導體", "輝達", "記憶體", "台積電", "AI伺服器",
+    # 國際/美股廣詞(2026-09-10新增,補NPO案例暴露的缺口:
+    # 原本廣詞池全是台股本位,漏掉「國際市場先發生、還沒被主流報導」的訊號)
+    "美股", "花旗", "高盛", "外資報告", "那斯達克", "科技股",
+]
 RECENT_DAYS, BASELINE_DAYS = 3, 20
 MIN_RECENT_HITS, SURGE_RATIO, MAX_BASELINE_HITS = 2, 1.5, 5
 # 放寬紀錄(2026-09-10):
@@ -78,6 +83,7 @@ EN_TECH_TERMS = [
     "spot price", "HBM", "HBM4", "DRAM", "NAND", "DDR5", "LPDDR", "base die",
     "CoWoS", "CoPoS", "FOPLP", "panel-level", "TSV", "interposer", "chiplet",
     "800G", "1.6T", "transceiver", "EML", "InP", "indium phosphide", "laser",
+    "NPO", "near-package optics", "wafer-level testing", "laser array",
     "SiC", "GaN", "power semiconductor", "solid-state battery", "humanoid",
     "liquid cooling", "immersion cooling", "HVDC", "800V", "data center",
     "passive component", "MLCC", "substrate", "wafer", "foundry", "yield",
@@ -199,7 +205,7 @@ def main():
     try:
         from news_sources import fetch_titles_by_source
         by_source = fetch_titles_by_source()
-        EN_SOURCES = {"trendforce", "eetimes"}  # 英文為主的來源
+        EN_SOURCES = {"trendforce", "eetimes", "cnbc_yahoo"}  # 英文為主的來源
         for src, titles in by_source.items():
             cnt = 0
             for title in titles:
