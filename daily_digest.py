@@ -140,8 +140,17 @@ def build_digest():
             pool.append({**e, "_bucket": 0})  # 連續追蹤中最優先
         for e in tracker.get("first_seen", []):
             pool.append({**e, "_bucket": 1})
-        method_rank = {"both": 0, "ai": 1, "jieba": 2}
-        pool.sort(key=lambda x: (x["_bucket"], method_rank.get(x.get("method", "jieba"), 3), -x.get("hits", 0)))
+        # method現在可能是 search/ai/jieba 或組合(如"search+ai"),依「有幾個獨立來源背書」評分
+        def _method_score(m):
+            m = m or "jieba"
+            n_sources = m.count("+") + 1
+            has_search = "search" in m
+            has_ai = "ai" in m
+            if has_search and has_ai: return (0, -n_sources)  # 主動搜尋+AI萃取都找到,最可信
+            if has_search: return (1, -n_sources)
+            if has_ai: return (2, -n_sources)
+            return (3, -n_sources)  # 純jieba
+        pool.sort(key=lambda x: (x["_bucket"], _method_score(x.get("method")), -x.get("hits", 0)))
         for e in pool[:15]:
             new_candidates.append({
                 "term": e.get("term"),
