@@ -96,14 +96,36 @@ def _load_one_file(path, key_field="related_stocks", require_multi_source=None):
     return snapshot
 
 
+def _is_file_fresh(path, today_str, max_age_days=0):
+    """檢查候選檔的 generated_at 日期是否夠新(預設要求就是今天)。
+    用於gemini_search_candidates.json(每週五才產生一次)——避免週一到週四
+    誤讀上週五的舊檔案,導致同一批題材被誤判成「連續每天都被搜尋到」而虛灌連續天數。
+    max_age_days=0 表示只接受今天的檔案;jieba/ai版每天都跑,不用套這個檢查。"""
+    try:
+        data = json.load(open(path, encoding="utf-8"))
+        gen_at = data.get("generated_at", "")
+        file_date = gen_at[:10].replace("-", "")  # "2026-09-11 ..." → "20260911"
+        today = dt.datetime.strptime(today_str, "%Y%m%d").date()
+        file_d = dt.datetime.strptime(file_date, "%Y%m%d").date()
+        return (today - file_d).days <= max_age_days
+    except Exception:
+        return False  # 讀不到日期就保守視為不新鮮,不採用
+
+
 def load_today_candidates():
     """整合三個候選來源:
-      1. Gemini主動搜尋版(search,最優先——即時查詢,不受限於已收集的新聞池)
+      1. Gemini主動搜尋版(search,最優先——即時查詢,不受限於已收集的新聞池;
+         每週五才產生新檔,非週五時會被新鮮度檢查排除,不重複沿用舊資料)
       2. AI語意萃取版(ai,次優先——從收集到的新聞裡萃取)
       3. jieba跨源版(jieba,補充)
     同一詞若多邊都有,合併來源清單、取較高的hits、保留最高優先級來源的reason/confidence。"""
-    search_snap = _load_one_file("gemini_search_candidates.json", key_field="stocks",
-                                  require_multi_source=False)
+    today_str = dt.date.today().strftime("%Y%m%d")
+    search_snap = {}
+    if _is_file_fresh("gemini_search_candidates.json", today_str):
+        search_snap = _load_one_file("gemini_search_candidates.json", key_field="stocks",
+                                      require_multi_source=False)
+    else:
+        print("  Gemini主動搜尋:今日非執行日(每週五跑),沿用略過,不重複計算舊資料")
     ai_snap = _load_one_file("ai_theme_candidates.json", key_field="stocks")
     jieba_snap = _load_one_file("new_theme_candidates.json", key_field="related_stocks")
     print(f"  Gemini主動搜尋:{len(search_snap)}個題材  AI語意萃取:{len(ai_snap)}個題材  "
