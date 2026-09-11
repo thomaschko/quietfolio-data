@@ -28,19 +28,28 @@ jobs:
       - name: Run radar
         run: python event_theme_radar.py
 
-      # 偵測源4:新題材發現(獨立產出,出錯不擋主流程)
+      # 偵測源4a:新題材發現 jieba跨源版(獨立產出,出錯不擋主流程)
       - name: Run new theme discovery
         continue-on-error: true
         run: python new_theme_discovery.py
 
-      # AI語意版新題材發現(Gemini,取代jieba易誤判BTC/人名等問題)
+      # 偵測源4b:AI語意版新題材發現(Gemini被動萃取,從收集到的新聞裡找題材)
       - name: Run AI theme discovery
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python ai_theme_discovery.py
 
-      # 題材追蹤:分辨今日首見vs連續追蹤中(整合AI版+jieba版)
+      # 偵測源4c:Gemini主動搜尋(2026-09-11新增)
+      # 跟4b不同:直接問Gemini+Google Search grounding即時上網搜尋台美日股上升關鍵字,
+      # 不受限於我們自己收集的新聞池範圍(解決NPO案例暴露的「新聞池沒收到就看不到」問題)
+      - name: Run Gemini active search
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python gemini_active_search.py
+
+      # 題材追蹤:整合三個候選來源(主動搜尋+AI萃取+jieba),分辨今日首見vs連續追蹤中
       # 含自動升格進watchlist、國際大廠反查自動升格進src6(都需GEMINI_API_KEY)
       - name: Track theme history
         continue-on-error: true
@@ -49,8 +58,6 @@ jobs:
         run: python theme_tracker.py
 
       # 每日摘要整合:匯整 src1-6 輸出成 daily_digest.json(A-G區)
-      # 讀 event_theme_raw.json + new_theme_candidates.json + broker_coverage.json + earnings_keywords.json
-      # 缺任何一個都不報錯(對應區塊留空),所以放最後
       - name: Build daily digest
         continue-on-error: true
         run: python daily_digest.py
@@ -61,8 +68,9 @@ jobs:
           git config user.email "actions@github.com"
           git add event_theme_raw.json 2>/dev/null || true
           [ -f new_theme_candidates.json ] && git add new_theme_candidates.json || true
-          [ -f theme_tracker.json ] && git add theme_tracker.json || true
           [ -f ai_theme_candidates.json ] && git add ai_theme_candidates.json || true
+          [ -f gemini_search_candidates.json ] && git add gemini_search_candidates.json || true
+          [ -f theme_tracker.json ] && git add theme_tracker.json || true
           git add theme_history/ 2>/dev/null || true
           git add company_history/ 2>/dev/null || true
           [ -f theme_promotions.json ] && git add theme_promotions.json || true
@@ -73,7 +81,6 @@ jobs:
             echo "無變更,不 commit"
           else
             git commit -m "Daily radar + digest $(date -u +%Y-%m-%d)"
-            # 保護:push前先同步遠端,避免因任何原因造成的race condition讓push失敗
             git pull --rebase origin main || true
             git push
           fi
