@@ -69,14 +69,17 @@ def is_valid_term(term):
     return True
 
 
-def _load_one_file(path, key_field="related_stocks"):
-    """讀單一候選檔(AI版或jieba版),回傳 {term: {sources, stocks, hits, method}}。"""
+def _load_one_file(path, key_field="related_stocks", require_multi_source=None):
+    """讀單一候選檔,回傳 {term: {sources, stocks, hits, method}}。
+    require_multi_source: None則用全域ONLY_MULTI_SOURCE;可個別覆蓋
+    (gemini_search每次查詢天生只有1個來源/市場,強制要求跨源會永遠讀不到任何候選,故該來源需傳False)。"""
     try:
         data = json.load(open(path, encoding="utf-8"))
     except FileNotFoundError:
         return {}
-    candidates = data.get("multi_source" if ONLY_MULTI_SOURCE else "candidates", [])
-    if not candidates and not ONLY_MULTI_SOURCE:
+    use_multi = ONLY_MULTI_SOURCE if require_multi_source is None else require_multi_source
+    candidates = data.get("multi_source" if use_multi else "candidates", [])
+    if not candidates and not use_multi:
         candidates = data.get("candidates", [])
     snapshot = {}
     for c in candidates:
@@ -94,22 +97,37 @@ def _load_one_file(path, key_field="related_stocks"):
 
 
 def load_today_candidates():
-    """整合AI語意版(優先,較準)+jieba跨源版(補充),回傳今日題材快照。
-    同一詞若兩邊都有,合併來源清單、取較高的hits、保留AI的reason說明。"""
+    """整合三個候選來源:
+      1. Gemini主動搜尋版(search,最優先——即時查詢,不受限於已收集的新聞池)
+      2. AI語意萃取版(ai,次優先——從收集到的新聞裡萃取)
+      3. jieba跨源版(jieba,補充)
+    同一詞若多邊都有,合併來源清單、取較高的hits、保留最高優先級來源的reason/confidence。"""
+    search_snap = _load_one_file("gemini_search_candidates.json", key_field="stocks",
+                                  require_multi_source=False)
     ai_snap = _load_one_file("ai_theme_candidates.json", key_field="stocks")
     jieba_snap = _load_one_file("new_theme_candidates.json", key_field="related_stocks")
-    print(f"  AI語意版:{len(ai_snap)}個題材  jieba跨源版:{len(jieba_snap)}個題材")
+    print(f"  Gemini主動搜尋:{len(search_snap)}個題材  AI語意萃取:{len(ai_snap)}個題材  "
+          f"jieba跨源版:{len(jieba_snap)}個題材")
 
     merged = {}
-    for term, info in ai_snap.items():
+    # 優先順序:search > ai > jieba,後處理的來源若詞已存在只補充sources,不覆蓋reason/confidence
+    for term, info in search_snap.items():
         merged[term] = dict(info)
-        merged[term]["method"] = "ai"
-    for term, info in jieba_snap.items():
+        merged[term]["method"] = "search"
+    for term, info in ai_snap.items():
         if term in merged:
-            # 兩邊都有:合併來源、取較高hits,保留原本(AI)的reason與confidence
             merged[term]["sources"] = sorted(set(merged[term]["sources"]) | set(info["sources"]))
             merged[term]["hits"] = max(merged[term]["hits"], info["hits"])
-            merged[term]["method"] = "both"
+            merged[term]["method"] = merged[term]["method"] + "+ai"
+        else:
+            merged[term] = dict(info)
+            merged[term]["method"] = "ai"
+    for term, info in jieba_snap.items():
+        if term in merged:
+            merged[term]["sources"] = sorted(set(merged[term]["sources"]) | set(info["sources"]))
+            merged[term]["hits"] = max(merged[term]["hits"], info["hits"])
+            if "jieba" not in merged[term]["method"]:
+                merged[term]["method"] = merged[term]["method"] + "+jieba"
         else:
             merged[term] = dict(info)
             merged[term]["method"] = "jieba"
@@ -201,8 +219,9 @@ def auto_promote_to_watchlist(ongoing, today_str):
         confidence = e.get("confidence", "")
         streak = e.get("streak_days", 0)
 
-        if method == "jieba":
-            threshold = STREAK_JIEBA_ONLY  # 無AI背書,實質不升格
+        has_ai_backing = ("ai" in method) or ("search" in method)  # 相容新命名(search/ai/jieba組合詞)
+        if not has_ai_backing:
+            threshold = STREAK_JIEBA_ONLY  # 純jieba,無AI/主動搜尋背書,實質不升格
         elif confidence == "high":
             threshold = STREAK_HIGH_CONFIDENCE
         else:  # medium 或空
