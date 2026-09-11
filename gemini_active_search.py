@@ -23,6 +23,7 @@ gemini_active_search.py — 偵測源4補強:Gemini主動搜尋上升關鍵字
 import os
 import re
 import json
+import time
 import datetime as dt
 import requests
 
@@ -98,7 +99,13 @@ def search_market(market_code, market_info):
             json=body, timeout=60,
         )
         if r.status_code != 200:
-            print(f"  ⚠ {market_info['label']} 查詢失敗: HTTP {r.status_code} {r.text[:200]}")
+            if r.status_code == 429:
+                print(f"  ⚠ {market_info['label']} 額度/頻率限制(429): "
+                      f"若是「每分鐘請求數」超限,下次執行會自動恢復;"
+                      f"若是「每日/每月額度」用盡,需等額度重置或檢查用量。"
+                      f"  {r.text[:150]}")
+            else:
+                print(f"  ⚠ {market_info['label']} 查詢失敗: HTTP {r.status_code} {r.text[:200]}")
             return []
         data = r.json()
         text = data["candidates"][0]["content"]["parts"][0]["text"]
@@ -126,7 +133,8 @@ def main():
         return
 
     all_candidates = []
-    for code, info in MARKET_QUERIES.items():
+    market_items = list(MARKET_QUERIES.items())
+    for i, (code, info) in enumerate(market_items):
         print(f"\n■ {info['label']}市場搜尋中...")
         themes = search_market(code, info)
         for th in themes:
@@ -146,6 +154,8 @@ def main():
             print(f"  {term}  {th.get('reason','')} {flag}")
         if not themes:
             print(f"  (無明確新興題材)")
+        if i < len(market_items) - 1:
+            time.sleep(15)  # 間隔15秒,避免連續grounding請求觸發每分鐘頻率限制(429)
 
     # 跨市場出現同一詞(理論上少見,但若有代表訊號更強)→ 合併sources
     merged = {}
