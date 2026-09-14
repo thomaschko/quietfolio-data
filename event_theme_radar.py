@@ -26,6 +26,17 @@ import re
 import json
 import time
 import datetime as dt
+import urllib3
+
+# ============================================================
+# 安全性提醒(2026-09-14,已與使用者確認接受此取捨):
+# TPEx(www.tpex.org.tw)伺服器憑證鏈缺少中繼憑證,並非客戶端CA包過期
+# (已試過pip install --upgrade certifi無效),故下方對TPEx的兩個請求
+# 明確關閉SSL驗證(verify=False),範圍嚴格限定在這兩個網址,不影響
+# TWSE、鉅亨或任何其他請求的驗證。這裡抓的是公開政府開放資料
+# (唯讀GET、無帳密、非敏感個資),風險可控。
+# 只抑制"InsecureRequestWarning"這一種警告,其餘警告不受影響。
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ============================================================
 # 設定
@@ -66,7 +77,10 @@ def build_name2code():
     ]
     for url, tag in sources:
         try:
-            r = requests.get(url, headers=UA, timeout=20)
+            # 2026-09-14:TPEx伺服器憑證鏈缺少中繼憑證(非客戶端CA包過期,升級certifi無效),
+            # 已與使用者確認,限定只對tpex.org.tw關閉SSL驗證,其他所有請求(含TWSE)維持驗證。
+            verify_ssl = "tpex.org.tw" not in url
+            r = requests.get(url, headers=UA, timeout=20, verify=verify_ssl)
             r.raise_for_status()
             data = r.json()
             before = len(name2code)
@@ -274,7 +288,9 @@ def detect_mops_events(name2code, today):
 
     for url, market in sources:
         try:
-            r = requests.get(url, headers=UA, timeout=25)
+            # 2026-09-14:同上,只對tpex.org.tw關閉SSL驗證
+            verify_ssl = "tpex.org.tw" not in url
+            r = requests.get(url, headers=UA, timeout=25, verify=verify_ssl)
             if r.status_code != 200:
                 print(f"  ⚠ MOPS {market} HTTP {r.status_code}")
                 continue
