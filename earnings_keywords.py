@@ -41,22 +41,34 @@ COMPANIES = {
     # ── 核心供應鏈(你持股的上游/同業)──
     "NVDA": "本尊-需求指引",
     "TSM":  "上游-晶圓封裝(CoWoS)",
-    "MU":   "上游-記憶體(HBM)",
     "AMD":  "競爭-GPU/ASIC",
-    "ASML": "上游-設備(產能領先)",
     "AVGO": "競爭-ASIC/網通",
     "MRVL": "競爭-ASIC/光通訊",
     # ── 光通訊/CPO 美國同業(對應你的CPO/矽光子研究)──
     "LITE": "光通訊-雷射(Lumentum)",
     "COHR": "光通訊-元件(Coherent)",
     "AAOI": "光通訊-光模組(AAOI)",
+    "TSEM": "矽光子代工(Tower,對應CPO/矽光子研究)",
     # ── 雲端客戶(capex 指引,需求面領先)──
     "AAPL": "客戶-蘋果",
-    "MSFT": "客戶-微軟(capex)",
     "AMZN": "客戶-亞馬遜(AWS)",
-    "META": "客戶-Meta(capex)",
     "GOOGL": "客戶-Alphabet(capex)",
-    "TSLA": "客戶-特斯拉(AI/機器人)",
+    # ── 測試設備(對應CPO瓶頸=晶圓級測試產能的洞察)──
+    "TER":  "測試設備-泰瑞達(CPO測試瓶頸)",
+    "AEHR": "測試設備-Aehr(晶圓級burn-in測試)",
+    "KEYS": "測試設備-是德科技(量測儀器)",
+    # ── 半導體設備(對應High-NA EUV題材,鄰接沉積/蝕刻)──
+    "AMAT": "設備-應用材料(沉積/蝕刻)",
+    # ── 化合物/功率半導體(對應碳化矽/氮化鎵題材)──
+    "ON":   "功率半導體-安森美(SiC)",
+    "IFNNY": "功率半導體-英飛凌(SiC/GaN,OTC ADR,需驗證AV是否有逐字稿覆蓋)",
+    "AXTI": "化合物半導體基板-AXT",
+    # ── IC設計/處理器架構 ──
+    "QCOM": "IC設計-高通(RF/行動運算)",
+    "ARM":  "IC設計-Arm(處理器架構授權)",
+    "ADI":  "IC設計-亞德諾(類比/訊號鏈)",
+    # ── 資料中心電源(對應HVDC題材)──
+    "VRT":  "資料中心電源-Vertiv(HVDC)",
     # 註:SpaceX 未上市無法說,無法納入
 }
 
@@ -96,6 +108,26 @@ KEYWORDS = {
         "capex", "capital expenditure", "data center", "datacenter",
         "AI infrastructure", "custom silicon", "TPU", "accelerator",
         "training", "inference", "cluster", "GPU",
+    ],
+    # 測試設備(對應新增TER/AEHR/KEYS,CPO測試瓶頸洞察)
+    "測試設備": [
+        "wafer-level test", "burn-in", "probe card", "test time",
+        "ATE", "automated test equipment", "test capacity", "yield",
+    ],
+    # 功率/化合物半導體(對應新增ON/IFNNY/AXTI,SiC/GaN題材)
+    "功率化合物半導體": [
+        "SiC", "GaN", "power semiconductor", "wide bandgap",
+        "compound semiconductor", "gallium arsenide", "indium phosphide",
+    ],
+    # IC設計/處理器架構(對應新增QCOM/ARM/ADI)
+    "IC設計架構": [
+        "RF front-end", "processor architecture", "IP licensing",
+        "analog", "signal chain", "mixed-signal", "instruction set",
+    ],
+    # 資料中心電源(對應新增VRT,HVDC題材)
+    "資料中心電源": [
+        "HVDC", "800V", "power shelf", "liquid cooling", "immersion cooling",
+        "power density", "thermal management", "UPS",
     ],
 }
 # 攤平成單一 list 供統計,同時保留分類供輸出
