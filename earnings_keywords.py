@@ -189,10 +189,18 @@ def fetch_transcript(symbol, quarter):
 
 
 def count_keywords(text):
-    """統計每個關鍵詞出現次數(大小寫不敏感)。只回數字,不留原文。"""
+    """統計每個關鍵詞出現次數(大小寫不敏感)。只回數字,不留原文。
+    2026-09-14修正:純英文字母關鍵字加\\b單字邊界,避免短詞(如ATE)
+    誤命中英文常見詞字尾(operate/generate/estimate/rate等),造成大量假訊號。
+    含數字/符號的關鍵字(如"1.6T""800G")維持原本子字串比對,因為這類不會有此問題。"""
     counts = {}
     for cat, kw in FLAT_KEYWORDS:
-        n = len(re.findall(re.escape(kw), text, re.IGNORECASE))
+        if re.fullmatch(r'[A-Za-z\s\-]+', kw):
+            # 純英文字母(可含空白/連字號)的關鍵字,加單字邊界避免子字串誤判
+            pattern = r'\b' + re.escape(kw) + r'\b'
+        else:
+            pattern = re.escape(kw)
+        n = len(re.findall(pattern, text, re.IGNORECASE))
         if n > 0:
             counts[kw] = {"count": n, "category": cat}
     return counts
