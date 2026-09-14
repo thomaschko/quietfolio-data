@@ -42,6 +42,8 @@ WAPEOPLE_HTML = "https://www.wa-people.com/"            # Wa-people(半導體/�
 TECHNEWS_HTML = "https://technews.tw/"                  # TechNews 科技新報(題材密度高)
 EETIMES_RSS = "https://www.eettaiwan.com/feed/"         # EE Times(電子工程/先進封裝深度)
 TRENDFORCE_RSS = "https://www.trendforce.com/news/feed" # TrendForce英文(研究機構產業情報)
+CTEE_HTML = "https://www.ctee.com.tw/livenews/ctee"      # 工商時報即時新聞(HTML解析,無公開RSS)
+EDN_RSS = "https://money.udn.com/rssfeed/news/1001/5590?ch=money"  # 經濟日報-證券分類(2026-09-14探測確認)
 
 # HTML 導覽雜訊過濾
 NOISE = re.compile(r'MoneyDJ社論|MoneyDJ理財網|加入會員|查詢密碼|登入|首頁|更多|下一頁|版權|Cookie|理財網|iQuote|專題報導|個人理財|商城|水晶|鹽燈|詐騙|澄清聲明|報名|購買|電子報|關於我們|廣告')
@@ -101,6 +103,24 @@ def _fetch_wapeople():
 def _fetch_technews():
     """TechNews 科技新報 HTML(題材密度高)。"""
     return _fetch_html_titles(TECHNEWS_HTML)
+
+
+def _fetch_ctee():
+    """工商時報即時新聞 HTML(無公開RSS,2026-09-14探測確認HTML可用)。"""
+    return _fetch_html_titles(CTEE_HTML)
+
+
+def _fetch_edn():
+    """經濟日報-證券分類 RSS(2026-09-14探測確認,分類代號5590)。"""
+    try:
+        r = requests.get(EDN_RSS, headers=UA, timeout=20)
+        if r.status_code != 200:
+            return []
+        root = ET.fromstring(r.text)
+        return [it.find("title").text.strip() for it in root.iter("item")
+                if it.find("title") is not None and it.find("title").text]
+    except Exception:
+        return []
 
 
 def _fetch_eetimes():
@@ -218,6 +238,8 @@ def fetch_titles_by_source():
         "eetimes": _fetch_eetimes(),
         "trendforce": _fetch_trendforce(),
         "cnyes_intl": _fetch_cnyes_categories(),
+        "ctee": _fetch_ctee(),
+        "edn": _fetch_edn(),
     }
     try:
         from intl_news import fetch_intl_titles
