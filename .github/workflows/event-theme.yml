@@ -22,7 +22,10 @@ jobs:
           python-version: '3.12'
 
       - name: Install deps
-        run: pip install requests jieba
+        run: |
+          pip install requests jieba
+          pip install --upgrade certifi  # 2026-09-14:修TPEx SSL憑證驗證失敗
+          # (unable to get local issuer certificate),通常是runner的CA憑證包過期
 
       # 主雷達:src1鉅亨暴增 + src2 MOPS + src3維基關注度
       - name: Run radar
