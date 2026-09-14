@@ -13,6 +13,8 @@ import re
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"}
 
 EDN_RSS_CANDIDATES = [
+    "https://money.udn.com/rssfeed/news/1001/5590?ch=money",  # 證券(內容確認相關:AI概念股/大立光等)
+    "https://money.udn.com/rssfeed/news/1001/5641?ch=money",  # 即時新聞綜合(2026-09-14實測:RSS格式通,但單則內容偏房產,類別偏泛)
     "https://fund.udn.com/rss/lists/1002",       # 產經分類(第三方RSS reader實際在用)
     "https://money.udn.com/rssfeed/news/1001/5590/5591?ch=news",
     "https://edn.udn.com/rss.jsp",
