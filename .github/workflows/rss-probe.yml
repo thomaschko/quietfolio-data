@@ -24,4 +24,4 @@ jobs:
       - name: Run RSS probe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python statementdog_uanalyze_probe.py
+        run: python edn_ctee_probe.py
