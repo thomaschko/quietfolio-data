@@ -50,6 +50,7 @@ RECENT_DAYS = 3
 BASELINE_DAYS = 20
 SURGE_RATIO = 1.5          # 放寬:近期日均 >= 基線日均的1.5倍即算暴增
 MIN_RECENT_COUNT = 3       # 且近3日至少要有這麼多則,避免小基數假訊號
+NEAR_MISS_LOW = 0.8        # 2026-09-15新增:近期關注區下限,暴增比落在[0.8,1.5)算「有動能但未過門檻」
 
 # MOPS 硬事件關鍵字(出現在重訊主旨中才算)
 MOPS_EVENT_KEYWORDS = [
@@ -169,6 +170,7 @@ def detect_fixed_keywords(name2code, now_ts):
     recent_start = now_ts - RECENT_DAYS * 86400
     base_start = now_ts - BASELINE_DAYS * 86400
     results = []
+    near_miss_themes = []
 
     # 補充來源(中央社+MoneyDJ)今日標題,當「當日新聞加成」計入 recent
     try:
@@ -199,10 +201,22 @@ def detect_fixed_keywords(name2code, now_ts):
         enough_base = earlier_daily >= 0.15
         surge = (ratio >= SURGE_RATIO and len(recent) >= MIN_RECENT_COUNT
                  and enough_base)
-        flag = "🔥暴增" if surge else ("(基數過小略過)" if ratio >= SURGE_RATIO
-                                       and len(recent) >= MIN_RECENT_COUNT else "")
+        # 2026-09-15新增:近期關注區(暴增比0.8~1.5之間,真的在成長但還沒過門檻)。
+        # 套用跟暴增判斷一樣的防護(enough_base+MIN_RECENT_COUNT),避免eMMC那種
+        # 小基數雜訊(暴增比33.33但前段基期太小)被誤列進來;也排除NOR Flash這種
+        # 暴增比<0.8的「下降」情況,只留「真的在往上走、只是還沒衝過門檻」的詞。
+        near_miss = (not surge and NEAR_MISS_LOW <= ratio < SURGE_RATIO
+                     and len(recent) >= MIN_RECENT_COUNT and enough_base)
+        flag = "🔥暴增" if surge else ("👀關注中" if near_miss else
+                                      ("(基數過小略過)" if ratio >= SURGE_RATIO
+                                       and len(recent) >= MIN_RECENT_COUNT else ""))
         print(f"  {kw}: 近{RECENT_DAYS}日={len(recent)} 前段日均={round(earlier_daily,2)} "
               f"暴增比={ratio} {flag}")
+
+        if near_miss:
+            near_miss_themes.append({
+                "theme": kw, "ratio": ratio, "recent_count": len(recent),
+            })
 
         if surge:
             # 題材→個股關聯,優先順序:
@@ -244,7 +258,7 @@ def detect_fixed_keywords(name2code, now_ts):
                 "codes_source": codes_source,  # 標記這批codes是權威資料庫還是新聞猜測
             })
         time.sleep(0.3)
-    return results
+    return results, near_miss_themes
 
 
 # ============================================================
@@ -353,7 +367,7 @@ def main():
     name2code = build_name2code()
     print(f"  對照表共 {len(name2code)} 個名稱")
 
-    src1 = detect_fixed_keywords(name2code, now_ts)
+    src1, src1_near_miss = detect_fixed_keywords(name2code, now_ts)
     src2 = detect_mops_events(name2code, now)
 
     # 偵測源3:維基題材關注度(發酵前緣)。獨立檔,抓不到不影響前兩源。
@@ -386,6 +400,7 @@ def main():
         "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
         "date": now.strftime("%Y%m%d"),
         "themes": all_themes,
+        "near_miss_themes": sorted(src1_near_miss, key=lambda x: -x["ratio"]),
         "stocks": [
             {
                 "code": cd,
