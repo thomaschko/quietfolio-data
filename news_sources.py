@@ -44,6 +44,23 @@ EETIMES_RSS = "https://www.eettaiwan.com/feed/"         # EE Times(電子工程/
 TRENDFORCE_RSS = "https://www.trendforce.com/news/feed" # TrendForce英文(研究機構產業情報)
 CTEE_HTML = "https://www.ctee.com.tw/livenews/ctee"      # 工商時報即時新聞(HTML解析,無公開RSS)
 EDN_RSS = "https://money.udn.com/rssfeed/news/1001/5590?ch=money"  # 經濟日報-證券分類(2026-09-14探測確認)
+STOCKRICE_RSS = "https://feeds.soundon.fm/podcasts/537b7401-756c-4d0d-b1df-36a49e2793d3.xml"  # 股海飯桶Podcast(半導體供應鏈,每週二次)
+SEMIANALYSIS_RSS = "https://newsletter.semianalysis.com/feed"  # SemiAnalysis(高品質AI/半導體深度分析,2026-09-15確認頻率近乎每週數篇)
+AMINEXT_RSS = "https://www.aminext.blog/en/blog-feed.xml"  # AmiNext科技筆記(選題含半導體但範圍較廣,偶有國防/總經題材)
+IC975_RSS = "https://www.ic975.com/feed/hitech/"  # IC之音科技咖(全站節目大雜燴,靠IC975_KEEP_PREFIXES過濾出科技相關子節目)
+STATEMENTDOG_PODCAST_RSS = "https://feed.firstory.me/rss/user/clcftm46z000201z45w1c47fi"  # 財報狗Podcast(舊Firstory網址,2026-09-15確認仍有效)
+
+# IC之音科技咖是全電台節目大雜燴(含生活/歷史/親子類與科技無關內容),
+# 只保留標題開頭是這些科技相關子節目標籤的集數,濾掉其餘雜訊
+IC975_KEEP_PREFIXES = ("【科技領航家】", "【iSEE夢想家】", "【科技聽IC】", "【DIGITIMES每日新聞】",
+                       "【IC部落格】", "【科技行腳】", "【零碳未來】")
+
+# Telegram頻道(創作者本人自營,非第三方未經授權轉載,只截短片段+保留出處連結)
+TELEGRAM_CHANNELS = {
+    "gooaye_view": {"handle": "Gooaye", "label": "股癌(謝孟恭)"},
+    "investanchors": {"handle": "investanchors", "label": "定錨產業筆記"},
+}
+TELEGRAM_SNIPPET_MAX_LEN = 80  # 硬性截斷,只取標題等級片段,不存完整貼文全文
 
 # HTML 導覽雜訊過濾
 NOISE = re.compile(r'MoneyDJ社論|MoneyDJ理財網|加入會員|查詢密碼|登入|首頁|更多|下一頁|版權|Cookie|理財網|iQuote|專題報導|個人理財|商城|水晶|鹽燈|詐騙|澄清聲明|報名|購買|電子報|關於我們|廣告')
@@ -121,6 +138,70 @@ def _fetch_edn():
                 if it.find("title") is not None and it.find("title").text]
     except Exception:
         return []
+
+
+def _fetch_simple_rss(url, timeout=25):
+    """通用RSS標題抓取,供股海飯桶/SemiAnalysis/AmiNext/財報狗共用。"""
+    try:
+        r = requests.get(url, headers=UA, timeout=timeout)
+        if r.status_code != 200:
+            return []
+        root = ET.fromstring(r.text)
+        return [it.find("title").text.strip() for it in root.iter("item")
+                if it.find("title") is not None and it.find("title").text]
+    except Exception:
+        return []
+
+
+def _fetch_stockrice():
+    """股海飯桶Podcast RSS(半導體供應鏈深度分析,每週二次,2026-09-15確認可用)。"""
+    return _fetch_simple_rss(STOCKRICE_RSS)
+
+
+def _fetch_semianalysis():
+    """SemiAnalysis(高品質AI/半導體深度分析,2026-09-15確認頻率近乎每週數篇,免費層仍有標題+摘要)。"""
+    return _fetch_simple_rss(SEMIANALYSIS_RSS)
+
+
+def _fetch_aminext():
+    """AmiNext科技筆記(2026-09-15確認RSS可用,選題含半導體但範圍較廣,偶有國防/總經題材)。"""
+    return _fetch_simple_rss(AMINEXT_RSS)
+
+
+def _fetch_statementdog_podcast():
+    """財報狗Podcast(2026-09-15確認舊Firstory網址仍有效,內容精準度高)。"""
+    return _fetch_simple_rss(STATEMENTDOG_PODCAST_RSS)
+
+
+def _fetch_ic975():
+    """IC之音科技咖(全站節目大雜燴,只保留IC975_KEEP_PREFIXES指定的科技相關子節目標題,
+    濾掉生活/歷史/親子類等無關內容)。"""
+    titles = _fetch_simple_rss(IC975_RSS, timeout=30)
+    return [t for t in titles if t.startswith(IC975_KEEP_PREFIXES)]
+
+
+def _fetch_telegram():
+    """股癌+定錨產業筆記官方Telegram頻道(創作者本人自營,非未經授權轉載)。
+    每則只截80字硬性上限,不存完整貼文全文,避免連頻道主轉貼的第三方新聞
+    完整段落也一併存進系統。回傳格式跟其他RSS來源一致(純標題list)。"""
+    all_snippets = []
+    for key, info in TELEGRAM_CHANNELS.items():
+        url = f"https://t.me/s/{info['handle']}"
+        try:
+            r = requests.get(url, headers=UA, timeout=20)
+            if r.status_code != 200:
+                continue
+            pattern = (r'data-post="(?:' + re.escape(info["handle"]) + r')/\d+"[^>]*>.*?'
+                       r'class="tgme_widget_message_text[^"]*"[^>]*>(.*?)</div>')
+            blocks = re.findall(pattern, r.text, re.DOTALL)
+            for raw_text in blocks:
+                text = re.sub(r'<[^>]+>', '', raw_text)
+                text = re.sub(r'\s+', ' ', text).strip()
+                if text:
+                    all_snippets.append(text[:TELEGRAM_SNIPPET_MAX_LEN])
+        except Exception:
+            continue
+    return all_snippets
 
 
 def _fetch_eetimes():
@@ -240,6 +321,12 @@ def fetch_titles_by_source():
         "cnyes_intl": _fetch_cnyes_categories(),
         "ctee": _fetch_ctee(),
         "edn": _fetch_edn(),
+        "stockrice": _fetch_stockrice(),
+        "semianalysis": _fetch_semianalysis(),
+        "aminext": _fetch_aminext(),
+        "ic975": _fetch_ic975(),
+        "statementdog_pod": _fetch_statementdog_podcast(),
+        "telegram": _fetch_telegram(),
     }
     try:
         from intl_news import fetch_intl_titles
