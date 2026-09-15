@@ -49,6 +49,7 @@ SEMIANALYSIS_RSS = "https://newsletter.semianalysis.com/feed"  # SemiAnalysis(�
 AMINEXT_RSS = "https://www.aminext.blog/en/blog-feed.xml"  # AmiNext科技筆記(選題含半導體但範圍較廣,偶有國防/總經題材)
 IC975_RSS = "https://www.ic975.com/feed/hitech/"  # IC之音科技咖(全站節目大雜燴,靠IC975_KEEP_PREFIXES過濾出科技相關子節目)
 STATEMENTDOG_PODCAST_RSS = "https://feed.firstory.me/rss/user/clcftm46z000201z45w1c47fi"  # 財報狗Podcast(舊Firstory網址,2026-09-15確認仍有效)
+TECHORANGE_RSS = "https://feeds.soundon.fm/podcasts/ead686e9-4513-4217-beb5-5fa4d215860d.xml"  # 科技報橘「科技早餐」(2026-09-15確認,每日更新,密度極高)
 
 # IC之音科技咖是全電台節目大雜燴(含生活/歷史/親子類與科技無關內容),
 # 只保留標題開頭是這些科技相關子節目標籤的集數,濾掉其餘雜訊
@@ -171,6 +172,12 @@ def _fetch_aminext():
 def _fetch_statementdog_podcast():
     """財報狗Podcast(2026-09-15確認舊Firstory網址仍有效,內容精準度高)。"""
     return _fetch_simple_rss(STATEMENTDOG_PODCAST_RSS)
+
+
+def _fetch_techorange():
+    """科技報橘「科技早餐」(2026-09-15確認,正牌媒體流線傳媒,每日更新,
+    內容全免費完整無付費牆,密度極高,直接命中HBM/CoWoS/矽光子等追蹤題材)。"""
+    return _fetch_simple_rss(TECHORANGE_RSS)
 
 
 def _fetch_ic975():
@@ -326,6 +333,7 @@ def fetch_titles_by_source():
         "aminext": _fetch_aminext(),
         "ic975": _fetch_ic975(),
         "statementdog_pod": _fetch_statementdog_podcast(),
+        "techorange": _fetch_techorange(),
         "telegram": _fetch_telegram(),
     }
     try:
