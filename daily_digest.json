@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-15 10:12:26",
+  "generated_at": "2026-09-15 13:49:28",
   "date": "20260915",
   "summary_counts": {
-    "resonance": 0,
+    "resonance": 3,
     "preferment_themes": 0,
     "broker_coverage": 0,
-    "surge_themes": 9,
+    "surge_themes": 11,
     "new_candidates": 15,
     "earnings_rising": 214,
     "cross_confirmed": 1
@@ -42,18 +42,56 @@
       "count": 1
     }
   ],
-  "A_multi_source_resonance": [],
+  "A_multi_source_resonance": [
+    {
+      "code": "3016",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "SiC",
+        "重訊:增資"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    },
+    {
+      "code": "6282",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "SiC",
+        "重訊:投資"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    },
+    {
+      "code": "1582",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "themes": [
+        "低軌衛星",
+        "重訊:投資"
+      ],
+      "fermentation": null,
+      "broker_count": null
+    }
+  ],
   "B_preferment_themes": [],
   "C_broker_coverage": [],
   "D_surge_themes": [
     {
-      "theme": "CUBE",
-      "ratio": 3.4,
-      "codes": []
-    },
-    {
       "theme": "power shelf",
-      "ratio": 3.24,
+      "ratio": 4.45,
       "codes": [
         "3665",
         "2481"
@@ -61,15 +99,20 @@
     },
     {
       "theme": "sidecar power",
-      "ratio": 3.02,
+      "ratio": 4.16,
       "codes": [
         "3665",
         "2481"
       ]
     },
     {
+      "theme": "CUBE",
+      "ratio": 3.4,
+      "codes": []
+    },
+    {
       "theme": "power rack",
-      "ratio": 2.39,
+      "ratio": 3.28,
       "codes": [
         "3665",
         "2481"
@@ -106,6 +149,85 @@
       ]
     },
     {
+      "theme": "低軌衛星",
+      "ratio": 1.62,
+      "codes": [
+        "1582",
+        "1609",
+        "2301",
+        "2313",
+        "2314",
+        "2355",
+        "2367",
+        "2383",
+        "2462",
+        "2485",
+        "3105",
+        "3138",
+        "3152",
+        "3178",
+        "3221",
+        "3419",
+        "3466",
+        "3481",
+        "3491",
+        "3663",
+        "3684",
+        "3701",
+        "4590",
+        "4909",
+        "4916",
+        "5222",
+        "5243",
+        "5291",
+        "5457",
+        "5543",
+        "6133",
+        "6134",
+        "6152",
+        "6269",
+        "6271",
+        "6274",
+        "6285",
+        "6412",
+        "6426",
+        "6486",
+        "6672",
+        "6792",
+        "6818",
+        "6928",
+        "7812"
+      ]
+    },
+    {
+      "theme": "SiC",
+      "ratio": 1.53,
+      "codes": [
+        "2301",
+        "2308",
+        "2342",
+        "2434",
+        "2457",
+        "2481",
+        "3016",
+        "3026",
+        "3317",
+        "3332",
+        "3467",
+        "3628",
+        "3707",
+        "4934",
+        "6270",
+        "6282",
+        "6488",
+        "6525",
+        "6548",
+        "6651",
+        "8121",
+        "8261"
+      ]
+    },
+    {
       "theme": "800V HVDC",
       "ratio": 1.51,
       "codes": [
@@ -120,7 +242,7 @@
       "is_brand_new": false,
       "streak_days": 2,
       "method": "ai",
-      "reason": "光通訊與CPO技術接棒AI下半場",
+      "reason": "光進銅退趨勢下，矽光子與CPO迎來量產期",
       "stocks": []
     },
     {
@@ -128,6 +250,15 @@
       "recent_hits": 20,
       "is_brand_new": false,
       "streak_days": 3,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "美債殖",
+      "recent_hits": 9,
+      "is_brand_new": false,
+      "streak_days": 2,
       "method": "jieba",
       "reason": "",
       "stocks": []
@@ -143,7 +274,7 @@
     },
     {
       "term": "經濟部",
-      "recent_hits": 4,
+      "recent_hits": 3,
       "is_brand_new": false,
       "streak_days": 2,
       "method": "jieba",
@@ -151,7 +282,7 @@
       "stocks": []
     },
     {
-      "term": "甲骨文",
+      "term": "華爾街",
       "recent_hits": 2,
       "is_brand_new": false,
       "streak_days": 3,
@@ -160,7 +291,7 @@
       "stocks": []
     },
     {
-      "term": "ADR",
+      "term": "國泰金",
       "recent_hits": 2,
       "is_brand_new": false,
       "streak_days": 2,
@@ -178,133 +309,114 @@
       "stocks": []
     },
     {
-      "term": "HVDC與液冷散熱",
+      "term": "iPhone18",
+      "recent_hits": 2,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "金融股",
+      "recent_hits": 2,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": []
+    },
+    {
+      "term": "先進封裝與CoWoS",
+      "recent_hits": 8,
+      "is_brand_new": true,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "先進封裝需求強勁，晶片廠與封測廠擴產",
+      "stocks": []
+    },
+    {
+      "term": "HBM與記憶體漲價",
+      "recent_hits": 8,
+      "is_brand_new": true,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "記憶體規格升級與AI伺服器帶動DRAM/NAND漲價",
+      "stocks": []
+    },
+    {
+      "term": "代理式AI與Agent",
+      "recent_hits": 8,
+      "is_brand_new": true,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "Agent架構推動軟硬體整合及終端裝置升級",
+      "stocks": []
+    },
+    {
+      "term": "AI伺服器供應鏈",
+      "recent_hits": 7,
+      "is_brand_new": true,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "CSP大廠資本支出帶動AI伺服器與散熱/導軌需求",
+      "stocks": []
+    },
+    {
+      "term": "電子特殊氣體",
       "recent_hits": 6,
       "is_brand_new": true,
       "streak_days": 1,
       "method": "ai",
-      "reason": "AI高功耗帶動HVDC與液冷需求",
-      "stocks": []
-    },
-    {
-      "term": "實體AI與Agent",
-      "recent_hits": 5,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "實體AI、AI Agent與代理商機",
-      "stocks": []
-    },
-    {
-      "term": "2奈米與先進製程",
-      "recent_hits": 5,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "2奈米先進製程產能與分流策略",
-      "stocks": []
-    },
-    {
-      "term": "MLCC漲價循環",
-      "recent_hits": 4,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "AI推動高容值MLCC漲價與擴產",
-      "stocks": []
-    },
-    {
-      "term": "銅箔基板與玻纖布",
-      "recent_hits": 4,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "AI伺服器帶動高階基板材料需求",
-      "stocks": []
-    },
-    {
-      "term": "衛星通訊與太空AI",
-      "recent_hits": 4,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "太空AI與衛星基礎設施投資",
-      "stocks": []
-    },
-    {
-      "term": "半導體設備",
-      "recent_hits": 4,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "設備需求強勁與先進設備軍備競賽",
-      "stocks": []
-    },
-    {
-      "term": "邊緣AI",
-      "recent_hits": 4,
-      "is_brand_new": true,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "邊緣AI與IPC軟硬體部署",
+      "reason": "兆捷科技與晶呈科積極卡位半導體特氣國產化",
       "stocks": []
     }
   ],
   "E2_near_miss": [
     {
       "theme": "無人機",
-      "ratio": 1.36,
-      "recent_count": 28
-    },
-    {
-      "theme": "SiC",
-      "ratio": 1.34,
-      "recent_count": 9
+      "ratio": 1.48,
+      "recent_count": 30
     },
     {
       "theme": "調漲",
-      "ratio": 1.32,
-      "recent_count": 14
+      "ratio": 1.44,
+      "recent_count": 15
     },
     {
-      "theme": "低軌衛星",
-      "ratio": 1.21,
-      "recent_count": 3
-    },
-    {
-      "theme": "SLC NAND",
-      "ratio": 1.21,
+      "theme": "併購",
+      "ratio": 1.36,
       "recent_count": 13
     },
     {
       "theme": "接單",
-      "ratio": 1.13,
+      "ratio": 1.16,
       "recent_count": 15
     },
     {
-      "theme": "NAND",
+      "theme": "SLC NAND",
       "ratio": 1.11,
       "recent_count": 12
-    },
-    {
-      "theme": "NAND",
-      "ratio": 1.11,
-      "recent_count": 12
-    },
-    {
-      "theme": "CoWoS",
-      "ratio": 1.07,
-      "recent_count": 10
     },
     {
       "theme": "華邦電",
-      "ratio": 1.07,
+      "ratio": 1.08,
       "recent_count": 16
     },
     {
-      "theme": "併購",
-      "ratio": 1.03,
-      "recent_count": 10
+      "theme": "NAND",
+      "ratio": 1.02,
+      "recent_count": 11
+    },
+    {
+      "theme": "NAND",
+      "ratio": 1.02,
+      "recent_count": 11
+    },
+    {
+      "theme": "CoWoS",
+      "ratio": 0.94,
+      "recent_count": 9
     },
     {
       "theme": "High-NA EUV",
@@ -312,14 +424,24 @@
       "recent_count": 5
     },
     {
+      "theme": "擴產",
+      "ratio": 0.88,
+      "recent_count": 26
+    },
+    {
+      "theme": "DDR5",
+      "ratio": 0.85,
+      "recent_count": 3
+    },
+    {
       "theme": "玻纖布",
       "ratio": 0.85,
       "recent_count": 3
     },
     {
-      "theme": "擴產",
-      "ratio": 0.84,
-      "recent_count": 25
+      "theme": "ASIC",
+      "ratio": 0.82,
+      "recent_count": 19
     },
     {
       "theme": "DRAM",
