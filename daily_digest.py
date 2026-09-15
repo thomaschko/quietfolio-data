@@ -254,6 +254,10 @@ def build_digest():
         "C_broker_coverage": coverage_list,
         "D_surge_themes": surge_themes,
         "E_new_candidates": new_candidates,
+        # 2026-09-15新增:固定關鍵字清單裡「有動能但未過暴增門檻」的詞(暴增比0.8~1.5),
+        # 跟E_new_candidates(src4發現的全新詞)不同來源——這個是src1既有追蹤詞的早期訊號,
+        # 用同一套防小基數雜訊機制(enough_base),不會混入eMMC那種統計假訊號。
+        "E2_near_miss": event.get("near_miss_themes", []),
         "F_earnings_rising": earnings_rising,
         "G_cross_confirmed": cross_confirmed,
     }
@@ -312,6 +316,13 @@ def print_digest(d):
     for c in d["E_new_candidates"][:8]:
         tag = "🆕" if c["is_brand_new"] else ""
         print(f"  {tag}{c['term']}  近{c['recent_hits']}次")
+
+    print("\n▍E2. 近期關注(固定追蹤詞,有動能但未達暴增門檻)")
+    if d.get("E2_near_miss"):
+        for t in d["E2_near_miss"][:10]:
+            print(f"  👀{t['theme']}  暴增比{t['ratio']}  近{t['recent_count']}次")
+    else:
+        print("  (今日無)")
 
     print("\n▍F. 國際法說關鍵詞升溫(src6 — 季度更新,供應鏈端訊號)")
     er = d.get("F_earnings_rising", [])
