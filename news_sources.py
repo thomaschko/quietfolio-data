@@ -141,49 +141,85 @@ def _fetch_edn():
         return []
 
 
-def _fetch_simple_rss(url, timeout=25):
-    """通用RSS標題抓取,供股海飯桶/SemiAnalysis/AmiNext/財報狗共用。"""
+RSS_RECENT_DAYS = 7  # 部落格/Podcast類RSS的「近期」窗口(比src1的3天寬,涵蓋較低頻的來源如AmiNext/SemiAnalysis)
+
+
+def _parse_rss_date(date_text):
+    """解析RSS pubDate(標準RFC822格式),解析失敗回傳None(不代表要排除,由呼叫端決定)。"""
+    if not date_text:
+        return None
+    try:
+        from email.utils import parsedate_to_datetime
+        return parsedate_to_datetime(date_text)
+    except Exception:
+        return None
+
+
+def _fetch_simple_rss(url, timeout=25, filter_recent_days=None):
+    """通用RSS標題抓取,供股海飯桶/SemiAnalysis/AmiNext/財報狗/科技報橘/IC之音共用。
+    2026-09-15修正:部分Podcast RSS(財報狗638集/科技報橘1020集/IC之音613集)
+    會回傳「創台以來全部集數」,不像一般新聞RSS天生只顯示最近幾十則——若不過濾,
+    每天都會把好幾年份的舊集數當成「今天的內容」重複計入跨源比對,嚴重稀釋
+    「近日暴增」訊號的意義。filter_recent_days有給值時,只保留pubDate落在
+    該天數內的項目;沒給日期欄位的項目(RSS規範不強制pubDate)則保留,避免
+    因為缺欄位就誤刪合法內容。"""
     try:
         r = requests.get(url, headers=UA, timeout=timeout)
         if r.status_code != 200:
             return []
         root = ET.fromstring(r.text)
-        return [it.find("title").text.strip() for it in root.iter("item")
-                if it.find("title") is not None and it.find("title").text]
+        results = []
+        cutoff = None
+        if filter_recent_days is not None:
+            import datetime as _dt
+            cutoff = _dt.datetime.now(_dt.timezone.utc) - _dt.timedelta(days=filter_recent_days)
+        for it in root.iter("item"):
+            title_el = it.find("title")
+            if title_el is None or not title_el.text:
+                continue
+            if cutoff is not None:
+                pubdate_el = it.find("pubDate")
+                pub_dt = _parse_rss_date(pubdate_el.text if pubdate_el is not None else None)
+                if pub_dt is not None and pub_dt < cutoff:
+                    continue  # 超過窗口的舊項目,跳過
+            results.append(title_el.text.strip())
+        return results
     except Exception:
         return []
 
 
 def _fetch_stockrice():
     """股海飯桶Podcast RSS(半導體供應鏈深度分析,每週二次,2026-09-15確認可用)。"""
-    return _fetch_simple_rss(STOCKRICE_RSS)
+    return _fetch_simple_rss(STOCKRICE_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
 def _fetch_semianalysis():
     """SemiAnalysis(高品質AI/半導體深度分析,2026-09-15確認頻率近乎每週數篇,免費層仍有標題+摘要)。"""
-    return _fetch_simple_rss(SEMIANALYSIS_RSS)
+    return _fetch_simple_rss(SEMIANALYSIS_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
 def _fetch_aminext():
     """AmiNext科技筆記(2026-09-15確認RSS可用,選題含半導體但範圍較廣,偶有國防/總經題材)。"""
-    return _fetch_simple_rss(AMINEXT_RSS)
+    return _fetch_simple_rss(AMINEXT_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
 def _fetch_statementdog_podcast():
-    """財報狗Podcast(2026-09-15確認舊Firstory網址仍有效,內容精準度高)。"""
-    return _fetch_simple_rss(STATEMENTDOG_PODCAST_RSS)
+    """財報狗Podcast(2026-09-15確認舊Firstory網址仍有效,內容精準度高;
+    RSS含638集全部歷史存檔,已加日期過濾避免陳年集數污染每日訊號)。"""
+    return _fetch_simple_rss(STATEMENTDOG_PODCAST_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
 def _fetch_techorange():
     """科技報橘「科技早餐」(2026-09-15確認,正牌媒體流線傳媒,每日更新,
-    內容全免費完整無付費牆,密度極高,直接命中HBM/CoWoS/矽光子等追蹤題材)。"""
-    return _fetch_simple_rss(TECHORANGE_RSS)
+    內容全免費完整無付費牆,密度極高,直接命中HBM/CoWoS/矽光子等追蹤題材;
+    RSS含1020集全部歷史存檔,已加日期過濾)。"""
+    return _fetch_simple_rss(TECHORANGE_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
 def _fetch_ic975():
     """IC之音科技咖(全站節目大雜燴,只保留IC975_KEEP_PREFIXES指定的科技相關子節目標題,
-    濾掉生活/歷史/親子類等無關內容)。"""
-    titles = _fetch_simple_rss(IC975_RSS, timeout=30)
+    濾掉生活/歷史/親子類等無關內容;RSS含613集全部歷史存檔,已加日期過濾)。"""
+    titles = _fetch_simple_rss(IC975_RSS, timeout=30, filter_recent_days=RSS_RECENT_DAYS)
     return [t for t in titles if t.startswith(IC975_KEEP_PREFIXES)]
 
 
