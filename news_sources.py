@@ -50,6 +50,11 @@ AMINEXT_RSS = "https://www.aminext.blog/en/blog-feed.xml"  # AmiNext科技筆記
 IC975_RSS = "https://www.ic975.com/feed/hitech/"  # IC之音科技咖(全站節目大雜燴,靠IC975_KEEP_PREFIXES過濾出科技相關子節目)
 STATEMENTDOG_PODCAST_RSS = "https://feed.firstory.me/rss/user/clcftm46z000201z45w1c47fi"  # 財報狗Podcast(舊Firstory網址,2026-09-15確認仍有效)
 TECHORANGE_RSS = "https://feeds.soundon.fm/podcasts/ead686e9-4513-4217-beb5-5fa4d215860d.xml"  # 科技報橘「科技早餐」(2026-09-15確認,每日更新,密度極高)
+WAPEOPLE_PODCAST_RSS = "https://feeds.soundon.fm/podcasts/39dfac7d-76f0-43de-97ad-93303a03d7ed.xml"  # 產業人物Wa-People Podcast(2026-09-16確認,個股深度訪談,跟既有wapeople網站版互補不重複)
+FUGLE_BLOG_HTML = "https://blog.fugle.tw/"  # 富果部落格(無RSS,HTML解析,2026-09-16確認個股分析內容扎實)
+YOUXIAN_RSS = "https://feeds.soundon.fm/podcasts/40f2d2d6-994c-4499-93ef-d5e7f2b24306.xml"  # 優閒聊財經(前身為優分析Podcast,2026-09-16確認密度極高)
+GS_EXCHANGES_RSS = "https://feeds.megaphone.fm/GLD9218176758"  # Goldman Sachs Exchanges(2026-09-16確認,英文,機構級AI/總經分析,雜訊比例高於中文來源)
+MONEYDJ_PODCAST_RSS = "https://feeds.soundon.fm/podcasts/489a6945-a341-40ca-88ab-73c174057634.xml"  # MoneyDJ財經新聞Podcast(2026-09-16確認,506集,命中密度極高:法說26/半導體12/台積電7)
 
 # IC之音科技咖是全電台節目大雜燴(含生活/歷史/親子類與科技無關內容),
 # 只保留標題開頭是這些科技相關子節目標籤的集數,濾掉其餘雜訊
@@ -216,6 +221,45 @@ def _fetch_techorange():
     return _fetch_simple_rss(TECHORANGE_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
+def _fetch_wapeople_podcast():
+    """產業人物Wa-People Podcast(2026-09-16確認,127集個股深度訪談,
+    命中密度高(台積電/半導體/法說),跟既有wapeople網站版內容型態不同
+    不重複,已加日期過濾避免歷史存檔污染)。"""
+    return _fetch_simple_rss(WAPEOPLE_PODCAST_RSS, filter_recent_days=RSS_RECENT_DAYS)
+
+
+def _fetch_fugle_blog():
+    """富果部落格(2026-09-16確認,無公開RSS,HTML解析;內容為個股分析+
+    法說會備忘錄,扎實但首頁夾雜API文件/法律聲明等選單雜訊,額外排除)。"""
+    titles = _fetch_html_titles(FUGLE_BLOG_HTML)
+    noise = ("API", "使用管理辦法", "交易資訊", "隱私", "服務條款", "客服")
+    return [t for t in titles if not any(n in t for n in noise)]
+
+
+def _fetch_youxian():
+    """優閒聊財經(2026-09-16確認,前身為優分析Podcast,150集,命中密度
+    極高(營收/AI伺服器/記憶體/法說/半導體/光通訊/ASIC等19種關鍵詞),
+    等同繞道取得優分析分析內容(官網本身JS動態渲染抓不到);
+    已加日期過濾避免歷史存檔污染)。"""
+    return _fetch_simple_rss(YOUXIAN_RSS, filter_recent_days=RSS_RECENT_DAYS)
+
+
+def _fetch_gs_exchanges():
+    """Goldman Sachs Exchanges(2026-09-16確認,英文,機構級AI/總經分析。
+    內容偏總經/大盤(Fed政策/貨幣干預/IPO/信用市場),非半導體供應鏈
+    術語密度高的類型,但偶有直接相關集數(如AI資料中心電力需求)。
+    已加日期過濾(641集全部歷史存檔)。已加入EN_SOURCES白名單,
+    避免jieba對英文誤切。"""
+    return _fetch_simple_rss(GS_EXCHANGES_RSS, filter_recent_days=RSS_RECENT_DAYS)
+
+
+def _fetch_moneydj_podcast():
+    """MoneyDJ財經新聞Podcast(2026-09-16確認,506集,命中密度極高:
+    法說26/半導體12/台積電7/記憶體4/CoWoS2/先進封裝2/玻璃基板2/
+    AI伺服器2/測試2,是這批擴充裡數一數二精準的來源;已加日期過濾)。"""
+    return _fetch_simple_rss(MONEYDJ_PODCAST_RSS, filter_recent_days=RSS_RECENT_DAYS)
+
+
 def _fetch_ic975():
     """IC之音科技咖(全站節目大雜燴,只保留IC975_KEEP_PREFIXES指定的科技相關子節目標題,
     濾掉生活/歷史/親子類等無關內容;RSS含613集全部歷史存檔,已加日期過濾)。"""
@@ -370,6 +414,11 @@ def fetch_titles_by_source():
         "ic975": _fetch_ic975(),
         "statementdog_pod": _fetch_statementdog_podcast(),
         "techorange": _fetch_techorange(),
+        "wapeople_pod": _fetch_wapeople_podcast(),
+        "fugle_blog": _fetch_fugle_blog(),
+        "youxian": _fetch_youxian(),
+        "gs_exchanges": _fetch_gs_exchanges(),
+        "moneydj_pod": _fetch_moneydj_podcast(),
         "telegram": _fetch_telegram(),
     }
     try:
