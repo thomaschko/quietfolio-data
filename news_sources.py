@@ -163,12 +163,21 @@ RSS_RECENT_DAYS = 7  # 部落格/Podcast類RSS的「近期」窗口(比src1的3�
 
 
 def _parse_rss_date(date_text):
-    """解析RSS pubDate(標準RFC822格式),解析失敗回傳None(不代表要排除,由呼叫端決定)。"""
+    """解析RSS pubDate(標準RFC822格式),解析失敗回傳None(不代表要排除,由呼叫端決定)。
+    2026-09-16修正:部分平台(如Megaphone/GS Exchanges)用「-0000」時區標記
+    (RFC2822規範代表「時區不明」),Python的parsedate_to_datetime會回傳
+    「沒有時區資訊」的datetime,拿去跟有時區的cutoff比較會直接拋TypeError,
+    導致整個_fetch_simple_rss的try/except把結果靜默吞成空清單(偽裝成
+    「沒有近期內容」,實際上是程式當掉)。修正:沒有時區資訊時,補上UTC。"""
     if not date_text:
         return None
     try:
         from email.utils import parsedate_to_datetime
-        return parsedate_to_datetime(date_text)
+        import datetime as _dt
+        parsed = parsedate_to_datetime(date_text)
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=_dt.timezone.utc)
+        return parsed
     except Exception:
         return None
 
@@ -198,8 +207,11 @@ def _fetch_simple_rss(url, timeout=25, filter_recent_days=None):
             if cutoff is not None:
                 pubdate_el = it.find("pubDate")
                 pub_dt = _parse_rss_date(pubdate_el.text if pubdate_el is not None else None)
-                if pub_dt is not None and pub_dt < cutoff:
-                    continue  # 超過窗口的舊項目,跳過
+                try:
+                    if pub_dt is not None and pub_dt < cutoff:
+                        continue  # 超過窗口的舊項目,跳過
+                except TypeError:
+                    pass  # 日期比較失敗(如時區資訊異常),保守保留該項目,不讓單筆錯誤拖垮整個來源
             results.append(title_el.text.strip())
         return results
     except Exception:
