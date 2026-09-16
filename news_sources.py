@@ -23,6 +23,7 @@ news_sources.py — 補充新聞來源池(中央社RSS + MoneyDJ HTML)
 import requests
 import xml.etree.ElementTree as ET
 import re
+from urllib.parse import quote
 
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"}
 
@@ -55,6 +56,18 @@ FUGLE_BLOG_HTML = "https://blog.fugle.tw/"  # 富果部落格(無RSS,HTML解析,
 YOUXIAN_RSS = "https://feeds.soundon.fm/podcasts/40f2d2d6-994c-4499-93ef-d5e7f2b24306.xml"  # 優閒聊財經(前身為優分析Podcast,2026-09-16確認密度極高)
 GS_EXCHANGES_RSS = "https://feeds.megaphone.fm/GLD9218176758"  # Goldman Sachs Exchanges(2026-09-16確認,英文,機構級AI/總經分析,雜訊比例高於中文來源)
 MONEYDJ_PODCAST_RSS = "https://feeds.soundon.fm/podcasts/489a6945-a341-40ca-88ab-73c174057634.xml"  # MoneyDJ財經新聞Podcast(2026-09-16確認,506集,命中密度極高:法說26/半導體12/台積電7)
+
+# Google News RSS(2026-09-16確認)——搜尋引擎索引,橫跨大量長尾媒體,補足21個固定
+# 媒體來源觸及不到的範圍。關鍵限制(已查證):不加when:會回傳中位數6.6天前的舊聞,
+# 必須強制加when:天數窗口。另一個實測發現的風險:裸公司名稱查詢(如單獨查「台積電」)
+# 會連八卦新聞都撈進來(員工緋聞等),故只用「公司/產業+限定詞」組合查詢,不用裸名稱。
+GOOGLE_NEWS_QUERIES = [
+    "矽光子 when:3d",
+    "AI伺服器 供應鏈 when:3d",
+    "台股 半導體 when:3d",
+    "CoWoS 先進封裝 when:3d",
+    "HBM 記憶體 when:3d",
+]
 
 # IC之音科技咖是全電台節目大雜燴(含生活/歷史/親子類與科技無關內容),
 # 只保留標題開頭是這些科技相關子節目標籤的集數,濾掉其餘雜訊
@@ -260,6 +273,34 @@ def _fetch_moneydj_podcast():
     return _fetch_simple_rss(MONEYDJ_PODCAST_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
+def _fetch_google_news():
+    """Google News RSS(2026-09-16確認,矽光子/AI伺服器供應鏈查詢命中密度極高)。
+    每個查詢已內含when:天數窗口,回傳本身已是近期內容,不需再套用
+    RSS_RECENT_DAYS過濾(那是給不支援時間窗口的一般RSS用的)。
+    標題結尾都帶「- 媒體名稱」(如「- Yahoo新聞」),先清掉避免媒體名稱
+    被誤判成熱門詞。"""
+    all_titles = []
+    for q in GOOGLE_NEWS_QUERIES:
+        url = f"https://news.google.com/rss/search?q={quote(q)}&hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
+        try:
+            r = requests.get(url, headers=UA, timeout=20)
+            if r.status_code != 200:
+                continue
+            root = ET.fromstring(r.text)
+            for it in root.iter("item"):
+                title_el = it.find("title")
+                if title_el is None or not title_el.text:
+                    continue
+                title = title_el.text.strip()
+                # 去除結尾的「 - 媒體名稱」(Google News固定格式)
+                title = re.sub(r'\s*-\s*[^-]{2,20}$', '', title).strip()
+                if title:
+                    all_titles.append(title)
+        except Exception:
+            continue
+    return all_titles
+
+
 def _fetch_ic975():
     """IC之音科技咖(全站節目大雜燴,只保留IC975_KEEP_PREFIXES指定的科技相關子節目標題,
     濾掉生活/歷史/親子類等無關內容;RSS含613集全部歷史存檔,已加日期過濾)。"""
@@ -419,6 +460,7 @@ def fetch_titles_by_source():
         "youxian": _fetch_youxian(),
         "gs_exchanges": _fetch_gs_exchanges(),
         "moneydj_pod": _fetch_moneydj_podcast(),
+        "google_news": _fetch_google_news(),
         "telegram": _fetch_telegram(),
     }
     try:
