@@ -155,13 +155,67 @@ def probe_marketwatch():
             print(f"    {titles if isinstance(titles,str) else '無標題'}")
 
 
+# ============================================================
+# 4. Goldman Sachs Exchanges(2026-09-16已直接驗證為真實RSS)
+# ============================================================
+def probe_gs_exchanges():
+    print("\n" + "=" * 62)
+    print("4. Goldman Sachs Exchanges(已確認真實,測跨源交叉密度)")
+    print("=" * 62)
+    url = "https://feeds.megaphone.fm/GLD9218176758"
+    titles, code = try_rss(url)
+    print(f"  [{code}] {url}")
+    if isinstance(titles, list) and titles:
+        for t, d in titles[:10]:
+            print(f"    · {t}  [{d}]")
+        report_hits("GS Exchanges", [t for t, d in titles])
+    else:
+        print(f"  {titles if isinstance(titles,str) else '無標題'}")
+
+
+# ============================================================
+# 5. Morgan Stanley Thoughts on the Market(頻道ID,可能查無單一feedUrl)
+# ============================================================
+def probe_ms_totm():
+    print("\n" + "=" * 62)
+    print("5. Morgan Stanley Thoughts on the Market(頻道ID,可能失敗)")
+    print("=" * 62)
+    channel_id = "6448733212"
+    lookup_url = f"https://itunes.apple.com/lookup?id={channel_id}"
+    try:
+        r = requests.get(lookup_url, headers=UA, timeout=20)
+        print(f"  iTunes Lookup [{r.status_code}] {lookup_url}")
+        if r.status_code != 200:
+            return
+        data = r.json()
+        results = data.get("results", [])
+        if not results:
+            print("  ⚠ 查無結果(頻道ID可能不支援直接lookup)")
+            return
+        feed_url = results[0].get("feedUrl")
+        print(f"  反查結果: {json.dumps(results[0], ensure_ascii=False)[:300]}")
+        if not feed_url:
+            print("  ⚠ 沒有feedUrl欄位(頻道聚合多節目,無單一RSS)")
+            return
+        titles, code = try_rss(feed_url)
+        print(f"\n  RSS [{code}] {feed_url}")
+        if isinstance(titles, list) and titles:
+            for t, d in titles[:10]:
+                print(f"    · {t}")
+            report_hits("MS Thoughts on the Market", [t for t, d in titles])
+    except Exception as e:
+        print(f"  錯誤: {e}")
+
+
 def main():
     print("############################################################")
-    print("3個候選來源 — 合併探測")
+    print("5個候選來源 — 合併探測")
     print("############################################################")
     probe_youxian()
     probe_wearn()
     probe_marketwatch()
+    probe_gs_exchanges()
+    probe_ms_totm()
     print("\n" + "#" * 62)
     print("→ 全部結果貼回給 Claude,逐一決定併入/放棄")
     print("#" * 62)
