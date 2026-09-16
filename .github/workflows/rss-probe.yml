@@ -24,4 +24,4 @@ jobs:
       - name: Run RSS probe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python google_news_rss_probe.py
+        run: python google_news_us_probe.py
