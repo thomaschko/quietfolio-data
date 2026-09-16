@@ -161,8 +161,16 @@ def detect_fixed_keywords(name2code, now_ts):
     print("[偵測源1] 固定關鍵字熱度追蹤")
     try:
         with open(WATCHLIST_FILE, "r", encoding="utf-8") as f:
-            keywords = [ln.strip() for ln in f
-                        if ln.strip() and not ln.startswith("#")]
+            raw_keywords = [ln.strip() for ln in f
+                            if ln.strip() and not ln.startswith("#")]
+        # 去重(保留原順序):避免watchlist.txt裡不慎重複的詞被掃描/輸出兩次
+        # (2026-09-16修正:發現NAND曾因歷史編輯疏漏重複列在兩個分類段落底下)
+        seen_kw = set()
+        keywords = []
+        for kw in raw_keywords:
+            if kw not in seen_kw:
+                seen_kw.add(kw)
+                keywords.append(kw)
     except FileNotFoundError:
         print(f"  找不到 {WATCHLIST_FILE}")
         return []
