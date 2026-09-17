@@ -205,7 +205,7 @@ def main():
     try:
         from news_sources import fetch_titles_by_source
         by_source = fetch_titles_by_source()
-        EN_SOURCES = {"trendforce", "eetimes", "cnbc_yahoo", "gs_exchanges"}  # 英文為主的來源
+        EN_SOURCES = {"trendforce", "eetimes", "cnbc_yahoo", "gs_exchanges", "google_news_us"}  # 英文為主的來源
         for src, titles in by_source.items():
             cnt = 0
             for title in titles:
