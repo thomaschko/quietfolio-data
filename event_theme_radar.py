@@ -91,8 +91,13 @@ def build_name2code():
                 if not (code and short and re.match(r"^\d{4,6}$", code)):
                     continue
                 name2code[short] = code
+                # 2026-09-17根因修正:「材料-KY」去掉-KY後變成別名「材料」,
+                # 這是極常見的中文詞彙(半導體材料/封裝材料到處都在講),
+                # 任何2字以下的別名都有這種「巧合變成常用詞」的高風險,
+                # 一律不產生這種別名(完整名稱如「材料-KY」仍在name2code裡,
+                # 不影響正常比對,只是不額外產生這個過短、易誤判的捷徑)。
                 alias = short.replace("-KY", "").replace("＊", "").replace("*", "").strip()
-                if alias and alias != short and alias not in name2code:
+                if alias and alias != short and len(alias) >= 3 and alias not in name2code:
                     name2code[alias] = code
             print(f"  {tag} 股票清單: +{len(name2code)-before} → 累計 {len(name2code)}")
         except Exception as e:
@@ -258,6 +263,7 @@ def detect_fixed_keywords(name2code, now_ts):
                 #   - 保留門檻:強命中>=1次,或非綜述文裡的弱命中分數>=2
                 strong_hits = {}   # {code: 次數} 明確股號命中,不受綜述文影響
                 weak_score = {}    # {code: 分數} 純股名命中,只採計「非綜述文」
+                evidence = {}      # {code: [文字片段]} 診斷用,記錄實際命中的文字脈絡
                 for n in recent:
                     text = n["title"] + " " + n["summary"]
                     hits = extract_codes(text, name2code)
@@ -275,6 +281,11 @@ def detect_fixed_keywords(name2code, now_ts):
                             strong_hits[cd] = strong_hits.get(cd, 0) + 1
                         else:  # 弱命中(純股名,且來自非綜述文)
                             weak_score[cd] = weak_score.get(cd, 0) + w
+                        # 2026-09-17新增:記錄命中證據(標題前60字),供人工回查誤判成因,
+                        # 避免像4763/2395/2882這種案例只能靠反覆猜測才找得到根因
+                        evidence.setdefault(cd, [])
+                        if len(evidence[cd]) < 3:
+                            evidence[cd].append(n["title"][:60])
                 all_codes = set(strong_hits) | set(weak_score)
                 code_score = {cd: strong_hits.get(cd, 0) * 2 + weak_score.get(cd, 0)
                               for cd in all_codes}  # 供排序用的綜合分數
@@ -282,6 +293,17 @@ def detect_fixed_keywords(name2code, now_ts):
                     [cd for cd in all_codes
                      if strong_hits.get(cd, 0) >= 1 or weak_score.get(cd, 0) >= 2],
                     key=lambda c: -code_score[c])
+
+                # 2026-09-17暫時安全網:4763/2395/2882連續兩輪修正後仍持續誤判,
+                # 根因尚未100%查明(4763的別名生成bug已修但效果待驗證,2395/2882
+                # 成因未知),先明確排除這三檔並印出證據,下次若又有新的誤判案例,
+                # 直接看evidence欄位裡的實際文字脈絡,不用再靠反覆猜測修正。
+                KNOWN_BAD_CODES = {"4763", "2395", "2882"}
+                for cd in KNOWN_BAD_CODES:
+                    if cd in codes:
+                        print(f"      ⚠ 安全網排除 {cd}(累計仍達門檻,根因待查),"
+                              f"命中證據: {evidence.get(cd, [])}")
+                codes = [cd for cd in codes if cd not in KNOWN_BAD_CODES]
 
             results.append({
                 "theme": kw,
