@@ -261,11 +261,19 @@ def detect_fixed_keywords(name2code, now_ts):
                 for n in recent:
                     text = n["title"] + " " + n["summary"]
                     hits = extract_codes(text, name2code)
-                    is_roundup = len(hits) > 4  # 單篇命中>4檔視為大盤綜述文
+                    # 2026-09-17二次修正:第一版只讓「綜述文」排除弱命中,強命中
+                    # (明確股號)完全不受限制——但實測發現這個假設有漏洞:一篇
+                    # 廣泛產業综述長文,也可能對好幾家不同公司都用明確股號格式
+                    # 分段介紹,這種情況下強命中一樣不可信,不該無條件採計。
+                    # 修正:判斷「是否綜述文」時看整篇命中的所有股票數(強+弱都算),
+                    # 只要單篇超過4檔,該篇的強命中和弱命中就「整篇」都不採計。
+                    is_roundup = len(hits) > 4  # 單篇命中>4檔(不分強弱)視為大盤綜述文
+                    if is_roundup:
+                        continue  # 綜述文整篇不計入任何一檔股票的分數
                     for cd, w in hits.items():
-                        if w == 2:  # 強命中(明確股號格式)
+                        if w == 2:  # 強命中(明確股號格式,且來自非綜述文)
                             strong_hits[cd] = strong_hits.get(cd, 0) + 1
-                        elif not is_roundup:  # 弱命中:綜述文整篇排除,其餘正常累加
+                        else:  # 弱命中(純股名,且來自非綜述文)
                             weak_score[cd] = weak_score.get(cd, 0) + w
                 all_codes = set(strong_hits) | set(weak_score)
                 code_score = {cd: strong_hits.get(cd, 0) * 2 + weak_score.get(cd, 0)
