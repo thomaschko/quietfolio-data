@@ -295,6 +295,14 @@ def detect_fixed_keywords(name2code, now_ts):
                     # 強命中不能無條件信任)。
                     is_roundup = len(hits) > 4
                     if is_roundup:
+                        # 2026-09-17七次修正:新增診斷——貿聯-KY(3665)這種本來
+                        # 穩定出現的股票,加了「綜述文整篇排除」機制後突然消失,
+                        # 懷疑是台股新聞常見的「電源三雄XXX、XXX、XXX同步噴出」
+                        # 這類「一次點名3-5檔『真正相關』受惠股」的寫法,被誤判成
+                        # 雜訊綜述文一起排除。先印出被排除文章的股號清單,下次
+                        # 有證據才能判斷是否需要放寬(而非再猜一次)。
+                        print(f"      ⊘ 綜述文排除(命中{len(hits)}檔,不採計): "
+                              f"{sorted(hits.keys())} ← {n['title'][:50]}")
                         continue
                     # 2026-09-17六次修正:「kw not in text」逐字比對防護撤回後,
                     # 研華(2395)自己談毛利率的文章又回來污染sidecar power/
