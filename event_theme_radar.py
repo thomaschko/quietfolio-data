@@ -266,44 +266,56 @@ def detect_fixed_keywords(name2code, now_ts):
                 evidence = {}      # {code: [文字片段]} 診斷用,記錄實際命中的文字脈絡
                 for n in recent:
                     text = n["title"] + " " + n["summary"]
+                    # 2026-09-17三次修正:診斷證據找到真正根因——鉅亨搜尋API回傳
+                    # 的結果不保證真的跟查詢關鍵字直接相關(例如搜「sidecar power」
+                    # 卻搜到一篇純粹在談研華(2395)自己毛利率的文章,標題完全沒有
+                    # sidecar power字樣)。修正:先確認這篇文章裡真的有出現「正在
+                    # 查詢的關鍵字本身」,不然就算鉅亨把它搜出來,也不採計。
+                    if kw not in text:
+                        continue
+                    # 2026-09-17四次修正:發現另一種根因——同一個詞在不同產業裡
+                    # 撞名。「CUBE」同時是(1)華邦電的3D堆疊記憶體技術官方產品名
+                    # (2)國泰世華CUBE信用卡(600萬張流通量的熱門商品)。兩種文章
+                    # 都會合理包含「CUBE」三個字,光靠關鍵字比對分不出來,需要額外
+                    # 的消歧義上下文詞才能判斷是哪個意思。可擴充:未來若又發現其他
+                    # 撞名詞,依樣加進這個字典即可,不用改動邏輯本身。
+                    DISAMBIGUATION = {
+                        "CUBE": ["記憶體", "華邦", "3D堆疊", "TSV", "類HBM",
+                                 "邊緣AI", "3DCaaS", "堆疊技術", "混合鍵合"],
+                    }
+                    if kw in DISAMBIGUATION:
+                        if not any(ctx in text for ctx in DISAMBIGUATION[kw]):
+                            continue  # 沒有任何消歧義上下文詞,視為撞名的其他意思,跳過
                     hits = extract_codes(text, name2code)
-                    # 2026-09-17二次修正:第一版只讓「綜述文」排除弱命中,強命中
-                    # (明確股號)完全不受限制——但實測發現這個假設有漏洞:一篇
-                    # 廣泛產業综述長文,也可能對好幾家不同公司都用明確股號格式
-                    # 分段介紹,這種情況下強命中一樣不可信,不該無條件採計。
-                    # 修正:判斷「是否綜述文」時看整篇命中的所有股票數(強+弱都算),
-                    # 只要單篇超過4檔,該篇的強命中和弱命中就「整篇」都不採計。
-                    is_roundup = len(hits) > 4  # 單篇命中>4檔(不分強弱)視為大盤綜述文
+                    # 2026-09-17二次修正:判斷「是否綜述文」時看整篇命中的所有
+                    # 股票數(強+弱都算),只要單篇超過4檔,該篇的強命中和弱命中
+                    # 就「整篇」都不採計(廣泛產業综述長文也可能用明確股號格式
+                    # 分段介紹多家公司,強命中不能無條件信任)。
+                    is_roundup = len(hits) > 4
                     if is_roundup:
-                        continue  # 綜述文整篇不計入任何一檔股票的分數
+                        continue
                     for cd, w in hits.items():
-                        if w == 2:  # 強命中(明確股號格式,且來自非綜述文)
+                        if w == 2:
                             strong_hits[cd] = strong_hits.get(cd, 0) + 1
-                        else:  # 弱命中(純股名,且來自非綜述文)
+                        else:
                             weak_score[cd] = weak_score.get(cd, 0) + w
-                        # 2026-09-17新增:記錄命中證據(標題前60字),供人工回查誤判成因,
-                        # 避免像4763/2395/2882這種案例只能靠反覆猜測才找得到根因
                         evidence.setdefault(cd, [])
                         if len(evidence[cd]) < 3:
                             evidence[cd].append(n["title"][:60])
                 all_codes = set(strong_hits) | set(weak_score)
                 code_score = {cd: strong_hits.get(cd, 0) * 2 + weak_score.get(cd, 0)
-                              for cd in all_codes}  # 供排序用的綜合分數
+                              for cd in all_codes}
                 codes = sorted(
                     [cd for cd in all_codes
                      if strong_hits.get(cd, 0) >= 1 or weak_score.get(cd, 0) >= 2],
                     key=lambda c: -code_score[c])
 
-                # 2026-09-17暫時安全網:4763/2395/2882連續兩輪修正後仍持續誤判,
-                # 根因尚未100%查明(4763的別名生成bug已修但效果待驗證,2395/2882
-                # 成因未知),先明確排除這三檔並印出證據,下次若又有新的誤判案例,
-                # 直接看evidence欄位裡的實際文字脈絡,不用再靠反覆猜測修正。
-                KNOWN_BAD_CODES = {"4763", "2395", "2882"}
-                for cd in KNOWN_BAD_CODES:
-                    if cd in codes:
-                        print(f"      ⚠ 安全網排除 {cd}(累計仍達門檻,根因待查),"
-                              f"命中證據: {evidence.get(cd, [])}")
-                codes = [cd for cd in codes if cd not in KNOWN_BAD_CODES]
+                # 2026-09-17:暫時安全網已移除——診斷證據確認真正根因(鉅亨搜尋
+                # 不精準+CUBE撞名)後已對症下藥,不再需要硬擋名單。若之後又有
+                # 類似誤判,印出證據供人工查證。
+                if codes:
+                    for cd in codes[:5]:
+                        print(f"      · {cd} 命中證據: {evidence.get(cd, [])[:2]}")
 
             results.append({
                 "theme": kw,
