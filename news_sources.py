@@ -69,6 +69,18 @@ GOOGLE_NEWS_QUERIES = [
     "HBM 記憶體 when:3d",
 ]
 
+# Google News美國版(2026-09-16確認)——補足英文來源不足的缺口。
+# 關鍵發現:太廣泛的查詢(如"AI data center power")會被地方政治新聞
+# (居民反對資料中心/川普評論)、行銷垃圾內容(不相關市場預測文)淹沒;
+# 只留技術限定詞夠精準的查詢(矽光子/CoWoS/HBM),已實測確認高相關密度,
+# 其中HBM查詢還抓到Reuters獨家(SK Hynix與Intel洽談赴美設廠生產記憶體)。
+GOOGLE_NEWS_US_QUERIES = [
+    "silicon photonics when:3d",
+    "CoWoS advanced packaging when:3d",
+    "HBM memory chip when:3d",
+    "SiC GaN power semiconductor when:3d",
+]
+
 # IC之音科技咖是全電台節目大雜燴(含生活/歷史/親子類與科技無關內容),
 # 只保留標題開頭是這些科技相關子節目標籤的集數,濾掉其餘雜訊
 IC975_KEEP_PREFIXES = ("【科技領航家】", "【iSEE夢想家】", "【科技聽IC】", "【DIGITIMES每日新聞】",
@@ -313,6 +325,33 @@ def _fetch_google_news():
     return all_titles
 
 
+def _fetch_google_news_us():
+    """Google News RSS美國版(2026-09-16確認)。只用技術限定詞夠精準的查詢
+    (矽光子/CoWoS/HBM/SiC GaN),避免太廣泛的查詢被地方政治新聞或行銷垃圾
+    內容淹沒(已實測:「AI data center power」會抓到大量居民反對資料中心
+    的地方新聞,「semiconductor supply chain」會抓到不相關市場預測垃圾文)。
+    英文媒體名稱通常較長,後綴清理長度上限放寬到40字。"""
+    all_titles = []
+    for q in GOOGLE_NEWS_US_QUERIES:
+        url = f"https://news.google.com/rss/search?q={quote(q)}&hl=en-US&gl=US&ceid=US:en"
+        try:
+            r = requests.get(url, headers=UA, timeout=20)
+            if r.status_code != 200:
+                continue
+            root = ET.fromstring(r.text)
+            for it in root.iter("item"):
+                title_el = it.find("title")
+                if title_el is None or not title_el.text:
+                    continue
+                title = title_el.text.strip()
+                title = re.sub(r'\s*-\s*[^-]{2,40}$', '', title).strip()
+                if title:
+                    all_titles.append(title)
+        except Exception:
+            continue
+    return all_titles
+
+
 def _fetch_ic975():
     """IC之音科技咖(全站節目大雜燴,只保留IC975_KEEP_PREFIXES指定的科技相關子節目標題,
     濾掉生活/歷史/親子類等無關內容;RSS含613集全部歷史存檔,已加日期過濾)。"""
@@ -473,6 +512,7 @@ def fetch_titles_by_source():
         "gs_exchanges": _fetch_gs_exchanges(),
         "moneydj_pod": _fetch_moneydj_podcast(),
         "google_news": _fetch_google_news(),
+        "google_news_us": _fetch_google_news_us(),
         "telegram": _fetch_telegram(),
     }
     try:
