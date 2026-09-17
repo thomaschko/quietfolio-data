@@ -245,17 +245,35 @@ def detect_fixed_keywords(name2code, now_ts):
             else:
                 print(f"    · My-TW-Coverage 查無對應主題檔,退回新聞猜測法")
                 # 退回:累計每檔股票的可信度分數(跨新聞),過濾雜訊
-                code_score = {}
+                # 2026-09-16修正:原本「綜述文降權減半+分數>=2保留」的機制,
+                # 讓材料-KY(4763)/研華(2395)/國泰金(2882)這類跟題材完全無關的
+                # 股票,只因為在多篇文章裡被順帶提及(純股名比對的弱命中),
+                # 分數就跨過門檻被誤判成受惠股(人工查證後確認業務完全不相關)。
+                # 修正邏輯:
+                #   - 強命中(文章裡明確寫出股號,如「(3665)」)永遠不打折,只要
+                #     出現1次就視為高可信度,因為這是作者刻意點名,不是巧合
+                #   - 弱命中(僅股名比對)才需要防雜訊:單篇文章命中>4檔視為
+                #     「大盤綜述文」,這種文章裡的弱命中整篇捨棄不計(不只是打折),
+                #     因為綜述文提到的股票多半只是並列點名,不是真的業務關聯
+                #   - 保留門檻:強命中>=1次,或非綜述文裡的弱命中分數>=2
+                strong_hits = {}   # {code: 次數} 明確股號命中,不受綜述文影響
+                weak_score = {}    # {code: 分數} 純股名命中,只採計「非綜述文」
                 for n in recent:
                     text = n["title"] + " " + n["summary"]
                     hits = extract_codes(text, name2code)
-                    # 綜述新聞(單篇抓>8檔)是「大盤點名」類,個股關聯低 → 該篇權重減半
-                    weight_mult = 0.5 if len(hits) > 8 else 1.0
+                    is_roundup = len(hits) > 4  # 單篇命中>4檔視為大盤綜述文
                     for cd, w in hits.items():
-                        code_score[cd] = code_score.get(cd, 0) + w * weight_mult
-                # 只保留分數>=2(被明確股號點名1次,或純股名出現2次以上)
-                codes = sorted([cd for cd, s in code_score.items() if s >= 2],
-                               key=lambda c: -code_score[c])
+                        if w == 2:  # 強命中(明確股號格式)
+                            strong_hits[cd] = strong_hits.get(cd, 0) + 1
+                        elif not is_roundup:  # 弱命中:綜述文整篇排除,其餘正常累加
+                            weak_score[cd] = weak_score.get(cd, 0) + w
+                all_codes = set(strong_hits) | set(weak_score)
+                code_score = {cd: strong_hits.get(cd, 0) * 2 + weak_score.get(cd, 0)
+                              for cd in all_codes}  # 供排序用的綜合分數
+                codes = sorted(
+                    [cd for cd in all_codes
+                     if strong_hits.get(cd, 0) >= 1 or weak_score.get(cd, 0) >= 2],
+                    key=lambda c: -code_score[c])
 
             results.append({
                 "theme": kw,
