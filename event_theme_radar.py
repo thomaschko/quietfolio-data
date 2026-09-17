@@ -296,7 +296,26 @@ def detect_fixed_keywords(name2code, now_ts):
                     is_roundup = len(hits) > 4
                     if is_roundup:
                         continue
+                    # 2026-09-17六次修正:「kw not in text」逐字比對防護撤回後,
+                    # 研華(2395)自己談毛利率的文章又回來污染sidecar power/
+                    # power shelf/power rack三個題材(同一篇文章被鉅亨同時
+                    # 搜尋回傳給三個不同關鍵字,疑似語意搜尋誤判)。使用者已
+                    # 直接確認研華本業是邊緣運算/工業電腦,跟電源/HVDC家族
+                    # 無業務關聯,故針對這個已驗證兩次的具體案例做題材專屬
+                    # 排除,範圍限定在電源/HVDC家族,不影響研華在其他合理
+                    # 題材(如邊緣運算)裡的正常出現。可擴充:未來若又發現
+                    # 其他「特定股票跨題材污染」案例,依樣加進這個字典即可。
+                    THEME_STOCK_EXCLUDE = {
+                        "sidecar power": {"2395"},
+                        "power shelf": {"2395"},
+                        "power rack": {"2395"},
+                        "HVDC": {"2395"},
+                        "800V HVDC": {"2395"},
+                    }
+                    excluded_for_kw = THEME_STOCK_EXCLUDE.get(kw, set())
                     for cd, w in hits.items():
+                        if cd in excluded_for_kw:
+                            continue
                         if w == 2:
                             strong_hits[cd] = strong_hits.get(cd, 0) + 1
                         else:
