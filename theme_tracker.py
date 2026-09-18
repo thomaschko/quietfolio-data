@@ -89,6 +89,7 @@ def _load_one_file(path, key_field="related_stocks", require_multi_source=None):
         snapshot[term] = {
             "sources": c.get("sources", []),
             "stocks": c.get(key_field, []),
+            "names": c.get("names", {}),  # 2026-09-18新增:{code: 股票名稱}
             "hits": c.get("recent_hits", 0),
             "reason": c.get("reason", ""),
             "confidence": c.get("confidence", ""),  # AI版才有;jieba版為空字串
@@ -477,6 +478,7 @@ def main():
             "term": term,
             "sources": info["sources"],
             "stocks": info["stocks"],
+            "names": info.get("names", {}),  # 2026-09-18新增
             "hits": info["hits"],
             "streak_days": streak,
             "method": info.get("method", "jieba"),
@@ -492,14 +494,16 @@ def main():
 
     print(f"\n🆕 今日首見({len(first_seen)}個):")
     for e in first_seen[:15]:
-        stk = " 股:" + " ".join(e["stocks"]) if e["stocks"] else ""
+        names = e.get("names", {})
+        stk = " 股:" + " ".join(f"{cd}{names.get(cd,'')}" for cd in e["stocks"]) if e["stocks"] else ""
         m = {"ai":"🤖","jieba":"🔤","both":"🤖🔤"}.get(e["method"],"")
         rs = f" ({e['reason']})" if e.get("reason") else ""
         print(f"  {m}{e['term']}  {'/'.join(e['sources'])} 近{e['hits']}次{stk}{rs}")
 
     print(f"\n📈 連續追蹤中({len(ongoing)}個):")
     for e in ongoing[:15]:
-        stk = " 股:" + " ".join(e["stocks"]) if e["stocks"] else ""
+        names = e.get("names", {})
+        stk = " 股:" + " ".join(f"{cd}{names.get(cd,'')}" for cd in e["stocks"]) if e["stocks"] else ""
         m = {"ai":"🤖","jieba":"🔤","both":"🤖🔤"}.get(e["method"],"")
         print(f"  {m}{e['term']}  連續{e['streak_days']}天  {'/'.join(e['sources'])}{stk}")
 
