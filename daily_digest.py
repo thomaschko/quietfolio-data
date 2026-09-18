@@ -162,6 +162,7 @@ def build_digest():
                 "method": e.get("method", "jieba"),
                 "reason": e.get("reason", ""),
                 "stocks": e.get("stocks", []),
+                "names": e.get("names", {}),  # 2026-09-18新增
             })
     else:
         # 降級:theme_tracker還沒產出時,退回讀jieba原始版(相容舊資料)
@@ -321,7 +322,10 @@ def print_digest(d):
     print("\n▍E. 新題材候選(參考 — 需人工判斷)")
     for c in d["E_new_candidates"][:8]:
         tag = "🆕" if c["is_brand_new"] else ""
-        print(f"  {tag}{c['term']}  近{c['recent_hits']}次")
+        names = c.get("names", {})
+        stocks = c.get("stocks", [])
+        stk = "  股:" + " ".join(f"{cd}{names.get(cd,'')}" for cd in stocks) if stocks else ""
+        print(f"  {tag}{c['term']}  近{c['recent_hits']}次{stk}")
 
     print("\n▍E2. 近期關注(固定追蹤詞,有動能但未達暴增門檻)")
     if d.get("E2_near_miss"):
