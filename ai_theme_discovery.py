@@ -28,6 +28,16 @@ import json
 import datetime as dt
 import requests
 
+# 第三層:題材→個股連結,複用event_theme_radar.py裡已驗證過的安全抽取邏輯
+# (強命中優先、綜述文整篇排除、CUBE消歧義、研華題材專屬排除等機制),
+# 避免另外寫一套機械式關鍵字比對、重蹈之前的誤判覆轍。
+try:
+    from event_theme_radar import build_name2code, extract_stock_codes_from_articles
+    LAYER3_AVAILABLE = True
+except Exception as _e:
+    LAYER3_AVAILABLE = False
+    print(f"  ⚠ 第三層(題材→個股)不可用: {_e}")
+
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_MODEL = "gemini-3.5-flash-lite"
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
@@ -209,6 +219,14 @@ def main():
     themes = result.get("themes", [])
     print(f"\nGemini 判斷出 {len(themes)} 個題材:")
 
+    # 第三層:題材→個股連結。只在有題材時才花時間建對照表(TWSE/TPEx各一次API呼叫)。
+    name2code, code2name = {}, {}
+    if LAYER3_AVAILABLE and themes:
+        try:
+            name2code, code2name = build_name2code()
+        except Exception as e:
+            print(f"  ⚠ 股號對照表建立失敗,本次題材將不含個股: {e}")
+
     candidates = []
     for th in themes:
         term = th.get("term", "").strip()
@@ -219,17 +237,29 @@ def main():
         for rid in related_ids:
             if 0 <= rid < len(title_list):
                 srcs |= title_list[rid][1]
+        # 第三層:只對Gemini自己判定「支撐這個題材」的標題(related_ids)
+        # 抽取股號,不是重新對全部標題做關鍵字搜尋——因為Gemini已經用語意
+        # 理解篩過一輪,這批標題本身跟題材的關聯性遠高於機械式關鍵字比對,
+        # 天然避開「文字表面命中但業務無關」的問題(如研華/國泰金案例)。
+        stocks, names = [], {}
+        if LAYER3_AVAILABLE and name2code:
+            related_texts = [title_list[rid][0] for rid in related_ids
+                              if 0 <= rid < len(title_list)]
+            stocks, _ev = extract_stock_codes_from_articles(term, related_texts, name2code)
+            names = {cd: code2name.get(cd, "") for cd in stocks}  # 2026-09-17新增
         entry = {
             "term": term,
             "reason": th.get("reason", ""),
             "confidence": th.get("confidence", "medium"),
             "sources": sorted(srcs),
-            "stocks": [],  # AI版暫不解析個股,交給人工或後續比對watchlist
+            "stocks": stocks,
+            "names": names,  # 2026-09-17新增:{code: 股票名稱}
             "recent_hits": len(related_ids),
         }
         candidates.append(entry)
         conf_flag = "🔥高信心" if entry["confidence"] == "high" else ""
-        print(f"  {term}  {'/'.join(entry['sources'])}  {th.get('reason','')} {conf_flag}")
+        stock_flag = ("  股:" + " ".join(f"{cd}{names.get(cd,'')}" for cd in stocks)) if stocks else ""
+        print(f"  {term}  {'/'.join(entry['sources'])}  {th.get('reason','')} {conf_flag}{stock_flag}")
 
     multi_source = [c for c in candidates if len(c["sources"]) >= 2]
 
