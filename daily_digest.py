@@ -102,6 +102,7 @@ def build_digest():
                 "ratio": t.get("ratio"),
                 "baseline": t.get("baseline_mean"),
                 "codes": t.get("codes", []),
+                "names": t.get("names", {}),  # 2026-09-17新增
                 "semantic_risk": t.get("semantic_risk", ""),
             })
 
@@ -128,6 +129,7 @@ def build_digest():
             surge_themes.append({
                 "theme": t["theme"], "ratio": t.get("ratio"),
                 "codes": t.get("codes", []),
+                "names": t.get("names", {}),  # 2026-09-17新增
             })
     surge_themes.sort(key=lambda x: -(x.get("ratio") or 0))
 
@@ -301,7 +303,9 @@ def print_digest(d):
     print("\n▍B. 未發酵題材(發酵前緣 — 大眾認知剛翹頭)")
     for t in d["B_preferment_themes"]:
         risk = " ⚠" + t["semantic_risk"][:20] if t.get("semantic_risk") else ""
-        print(f"  {t['theme']}  暴增{t['ratio']} 基線{t['baseline']}  股:{' '.join(t['codes'][:5])}{risk}")
+        names = t.get("names", {})  # 2026-09-17新增,舊來源查無此欄位時優雅退回純代碼
+        stock_str = " ".join(f"{cd}{names.get(cd,'')}" for cd in t["codes"][:5])
+        print(f"  {t['theme']}  暴增{t['ratio']} 基線{t['baseline']}  股:{stock_str}{risk}")
 
     print("\n▍C. 券商覆蓋暴增(機構領先 — 多家券商同時cover)")
     for c in d["C_broker_coverage"]:
@@ -310,7 +314,9 @@ def print_digest(d):
 
     print("\n▍D. 熱度暴增題材(新聞討論升溫)")
     for t in d["D_surge_themes"][:8]:
-        print(f"  {t['theme']}  暴增{t['ratio']}  股:{' '.join(t['codes'][:5])}")
+        names = t.get("names", {})  # 2026-09-17新增
+        stock_str = " ".join(f"{cd}{names.get(cd,'')}" for cd in t["codes"][:5])
+        print(f"  {t['theme']}  暴增{t['ratio']}  股:{stock_str}")
 
     print("\n▍E. 新題材候選(參考 — 需人工判斷)")
     for c in d["E_new_candidates"][:8]:
