@@ -72,6 +72,7 @@ MOPS_EXCLUDE = [
 # ============================================================
 def build_name2code():
     name2code = {}
+    code2name = {}  # 反向對照:代碼→官方公司簡稱(給顯示用,不含alias變體)
     sources = [
         ("https://openapi.twse.com.tw/v1/opendata/t187ap03_L", "TWSE"),
         ("https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_O", "TPEx"),
@@ -91,6 +92,7 @@ def build_name2code():
                 if not (code and short and re.match(r"^\d{4,6}$", code)):
                     continue
                 name2code[short] = code
+                code2name[code] = short  # 用官方公司簡稱當顯示名稱(不是alias)
                 # 2026-09-17根因修正:「材料-KY」去掉-KY後變成別名「材料」,
                 # 這是極常見的中文詞彙(半導體材料/封裝材料到處都在講),
                 # 任何2字以下的別名都有這種「巧合變成常用詞」的高風險,
@@ -102,7 +104,7 @@ def build_name2code():
             print(f"  {tag} 股票清單: +{len(name2code)-before} → 累計 {len(name2code)}")
         except Exception as e:
             print(f"  ⚠ {tag} 股票清單抓取失敗: {e}")
-    return name2code
+    return name2code, code2name
 
 
 def extract_codes(text, name2code):
@@ -119,6 +121,65 @@ def extract_codes(text, name2code):
             if cd not in codes:
                 codes[cd] = 1
     return codes
+
+
+def extract_stock_codes_from_articles(kw, texts, name2code, log_evidence=False):
+    """從一批文章文字裡,用「強命中優先、綜述文整篇排除」的安全邏輯抽取
+    相關股票代碼。這是2026-09-17一連串除錯後確認的最終版邏輯,被
+    event_theme_radar.py(watchlist關鍵字題材)和ai_theme_discovery.py
+    (AI自由發現題材)共用,確保兩種題材來源使用同一套已驗證過的安全機制,
+    不重複寫、不各自累積不同的bug。
+
+    kw: 用於查詢DISAMBIGUATION/THEME_STOCK_EXCLUDE字典的鍵(watchlist
+        關鍵字或AI題材名稱皆可,查無對應項目時自動略過,不影響抽取邏輯本身)。
+    texts: 文章文字清單(list of str,通常是title或title+summary)。
+    回傳: (codes, evidence) — codes是排序後的股號清單,evidence是
+        {code: [文字片段]} 供人工回查用。
+    """
+    DISAMBIGUATION = {
+        "CUBE": ["記憶體", "華邦", "3D堆疊", "TSV", "類HBM",
+                 "邊緣AI", "3DCaaS", "堆疊技術", "混合鍵合"],
+    }
+    THEME_STOCK_EXCLUDE = {
+        "sidecar power": {"2395"},
+        "power shelf": {"2395"},
+        "power rack": {"2395"},
+        "HVDC": {"2395"},
+        "800V HVDC": {"2395"},
+    }
+    filtered_texts = texts
+    if kw in DISAMBIGUATION:
+        filtered_texts = [t for t in texts if any(ctx in t for ctx in DISAMBIGUATION[kw])]
+    excluded_for_kw = THEME_STOCK_EXCLUDE.get(kw, set())
+
+    strong_hits, weak_score, evidence = {}, {}, {}
+    for text in filtered_texts:
+        hits = extract_codes(text, name2code)
+        is_roundup = len(hits) > 4  # 單篇命中>4檔視為大盤綜述文,整篇不採計
+        if is_roundup:
+            if log_evidence:
+                print(f"      ⊘ 綜述文排除(命中{len(hits)}檔,不採計): "
+                      f"{sorted(hits.keys())} ← {text[:50]}")
+            continue
+        for cd, w in hits.items():
+            if cd in excluded_for_kw:
+                continue
+            if w == 2:  # 強命中(明確股號格式)
+                strong_hits[cd] = strong_hits.get(cd, 0) + 1
+            else:  # 弱命中(純股名)
+                weak_score[cd] = weak_score.get(cd, 0) + w
+            evidence.setdefault(cd, [])
+            if len(evidence[cd]) < 3:
+                evidence[cd].append(text[:60])
+
+    all_codes = set(strong_hits) | set(weak_score)
+    code_score = {cd: strong_hits.get(cd, 0) * 2 + weak_score.get(cd, 0)
+                  for cd in all_codes}
+    codes = sorted(
+        [cd for cd in all_codes
+         if strong_hits.get(cd, 0) >= 1 or weak_score.get(cd, 0) >= 2],
+        key=lambda c: -code_score[c])
+    return codes, evidence
 
 
 # ============================================================
@@ -162,7 +223,7 @@ def cnyes_search(keyword, start_ts, max_pages=10):
 # ============================================================
 # 偵測源 1: 固定關鍵字熱度暴增
 # ============================================================
-def detect_fixed_keywords(name2code, now_ts):
+def detect_fixed_keywords(name2code, code2name, now_ts):
     print("[偵測源1] 固定關鍵字熱度追蹤")
     try:
         with open(WATCHLIST_FILE, "r", encoding="utf-8") as f:
@@ -245,6 +306,7 @@ def detect_fixed_keywords(name2code, now_ts):
 
             if coverage_result:
                 codes = coverage_result["codes"]
+                names = coverage_result["names"]  # My-TW-Coverage本身就有{code:name}
                 codes_source = "my-tw-coverage"
                 print(f"    ✓ My-TW-Coverage 找到 {coverage_result['company_count']} 家公司(取代新聞猜測)")
             else:
@@ -257,100 +319,22 @@ def detect_fixed_keywords(name2code, now_ts):
                 # 修正邏輯:
                 #   - 強命中(文章裡明確寫出股號,如「(3665)」)永遠不打折,只要
                 #     出現1次就視為高可信度,因為這是作者刻意點名,不是巧合
-                #   - 弱命中(僅股名比對)才需要防雜訊:單篇文章命中>4檔視為
-                #     「大盤綜述文」,這種文章裡的弱命中整篇捨棄不計(不只是打折),
-                #     因為綜述文提到的股票多半只是並列點名,不是真的業務關聯
-                #   - 保留門檻:強命中>=1次,或非綜述文裡的弱命中分數>=2
-                strong_hits = {}   # {code: 次數} 明確股號命中,不受綜述文影響
-                weak_score = {}    # {code: 分數} 純股名命中,只採計「非綜述文」
-                evidence = {}      # {code: [文字片段]} 診斷用,記錄實際命中的文字脈絡
-                for n in recent:
-                    text = n["title"] + " " + n["summary"]
-                    # 2026-09-17五次修正:上一輪「kw not in text」的逐字比對防護
-                    # 造成嚴重迴歸——已撤回。根因:cnyes搜尋「sidecar power」
-                    # 「HVDC」這類英文片語時,回傳的多半是中文技術文章(用中文
-                    # 敘述概念,不會逐字寫出英文片語本身),逐字比對會把這些
-                    # 合理案例全部誤殺,導致HVDC/sidecar power/power shelf/
-                    # power rack等你系統裡最重要的熱門題材,受惠股清單直接清空。
-                    # 這個防護的原始目的(擋掉研華/國泰金這種公司自身新聞被
-                    # 鉅亨誤判成相關結果)改用更精準的CUBE式消歧義字典處理,
-                    # 不再用「一刀切」的逐字比對。
-                    # 2026-09-17四次修正:同名詞撞名問題。「CUBE」同時是
-                    # (1)華邦電的3D堆疊記憶體技術官方產品名
-                    # (2)國泰世華CUBE信用卡(600萬張流通量的熱門商品)。
-                    # 兩種文章都會合理包含「CUBE」三個字,需要額外的消歧義
-                    # 上下文詞才能判斷是哪個意思。可擴充:未來若又發現其他
-                    # 撞名詞,依樣加進這個字典即可,不用改動核心邏輯。
-                    DISAMBIGUATION = {
-                        "CUBE": ["記憶體", "華邦", "3D堆疊", "TSV", "類HBM",
-                                 "邊緣AI", "3DCaaS", "堆疊技術", "混合鍵合"],
-                    }
-                    if kw in DISAMBIGUATION:
-                        if not any(ctx in text for ctx in DISAMBIGUATION[kw]):
-                            continue  # 沒有任何消歧義上下文詞,視為撞名的其他意思,跳過
-                    hits = extract_codes(text, name2code)
-                    # 判斷「是否綜述文」時看整篇命中的所有股票數(強+弱都算),
-                    # 只要單篇超過4檔,該篇的強命中和弱命中就「整篇」都不採計
-                    # (廣泛產業综述長文也可能用明確股號格式分段介紹多家公司,
-                    # 強命中不能無條件信任)。
-                    is_roundup = len(hits) > 4
-                    if is_roundup:
-                        # 2026-09-17七次修正:新增診斷——貿聯-KY(3665)這種本來
-                        # 穩定出現的股票,加了「綜述文整篇排除」機制後突然消失,
-                        # 懷疑是台股新聞常見的「電源三雄XXX、XXX、XXX同步噴出」
-                        # 這類「一次點名3-5檔『真正相關』受惠股」的寫法,被誤判成
-                        # 雜訊綜述文一起排除。先印出被排除文章的股號清單,下次
-                        # 有證據才能判斷是否需要放寬(而非再猜一次)。
-                        print(f"      ⊘ 綜述文排除(命中{len(hits)}檔,不採計): "
-                              f"{sorted(hits.keys())} ← {n['title'][:50]}")
-                        continue
-                    # 2026-09-17六次修正:「kw not in text」逐字比對防護撤回後,
-                    # 研華(2395)自己談毛利率的文章又回來污染sidecar power/
-                    # power shelf/power rack三個題材(同一篇文章被鉅亨同時
-                    # 搜尋回傳給三個不同關鍵字,疑似語意搜尋誤判)。使用者已
-                    # 直接確認研華本業是邊緣運算/工業電腦,跟電源/HVDC家族
-                    # 無業務關聯,故針對這個已驗證兩次的具體案例做題材專屬
-                    # 排除,範圍限定在電源/HVDC家族,不影響研華在其他合理
-                    # 題材(如邊緣運算)裡的正常出現。可擴充:未來若又發現
-                    # 其他「特定股票跨題材污染」案例,依樣加進這個字典即可。
-                    THEME_STOCK_EXCLUDE = {
-                        "sidecar power": {"2395"},
-                        "power shelf": {"2395"},
-                        "power rack": {"2395"},
-                        "HVDC": {"2395"},
-                        "800V HVDC": {"2395"},
-                    }
-                    excluded_for_kw = THEME_STOCK_EXCLUDE.get(kw, set())
-                    for cd, w in hits.items():
-                        if cd in excluded_for_kw:
-                            continue
-                        if w == 2:
-                            strong_hits[cd] = strong_hits.get(cd, 0) + 1
-                        else:
-                            weak_score[cd] = weak_score.get(cd, 0) + w
-                        evidence.setdefault(cd, [])
-                        if len(evidence[cd]) < 3:
-                            evidence[cd].append(n["title"][:60])
-                all_codes = set(strong_hits) | set(weak_score)
-                code_score = {cd: strong_hits.get(cd, 0) * 2 + weak_score.get(cd, 0)
-                              for cd in all_codes}
-                codes = sorted(
-                    [cd for cd in all_codes
-                     if strong_hits.get(cd, 0) >= 1 or weak_score.get(cd, 0) >= 2],
-                    key=lambda c: -code_score[c])
-
-                # 2026-09-17:暫時安全網已移除——診斷證據確認真正根因(鉅亨搜尋
-                # 不精準+CUBE撞名)後已對症下藥,不再需要硬擋名單。若之後又有
-                # 類似誤判,印出證據供人工查證。
+                # 呼叫共用函式(跟ai_theme_discovery.py共用同一套已驗證邏輯,
+                # 不再各自維護一份、各自累積不同的bug)
+                texts = [n["title"] + " " + n["summary"] for n in recent]
+                codes, evidence = extract_stock_codes_from_articles(
+                    kw, texts, name2code, log_evidence=True)
+                names = {cd: code2name.get(cd, "") for cd in codes}  # 2026-09-17新增:補上名稱
                 if codes:
                     for cd in codes[:5]:
-                        print(f"      · {cd} 命中證據: {evidence.get(cd, [])[:2]}")
+                        print(f"      · {cd}{names.get(cd,'')} 命中證據: {evidence.get(cd, [])[:2]}")
 
             results.append({
                 "theme": kw,
                 "ratio": ratio,
                 "recent_count": len(recent),
                 "codes": codes,
+                "names": names,  # 2026-09-17新增:{code: 股票名稱}
                 "source": "關鍵字暴增",
                 "codes_source": codes_source,  # 標記這批codes是權威資料庫還是新聞猜測
             })
@@ -388,7 +372,7 @@ def _mops_index(fields_sample):
     return idx
 
 
-def detect_mops_events(name2code, today):
+def detect_mops_events(name2code, code2name, today):
     print("[偵測源2] MOPS 重大訊息事件(OpenAPI JSON)")
     sources = [
         ("https://openapi.twse.com.tw/v1/opendata/t187ap04_L", "上市"),
@@ -441,6 +425,7 @@ def detect_mops_events(name2code, today):
                         "ratio": None,
                         "recent_count": 1,
                         "codes": [code],
+                        "names": {code: code2name.get(code, "")},  # 2026-09-17新增
                         "subject": subj_clean[:80],
                         "source": "MOPS重訊",
                     })
@@ -461,11 +446,11 @@ def main():
     now_ts = int(now.timestamp())
 
     print("[前置] 建立股號↔股名對照表")
-    name2code = build_name2code()
+    name2code, code2name = build_name2code()
     print(f"  對照表共 {len(name2code)} 個名稱")
 
-    src1, src1_near_miss = detect_fixed_keywords(name2code, now_ts)
-    src2 = detect_mops_events(name2code, now)
+    src1, src1_near_miss = detect_fixed_keywords(name2code, code2name, now_ts)
+    src2 = detect_mops_events(name2code, code2name, now)
 
     # 偵測源3:維基題材關注度(發酵前緣)。獨立檔,抓不到不影響前兩源。
     try:
