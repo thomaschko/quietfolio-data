@@ -78,20 +78,42 @@ def build_digest():
                 broker_surge.append(code)
 
     # ── 分區 ──
-    # A. 多源共振(2+源)
+    # A. 多源共振:兩種獨立的高信心型態,任一成立即納入
+    #   (1) 跨來源類型共振(原邏輯):同一股被2種以上不同「來源類型」命中
+    #       (cnyes關鍵字暴增/MOPS重訊/wiki關注度/券商覆蓋),來源類型多樣性代表
+    #       訊號來自不同偵測機制,互相獨立佐證。
+    #   (2) 2026-09-21新增:題材群聚共識(theme cluster):同一股被3個以上「不同
+    #       關鍵字」命中,即使全部同屬「關鍵字暴增」這一種來源類型也算。
+    #       根因:貿聯-KY(3665)在9/16曾同時被power shelf/sidecar power/
+    #       power rack/HVDC/800V HVDC五個獨立關鍵字命中,股價於9/18真的噴出
+    #       (+9.95%,逼近漲停)——但因為這五個關鍵字的t["source"]全部寫死是
+    #       同一個字串「關鍵字暴增」,原本的source_count邏輯把它們全部收斂成
+    #       同一個「來源類型」,n=1,永遠達不到>=2門檻,導致這組真實訊號完全
+    #       沒進A區。多個獨立關鍵字同時收斂到同一檔股票,代表市場敘事正在
+    #       往這檔股票集中,是跟MOPS+關鍵字同樣有效、甚至更強的共振型態。
+    HIT_COUNT_THRESHOLD = 3
     resonance = []
     for code, sig in stock_signals.items():
         n = len(sig["sources"])
-        if n >= 2:
+        hit_count = sig["detail"].get("hit_count", 0)
+        via_source_diversity = n >= 2
+        via_theme_cluster = hit_count >= HIT_COUNT_THRESHOLD
+        if via_source_diversity or via_theme_cluster:
             resonance.append({
                 "code": code,
                 "source_count": n,
                 "sources": sorted(sig["sources"]),
+                "hit_count": hit_count,
                 "themes": sig["detail"].get("themes", []),
                 "fermentation": sig["detail"].get("fermentation"),
                 "broker_count": sig["detail"].get("broker_count"),
+                # 標記這筆是靠哪種型態達標,兩者皆達標時都標記(信心最高)
+                "via_source_diversity": via_source_diversity,
+                "via_theme_cluster": via_theme_cluster,
             })
-    resonance.sort(key=lambda x: -x["source_count"])
+    # 排序:兩種型態都達標的最優先,其次看來源數,再看關鍵字命中數
+    resonance.sort(key=lambda x: (-(x["via_source_diversity"] and x["via_theme_cluster"]),
+                                   -x["source_count"], -x["hit_count"]))
 
     # B. 未發酵題材(src3)
     preferment_themes = []
@@ -297,7 +319,12 @@ def print_digest(d):
         for r in d["A_multi_source_resonance"]:
             ferm = " 🌱未發酵" if r.get("fermentation") == "pre-ferment" else ""
             themes = "/".join(r["themes"][:3]) if r["themes"] else ""
-            print(f"  {r['code']}  [{r['source_count']}源: {' '.join(r['sources'])}]{ferm}  {themes}")
+            tags = []
+            if r.get("via_source_diversity"):
+                tags.append(f"{r['source_count']}源: {' '.join(r['sources'])}")
+            if r.get("via_theme_cluster"):
+                tags.append(f"🌾題材群聚: {r['hit_count']}個關鍵字同時命中")
+            print(f"  {r['code']}  [{' | '.join(tags)}]{ferm}  {themes}")
     else:
         print("  (今日無多源共振)")
 
