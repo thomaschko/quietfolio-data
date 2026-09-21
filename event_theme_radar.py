@@ -28,6 +28,19 @@ import time
 import datetime as dt
 import urllib3
 
+# 2026-09-18新增:讓src1的股號抽取也能看到23源(src4)已收集到的標題池,
+# 不再只信任cnyes一個搜尋引擎的收錄範圍。根因:實測發現9/17當天MoneyDJ
+# 有兩篇明確提及貿聯-KY(3665)+800VDC+Vera Rubin的深度報導,但cnyes搜尋
+# 沒收錄到,導致src1完全漏掉這組訊號,即使MoneyDJ本身就是23源之一。
+# 注意:只用來擴充「股號抽取」的文字池,暴增比(近3日 vs 前17日基線)
+# 的計算仍然只用cnyes資料,不能混入23源去污染這個校準過的比例。
+try:
+    from news_sources import fetch_titles_by_source
+    SRC4_AVAILABLE = True
+except Exception as _e:
+    SRC4_AVAILABLE = False
+    print(f"  ⚠ 23源標題池不可用,股號抽取將只用cnyes: {_e}")
+
 # ============================================================
 # 安全性提醒(2026-09-14,已與使用者確認接受此取捨):
 # TPEx(www.tpex.org.tw)伺服器憑證鏈缺少中繼憑證,並非客戶端CA包過期
@@ -223,7 +236,7 @@ def cnyes_search(keyword, start_ts, max_pages=10):
 # ============================================================
 # 偵測源 1: 固定關鍵字熱度暴增
 # ============================================================
-def detect_fixed_keywords(name2code, code2name, now_ts):
+def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None):
     print("[偵測源1] 固定關鍵字熱度追蹤")
     try:
         with open(WATCHLIST_FILE, "r", encoding="utf-8") as f:
@@ -322,6 +335,10 @@ def detect_fixed_keywords(name2code, code2name, now_ts):
                 # 呼叫共用函式(跟ai_theme_discovery.py共用同一套已驗證邏輯,
                 # 不再各自維護一份、各自累積不同的bug)
                 texts = [n["title"] + " " + n["summary"] for n in recent]
+                # 併入23源標題池裡「有出現這個關鍵字」的標題(只做字面比對,
+                # 不影響上面的暴增比計算,只補強股號抽取的文字來源廣度)
+                if src4_titles:
+                    texts += [t for t in src4_titles if kw in t]
                 codes, evidence = extract_stock_codes_from_articles(
                     kw, texts, name2code, log_evidence=True)
                 names = {cd: code2name.get(cd, "") for cd in codes}  # 2026-09-17新增:補上名稱
@@ -449,7 +466,18 @@ def main():
     name2code, code2name = build_name2code()
     print(f"  對照表共 {len(name2code)} 個名稱")
 
-    src1, src1_near_miss = detect_fixed_keywords(name2code, code2name, now_ts)
+    # 2026-09-18新增:抓一次23源標題池,供股號抽取補強用(不影響暴增比計算)
+    src4_titles = []
+    if SRC4_AVAILABLE:
+        try:
+            print("[前置] 抓取23源標題池(供股號抽取補強,一次抓取全部關鍵字共用)")
+            pool = fetch_titles_by_source()
+            src4_titles = [t for titles in pool.values() for t in titles]
+            print(f"  23源標題池共 {len(src4_titles)} 則")
+        except Exception as e:
+            print(f"  ⚠ 23源標題池抓取失敗,股號抽取退回只用cnyes: {e}")
+
+    src1, src1_near_miss = detect_fixed_keywords(name2code, code2name, now_ts, src4_titles)
     src2 = detect_mops_events(name2code, code2name, now)
 
     # 偵測源3:維基題材關注度(發酵前緣)。獨立檔,抓不到不影響前兩源。
