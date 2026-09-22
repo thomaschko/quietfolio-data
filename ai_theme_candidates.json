@@ -1,13 +1,19 @@
 {
-  "generated_at": "2026-09-21 15:18:59.260967",
+  "generated_at": "2026-09-22 05:25:56.139168",
   "candidates": [
     {
-      "term": "CoWoS先進封裝",
-      "reason": "台積電先進封裝擴產與CoWoS-L主流地位",
+      "term": "CoWoS與先進封裝",
+      "reason": "台積電CoWoS與先進封裝供應鏈動態",
       "confidence": "high",
       "sources": [
+        "cna",
+        "cnbc_yahoo",
+        "cnyes",
         "google_news",
-        "google_news_us"
+        "google_news_us",
+        "ic975",
+        "technews",
+        "trendforce"
       ],
       "stocks": [
         "2330",
@@ -17,36 +23,37 @@
         "2330": "台積電",
         "2338": "光罩"
       },
-      "recent_hits": 13
+      "recent_hits": 26
     },
     {
-      "term": "HBM與記憶體荒",
-      "reason": "AI記憶體超級週期與價格漲幅",
+      "term": "HBM與記憶體供需",
+      "reason": "HBM世代與DDR記憶體漲價供需",
       "confidence": "high",
       "sources": [
-        "cna",
         "cnyes",
-        "cnyes_intl",
         "google_news",
         "google_news_us",
         "ic975",
+        "telegram",
         "trendforce"
       ],
       "stocks": [
         "5007",
-        "2344",
+        "8150",
+        "2353",
         "2330"
       ],
       "names": {
         "5007": "三星",
-        "2344": "華邦電",
+        "8150": "南茂",
+        "2353": "宏碁",
         "2330": "台積電"
       },
-      "recent_hits": 60
+      "recent_hits": 95
     },
     {
-      "term": "AI伺服器與散熱",
-      "reason": "資料中心算力升級與水冷散熱需求",
+      "term": "HVDC與電源散熱",
+      "reason": "AI資料中心HVDC與液冷散熱技術",
       "confidence": "high",
       "sources": [
         "cnyes",
@@ -54,59 +61,120 @@
         "technews"
       ],
       "stocks": [
-        "3653",
-        "2330"
+        "8996",
+        "3653"
       ],
       "names": {
-        "3653": "健策",
-        "2330": "台積電"
+        "8996": "高力",
+        "3653": "健策"
       },
-      "recent_hits": 30
+      "recent_hits": 18
     },
     {
-      "term": "AI資料中心電力HVDC",
-      "reason": "高壓直流電與資料中心電力架構變革",
+      "term": "AI伺服器與ASIC",
+      "reason": "AI伺服器供應鏈與客製化晶片",
       "confidence": "high",
       "sources": [
         "cnbc_yahoo",
         "cnyes",
-        "technews",
-        "wapeople"
+        "fugle_blog",
+        "google_news"
       ],
       "stocks": [
-        "3665"
+        "2317",
+        "1459",
+        "3605",
+        "2454",
+        "3715",
+        "6669",
+        "3013"
       ],
       "names": {
-        "3665": "貿聯-KY"
+        "2317": "鴻海",
+        "1459": "聯發",
+        "3605": "宏致",
+        "2454": "聯發科",
+        "3715": "定穎投控",
+        "6669": "緯穎",
+        "3013": "晟銘電"
       },
-      "recent_hits": 10
+      "recent_hits": 48
     },
     {
-      "term": "人形機器人商業化",
-      "reason": "機器人出貨成長與智慧製造應用",
-      "confidence": "medium",
+      "term": "ABF與PCB載板",
+      "reason": "AI伺服器帶動載板及CCL供應鏈",
+      "confidence": "high",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "google_news",
+        "ic975",
+        "telegram"
+      ],
+      "stocks": [
+        "3037",
+        "8046"
+      ],
+      "names": {
+        "3037": "欣興",
+        "8046": "南電"
+      },
+      "recent_hits": 14
+    },
+    {
+      "term": "伺服器CPU與算力瓶頸",
+      "reason": "伺服器CPU成為AI新瓶頸與架構轉變",
+      "confidence": "high",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "google_news",
+        "semianalysis",
+        "technews",
+        "trendforce"
+      ],
+      "stocks": [],
+      "names": {},
+      "recent_hits": 12
+    },
+    {
+      "term": "機器人與自動化",
+      "reason": "人形機器人與自動化零組件發展",
+      "confidence": "high",
       "sources": [
         "cna",
         "cnbc_yahoo",
         "cnyes",
-        "cnyes_intl",
-        "ctee",
         "eetimes",
-        "technews",
-        "wapeople"
+        "wealth"
       ],
       "stocks": [],
       "names": {},
-      "recent_hits": 8
+      "recent_hits": 7
     },
     {
       "term": "玻璃基板與先進材料",
-      "reason": "玻璃基板、TGV與高階電子布料升級",
-      "confidence": "medium",
+      "reason": "玻璃基板TGV與先進封裝材料",
+      "confidence": "high",
       "sources": [
         "cnyes",
         "ic975",
-        "technews",
+        "moneydj_pod",
+        "trendforce"
+      ],
+      "stocks": [],
+      "names": {},
+      "recent_hits": 5
+    },
+    {
+      "term": "被動元件與MLCC",
+      "reason": "AI推升被動元件與高容值MLCC漲價",
+      "confidence": "medium",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "edn",
+        "telegram",
         "trendforce"
       ],
       "stocks": [],
@@ -114,61 +182,76 @@
       "recent_hits": 7
     },
     {
-      "term": "化合物半導體SiC/GaO",
-      "reason": "碳化矽與氧化鎵等寬能隙半導體進展",
+      "term": "功率半導體",
+      "reason": "功率半導體與第三代半導體需求",
       "confidence": "medium",
       "sources": [
         "cnyes",
-        "technews",
+        "fugle_blog",
+        "google_news_us",
         "trendforce"
       ],
-      "stocks": [],
-      "names": {},
-      "recent_hits": 4
+      "stocks": [
+        "2481",
+        "3675",
+        "5425"
+      ],
+      "names": {
+        "2481": "強茂",
+        "3675": "",
+        "5425": ""
+      },
+      "recent_hits": 7
     },
     {
-      "term": "客製化ASIC晶片",
-      "reason": "雲端服務商自研ASIC與XPU比重上升",
-      "confidence": "high",
+      "term": "算力中心與AIDC",
+      "reason": "AI資料中心基礎建設與算力中心",
+      "confidence": "medium",
       "sources": [
+        "cna",
+        "cnbc_yahoo",
         "cnyes",
         "cnyes_intl",
-        "fugle_blog",
+        "ctee",
         "google_news",
         "technews"
       ],
-      "stocks": [],
-      "names": {},
-      "recent_hits": 5
-    },
-    {
-      "term": "智慧型手機與邊緣AI",
-      "reason": "邊緣AI晶片架構與終端處理器升級",
-      "confidence": "medium",
-      "sources": [
-        "cnyes",
-        "eetimes",
-        "wapeople"
-      ],
       "stocks": [
-        "1459",
-        "2454"
+        "2376"
       ],
       "names": {
-        "1459": "聯發",
-        "2454": "聯發科"
+        "2376": "技嘉"
       },
+      "recent_hits": 11
+    },
+    {
+      "term": "代理式AI與晶片架構",
+      "reason": "Agentic AI重塑軟硬體與晶片架構",
+      "confidence": "medium",
+      "sources": [
+        "cna",
+        "cnyes",
+        "telegram"
+      ],
+      "stocks": [],
+      "names": {},
       "recent_hits": 5
     }
   ],
   "multi_source": [
     {
-      "term": "CoWoS先進封裝",
-      "reason": "台積電先進封裝擴產與CoWoS-L主流地位",
+      "term": "CoWoS與先進封裝",
+      "reason": "台積電CoWoS與先進封裝供應鏈動態",
       "confidence": "high",
       "sources": [
+        "cna",
+        "cnbc_yahoo",
+        "cnyes",
         "google_news",
-        "google_news_us"
+        "google_news_us",
+        "ic975",
+        "technews",
+        "trendforce"
       ],
       "stocks": [
         "2330",
@@ -178,36 +261,37 @@
         "2330": "台積電",
         "2338": "光罩"
       },
-      "recent_hits": 13
+      "recent_hits": 26
     },
     {
-      "term": "HBM與記憶體荒",
-      "reason": "AI記憶體超級週期與價格漲幅",
+      "term": "HBM與記憶體供需",
+      "reason": "HBM世代與DDR記憶體漲價供需",
       "confidence": "high",
       "sources": [
-        "cna",
         "cnyes",
-        "cnyes_intl",
         "google_news",
         "google_news_us",
         "ic975",
+        "telegram",
         "trendforce"
       ],
       "stocks": [
         "5007",
-        "2344",
+        "8150",
+        "2353",
         "2330"
       ],
       "names": {
         "5007": "三星",
-        "2344": "華邦電",
+        "8150": "南茂",
+        "2353": "宏碁",
         "2330": "台積電"
       },
-      "recent_hits": 60
+      "recent_hits": 95
     },
     {
-      "term": "AI伺服器與散熱",
-      "reason": "資料中心算力升級與水冷散熱需求",
+      "term": "HVDC與電源散熱",
+      "reason": "AI資料中心HVDC與液冷散熱技術",
       "confidence": "high",
       "sources": [
         "cnyes",
@@ -215,59 +299,120 @@
         "technews"
       ],
       "stocks": [
-        "3653",
-        "2330"
+        "8996",
+        "3653"
       ],
       "names": {
-        "3653": "健策",
-        "2330": "台積電"
+        "8996": "高力",
+        "3653": "健策"
       },
-      "recent_hits": 30
+      "recent_hits": 18
     },
     {
-      "term": "AI資料中心電力HVDC",
-      "reason": "高壓直流電與資料中心電力架構變革",
+      "term": "AI伺服器與ASIC",
+      "reason": "AI伺服器供應鏈與客製化晶片",
       "confidence": "high",
       "sources": [
         "cnbc_yahoo",
         "cnyes",
-        "technews",
-        "wapeople"
+        "fugle_blog",
+        "google_news"
       ],
       "stocks": [
-        "3665"
+        "2317",
+        "1459",
+        "3605",
+        "2454",
+        "3715",
+        "6669",
+        "3013"
       ],
       "names": {
-        "3665": "貿聯-KY"
+        "2317": "鴻海",
+        "1459": "聯發",
+        "3605": "宏致",
+        "2454": "聯發科",
+        "3715": "定穎投控",
+        "6669": "緯穎",
+        "3013": "晟銘電"
       },
-      "recent_hits": 10
+      "recent_hits": 48
     },
     {
-      "term": "人形機器人商業化",
-      "reason": "機器人出貨成長與智慧製造應用",
-      "confidence": "medium",
+      "term": "ABF與PCB載板",
+      "reason": "AI伺服器帶動載板及CCL供應鏈",
+      "confidence": "high",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "google_news",
+        "ic975",
+        "telegram"
+      ],
+      "stocks": [
+        "3037",
+        "8046"
+      ],
+      "names": {
+        "3037": "欣興",
+        "8046": "南電"
+      },
+      "recent_hits": 14
+    },
+    {
+      "term": "伺服器CPU與算力瓶頸",
+      "reason": "伺服器CPU成為AI新瓶頸與架構轉變",
+      "confidence": "high",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "google_news",
+        "semianalysis",
+        "technews",
+        "trendforce"
+      ],
+      "stocks": [],
+      "names": {},
+      "recent_hits": 12
+    },
+    {
+      "term": "機器人與自動化",
+      "reason": "人形機器人與自動化零組件發展",
+      "confidence": "high",
       "sources": [
         "cna",
         "cnbc_yahoo",
         "cnyes",
-        "cnyes_intl",
-        "ctee",
         "eetimes",
-        "technews",
-        "wapeople"
+        "wealth"
       ],
       "stocks": [],
       "names": {},
-      "recent_hits": 8
+      "recent_hits": 7
     },
     {
       "term": "玻璃基板與先進材料",
-      "reason": "玻璃基板、TGV與高階電子布料升級",
-      "confidence": "medium",
+      "reason": "玻璃基板TGV與先進封裝材料",
+      "confidence": "high",
       "sources": [
         "cnyes",
         "ic975",
-        "technews",
+        "moneydj_pod",
+        "trendforce"
+      ],
+      "stocks": [],
+      "names": {},
+      "recent_hits": 5
+    },
+    {
+      "term": "被動元件與MLCC",
+      "reason": "AI推升被動元件與高容值MLCC漲價",
+      "confidence": "medium",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "edn",
+        "telegram",
         "trendforce"
       ],
       "stocks": [],
@@ -275,53 +420,62 @@
       "recent_hits": 7
     },
     {
-      "term": "化合物半導體SiC/GaO",
-      "reason": "碳化矽與氧化鎵等寬能隙半導體進展",
+      "term": "功率半導體",
+      "reason": "功率半導體與第三代半導體需求",
       "confidence": "medium",
       "sources": [
         "cnyes",
-        "technews",
+        "fugle_blog",
+        "google_news_us",
         "trendforce"
       ],
-      "stocks": [],
-      "names": {},
-      "recent_hits": 4
+      "stocks": [
+        "2481",
+        "3675",
+        "5425"
+      ],
+      "names": {
+        "2481": "強茂",
+        "3675": "",
+        "5425": ""
+      },
+      "recent_hits": 7
     },
     {
-      "term": "客製化ASIC晶片",
-      "reason": "雲端服務商自研ASIC與XPU比重上升",
-      "confidence": "high",
+      "term": "算力中心與AIDC",
+      "reason": "AI資料中心基礎建設與算力中心",
+      "confidence": "medium",
       "sources": [
+        "cna",
+        "cnbc_yahoo",
         "cnyes",
         "cnyes_intl",
-        "fugle_blog",
+        "ctee",
         "google_news",
         "technews"
       ],
-      "stocks": [],
-      "names": {},
-      "recent_hits": 5
-    },
-    {
-      "term": "智慧型手機與邊緣AI",
-      "reason": "邊緣AI晶片架構與終端處理器升級",
-      "confidence": "medium",
-      "sources": [
-        "cnyes",
-        "eetimes",
-        "wapeople"
-      ],
       "stocks": [
-        "1459",
-        "2454"
+        "2376"
       ],
       "names": {
-        "1459": "聯發",
-        "2454": "聯發科"
+        "2376": "技嘉"
       },
+      "recent_hits": 11
+    },
+    {
+      "term": "代理式AI與晶片架構",
+      "reason": "Agentic AI重塑軟硬體與晶片架構",
+      "confidence": "medium",
+      "sources": [
+        "cna",
+        "cnyes",
+        "telegram"
+      ],
+      "stocks": [],
+      "names": {},
       "recent_hits": 5
     }
   ],
   "method": "gemini-semantic",
-  "titles_analyzed": 1750
+  "titles_analyzed": 1738
 }
