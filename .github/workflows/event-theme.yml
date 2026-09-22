@@ -67,6 +67,13 @@ jobs:
         continue-on-error: true
         run: python daily_digest.py
 
+      # 驗證中心(2026-09-21新增):A區/D區標記的股票自動記claim,
+      # 30天後回頭比對真實收盤價,自動判✅印證/❌反駁,累積後可按
+      # 偵測類型(題材群聚/跨來源共振/關鍵字暴增)分開統計命中率。
+      - name: Update verification ledger
+        continue-on-error: true
+        run: python verification_ledger.py
+
       - name: Commit and push
         run: |
           git config user.name  "github-actions"
@@ -82,6 +89,7 @@ jobs:
           [ -f themes_watchlist.txt ] && git add themes_watchlist.txt || true
           [ -f earnings_keywords.py ] && git add earnings_keywords.py || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
+          [ -f verification_ledger.json ] && git add verification_ledger.json || true
           if git diff --staged --quiet; then
             echo "無變更,不 commit"
           else
