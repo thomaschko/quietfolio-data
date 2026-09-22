@@ -74,6 +74,14 @@ jobs:
         continue-on-error: true
         run: python verification_ledger.py
 
+      # 美股8-K重訊(2026-09-22新增):對照MOPS重訊(src2)的美股版,用
+      # SEC EDGAR官方免費API(不需key),對現有23家追蹤公司抓最近7天
+      # 內的8-K申報,即時性比季度才跑一次的earnings_keywords.py高——
+      # 事件觸發、4個工作天內必須申報,不用等法說會才知道。
+      - name: Track US 8-K material events
+        continue-on-error: true
+        run: python us_8k_events.py
+
       - name: Commit and push
         run: |
           git config user.name  "github-actions"
@@ -88,6 +96,7 @@ jobs:
           [ -f theme_promotions.json ] && git add theme_promotions.json || true
           [ -f themes_watchlist.txt ] && git add themes_watchlist.txt || true
           [ -f earnings_keywords.py ] && git add earnings_keywords.py || true
+          [ -f us_8k_events.json ] && git add us_8k_events.json || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
           [ -f verification_ledger.json ] && git add verification_ledger.json || true
           if git diff --staged --quiet; then
