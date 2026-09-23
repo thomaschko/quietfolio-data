@@ -15,6 +15,11 @@ new_theme_discovery.py — 偵測源4:新題材發現(多源跨源交叉升級�
 import requests, datetime as dt, json, time, re
 from collections import defaultdict
 
+# 2026-09-22新增:讓jieba跨源發現的新題材,也能套用跟watchlist關鍵字同一套
+# 嚴謹的股號抽取邏輯(CUBE消歧義、THEME_STOCK_EXCLUDE、弱命中門檻、綜述文排除),
+# 取代原本只有鉅亨網、而且是鉅亨自己API標籤、沒有任何安全防護的粗糙股號關聯。
+from event_theme_radar import build_name2code, extract_stock_codes_from_articles
+
 UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
 CNYES_BASE = "https://api.cnyes.com/media/api/v1"
 SEED_QUERIES = [
@@ -171,14 +176,18 @@ def main():
               "半導體"]:
         jieba.add_word(w)
 
-    # 每個詞記錄:近期次數、基線次數、來源集合、關聯個股
+    print("[前置] 建立股號↔股名對照表(供跨源題材的嚴謹股號抽取用)")
+    name2code, code2name = build_name2code()
+
+    # 每個詞記錄:近期次數、基線次數、來源集合、關聯標題原文(供事後嚴謹股號抽取用)
     term_recent = defaultdict(int)
     term_base = defaultdict(int)
     term_sources = defaultdict(set)   # 跨源交叉核心
-    term_tickers = defaultdict(lambda: defaultdict(int))
+    term_titles = defaultdict(list)   # 2026-09-22新增:取代原本鉅亨專屬、不安全的term_tickers,
+                                       # 改存原始標題文字,事後統一套extract_stock_codes_from_articles()
     term_sample = {}
 
-    def add_term(term, source, in_recent, tickers=None):
+    def add_term(term, source, in_recent, title=None):
         k = term.strip()
         # 純中文詞要≥3字(2字多為通用詞);含英數的技術詞(HBM/CoWoS)≥2字即可
         has_ascii = any(c.isascii() and c.isalnum() for c in k)
@@ -193,8 +202,8 @@ def main():
             term_recent[k] += 1
             term_sources[k].add(source)
             term_sample.setdefault(k, source)
-            for tk in (tickers or []):
-                term_tickers[k][tk] += 1
+            if title:
+                term_titles[k].append(title)
         else:
             term_base[k] += 1
 
@@ -212,7 +221,7 @@ def main():
         in_base = base_cut <= n["ts"] < recent_cut
         if not (in_recent or in_base): continue
         for kw in n["keywords"]:
-            add_term(kw, "cnyes", in_recent, n["tickers"])
+            add_term(kw, "cnyes", in_recent, n.get("title", ""))
 
     # ── 來源2-5:中央社/MoneyDJ/財訊/Wa-people(標題斷詞,當今日=recent)──
     try:
@@ -230,16 +239,16 @@ def main():
                     low = title.lower()
                     for term in EN_TECH_TERMS:
                         if term.lower() in low:
-                            add_term(term, src, True)
+                            add_term(term, src, True, title)
                     # 中文技術詞也撈(混合標題)
                     for w in jieba.lcut(title):
                         if len(w) >= 3 and not w.isascii():
-                            add_term(w, src, True)
+                            add_term(w, src, True, title)
                 else:
                     # 中文標題:jieba斷詞
                     for w in jieba.lcut(title):
                         if len(w) >= 2:
-                            add_term(w, src, True)
+                            add_term(w, src, True, title)
                 cnt += 1
             print(f"  {src}: {cnt} 則標題")
     except Exception as e:
@@ -256,24 +265,38 @@ def main():
         ratio = (r_daily / b_daily) if b_daily > 0 else float("inf")
         if ratio < SURGE_RATIO and bc > 0: continue
         n_sources = len(term_sources[term])
-        top = sorted(term_tickers[term].items(), key=lambda x: -x[1])[:3]
         candidates.append({
             "term": term, "recent_hits": rc, "baseline_hits": bc,
             "source_count": n_sources, "sources": sorted(term_sources[term]),
             "is_brand_new": bc == 0,
-            "related_stocks": [t for t, _ in top],
+            "related_stocks": [], "related_names": {},  # 下面只對跨源候選填入
         })
+
+    # 分區(先分,再只對跨源那批做嚴謹股號抽取——避免對所有候選詞逐一抽取,
+    # 拖慢執行時間;跨源本來就是唯一有機會被人工採用的高信心分區,單源僅供參考)
+    multi = [c for c in candidates if c["source_count"] >= 2]
+    single = [c for c in candidates if c["source_count"] < 2]
+
+    print(f"[股號抽取] 對{len(multi)}個跨源候選套用嚴謹抽取邏輯"
+          f"(CUBE消歧義/THEME_STOCK_EXCLUDE/弱命中門檻,跟watchlist關鍵字同一套)")
+    for c in multi:
+        texts = term_titles.get(c["term"], [])
+        if not texts:
+            continue
+        codes, _ = extract_stock_codes_from_articles(c["term"], texts, name2code)
+        c["related_stocks"] = codes
+        c["related_names"] = {cd: code2name.get(cd, "") for cd in codes}
 
     # 排序:跨源數優先 > 有個股 > 出現次數(跨源=真題材的最強訊號)
     candidates.sort(key=lambda x: (-x["source_count"], not x["related_stocks"], -x["recent_hits"]))
+    multi.sort(key=lambda x: (-x["source_count"], not x["related_stocks"], -x["recent_hits"]))
 
-    # ── 分區輸出 ──
-    multi = [c for c in candidates if c["source_count"] >= 2]
-    single = [c for c in candidates if c["source_count"] < 2]
     print(f"\n新題材候選:{len(candidates)} 個")
     print(f"\n★ 跨源出現(高信心,{len(multi)}個 — 多個來源同時提):")
     for c in multi[:20]:
-        stk = " 股:" + " ".join(c["related_stocks"]) if c["related_stocks"] else ""
+        names = c.get("related_names", {})
+        stk_str = " ".join(cd + names.get(cd, "") for cd in c["related_stocks"])
+        stk = " 股:" + stk_str if stk_str else ""
         tag = "🆕" if c["is_brand_new"] else ""
         print(f"  {tag}{c['term']}  {c['source_count']}源({' '.join(c['sources'])}) 近{c['recent_hits']}次{stk}")
     print(f"\n○ 單源出現(參考,前10/{len(single)}個):")
