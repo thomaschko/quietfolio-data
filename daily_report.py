@@ -255,6 +255,16 @@ def main():
     json.dump(out, open(OUT_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     print(f"\n→ {OUT_FILE} 已寫出")
 
+    # 2026-09-23新增:Page.html讀的是daily_digest.json裡的d.daily_report /
+    # d.daily_report_date兩個欄位(不是這支腳本另外寫的daily_report.json、
+    # 也不叫report),之前只寫daily_report.json,兩邊欄位名稱對不上,報告
+    # 產出了但畫面上永遠不會顯示。這裡把報告內容直接寫回daily_digest.json,
+    # 補上Page.html實際會讀的欄位名稱。
+    digest["daily_report"] = report_text
+    digest["daily_report_date"] = date_str
+    json.dump(digest, open(DIGEST_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    print(f"→ {DIGEST_FILE} 已補上daily_report/daily_report_date欄位(供Page.html顯示用)")
+
 
 if __name__ == "__main__":
     main()
