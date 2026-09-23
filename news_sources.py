@@ -317,12 +317,41 @@ def _fetch_moneydj_podcast():
     return _fetch_simple_rss(MONEYDJ_PODCAST_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
+def _fetch_google_news_topic(topic, hl, gl, ceid, title_suffix_maxlen=20):
+    """2026-09-22新增:Google News「分類代碼」訂閱,不靠關鍵字,直接拉該地區
+    TECHNOLOGY大分類的最新頭條——跟cnyes_intl「不靠關鍵字,直接拉分類」是
+    同一種哲學。用來補足google_news/google_news_us原本只靠固定查詢詞、
+    沒辦法發現查詢詞以外全新題材的缺口(使用者2026-09-22指出的問題)。"""
+    url = (f"https://news.google.com/rss/headlines/section/topic/{topic}"
+           f"?hl={hl}&gl={gl}&ceid={ceid}")
+    try:
+        r = requests.get(url, headers=UA, timeout=20)
+        if r.status_code != 200:
+            return []
+        root = ET.fromstring(r.text)
+        titles = []
+        for it in root.iter("item"):
+            title_el = it.find("title")
+            if title_el is None or not title_el.text:
+                continue
+            title = title_el.text.strip()
+            title = re.sub(r'\s*-\s*[^-]{2,' + str(title_suffix_maxlen) + r'}$', '', title).strip()
+            if title:
+                titles.append(title)
+        return titles
+    except Exception:
+        return []
+
+
 def _fetch_google_news():
     """Google News RSS(2026-09-16確認,矽光子/AI伺服器供應鏈查詢命中密度極高)。
     每個查詢已內含when:天數窗口,回傳本身已是近期內容,不需再套用
     RSS_RECENT_DAYS過濾(那是給不支援時間窗口的一般RSS用的)。
     標題結尾都帶「- 媒體名稱」(如「- Yahoo新聞」),先清掉避免媒體名稱
-    被誤判成熱門詞。"""
+    被誤判成熱門詞。
+    2026-09-22新增:額外併入TECHNOLOGY分類訂閱(不靠關鍵字),讓這個來源
+    也有機會發現5個固定查詢詞以外的全新題材,不取代原本的關鍵字查詢
+    (兩者用途不同:關鍵字查詢精準對焦,分類訂閱負責發現意料之外的題材)。"""
     all_titles = []
     for q in GOOGLE_NEWS_QUERIES:
         url = f"https://news.google.com/rss/search?q={quote(q)}&hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
@@ -342,6 +371,7 @@ def _fetch_google_news():
                     all_titles.append(title)
         except Exception:
             continue
+    all_titles += _fetch_google_news_topic("TECHNOLOGY", "zh-TW", "TW", "TW:zh-Hant")
     return all_titles
 
 
@@ -350,7 +380,12 @@ def _fetch_google_news_us():
     (矽光子/CoWoS/HBM/SiC GaN),避免太廣泛的查詢被地方政治新聞或行銷垃圾
     內容淹沒(已實測:「AI data center power」會抓到大量居民反對資料中心
     的地方新聞,「semiconductor supply chain」會抓到不相關市場預測垃圾文)。
-    英文媒體名稱通常較長,後綴清理長度上限放寬到40字。"""
+    英文媒體名稱通常較長,後綴清理長度上限放寬到40字。
+    2026-09-22新增:額外併入TECHNOLOGY分類訂閱。⚠️這裡的雜訊風險比中文版
+    更高——上面那段實測筆記就是為了迴避太廣泛的詞才寫的,TECHNOLOGY分類
+    範圍比那些關鍵字還廣,noise會更明顯。但下游jieba跨源比對本來就有
+    「至少2源同時提到才算候選」的安全網,單一雜訊文章不會直接污染結果,
+    先加上去觀察,如果之後發現雜訊蓋過訊號,再考慮拿掉。"""
     all_titles = []
     for q in GOOGLE_NEWS_US_QUERIES:
         url = f"https://news.google.com/rss/search?q={quote(q)}&hl=en-US&gl=US&ceid=US:en"
@@ -369,7 +404,18 @@ def _fetch_google_news_us():
                     all_titles.append(title)
         except Exception:
             continue
+    all_titles += _fetch_google_news_topic("TECHNOLOGY", "en-US", "US", "US:en", 40)
     return all_titles
+
+
+def _fetch_google_news_jp():
+    """Google News RSS日本版(2026-09-22新增,使用者提議)。日本在台股半導體
+    供應鏈裡份量吃重(索尼影像感測器、鎧俠/Kioxia記憶體、瑞薩Renesas車用
+    晶片、東京威力科創Tokyo Electron設備等),但先前23源完全沒有日文來源,
+    這塊訊號是純空白。用TECHNOLOGY分類訂閱(不靠關鍵字,理由同其他topic
+    改版),日文標題交給下游jieba處理(jieba對日文漢字/假名混合文本的
+    斷詞品質未經驗證,先讓它自然流入跨源比對,不特別做日文專屬處理)。"""
+    return _fetch_google_news_topic("TECHNOLOGY", "ja", "JP", "JP:ja", 20)
 
 
 def _fetch_ic975():
@@ -534,6 +580,7 @@ def fetch_titles_by_source():
         "moneydj_pod": _fetch_moneydj_podcast(),
         "google_news": _fetch_google_news(),
         "google_news_us": _fetch_google_news_us(),
+        "google_news_jp": _fetch_google_news_jp(),
         "telegram": _fetch_telegram(),
     }
     try:
