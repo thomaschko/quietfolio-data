@@ -251,6 +251,38 @@ def _fetch_statementdog_podcast():
     return _fetch_simple_rss(STATEMENTDOG_PODCAST_RSS, filter_recent_days=RSS_RECENT_DAYS)
 
 
+def _fetch_hackernews():
+    """Hacker News(2026-09-22新增,用Algolia搜尋API做關鍵字查詢,不是拉/newest原始
+    洪流——後者雜訊過重,跟本系統題材完全不對焦。改成針對具體技術詞查詢,性質上
+    接近cnyes的SEED_QUERIES,只挑開發者社群真的會討論、跟本系統題材重疊的英文
+    技術詞。免金鑰,官方公開API,不需授權。"""
+    HN_QUERIES = ["CoWoS", "HBM", "silicon photonics", "co-packaged optics",
+                  "TSMC", "HVDC"]
+    import datetime as _dt
+    cutoff_ts = int((_dt.datetime.now() - _dt.timedelta(days=RSS_RECENT_DAYS)).timestamp())
+    titles = []
+    seen_ids = set()
+    for q in HN_QUERIES:
+        try:
+            params = {
+                "query": q, "tags": "story",
+                "numericFilters": f"created_at_i>{cutoff_ts}",
+                "hitsPerPage": 20,
+            }
+            r = requests.get("https://hn.algolia.com/api/v1/search_by_date",
+                              params=params, headers=UA, timeout=15)
+            r.raise_for_status()
+            for hit in r.json().get("hits", []):
+                oid = hit.get("objectID")
+                title = hit.get("title", "")
+                if oid and oid not in seen_ids and title:
+                    seen_ids.add(oid)
+                    titles.append(title)
+        except Exception as e:
+            print(f"  ⚠ HackerNews查詢「{q}」失敗(不影響其他關鍵字): {e}")
+    return titles
+
+
 def _fetch_techorange():
     """科技報橘「科技早餐」(2026-09-15確認,正牌媒體流線傳媒,每日更新,
     內容全免費完整無付費牆,密度極高,直接命中HBM/CoWoS/矽光子等追蹤題材;
@@ -506,6 +538,7 @@ def fetch_titles_by_source():
         "ic975": _fetch_ic975(),
         "statementdog_pod": _fetch_statementdog_podcast(),
         "techorange": _fetch_techorange(),
+        "hackernews": _fetch_hackernews(),
         "wapeople_pod": _fetch_wapeople_podcast(),
         "fugle_blog": _fetch_fugle_blog(),
         "youxian": _fetch_youxian(),
