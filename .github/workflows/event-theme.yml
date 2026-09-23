@@ -38,8 +38,12 @@ jobs:
         run: python event_theme_radar.py
 
       # 偵測源4a:新題材發現 jieba跨源版(獨立產出,出錯不擋主流程)
+      # 2026-09-23新增:同日多源爆量的熱詞查詢機制也需要GEMINI_API_KEY
+      # (之前漏加,導致「iPhone」「貝森特」等熱詞查詢失敗,已修正)。
       - name: Run new theme discovery
         continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python new_theme_discovery.py
 
       # 偵測源4b:AI語意版新題材發現(Gemini被動萃取,從收集到的新聞裡找題材)
