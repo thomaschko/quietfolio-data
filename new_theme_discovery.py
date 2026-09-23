@@ -20,6 +20,39 @@ from collections import defaultdict
 # 取代原本只有鉅亨網、而且是鉅亨自己API標籤、沒有任何安全防護的粗糙股號關聯。
 from event_theme_radar import build_name2code, extract_stock_codes_from_articles
 
+# 2026-09-23新增:使用者提議的機制——同日多源爆量的熱詞(即使只有第一天,
+# 不需要累積連續天數),直接觸發針對性Gemini查詢,問法是「這個詞背後有哪些
+# 台股關聯」,不是「這算不算題材」,刻意避開ai_theme_discovery.py主流程
+# 那套「半導體供應鏈範圍限制」的排除規則——那套規則是為了主題材判定設計的,
+# 用在「查詢已知熱詞的關聯個股」這種事實查找任務上並不合適。
+from ai_theme_discovery import call_gemini
+
+HOT_TERM_SOURCE_THRESHOLD = 4  # 比一般跨源門檻(2)更嚴格,只對真正爆量的詞觸發,控制API用量
+HOT_TERM_MAX_QUERIES = 5       # 每次執行最多查詢幾個熱詞,避免額度暴衝
+
+HOT_TERM_SYSTEM_PROMPT = """你是台股新聞分析助理。使用者會給你一個今天在多個新聞來源
+同時被提及的熱門詞彙,以及提到這個詞的新聞標題清單。
+
+請務必只根據下面提供的標題內容判斷,不要用你自己的知識庫做過度推測或聯想。
+
+任務:
+1. 判斷這個詞代表的話題,對台股是否可能有實質影響(不限於半導體供應鏈,任何
+   合理的產業關聯都算——包括消費性電子、AI應用、終端品牌等衍生出的供應鏈效應)
+2. 標題裡有沒有明確提到哪些台股上市櫃公司受惠或相關——只列標題文字裡真的有
+   出現的公司名稱或股號,不要自己聯想沒有在標題裡出現的公司
+3. 用一句話總結這個話題在講什麼
+
+嚴格用以下JSON格式回答,不要有其他文字:
+{"is_relevant": true/false, "summary": "一句話總結", "mentioned_companies": ["標題裡出現的公司名稱或股號"]}"""
+
+
+def verify_hot_term_with_gemini(term, titles):
+    """對單一同日多源爆量的熱詞,做針對性Gemini查詢。回傳dict或None(失敗時)。"""
+    prompt = f"熱門詞彙:{term}\n\n相關新聞標題:\n" + "\n".join(f"- {t}" for t in titles[:30])
+    return call_gemini(prompt, system_instruction=HOT_TERM_SYSTEM_PROMPT)
+
+
+
 UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
 CNYES_BASE = "https://api.cnyes.com/media/api/v1"
 SEED_QUERIES = [
@@ -270,6 +303,8 @@ def main():
             "source_count": n_sources, "sources": sorted(term_sources[term]),
             "is_brand_new": bc == 0,
             "related_stocks": [], "related_names": {},  # 下面只對跨源候選填入
+            "gemini_checked": False, "gemini_relevant": None, "gemini_summary": "",
+            "gemini_unmatched_companies": [],
         })
 
     # 分區(先分,再只對跨源那批做嚴謹股號抽取——避免對所有候選詞逐一抽取,
@@ -286,6 +321,48 @@ def main():
         codes, _ = extract_stock_codes_from_articles(c["term"], texts, name2code)
         c["related_stocks"] = codes
         c["related_names"] = {cd: code2name.get(cd, "") for cd in codes}
+
+    # 2026-09-23新增:同日多源爆量、但字面比對抽不到股號的熱詞,額外觸發
+    # 針對性Gemini查詢(使用者提議)——解決像Meta Muse這種話題,新聞標題本身
+    # 常用「聯發科」「AMD」這種公司名稱、而非精確對應到watchlist詞彙,導致
+    # 字面比對找不到、但話題本身明顯有跨源熱度的案例。只挑source_count最高
+    # 的前幾個查,控制API用量。
+    hot_unresolved = [c for c in multi
+                       if c["source_count"] >= HOT_TERM_SOURCE_THRESHOLD
+                       and not c["related_stocks"]]
+    hot_unresolved.sort(key=lambda x: -x["source_count"])
+    hot_unresolved = hot_unresolved[:HOT_TERM_MAX_QUERIES]
+    if hot_unresolved:
+        print(f"\n[熱詞查詢] {len(hot_unresolved)}個同日多源爆量但抽不到股號的詞,"
+              f"觸發針對性Gemini查詢(門檻:{HOT_TERM_SOURCE_THRESHOLD}源以上)")
+    for c in hot_unresolved:
+        texts = term_titles.get(c["term"], [])
+        result = verify_hot_term_with_gemini(c["term"], texts)
+        if not result:
+            print(f"  ⚠ 「{c['term']}」查詢失敗,跳過")
+            continue
+        c["gemini_checked"] = True
+        c["gemini_relevant"] = bool(result.get("is_relevant"))
+        c["gemini_summary"] = result.get("summary", "")
+        # Gemini回傳的是公司名稱,不一定是股號,這裡嘗試對照name2code轉成股號;
+        # 對不到的公司名稱原樣保留在gemini_companies,不強行湊股號
+        mentioned = result.get("mentioned_companies", []) or []
+        matched_codes, unmatched_names = [], []
+        for name in mentioned:
+            code = name2code.get(name) or name2code.get(name.strip())
+            if code:
+                matched_codes.append(code)
+            else:
+                unmatched_names.append(name)
+        if matched_codes:
+            c["related_stocks"] = matched_codes
+            c["related_names"] = {cd: code2name.get(cd, "") for cd in matched_codes}
+        c["gemini_unmatched_companies"] = unmatched_names
+        tag = "✅相關" if c["gemini_relevant"] else "❌判定不相關"
+        stk_str = " ".join(cd + code2name.get(cd, "") for cd in matched_codes)
+        print(f"  「{c['term']}」{tag}: {c['gemini_summary']}"
+              + (f" 股:{stk_str}" if stk_str else "")
+              + (f" (未對到股號的公司:{unmatched_names})" if unmatched_names else ""))
 
     # 排序:跨源數優先 > 有個股 > 出現次數(跨源=真題材的最強訊號)
     candidates.sort(key=lambda x: (-x["source_count"], not x["related_stocks"], -x["recent_hits"]))
