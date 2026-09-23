@@ -124,13 +124,18 @@ def collect_titles():
     return list(seen.items())  # [(title, {sources})]
 
 
-def call_gemini(prompt_text):
-    """呼叫 Gemini API,回傳解析後的 JSON(dict)或 None。"""
+def call_gemini(prompt_text, system_instruction=None):
+    """呼叫 Gemini API,回傳解析後的 JSON(dict)或 None。
+    2026-09-23新增system_instruction參數(預設None時沿用本檔案的SYSTEM_PROMPT,
+    不影響既有呼叫方式)——讓new_theme_discovery.py能重用同一套呼叫/解析/
+    錯誤處理邏輯,但換一個不受「半導體供應鏈範圍限制」約束的中立prompt,
+    用來對同日多源爆量的熱詞做針對性查詢,不用跟主題材判定共用同一套
+    排除規則。"""
     if not GEMINI_KEY:
         print("  ✗ 找不到 GEMINI_API_KEY 環境變數")
         return None
     body = {
-        "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+        "system_instruction": {"parts": [{"text": system_instruction or SYSTEM_PROMPT}]},
         "contents": [{"role": "user", "parts": [{"text": prompt_text}]}],
         "generationConfig": {"response_mime_type": "application/json", "temperature": 0.2},
     }
