@@ -252,35 +252,23 @@ def _fetch_statementdog_podcast():
 
 
 def _fetch_hackernews():
-    """Hacker News(2026-09-22新增,用Algolia搜尋API做關鍵字查詢,不是拉/newest原始
-    洪流——後者雜訊過重,跟本系統題材完全不對焦。改成針對具體技術詞查詢,性質上
-    接近cnyes的SEED_QUERIES,只挑開發者社群真的會討論、跟本系統題材重疊的英文
-    技術詞。免金鑰,官方公開API,不需授權。"""
-    HN_QUERIES = ["CoWoS", "HBM", "silicon photonics", "co-packaged optics",
-                  "TSMC", "HVDC"]
-    import datetime as _dt
-    cutoff_ts = int((_dt.datetime.now() - _dt.timedelta(days=RSS_RECENT_DAYS)).timestamp())
-    titles = []
-    seen_ids = set()
-    for q in HN_QUERIES:
-        try:
-            params = {
-                "query": q, "tags": "story",
-                "numericFilters": f"created_at_i>{cutoff_ts}",
-                "hitsPerPage": 20,
-            }
-            r = requests.get("https://hn.algolia.com/api/v1/search_by_date",
-                              params=params, headers=UA, timeout=15)
-            r.raise_for_status()
-            for hit in r.json().get("hits", []):
-                oid = hit.get("objectID")
-                title = hit.get("title", "")
-                if oid and oid not in seen_ids and title:
-                    seen_ids.add(oid)
-                    titles.append(title)
-        except Exception as e:
-            print(f"  ⚠ HackerNews查詢「{q}」失敗(不影響其他關鍵字): {e}")
-    return titles
+    """Hacker News(2026-09-22新增,2026-09-22當天改版:原本用6個固定技術詞查詢,
+    使用者指出這樣等於又做了一份新的watchlist,無法發現真正全新的題材。改成
+    抓「front_page」(HN排名演算法篩選出的目前熱門貼文,非關鍵字篩選、非/newest
+    原始洪流),不預設任何主題限制,讓標題直接流進new_theme_discovery.py既有的
+    jieba跨源比對機制——如果某個詞同時出現在HN熱門頁+其他任何一個來源,會自然
+    被判定為跨源共識,不需要事先知道要找什麼詞。免金鑰,官方公開API。"""
+    try:
+        params = {"tags": "front_page", "hitsPerPage": 30}
+        r = requests.get("https://hn.algolia.com/api/v1/search",
+                          params=params, headers=UA, timeout=15)
+        r.raise_for_status()
+        return [hit.get("title", "") for hit in r.json().get("hits", [])
+                if hit.get("title")]
+    except Exception as e:
+        print(f"  ⚠ HackerNews front_page抓取失敗: {e}")
+        return []
+
 
 
 def _fetch_techorange():
