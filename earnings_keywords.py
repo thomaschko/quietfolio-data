@@ -114,6 +114,8 @@ KEYWORDS = {
         "optical", "photonics", "laser", "transceiver", "EML", "DFB",
         "800G", "1.6T", "linear drive", "LPO", "optical engine", "coherent",
         "datacom", "InP", "indium phosphide",
+        "DSP",  # 2026-09-23新增:野村專家會議指出1.6T DSP缺口延續到2027下半年,
+                # 供應緊張推升單價,DSP雙寡頭正是已追蹤的MRVL/AVGO,補上關鍵詞
     ],
     "客戶capex/需求": [
         "capex", "capital expenditure", "data center", "datacenter",
