@@ -295,14 +295,33 @@ def _fetch_fugle_blog():
 
 def _fetch_jov():
     """JoV Media(2026-09-23新增,使用者提議。2024年成立,資深產業記者連于慧
-    主編,專注全球科技產業第一手市場訊息。無公開RSS,HTML解析;實測首頁列出
-    的近期標題密度極高,直接命中記憶體併購(華邦收購英飛凌NOR Flash)、
-    先進製程(台積電2奈米)、矽光子CPO(台積電徐國晉專訪)等既有追蹤題材,
-    首頁夾雜「JoV Media」「新聞中心」「聯絡我們」等選單雜訊,額外排除。"""
-    titles = _fetch_html_titles("https://jovmedia.com/")
-    noise = ("JoV Media", "新聞中心", "聯絡我們", "View More", "Contact Us",
-              "About")
-    return [t for t in titles if not any(n in t for n in noise)]
+    主編,專注全球科技產業第一手市場訊息。2026-09-24修正:原本用通用的
+    _fetch_html_titles()抓到0則,查證後發現這個網站的標題常態性超過通用
+    抽取函式的55字元上限(含日期前綴+長標題,常見60字以上),且原始HTML的
+    <a>標籤內可能包著子標籤,通用的[^<]比對規則直接比對不到。改成錨定這
+    個網站專屬、穩定的media-detail?id=連結格式,允許嵌套標籤與更長標題,
+    抓到後才清掉內部子標籤只留文字。"""
+    try:
+        r = requests.get("https://jovmedia.com/", headers=UA, timeout=20)
+        r.encoding = "utf-8"
+        if r.status_code != 200:
+            return []
+        titles = []
+        for m in re.finditer(
+                r'<a[^>]+href="[^"]*media-detail\?id=\d+"[^>]*>(.*?)</a>',
+                r.text, re.DOTALL):
+            raw = m.group(1)
+            txt = re.sub(r'<[^>]+>', '', raw).strip()  # 清掉可能的內部子標籤
+            txt = re.sub(r'\s+', ' ', txt)
+            if txt and re.search(r'[\u4e00-\u9fff]', txt):
+                titles.append(txt)
+        seen, uniq = set(), []
+        for t in titles:
+            if t not in seen:
+                seen.add(t); uniq.append(t)
+        return uniq
+    except Exception:
+        return []
 
 
 def _fetch_wallstreetcn():
