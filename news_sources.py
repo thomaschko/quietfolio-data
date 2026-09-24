@@ -337,14 +337,24 @@ def _fetch_wallstreetcn():
     return _fetch_simple_rss("https://dedicated.wallstreetcn.com/rss.xml")
 
 
-def _fetch_basm_substack():
-    """BASM看圖說故事(2026-09-23新增,使用者提供連結)。美股科技股分析
-    newsletter,聚焦NVDA/輝達法說QA整理、AI資料中心供電(SMR/核電)、太空
-    國防(SpaceX/Rocket Lab/AVAV/KTOS)等題材,內容扎實(法說逐字稿QA、
-    分析師目標價異動追蹤),被SemiAnalysis作者Dylan Patel等知名財經作者
-    互相推薦。用Substack官方標準RSS(每個出版品皆有,格式為
-    https://x.substack.com/feed,支援文件明確記載),不需額外解析。"""
-    return _fetch_simple_rss("https://basm.substack.com/feed")
+def _fetch_eetimes_jp():
+    """EE Times Japan(2026-09-24新增,查證日經中文網時發現的替代方案——
+    日經robots.txt明確針對「Claude-User」設下專屬封鎖規則,尊重此意願不
+    接入;改找同樣涵蓋日本半導體產業、但無此限制的來源。EE Times Japan
+    是你已追蹤的EE Times品牌(既有eetimes來源)的日本版,由ITmedia官方
+    提供標準RSS(非第三方橋接)。實測內容即時(更新到查證當下)且精準命中
+    既有題材:SiC功率半導體300mm化、Winbond收購Infineon NOR Flash事業
+    (跟同期JoV Media抓到的是同一則新聞,互相印證)、CPO/矽光子光電融合
+    技術(明確提及「TSMC衝擊」為開發背景)等。"""
+    return _fetch_simple_rss("https://rss.itmedia.co.jp/rss/2.0/eetimes.xml")
+
+
+def _fetch_edn_jp():
+    """EDN Japan(2026-09-24新增,理由同EE Times Japan——你已追蹤的EDN
+    品牌(既有edn來源)的日本版,ITmedia官方標準RSS。實測內容含CPO評測用
+    光波導橋接器、MLCC新品(直接命中既有MLCC關鍵字)等電子元件層級新聞,
+    跟EDN既有來源(美國版)角度互補,不重複。"""
+    return _fetch_simple_rss("https://rss.itmedia.co.jp/rss/2.0/edn.xml")
 
 
 def _fetch_google_trends_tw():
@@ -643,7 +653,8 @@ def fetch_titles_by_source():
         "fugle_blog": _fetch_fugle_blog(),
         "jov": _fetch_jov(),
         "wallstreetcn": _fetch_wallstreetcn(),
-        "basm_substack": _fetch_basm_substack(),
+        "eetimes_jp": _fetch_eetimes_jp(),
+        "edn_jp": _fetch_edn_jp(),
         "google_trends_tw": _fetch_google_trends_tw(),
         "youxian": _fetch_youxian(),
         "gs_exchanges": _fetch_gs_exchanges(),
