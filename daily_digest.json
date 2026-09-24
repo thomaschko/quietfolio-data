@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24 06:27:44",
+  "generated_at": "2026-09-24 06:53:34",
   "date": "20260924",
   "summary_counts": {
     "resonance": 1,
@@ -7,14 +7,14 @@
     "broker_coverage": 0,
     "surge_themes": 8,
     "new_candidates": 15,
-    "earnings_rising": 223,
+    "earnings_rising": 224,
     "cross_confirmed": 0
   },
   "intl_news_heat": [
     {
       "keyword": "ATE",
       "category": "測試設備",
-      "count": 22
+      "count": 20
     },
     {
       "keyword": "data center",
@@ -22,28 +22,8 @@
       "count": 3
     },
     {
-      "keyword": "BBU",
-      "category": "AI電源/散熱",
-      "count": 1
-    },
-    {
-      "keyword": "capacity",
-      "category": "平台/網通/供應鏈",
-      "count": 1
-    },
-    {
-      "keyword": "TSMC",
-      "category": "台廠點名",
-      "count": 1
-    },
-    {
-      "keyword": "training",
-      "category": "客戶capex/需求",
-      "count": 1
-    },
-    {
-      "keyword": "inference",
-      "category": "客戶capex/需求",
+      "keyword": "memory",
+      "category": "記憶體",
       "count": 1
     }
   ],
@@ -93,18 +73,18 @@
     },
     {
       "theme": "DDR5",
-      "ratio": 2.06,
+      "ratio": 1.72,
       "codes": [
         "2451",
         "3260",
-        "6278",
-        "3044"
+        "3044",
+        "6278"
       ],
       "names": {
         "2451": "創見",
         "3260": "",
-        "6278": "台表科",
-        "3044": "健鼎"
+        "3044": "健鼎",
+        "6278": "台表科"
       }
     },
     {
@@ -151,7 +131,7 @@
   "E_new_candidates": [
     {
       "term": "Muse",
-      "recent_hits": 27,
+      "recent_hits": 26,
       "is_brand_new": false,
       "streak_days": 3,
       "method": "jieba",
@@ -175,16 +155,26 @@
     },
     {
       "term": "CCL",
-      "recent_hits": 11,
+      "recent_hits": 12,
       "is_brand_new": false,
       "streak_days": 4,
       "method": "jieba",
       "reason": "",
       "stocks": [
         "8358",
-        "1717",
-        "6213"
+        "6213",
+        "1717"
       ],
+      "names": {}
+    },
+    {
+      "term": "Pro",
+      "recent_hits": 12,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
       "names": {}
     },
     {
@@ -222,16 +212,6 @@
       "names": {}
     },
     {
-      "term": "Pro",
-      "recent_hits": 10,
-      "is_brand_new": false,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
       "term": "Agent",
       "recent_hits": 9,
       "is_brand_new": false,
@@ -243,7 +223,7 @@
     },
     {
       "term": "ABF",
-      "recent_hits": 8,
+      "recent_hits": 9,
       "is_brand_new": false,
       "streak_days": 4,
       "method": "jieba",
@@ -256,6 +236,16 @@
     {
       "term": "data center",
       "recent_hits": 8,
+      "is_brand_new": false,
+      "streak_days": 4,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "日月光",
+      "recent_hits": 7,
       "is_brand_new": false,
       "streak_days": 4,
       "method": "jieba",
@@ -308,23 +298,13 @@
       "reason": "",
       "stocks": [],
       "names": {}
-    },
-    {
-      "term": "wafer",
-      "recent_hits": 6,
-      "is_brand_new": false,
-      "streak_days": 4,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
     }
   ],
   "E2_near_miss": [
     {
-      "theme": "ASIC",
+      "theme": "併購",
       "ratio": 1.42,
-      "recent_count": 33
+      "recent_count": 14
     },
     {
       "theme": "漲價",
@@ -332,9 +312,9 @@
       "recent_count": 36
     },
     {
-      "theme": "併購",
-      "ratio": 1.39,
-      "recent_count": 14
+      "theme": "ASIC",
+      "ratio": 1.37,
+      "recent_count": 32
     },
     {
       "theme": "低軌衛星",
@@ -358,8 +338,23 @@
     },
     {
       "theme": "CPO",
+      "ratio": 1.15,
+      "recent_count": 19
+    },
+    {
+      "theme": "NAND",
+      "ratio": 1.13,
+      "recent_count": 12
+    },
+    {
+      "theme": "SLC NAND",
+      "ratio": 1.11,
+      "recent_count": 12
+    },
+    {
+      "theme": "Vera Rubin",
       "ratio": 1.09,
-      "recent_count": 18
+      "recent_count": 11
     },
     {
       "theme": "DRAM",
@@ -367,9 +362,9 @@
       "recent_count": 22
     },
     {
-      "theme": "NAND",
-      "ratio": 1.04,
-      "recent_count": 11
+      "theme": "液冷",
+      "ratio": 1.06,
+      "recent_count": 9
     },
     {
       "theme": "無人機",
@@ -377,24 +372,9 @@
       "recent_count": 22
     },
     {
-      "theme": "液冷",
-      "ratio": 1.02,
-      "recent_count": 9
-    },
-    {
-      "theme": "SLC NAND",
-      "ratio": 1.02,
-      "recent_count": 11
-    },
-    {
-      "theme": "Vera Rubin",
-      "ratio": 0.98,
-      "recent_count": 10
-    },
-    {
       "theme": "擴產",
-      "ratio": 0.95,
-      "recent_count": 28
+      "ratio": 1.0,
+      "recent_count": 29
     },
     {
       "theme": "SiC",
@@ -403,13 +383,18 @@
     },
     {
       "theme": "接單",
-      "ratio": 0.84,
+      "ratio": 0.85,
       "recent_count": 11
     },
     {
       "theme": "HBM",
       "ratio": 0.83,
       "recent_count": 18
+    },
+    {
+      "theme": "調漲",
+      "ratio": 0.82,
+      "recent_count": 12
     },
     {
       "theme": "南亞科",
@@ -2349,6 +2334,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "MRVL",
+      "keyword": "DSP",
+      "category": "光通訊/CPO",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q2",
+      "prev_q": ""
+    },
+    {
       "symbol": "LITE",
       "keyword": "accelerator",
       "category": "客戶capex/需求",
@@ -2663,7 +2658,8 @@
         "NVDA",
         "QCOM",
         "TER",
-        "TSM"
+        "TSM",
+        "國際新聞"
       ],
       "intl_keywords": [
         "DRAM",
@@ -2839,7 +2835,7 @@
       "dual_confirmed": false
     }
   ],
-  "daily_report": "各位投資朋友好，我是台股題材研究員。今日（2026年9月24日）市場結構出現一個相當有趣的現象：多項前瞻性光通訊與半導體題材落在「國際先行、台股未燃」區間，暗示國際大廠法說釋出的強勁訊號，國內新聞與資金尚未全面點火，這正是我們尋找低檔卡位機會的黃金視窗。以下為今日三大雷達的綜合解讀：\n\n首先看到核心買點所在的**發酵雷達**。今日雖然沒有出現G區的雙邊確認題材，但「國際先行、台股未燃」清單極為華麗，涵蓋記憶體、光通訊、矽光子、CPO、磷化銦、先進封裝、HBM及NAND。這代表AAOI、AVGO、COHR、AMD、NVDA等國際大廠在法說會或財報中高度聚焦 1.6T/800G、photonics、HBM 等關鍵字，而台股相關供應鏈新聞尚在醞釀。值得注意的是，A區多源共振個股點名了 3026（同時具備MOPS重訊取得與MLCC關鍵字暴增），配合D區顯示MLCC熱度暴增1.7倍，形成有趣的跨區呼應。在交易哲學上，若相關個股目前股價處於🟢底部，這類「國際熱、國內冷」的時間差正是切入的好時點；但若部分標的已處於🔴高檔，則務必保持冷靜，不宜因國際大廠喊旺就盲目追價。\n\n接著轉向**題材雷達（D/F區）**。新聞熱度暴增題材（D區）以記憶體族群最為顯眼，DDR4暴增3.78倍（如3044、2451）、DDR5暴增2.06倍（如2451、3260、6278、3044），搭配群聯熱度暴增1.51倍，顯示記憶體與儲存升級的討論度在台股急速升溫；同時，人形機器人（8112）暴增2.27倍，AI伺服器相關的 power shelf、sidecar power、power rack 也全面增溫。對照F區國際大廠法說關鍵詞，AEHR、COHR、TSM 等紛紛提及 capacity（產能）與 capex（資本支出），AAOI 更直接點名 800G，這與發酵雷達中光通訊與CPO的國際先行訊號完美互印，說明AI基礎設施擴張從晶片端一路延伸至光通訊與電源架構的趨勢毫無懸念。\n\n最後是**候選題材（E/E2區）**的早期訊號與觀察。在E區今日首見新題材中，我們發現了「HBM世代與DRAM供需吃緊」、「代理式AI與Muse軟體生態系」、「AI高階CCL、銅箔與玻纖布（HVLP4）需求吃緊」等高可信度項目，而連續追蹤中的 CCL、Agent、ABF 等已持續4天，顯示基本面雜音過後，高階材料與AI應用仍是市場核心主軸。至於E2區的近期關注項目（暴增比尚未達1.5倍門檻的動能觀察），包括 ASIC（1.42倍）、漲價（1.41倍）、被動元件（1.21倍）、CoWoS（1.18倍）、CPO（1.09倍）及 DRAM（1.07倍）等，**這些均為「初步觀察、非確定訊號」**，暴增比還沒正式過門檻，投資人可先列入觀察清單，等待其正式突破門檻後再行動作，切勿過度解讀。\n\n**今日研究員結語：** 國際大廠法說全面點火光通訊與先進封裝題材，而台股則由記憶體與MLCC率先爆發熱度，建議優先尋找位處🟢底部、兼具國際題材共振但尚未大幅噴出的網通與半導體供應鏈進行佈局。",
+  "daily_report": "各位夥伴好，我是台股題材研究員。今日（2026年9月24日）市場結構展現出非常清晰的「國際大廠法說點火、台股熱度全面擴散」的交替節奏。我們直接從發酵雷達、題材雷達到底部的候選訊號，為大家梳理今日的核心洞察。\n\n首先來看核心買點邏輯的**發酵雷達**。今日雖然在G區（雙邊確認）暫時沒有直接重疊的個股，但我們看到了強烈的「國際先行、台股未燃」前緣訊號——包括記憶體（DRAM/memory）、光通訊（1.6T/800G）、矽光子、CPO、磷化銦、先進封裝及HBM等關鍵詞，國際巨頭如NVDA、AMD、AVGO、TSM、AAOI等法說已高度聚焦，但國內新聞版面尚未完全跟上，這正是我們提前佈局、追蹤國際大廠動向的最佳窗口。而在A區多源共振部分，我們注意到 **3026** 同時具備 MOPS 重訊與關鍵字暴增（MLCC題材），這類有實際重訊支撐的標的值得特別關注其股價位置；若基期位於🟢底部，往往具備較佳的安全邊際。\n\n接著對應到**題材雷達（D區與F區）**，這剛好印證了發酵雷達的預期。國內新聞熱度在今日全面爆發：DDR4與DDR5記憶體熱度分別暴增3.78倍與1.72倍（相關標的如 **3044、2451、3260、6278**），同時MLCC熱度暴增1.7倍（點名 **3026、4760**），人形機器人（**8112**）與伺服器電源相關的 power shelf / sidecar power / power rack 也同步湧現高熱度。搭配F區國際法說關鍵詞，如 COHR、AAOI 的 capacity 與 800G，以及 TSM 的 capex，完美形成「國際法說升溫、國內新聞與個股熱度大增」的共振格局。不過，操作上必須提醒：若相關個股已處於🔴高檔，即使題材熱度再強、新聞暴增再多，也代表利多已大幅反映，千萬不要在此時盲目追價。\n\n最後，我們來看**候選題材（E區與E2區）**。在今日首見的E區新題材中，AI與伺服器帶動記憶體規格升級、AI Agent端側晶片、高階CCL與銅箔基板、玻纖布及玻璃基板等，均展現出高可信度的產業擴散訊號；而連續追蹤中達4天的 CCL、ABF、AR 等題材，其可信度正逐漸遞增。至於E2區的「近期關注」——如 **ASIC（暴增比1.37）、CoWoS（暴增比1.18）、CPO（暴增比1.15）以及 NAND 相關（NAND 1.13、SLC NAND 1.11）**，雖然它們尚未跨過1.5倍的暴增門檻，但動能已經開始凝聚，這屬於**「初步觀察、非確定訊號」**，請大家以謹慎的態度持續追蹤，切勿過度解讀。\n\n**今日最值得留意的信號：** 國際大廠法說高度聚焦的「記憶體與光通訊/CPO」供應鏈，正透過D區新聞熱度在台股快速擴散，建議優先關注基期仍在🟢底部的相關共振標的。",
   "daily_report_date": "2026年09月24日",
   "H_verification_summary": {
     "by_detection_type": {},
