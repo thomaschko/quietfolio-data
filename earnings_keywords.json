@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22 06:50:26.773507",
+  "generated_at": "2026-09-24 06:21:30.852165",
   "quarters_queried": [
     "2026Q2",
     "2026Q1"
@@ -123,6 +123,7 @@
           "transceiver": 1,
           "1.6T": 1,
           "LPO": 4,
+          "DSP": 2,
           "data center": 35,
           "AI infrastructure": 1,
           "custom silicon": 5,
@@ -210,6 +211,7 @@
           "1.6T": 39,
           "datacom": 1,
           "indium phosphide": 3,
+          "DSP": 1,
           "capex": 2,
           "data center": 17,
           "datacenter": 1,
@@ -492,13 +494,6 @@
         }
       }
     },
-    "POET": {
-      "role": "矽光子材料-POET Technologies(整合光子學)",
-      "sentiments": {},
-      "keyword_counts": {
-        "2026Q2": {}
-      }
-    },
     "QCOM": {
       "role": "IC設計-高通(RF/行動運算)",
       "sentiments": {
@@ -509,6 +504,7 @@
           "chiplet": 1,
           "memory": 19,
           "capacity": 1,
+          "DSP": 1,
           "data center": 16,
           "custom silicon": 4,
           "accelerator": 6,
@@ -2518,6 +2514,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "MRVL",
+      "keyword": "DSP",
+      "category": "光通訊/CPO",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q2",
+      "prev_q": ""
+    },
+    {
       "symbol": "LITE",
       "keyword": "accelerator",
       "category": "客戶capex/需求",
@@ -2822,7 +2828,7 @@
     {
       "keyword": "ATE",
       "category": "測試設備",
-      "count": 22
+      "count": 20
     },
     {
       "keyword": "data center",
@@ -2830,28 +2836,8 @@
       "count": 3
     },
     {
-      "keyword": "BBU",
-      "category": "AI電源/散熱",
-      "count": 1
-    },
-    {
-      "keyword": "capacity",
-      "category": "平台/網通/供應鏈",
-      "count": 1
-    },
-    {
-      "keyword": "TSMC",
-      "category": "台廠點名",
-      "count": 1
-    },
-    {
-      "keyword": "training",
-      "category": "客戶capex/需求",
-      "count": 1
-    },
-    {
-      "keyword": "inference",
-      "category": "客戶capex/需求",
+      "keyword": "memory",
+      "category": "記憶體",
       "count": 1
     }
   ]
