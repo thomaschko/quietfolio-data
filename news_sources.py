@@ -293,6 +293,53 @@ def _fetch_fugle_blog():
     return [t for t in titles if not any(n in t for n in noise)]
 
 
+def _fetch_jov():
+    """JoV Media(2026-09-23新增,使用者提議。2024年成立,資深產業記者連于慧
+    主編,專注全球科技產業第一手市場訊息。無公開RSS,HTML解析;實測首頁列出
+    的近期標題密度極高,直接命中記憶體併購(華邦收購英飛凌NOR Flash)、
+    先進製程(台積電2奈米)、矽光子CPO(台積電徐國晉專訪)等既有追蹤題材,
+    首頁夾雜「JoV Media」「新聞中心」「聯絡我們」等選單雜訊,額外排除。"""
+    titles = _fetch_html_titles("https://jovmedia.com/")
+    noise = ("JoV Media", "新聞中心", "聯絡我們", "View More", "Contact Us",
+              "About")
+    return [t for t in titles if not any(n in t for n in noise)]
+
+
+def _fetch_wallstreetcn():
+    """華爾街見聞(2026-09-23新增,補上中國大陸財經媒體這塊地理缺口——
+    先前查證DSP晶片缺貨漲價這則消息時發現,源頭是中國大陸財經社群/媒體
+    (野村專家會議紀要),你現有來源完全沒有大陸媒體,任何跨源機制都不可能
+    發現從未進入新聞池的內容。實測這個RSS(dedicated.wallstreetcn.com,
+    非DIYgod/RSSHub那種第三方橋接,是官方自己的feed)確認即時更新(最新
+    一則發布時間就是抓取當下),而且直接驗證到同一篇野村DSP專家會議原文、
+    台積電漲價、CCL/銅箔供應鏈等多篇直接命中既有題材的深度報導。內容混雜
+    總經/政治新聞(習特會、聯準會等),交給下游jieba跨源比對自然過濾,不在
+    這裡做主題篩選。"""
+    return _fetch_simple_rss("https://dedicated.wallstreetcn.com/rss.xml")
+
+
+def _fetch_basm_substack():
+    """BASM看圖說故事(2026-09-23新增,使用者提供連結)。美股科技股分析
+    newsletter,聚焦NVDA/輝達法說QA整理、AI資料中心供電(SMR/核電)、太空
+    國防(SpaceX/Rocket Lab/AVAV/KTOS)等題材,內容扎實(法說逐字稿QA、
+    分析師目標價異動追蹤),被SemiAnalysis作者Dylan Patel等知名財經作者
+    互相推薦。用Substack官方標準RSS(每個出版品皆有,格式為
+    https://x.substack.com/feed,支援文件明確記載),不需額外解析。"""
+    return _fetch_simple_rss("https://basm.substack.com/feed")
+
+
+def _fetch_google_trends_tw():
+    """Google Trends台灣每日熱搜(2026-09-23新增,使用者提議「熱門關鍵字」
+    需求)。跟google_news系列不同,這不是新聞分類頭條,是Google Trends官方
+    公開的「現在大家在搜什麼」RSS(trends.google.com/trending/rss,免金鑰,
+    不需登入)。每個熱搜詞本身就是<item><title>,天生反映新舊變化,交給
+    theme_tracker.py既有的🆕今日首見/📈連續追蹤中機制自然處理,不用額外
+    寫新舊判斷邏輯。⚠️熱搜內容不限科技/財經,雜訊(演唱會/運動賽事/八卦)
+    比例可能不低,依賴下游jieba跨源比對(至少2源同時提到才算候選)過濾,
+    不另外在這裡做主題篩選(篩選會失去「發現意料之外話題」的本意)。"""
+    return _fetch_simple_rss("https://trends.google.com/trending/rss?geo=TW")
+
+
 def _fetch_youxian():
     """優閒聊財經(2026-09-16確認,前身為優分析Podcast,150集,命中密度
     極高(營收/AI伺服器/記憶體/法說/半導體/光通訊/ASIC等19種關鍵詞),
@@ -575,6 +622,10 @@ def fetch_titles_by_source():
         "hackernews": _fetch_hackernews(),
         "wapeople_pod": _fetch_wapeople_podcast(),
         "fugle_blog": _fetch_fugle_blog(),
+        "jov": _fetch_jov(),
+        "wallstreetcn": _fetch_wallstreetcn(),
+        "basm_substack": _fetch_basm_substack(),
+        "google_trends_tw": _fetch_google_trends_tw(),
         "youxian": _fetch_youxian(),
         "gs_exchanges": _fetch_gs_exchanges(),
         "moneydj_pod": _fetch_moneydj_podcast(),
