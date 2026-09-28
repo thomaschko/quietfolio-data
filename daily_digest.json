@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-27 14:14:50",
-  "date": "20260927",
+  "generated_at": "2026-09-28 16:58:55",
+  "date": "20260928",
   "summary_counts": {
-    "resonance": 0,
-    "preferment_themes": 0,
+    "resonance": 4,
+    "preferment_themes": 1,
     "broker_coverage": 0,
-    "surge_themes": 0,
+    "surge_themes": 1,
     "new_candidates": 15,
     "earnings_rising": 224,
     "cross_confirmed": 0
@@ -14,7 +14,17 @@
     {
       "keyword": "ATE",
       "category": "測試設備",
-      "count": 20
+      "count": 19
+    },
+    {
+      "keyword": "yield",
+      "category": "平台/網通/供應鏈",
+      "count": 5
+    },
+    {
+      "keyword": "yield",
+      "category": "測試設備",
+      "count": 5
     },
     {
       "keyword": "data center",
@@ -22,81 +32,192 @@
       "count": 3
     },
     {
-      "keyword": "memory",
-      "category": "記憶體",
+      "keyword": "UPS",
+      "category": "資料中心電源",
+      "count": 2
+    },
+    {
+      "keyword": "supply chain",
+      "category": "平台/網通/供應鏈",
+      "count": 1
+    },
+    {
+      "keyword": "optical",
+      "category": "光通訊/CPO",
+      "count": 1
+    },
+    {
+      "keyword": "analog",
+      "category": "IC設計架構",
       "count": 1
     }
   ],
-  "A_multi_source_resonance": [],
-  "B_preferment_themes": [],
-  "C_broker_coverage": [],
-  "D_surge_themes": [],
-  "E_new_candidates": [
+  "A_multi_source_resonance": [
     {
-      "term": "HBM記憶體",
-      "recent_hits": 14,
-      "is_brand_new": false,
-      "streak_days": 2,
-      "method": "ai",
-      "reason": "AI推升HBM供需與產能",
-      "stocks": [],
-      "names": {}
+      "code": "3035",
+      "source_count": 2,
+      "sources": [
+        "wiki",
+        "wiki_preferment"
+      ],
+      "hit_count": 1,
+      "themes": [
+        "矽智財"
+      ],
+      "fermentation": "pre-ferment",
+      "broker_count": null,
+      "via_source_diversity": true,
+      "via_theme_cluster": false
     },
     {
-      "term": "銅箔基板CCL",
-      "recent_hits": 5,
-      "is_brand_new": false,
-      "streak_days": 2,
-      "method": "ai",
-      "reason": "高階CCL材料升級潮",
-      "stocks": [
-        "6213"
+      "code": "3529",
+      "source_count": 2,
+      "sources": [
+        "wiki",
+        "wiki_preferment"
+      ],
+      "hit_count": 1,
+      "themes": [
+        "矽智財"
+      ],
+      "fermentation": "pre-ferment",
+      "broker_count": null,
+      "via_source_diversity": true,
+      "via_theme_cluster": false
+    },
+    {
+      "code": "4966",
+      "source_count": 2,
+      "sources": [
+        "wiki",
+        "wiki_preferment"
+      ],
+      "hit_count": 1,
+      "themes": [
+        "矽智財"
+      ],
+      "fermentation": "pre-ferment",
+      "broker_count": null,
+      "via_source_diversity": true,
+      "via_theme_cluster": false
+    },
+    {
+      "code": "6533",
+      "source_count": 2,
+      "sources": [
+        "wiki",
+        "wiki_preferment"
+      ],
+      "hit_count": 1,
+      "themes": [
+        "矽智財"
+      ],
+      "fermentation": "pre-ferment",
+      "broker_count": null,
+      "via_source_diversity": true,
+      "via_theme_cluster": false
+    }
+  ],
+  "B_preferment_themes": [
+    {
+      "theme": "矽智財",
+      "ratio": 1.51,
+      "baseline": 27.3,
+      "codes": [
+        "3035",
+        "3529",
+        "4966",
+        "6533"
+      ],
+      "names": {},
+      "semantic_risk": ""
+    }
+  ],
+  "C_broker_coverage": [],
+  "D_surge_themes": [
+    {
+      "theme": "碳化矽",
+      "ratio": 2.12,
+      "codes": [
+        "2301",
+        "2308",
+        "2342",
+        "2434",
+        "2457",
+        "2481",
+        "3016",
+        "3026",
+        "3317",
+        "3332",
+        "3467",
+        "3628",
+        "3707",
+        "4934",
+        "6270",
+        "6282",
+        "6488",
+        "6525",
+        "6548",
+        "6651",
+        "8121",
+        "8261"
       ],
       "names": {
-        "6213": "聯茂"
+        "2301": "光寶科",
+        "2457": "飛宏",
+        "3332": "幸康",
+        "3628": "盈正",
+        "6282": "康舒",
+        "2308": "台達電",
+        "2342": "茂矽",
+        "6270": "倍微",
+        "4934": "太極",
+        "3026": "禾伸堂",
+        "6651": "全宇昕",
+        "8121": "越峰",
+        "2481": "強茂",
+        "3016": "嘉晶",
+        "3467": "台灣精材",
+        "2434": "統懋",
+        "3317": "尼克森",
+        "3707": "漢磊",
+        "6488": "環球晶",
+        "6525": "捷敏-KY",
+        "6548": "長科",
+        "8261": "富鼎"
       }
-    },
+    }
+  ],
+  "E_new_candidates": [
     {
       "term": "伺服器",
-      "recent_hits": 49,
+      "recent_hits": 42,
       "is_brand_new": false,
-      "streak_days": 3,
+      "streak_days": 4,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "2317",
-        "2382",
-        "2330"
+        "2330",
+        "3016",
+        "2317"
       ],
       "names": {}
     },
     {
       "term": "iPhone",
-      "recent_hits": 14,
+      "recent_hits": 11,
       "is_brand_new": false,
-      "streak_days": 7,
+      "streak_days": 8,
       "method": "jieba",
       "reason": "",
       "stocks": [],
       "names": {}
     },
     {
-      "term": "Pro",
-      "recent_hits": 11,
-      "is_brand_new": false,
-      "streak_days": 5,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "2454"
-      ],
-      "names": {}
-    },
-    {
       "term": "海力士",
-      "recent_hits": 11,
+      "recent_hits": 9,
       "is_brand_new": false,
-      "streak_days": 5,
+      "streak_days": 6,
       "method": "jieba",
       "reason": "",
       "stocks": [
@@ -106,61 +227,29 @@
     },
     {
       "term": "CPU",
-      "recent_hits": 9,
-      "is_brand_new": false,
-      "streak_days": 7,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "下一代",
-      "recent_hits": 8,
-      "is_brand_new": false,
-      "streak_days": 7,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "2330"
-      ],
-      "names": {}
-    },
-    {
-      "term": "Agent",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 7,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "PC",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 7,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "美債殖",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 4,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "data center",
       "recent_hits": 6,
       "is_brand_new": false,
-      "streak_days": 7,
+      "streak_days": 8,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "advanced packaging",
+      "recent_hits": 6,
+      "is_brand_new": false,
+      "streak_days": 8,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "Pro",
+      "recent_hits": 6,
+      "is_brand_new": false,
+      "streak_days": 6,
       "method": "jieba",
       "reason": "",
       "stocks": [],
@@ -170,6 +259,16 @@
       "term": "毛利率",
       "recent_hits": 6,
       "is_brand_new": false,
+      "streak_days": 6,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "美債殖",
+      "recent_hits": 6,
+      "is_brand_new": false,
       "streak_days": 5,
       "method": "jieba",
       "reason": "",
@@ -177,38 +276,85 @@
       "names": {}
     },
     {
-      "term": "Rubin",
+      "term": "LED",
       "recent_hits": 6,
       "is_brand_new": false,
-      "streak_days": 4,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "data center",
+      "recent_hits": 5,
+      "is_brand_new": false,
+      "streak_days": 8,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "Rubin",
+      "recent_hits": 5,
+      "is_brand_new": false,
+      "streak_days": 5,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "2324"
+        "3231"
       ],
       "names": {}
     },
     {
-      "term": "IC",
+      "term": "成關鍵",
       "recent_hits": 5,
       "is_brand_new": false,
-      "streak_days": 7,
+      "streak_days": 2,
       "method": "jieba",
       "reason": "",
       "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "高利率",
+      "recent_hits": 4,
+      "is_brand_new": false,
+      "streak_days": 8,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "Agent",
+      "recent_hits": 4,
+      "is_brand_new": false,
+      "streak_days": 8,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "Vera",
+      "recent_hits": 4,
+      "is_brand_new": false,
+      "streak_days": 8,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "3231"
+      ],
       "names": {}
     }
   ],
   "E2_near_miss": [
     {
-      "theme": "NAND",
-      "ratio": 0.82,
-      "recent_count": 10
-    },
-    {
-      "theme": "SLC NAND",
+      "theme": "800V HVDC",
       "ratio": 0.81,
-      "recent_count": 10
+      "recent_count": 3
     }
   ],
   "F_earnings_rising": [
@@ -2455,6 +2601,32 @@
   ],
   "G_cross_confirmed": [
     {
+      "theme": "光通訊",
+      "intl_companies": [
+        "AAOI",
+        "ADI",
+        "AXTI",
+        "COHR",
+        "KEYS",
+        "LITE",
+        "LWLG",
+        "MRVL",
+        "TER",
+        "TSEM",
+        "國際新聞"
+      ],
+      "intl_keywords": [
+        "1.6T",
+        "800G",
+        "EML",
+        "laser",
+        "optical",
+        "transceiver"
+      ],
+      "tw_active": false,
+      "dual_confirmed": false
+    },
+    {
       "theme": "記憶體",
       "intl_companies": [
         "AAOI",
@@ -2467,37 +2639,11 @@
         "NVDA",
         "QCOM",
         "TER",
-        "TSM",
-        "國際新聞"
+        "TSM"
       ],
       "intl_keywords": [
         "DRAM",
         "memory"
-      ],
-      "tw_active": false,
-      "dual_confirmed": false
-    },
-    {
-      "theme": "光通訊",
-      "intl_companies": [
-        "AAOI",
-        "ADI",
-        "AXTI",
-        "COHR",
-        "KEYS",
-        "LITE",
-        "LWLG",
-        "MRVL",
-        "TER",
-        "TSEM"
-      ],
-      "intl_keywords": [
-        "1.6T",
-        "800G",
-        "EML",
-        "laser",
-        "optical",
-        "transceiver"
       ],
       "tw_active": false,
       "dual_confirmed": false
@@ -2644,11 +2790,9 @@
       "dual_confirmed": false
     }
   ],
-  "daily_report": "各位投資朋友大家好，我是台股題材研究員。今日（2026年9月27日）的市場雷達掃描顯示，台股盤面正處於一個「國際巨頭點火、本土媒體尚未全面跟風」的奇妙真空期。以下為各位梳理三大雷達的核心脈絡。\n\n首先看到發酵雷達的核心買點邏輯。今日G區（雙邊確認）與A、C區籌碼共振個股暫時缺席，但焦點全落在「國際先行、台股未燃」的最前緣訊號上。國際大廠如 NVIDIA、AMD、Broadcom、Coherent 等在法說會與財報中，密集點名了**記憶體（DRAM/HBM/NAND）、光通訊、矽光子、CPO、磷化銦與先進封裝**等關鍵字。這意味著國際資金與產業巨頭對AI基礎設施升級（如1.6T/800G高速傳輸、光學共封裝）的共識已經底定，台灣相關供應鏈新聞雖尚未全面大肆渲染，但產業基本面正蓄勢待發。\n\n此時我們必須切入交易哲學的檢視：在這些國際先行的題材中，若個別供應鏈個股目前股價位置仍落在🟢**底部**，尚未隨國際消息大漲，這正是我們需要高度關注的潛在佈局區；相反地，若部分光通訊或先進封裝概念股近期已隨題材熱炒、處於🔴**高檔**，則務必提醒投資人「國際訊號雖強，但股價已大幅反映，切忌盲目追價」。\n\n接著看到題材雷達（D/F區）。今日D區熱度暴增題材暫無，但在F區（國際大廠法說關鍵詞升溫）中，我們看到了強烈的產業呼應。例如 AMD 提及 `data center`、AAOI 與 COHR 聚焦 `capacity` 與 `800G`、以及台積電（TSM）持續釋出強勁的 `capex` 與先進製程/產能需求。這與發酵雷達中光通訊、先進封裝的國際先行訊號完美呼應——國際大廠的資本支出與產能擴張，正是支撐上游供應鏈的底氣。\n\n最後，在候選題材（E/E2區）的早期訊號中，今日首見（E區）浮現了多個具備AI高度相關的高可信度新題材，包含**散熱/液冷（AI水冷需求）、電源/HVDC（資料中心高壓電力）、ASIC晶片（CSP自研晶片商機）、MLCC被動元件、機器人自動化及eSSD儲存**等，這些都是未來幾季值得放入追蹤清單的生力軍。而連續追蹤中的題材如 iPhone、CPU、TPU 等則持續維持7天熱度。\n\n特別需要留意的是E2區的近期關注項目：**NAND**（暴增比0.82）與 **SLC NAND**（暴增比0.81）。這兩個詞彙雖然尚未跨越1.5倍的暴增門檻，但動能已在醞釀。在此必須強調，**這屬於初步觀察、非確定訊號**，千萬不要過度解讀為題材已經爆發，但記憶體族群的底層復甦與E2區的動能疊加，確實值得我們給予更多的耐性去持續追蹤。\n\n**今日最值得留意的訊號：** 國際大廠在光通訊、800G與先進封裝的法說關鍵字全面升溫，台股尚未全面發酵，應優先尋找基期仍在底部、具備實質訂單支撐的供應鏈標的，並嚴防高檔追價風險。",
-  "daily_report_date": "2026年09月27日",
   "H_verification_summary": {
     "by_detection_type": {},
-    "pending_count": 30,
-    "total_claims": 30
+    "pending_count": 39,
+    "total_claims": 39
   }
 }
