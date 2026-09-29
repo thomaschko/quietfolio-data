@@ -1,78 +1,120 @@
 {
-  "generated_at": "2026-09-29 08:16:07.313818",
+  "generated_at": "2026-09-29 08:44:08.213475",
   "date": "20260929",
   "first_seen": [
     {
-      "term": "AI Agent",
-      "sources": [
-        "cna",
-        "cnbc_yahoo",
-        "cnyes",
-        "cnyes_intl",
-        "google_news",
-        "google_news_jp",
-        "techorange",
-        "wallstreetcn",
-        "wapeople"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 34,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "智慧代理軟體與邊緣運算應用"
-    },
-    {
-      "term": "算力基礎設施",
-      "sources": [
-        "cnyes",
-        "cnyes_intl",
-        "eetimes",
-        "google_news",
-        "google_news_us",
-        "wallstreetcn"
-      ],
-      "stocks": [
-        "2351",
-        "6669"
-      ],
-      "names": {
-        "2351": "順德",
-        "6669": "緯穎"
-      },
-      "hits": 18,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "資料中心運算效能與供電瓶頸"
-    },
-    {
-      "term": "碳化矽(SiC)",
+      "term": "功率半導體與高壓",
       "sources": [
         "cnyes",
         "edn_jp",
         "eetimes_jp",
-        "google_news"
+        "google_news",
+        "google_news_jp",
+        "technews"
+      ],
+      "stocks": [
+        "2351",
+        "8358"
+      ],
+      "names": {
+        "2351": "順德",
+        "8358": ""
+      },
+      "hits": 20,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "AI資料中心用電、HVDC與功率元件漲價"
+    },
+    {
+      "term": "AI Agent與代理式AI",
+      "sources": [
+        "cna",
+        "cnbc_yahoo",
+        "cnyes",
+        "technews",
+        "wapeople"
       ],
       "stocks": [],
       "names": {},
-      "hits": 9,
+      "hits": 16,
       "streak_days": 1,
       "method": "ai",
-      "reason": "高壓功率元件與材料需求成長"
+      "reason": "大型科技企業競逐全天候個人助理與應用"
     },
     {
-      "term": "AI晶片架構",
+      "term": "第三代半導體SiC/GaN",
+      "sources": [
+        "eetimes_jp",
+        "google_news",
+        "google_news_us",
+        "ic975",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 11,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "碳化矽與氮化鎵材料在電源與車用應用"
+    },
+    {
+      "term": "PCB與高階載板",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "google_news"
+      ],
+      "stocks": [
+        "6213",
+        "8358"
+      ],
+      "names": {
+        "6213": "聯茂",
+        "8358": ""
+      },
+      "hits": 11,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "AI板材、HVLP銅箔與載板產值突破"
+    },
+    {
+      "term": "衛星通訊與無人機",
+      "sources": [
+        "cna",
+        "cnyes",
+        "cnyes_intl",
+        "google_news",
+        "wallstreetcn"
+      ],
+      "stocks": [
+        "1324"
+      ],
+      "names": {
+        "1324": "地球"
+      },
+      "hits": 10,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "低軌衛星與無人載具商業化進展"
+    },
+    {
+      "term": "GPU與ASIC算力晶片",
       "sources": [
         "cnyes",
         "fugle_blog",
-        "google_news"
+        "google_news",
+        "technews"
       ],
-      "stocks": [],
-      "names": {},
-      "hits": 6,
+      "stocks": [
+        "8096"
+      ],
+      "names": {
+        "8096": ""
+      },
+      "hits": 9,
       "streak_days": 1,
       "method": "ai",
-      "reason": "多晶片與自研算力架構演進"
+      "reason": "雲端巨頭與晶片廠客製化晶片與算力需求"
     },
     {
       "term": "World",
@@ -105,6 +147,39 @@
       "reason": ""
     },
     {
+      "term": "玻璃基板技術",
+      "sources": [
+        "cnyes",
+        "google_news",
+        "google_news_us"
+      ],
+      "stocks": [
+        "2330"
+      ],
+      "names": {
+        "2330": "台積電"
+      },
+      "hits": 5,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "先進封裝基板創新與良率突破"
+    },
+    {
+      "term": "量子計算與新興技術",
+      "sources": [
+        "cnyes",
+        "edn_jp",
+        "google_news_us",
+        "wallstreetcn"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 5,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "量子運算、通訊與前瞻科研佈局"
+    },
+    {
       "term": "CDU",
       "sources": [
         "cnyes",
@@ -134,20 +209,6 @@
       "streak_days": 1,
       "method": "jieba",
       "reason": ""
-    },
-    {
-      "term": "高壓平台",
-      "sources": [
-        "cnyes",
-        "eetimes",
-        "google_news"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 3,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "800V車用半導體與電力革新"
     },
     {
       "term": "添動能",
@@ -224,9 +285,9 @@
         "google_news"
       ],
       "stocks": [
-        "2408",
         "1303",
-        "2317"
+        "2317",
+        "2408"
       ],
       "names": {},
       "hits": 2,
@@ -241,9 +302,9 @@
         "google_news"
       ],
       "stocks": [
-        "2408",
         "1303",
-        "2317"
+        "2317",
+        "2408"
       ],
       "names": {},
       "hits": 2,
@@ -473,10 +534,10 @@
       "reason": ""
     },
     {
-      "term": "大企業",
+      "term": "商用化",
       "sources": [
         "cnyes_intl",
-        "google_news_jp"
+        "eetimes_jp"
       ],
       "stocks": [],
       "names": {},
@@ -503,6 +564,19 @@
       "sources": [
         "edn",
         "google_news"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "CES",
+      "sources": [
+        "google_news",
+        "google_news_jp"
       ],
       "stocks": [],
       "names": {},
@@ -552,8 +626,8 @@
         "technews"
       ],
       "stocks": [
-        "1459",
-        "2454"
+        "2454",
+        "1459"
       ],
       "names": {},
       "hits": 4,
@@ -802,20 +876,6 @@
       "reason": ""
     },
     {
-      "term": "光模組",
-      "sources": [
-        "cnyes",
-        "cnyes_intl",
-        "google_news"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 7,
-      "streak_days": 5,
-      "method": "ai",
-      "reason": "高速光傳輸模組與零組件需求"
-    },
-    {
       "term": "伺服器",
       "sources": [
         "cnyes",
@@ -825,12 +885,12 @@
       ],
       "stocks": [
         "3016",
-        "2351",
-        "3017",
         "2317",
-        "2330",
-        "8096",
+        "3017",
+        "2351",
         "2324",
+        "8096",
+        "2330",
         "3324"
       ],
       "names": {},
@@ -873,8 +933,8 @@
         "cnyes_intl"
       ],
       "stocks": [
-        "1459",
-        "2454"
+        "2454",
+        "1459"
       ],
       "names": {},
       "hits": 2,
@@ -1074,6 +1134,20 @@
       "reason": ""
     },
     {
+      "term": "工研院",
+      "sources": [
+        "cnyes_intl",
+        "ic975",
+        "wapeople"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 4,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
       "term": "自動化",
       "sources": [
         "cnyes",
@@ -1082,7 +1156,7 @@
       ],
       "stocks": [],
       "names": {},
-      "hits": 4,
+      "hits": 3,
       "streak_days": 2,
       "method": "jieba",
       "reason": ""
@@ -1116,19 +1190,6 @@
       "reason": ""
     },
     {
-      "term": "工研院",
-      "sources": [
-        "ic975",
-        "wapeople"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 3,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
       "term": "MOSFET",
       "sources": [
         "edn_jp",
@@ -1137,19 +1198,6 @@
       "stocks": [],
       "names": {},
       "hits": 3,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
-      "term": "中小型",
-      "sources": [
-        "cnyes",
-        "google_news"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
       "streak_days": 2,
       "method": "jieba",
       "reason": ""
@@ -1185,19 +1233,6 @@
       "sources": [
         "cnyes",
         "wapeople"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
-      "term": "MSTR",
-      "sources": [
-        "cnyes",
-        "cnyes_intl"
       ],
       "stocks": [],
       "names": {},
@@ -1273,15 +1308,6 @@
     }
   ],
   "lookback_days": 14,
-  "promoted_today": [
-    {
-      "term": "光模組",
-      "streak_days": 5,
-      "method": "ai",
-      "confidence": "",
-      "reason": "高速光傳輸模組與零組件需求",
-      "promoted_date": "20260929"
-    }
-  ],
+  "promoted_today": [],
   "promoted_companies_today": []
 }
