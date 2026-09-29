@@ -99,9 +99,26 @@ def build_name2code():
             r.raise_for_status()
             data = r.json()
             before = len(name2code)
+            # 2026-09-29根因修正:這輪對話裡「TPEx 股票清單: +0」出現在每一次
+            # log,查證後發現極可能是TPEx的mopsfin_t187ap03_O端點用英文欄位名
+            # (跟TWSE的t187ap03_L用中文欄位名「公司代號」「公司簡稱」不同),
+            # 原本只認中文欄位名,導致TPEx每一列都被row.get()的預設空字串
+            # 擋下、整批資料實質上被靜默丟棄——這也是「世界先進(5347,櫃買
+            # 股票)」熱詞查詢一直配不到股號的真正根因(不是官方簡稱字串
+            # 差異的問題,是TPEx資料從一開始就沒有載入任何一筆)。改成
+            # 同時嘗試中英文候選欄位名,盡量不用再猜第二次。
+            CODE_KEYS = ("公司代號", "Code", "CompanyCode", "SecuritiesCompanyCode", "StockCode")
+            SHORT_KEYS = ("公司簡稱", "CompanyAbbreviation", "Company", "CompanyName", "Name", "Abbreviation")
             for row in data:
-                code = str(row.get("公司代號", "")).strip()
-                short = str(row.get("公司簡稱", "")).strip()
+                code = short = ""
+                for k in CODE_KEYS:
+                    if row.get(k):
+                        code = str(row[k]).strip()
+                        break
+                for k in SHORT_KEYS:
+                    if row.get(k):
+                        short = str(row[k]).strip()
+                        break
                 if not (code and short and re.match(r"^\d{4,6}$", code)):
                     continue
                 name2code[short] = code
@@ -114,7 +131,13 @@ def build_name2code():
                 alias = short.replace("-KY", "").replace("＊", "").replace("*", "").strip()
                 if alias and alias != short and len(alias) >= 3 and alias not in name2code:
                     name2code[alias] = code
-            print(f"  {tag} 股票清單: +{len(name2code)-before} → 累計 {len(name2code)}")
+            added = len(name2code) - before
+            print(f"  {tag} 股票清單: +{added} → 累計 {len(name2code)}")
+            # 2026-09-29新增:如果整批資料都沒配對成功(candidate欄位名全猜錯),
+            # 印出第一列實際的原始鍵名,下次log直接看得到TPEx真正的欄位長
+            # 什麼樣子,不用再靠搜尋間接推測。
+            if added == 0 and data:
+                print(f"    ⚠ {tag} 本次0筆配對成功,第一列原始欄位鍵名: {list(data[0].keys())}")
         except Exception as e:
             print(f"  ⚠ {tag} 股票清單抓取失敗: {e}")
     # 2026-09-29新增:少數公司市場口語慣用全名跟TWSE/TPEx官方公司簡稱欄位
