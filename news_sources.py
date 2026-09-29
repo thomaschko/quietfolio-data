@@ -357,6 +357,57 @@ def _fetch_edn_jp():
     return _fetch_simple_rss("https://rss.itmedia.co.jp/rss/2.0/edn.xml")
 
 
+def _fetch_etnews_kr():
+    """電子新聞/ETNews(2026-09-29新增,補上韓國這塊地理缺口——F區國際法說
+    與E區候選詞裡,三星/SK海力士(海力士)反覆出現,但先前23源完全沒有韓文
+    原生媒體,跟日本之前的缺口性質一樣。ETNews是韓國最大IT/半導體專業
+    媒體(1982年創刊),官方標準RSS,實測內容即時且精準命中——SK海力士在
+    TSMC技術大會發表次世代HBM記憶體、三星電機投資AI伺服器半導體基板
+    (FC-BGA,對應CCL/載板題材)、三星/SK海力士股價連動反映記憶體景氣。
+    內容混雜一般社會/生活新聞,交給下游jieba跨源比對自然過濾,不在這裡
+    做主題篩選(理由同wallstreetcn)。"""
+    return _fetch_simple_rss("http://rss.etnews.com/Section901.xml")
+
+
+def _fetch_the_circuit_podcast():
+    """The Circuit Podcast(2026-09-29新增,使用者要求查詢海外Podcast題材源。
+    Ben Bajarin與Jay Goldberg主持,專門討論半導體產業與市場的Podcast
+    (Apple Podcasts評分4.8-4.9),官方RSS(Transistor.fm託管)。實測內容
+    精準度極高,幾乎逐集命中既有題材:CPO/矽光子(專訪Ayar Labs執行長)、
+    ADI 800V資料中心、HBM/記憶體、TSMC/ASML/AEHR法說、SK海力士IPO、
+    磷化銦晶圓良率、CoWoS、LPO/NPO/CPO光互連架構區分。節目簡介本身寫得
+    詳細(不只是標題),資訊密度比一般新聞標題更高。更新頻率約雙週一集,
+    比新聞類來源低頻,屬於深度分析型補充來源。"""
+    return _fetch_simple_rss("https://feeds.transistor.fm/the-circuit")
+
+
+def _fetch_bg2_pod():
+    """BG2 Pod(2026-09-29新增,使用者具體點名「常邀請Jensen Huang、Elon
+    Musk、創投老闆」這類節目。由知名創投Brad Gerstner(Altimeter創辦人)
+    和Bill Gurley(前Benchmark合夥人)主持,官方RSS(Anchor.fm/Spotify
+    Podcasters託管)。實測歷史集數直接證實邀請過Jensen Huang本人做深度
+    專訪(NVIDIA/OpenAI/運算未來)、多次討論Elon Musk/xAI/SpaceX、邀請
+    過ARM執行長Rene Haas,內容涵蓋稀土晶片出口管制、ASIC vs GPU、中國
+    科技供應鏈等,跟a16z Podcast(已查證但因近期內容偏軟體應用/創投文化
+    而不建議接入)形成對比,這個節目的半導體供應鏈相關度高很多。更新
+    頻率較低(約雙週到每月一集),屬於深度訪談型補充來源。"""
+    return _fetch_simple_rss("https://anchor.fm/s/f06c2370/podcast/rss")
+
+
+def _fetch_gavin_baker_newsletter():
+    """Gavin Baker電子報「Thoughts from Arrakis」(2026-09-29新增,使用者
+    指定追蹤。Gavin Baker是Atreides Management創辦人/CIO,前Fidelity
+    OTC基金經理人,深耕半導體產業研究超過20年,《Invest Like the Best》
+    (Colossus)常客(已上過六次,專門談「Watts and Wafers」——AI基礎建設
+    的兩大實體限制供電與晶圓),也是上一輪查證的BG2 Pod座上賓,產業判斷
+    在科技投資圈份量很重。用Substack官方標準RSS格式(gavinsbaker.substack
+    .com/feed,注意網域是gavinsbaker不是gavinbaker,兩者是不同帳號,後者
+    像是廢棄的舊帳號)。⚠️工具限制未能直接測試這個feed本身的實際內容
+    (只能確認網站本身活躍、1000+訂閱),依循Substack官方文件記載的通用
+    格式規則,下次log需優先確認這個來源有沒有真的抓到內容。"""
+    return _fetch_simple_rss("https://gavinsbaker.substack.com/feed")
+
+
 def _fetch_google_trends_tw():
     """Google Trends台灣每日熱搜(2026-09-23新增,使用者提議「熱門關鍵字」
     需求)。跟google_news系列不同,這不是新聞分類頭條,是Google Trends官方
@@ -655,6 +706,10 @@ def fetch_titles_by_source():
         "wallstreetcn": _fetch_wallstreetcn(),
         "eetimes_jp": _fetch_eetimes_jp(),
         "edn_jp": _fetch_edn_jp(),
+        "etnews_kr": _fetch_etnews_kr(),
+        "the_circuit_podcast": _fetch_the_circuit_podcast(),
+        "bg2_pod": _fetch_bg2_pod(),
+        "gavin_baker_newsletter": _fetch_gavin_baker_newsletter(),
         "google_trends_tw": _fetch_google_trends_tw(),
         "youxian": _fetch_youxian(),
         "gs_exchanges": _fetch_gs_exchanges(),
