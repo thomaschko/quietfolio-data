@@ -408,6 +408,20 @@ def _fetch_gavin_baker_newsletter():
     return _fetch_simple_rss("https://gavinsbaker.substack.com/feed")
 
 
+def _fetch_invest_like_the_best():
+    """Invest Like the Best(2026-09-29新增,查證Gavin Baker常態出現的節目
+    後發現本身也值得獨立接入。Patrick O'Shaughnessy主持,Colossus旗下
+    十年老牌投資訪談Podcast,官方RSS(Megaphone託管)。實測最近一批集數
+    密度明顯高於先前查證但婉拒的a16z Podcast:Neil Movva(AI推論/GPU
+    市場)、Ben Thompson(TSMC/Intel/記憶體週期/中美AI競賽)、Eric Vishria
+    (Cerebras/能源瓶頸)、Gavin Baker本人第七次上節目(合約價vs現貨GPU
+    定價、記憶體供應協議賽局、「若我是SK海力士CEO」、中國DUV機台)、
+    Sam Altman(OpenAI自研Jalapeno晶片)——9集裡6-7集直接相關,混雜少量
+    創投募資/人物傳記類不相關集數。每週更新,節目簡介本身極詳細(含完整
+    時間軸標記),資訊密度高。"""
+    return _fetch_simple_rss("https://feeds.megaphone.fm/investlikethebest")
+
+
 def _fetch_google_trends_tw():
     """Google Trends台灣每日熱搜(2026-09-23新增,使用者提議「熱門關鍵字」
     需求)。跟google_news系列不同,這不是新聞分類頭條,是Google Trends官方
@@ -710,6 +724,7 @@ def fetch_titles_by_source():
         "the_circuit_podcast": _fetch_the_circuit_podcast(),
         "bg2_pod": _fetch_bg2_pod(),
         "gavin_baker_newsletter": _fetch_gavin_baker_newsletter(),
+        "invest_like_the_best": _fetch_invest_like_the_best(),
         "google_trends_tw": _fetch_google_trends_tw(),
         "youxian": _fetch_youxian(),
         "gs_exchanges": _fetch_gs_exchanges(),
