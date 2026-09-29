@@ -18,7 +18,7 @@ from collections import defaultdict
 # 2026-09-22新增:讓jieba跨源發現的新題材,也能套用跟watchlist關鍵字同一套
 # 嚴謹的股號抽取邏輯(CUBE消歧義、THEME_STOCK_EXCLUDE、弱命中門檻、綜述文排除),
 # 取代原本只有鉅亨網、而且是鉅亨自己API標籤、沒有任何安全防護的粗糙股號關聯。
-from event_theme_radar import build_name2code, extract_stock_codes_from_articles
+from event_theme_radar import build_name2code, extract_stock_codes_from_articles, extract_codes
 
 # 2026-09-23新增:使用者提議的機制——同日多源爆量的熱詞(即使只有第一天,
 # 不需要累積連續天數),直接觸發針對性Gemini查詢,問法是「這個詞背後有哪些
@@ -29,6 +29,46 @@ from ai_theme_discovery import call_gemini
 
 HOT_TERM_SOURCE_THRESHOLD = 4  # 比一般跨源門檻(2)更嚴格,只對真正爆量的詞觸發,控制API用量
 HOT_TERM_MAX_QUERIES = 5       # 每次執行最多查詢幾個熱詞,避免額度暴衝
+
+# 2026-09-29新增:使用者提議——Meta/NVIDIA/超微(AMD)這類國際巨頭被熱詞
+# 命中時,雖然本身沒有台股代碼(正確不硬湊),但可以反查「公開報導證實」的
+# 台灣供應鏈廠商,當作參考線索。刻意跟related_stocks(直接命中)分開存放、
+# 分開顯示,不能混進A/D區的硬訊號判斷——這是「該公司的已知供應鏈」,不是
+# 「這篇新聞明確點名了這家台廠」,兩者的訊號強度完全不同,混在一起會稀釋
+# 既有偵測機制的精準度。清單刻意保守,只收錄廣泛見諸科技財經報導、非推測
+# 性質的公開供應鏈關係,涵蓋範圍暫以最常見的AI/半導體客戶為主,之後可視
+# 熱詞查詢實際命中的公司持續擴充。
+INTL_SUPPLY_CHAIN_HINTS = {
+    "NVIDIA": ["2330台積電(晶圓代工)", "2317鴻海(AI伺服器組裝)",
+               "2382廣達(AI伺服器ODM)", "3231緯創(AI伺服器ODM)",
+               "2308台達電(電源/散熱)", "2454聯發科(合作研發)"],
+    "超微": ["2330台積電(晶圓代工)", "3711日月光(封測)", "2317鴻海(伺服器組裝)"],
+    "AMD": ["2330台積電(晶圓代工)", "3711日月光(封測)", "2317鴻海(伺服器組裝)"],
+    "Meta": ["2317鴻海(伺服器/VR裝置組裝)", "2382廣達(AI伺服器ODM)",
+             "3231緯創(AI伺服器ODM)", "2308台達電(電源供應)"],
+    "蘋果": ["2317鴻海(組裝)", "2382廣達(組裝)", "3231緯創(組裝)",
+             "2454聯發科(晶片供應)", "3008大立光(鏡頭)"],
+    "Apple": ["2317鴻海(組裝)", "2382廣達(組裝)", "3231緯創(組裝)",
+              "2454聯發科(晶片供應)", "3008大立光(鏡頭)"],
+    "微軟": ["2330台積電(晶圓代工)", "2382廣達(伺服器ODM)"],
+    "Microsoft": ["2330台積電(晶圓代工)", "2382廣達(伺服器ODM)"],
+    "Google": ["2330台積電(晶圓代工/TPU)", "2382廣達(伺服器ODM)"],
+    "谷歌": ["2330台積電(晶圓代工/TPU)", "2382廣達(伺服器ODM)"],
+    "亞馬遜": ["2330台積電(晶圓代工)", "2382廣達(伺服器ODM)"],
+    "Amazon": ["2330台積電(晶圓代工)", "2382廣達(伺服器ODM)"],
+}
+
+
+def find_supply_chain_hints(unmatched_names):
+    """對熱詞查詢裡配不到台股代碼的國際公司名稱,反查已知台灣供應鏈廠商
+    (僅供參考,不算股號命中)。回傳{公司名稱: [廠商清單]},查無資料的
+    公司名稱不會出現在回傳結果裡。"""
+    hints = {}
+    for name in unmatched_names:
+        chain = INTL_SUPPLY_CHAIN_HINTS.get(name)
+        if chain:
+            hints[name] = chain
+    return hints
 
 HOT_TERM_SYSTEM_PROMPT = """你是台股新聞分析助理。使用者會給你一個今天在多個新聞來源
 同時被提及的熱門詞彙,以及提到這個詞的新聞標題清單。
@@ -346,23 +386,40 @@ def main():
         c["gemini_summary"] = result.get("summary", "")
         # Gemini回傳的是公司名稱,不一定是股號,這裡嘗試對照name2code轉成股號;
         # 對不到的公司名稱原樣保留在gemini_companies,不強行湊股號
+        # 2026-09-29根因修正:原本用name2code.get(name)精確字典查找,要求
+        # Gemini回傳字串跟資料庫公司簡稱一字不差才配對成功,比系統其他地方
+        # (extract_stock_codes_from_articles)用的子字串包含比對脆弱很多——
+        # 實測「世界先進」(5347,確認上市)被Gemini正確點名,卻因為這段脆弱
+        # 邏輯配對失敗,錯放進unmatched_names。改用extract_codes()同一套
+        # 已驗證的子字串比對,跟系統其他偵測路徑統一,不再重複造一個較弱的版本。
         mentioned = result.get("mentioned_companies", []) or []
         matched_codes, unmatched_names = [], []
         for name in mentioned:
-            code = name2code.get(name) or name2code.get(name.strip())
-            if code:
-                matched_codes.append(code)
+            hits = extract_codes(name, name2code)
+            if hits:
+                # 一個公司名稱理論上只會命中一檔股票,取信心分數最高的那個
+                best_code = max(hits, key=hits.get)
+                matched_codes.append(best_code)
             else:
                 unmatched_names.append(name)
         if matched_codes:
             c["related_stocks"] = matched_codes
             c["related_names"] = {cd: code2name.get(cd, "") for cd in matched_codes}
         c["gemini_unmatched_companies"] = unmatched_names
+        # 2026-09-29新增:對配不到股號的國際公司,反查已知供應鏈廠商(僅供參考)
+        supply_hints = find_supply_chain_hints(unmatched_names)
+        if supply_hints:
+            c["supply_chain_hints"] = supply_hints
         tag = "✅相關" if c["gemini_relevant"] else "❌判定不相關"
         stk_str = " ".join(cd + code2name.get(cd, "") for cd in matched_codes)
+        hint_str = ""
+        if supply_hints:
+            parts = [f"{nm}→{'/'.join(chain)}" for nm, chain in supply_hints.items()]
+            hint_str = f" [供應鏈參考:{'; '.join(parts)}]"
         print(f"  「{c['term']}」{tag}: {c['gemini_summary']}"
               + (f" 股:{stk_str}" if stk_str else "")
-              + (f" (未對到股號的公司:{unmatched_names})" if unmatched_names else ""))
+              + (f" (未對到股號的公司:{unmatched_names})" if unmatched_names else "")
+              + hint_str)
 
     # 排序:跨源數優先 > 有個股 > 出現次數(跨源=真題材的最強訊號)
     candidates.sort(key=lambda x: (-x["source_count"], not x["related_stocks"], -x["recent_hits"]))
