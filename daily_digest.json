@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-28 16:58:55",
-  "date": "20260928",
+  "generated_at": "2026-09-29 06:39:21",
+  "date": "20260929",
   "summary_counts": {
     "resonance": 4,
     "preferment_themes": 1,
     "broker_coverage": 0,
-    "surge_themes": 1,
+    "surge_themes": 5,
     "new_candidates": 15,
     "earnings_rising": 224,
     "cross_confirmed": 0
@@ -121,8 +121,8 @@
   "B_preferment_themes": [
     {
       "theme": "矽智財",
-      "ratio": 1.51,
-      "baseline": 27.3,
+      "ratio": 1.65,
+      "baseline": 26.9,
       "codes": [
         "3035",
         "3529",
@@ -136,8 +136,18 @@
   "C_broker_coverage": [],
   "D_surge_themes": [
     {
+      "theme": "HBM4",
+      "ratio": 3.15,
+      "codes": [
+        "5007"
+      ],
+      "names": {
+        "5007": "三星"
+      }
+    },
+    {
       "theme": "碳化矽",
-      "ratio": 2.12,
+      "ratio": 2.43,
       "codes": [
         "2301",
         "2308",
@@ -186,28 +196,73 @@
         "6548": "長科",
         "8261": "富鼎"
       }
+    },
+    {
+      "theme": "CoPoS",
+      "ratio": 1.89,
+      "codes": [
+        "6937",
+        "2330"
+      ],
+      "names": {
+        "6937": "天虹",
+        "2330": "台積電"
+      }
+    },
+    {
+      "theme": "GaN",
+      "ratio": 1.89,
+      "codes": [
+        "6937",
+        "5347"
+      ],
+      "names": {
+        "6937": "天虹",
+        "5347": ""
+      }
+    },
+    {
+      "theme": "XPU",
+      "ratio": 1.89,
+      "codes": [],
+      "names": {}
     }
   ],
   "E_new_candidates": [
     {
       "term": "伺服器",
-      "recent_hits": 42,
+      "recent_hits": 43,
       "is_brand_new": false,
-      "streak_days": 4,
+      "streak_days": 5,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "2330",
+        "2351",
+        "2317",
+        "3017",
+        "8096",
         "3016",
-        "2317"
+        "2324",
+        "3324",
+        "2330"
       ],
       "names": {}
     },
     {
-      "term": "iPhone",
-      "recent_hits": 11,
+      "term": "美債殖",
+      "recent_hits": 12,
       "is_brand_new": false,
-      "streak_days": 8,
+      "streak_days": 6,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "iPhone",
+      "recent_hits": 10,
+      "is_brand_new": false,
+      "streak_days": 9,
       "method": "jieba",
       "reason": "",
       "stocks": [],
@@ -215,9 +270,9 @@
     },
     {
       "term": "海力士",
-      "recent_hits": 9,
+      "recent_hits": 8,
       "is_brand_new": false,
-      "streak_days": 6,
+      "streak_days": 7,
       "method": "jieba",
       "reason": "",
       "stocks": [
@@ -226,10 +281,22 @@
       "names": {}
     },
     {
+      "term": "新加坡",
+      "recent_hits": 8,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "2330"
+      ],
+      "names": {}
+    },
+    {
       "term": "CPU",
       "recent_hits": 6,
       "is_brand_new": false,
-      "streak_days": 8,
+      "streak_days": 9,
       "method": "jieba",
       "reason": "",
       "stocks": [],
@@ -239,7 +306,7 @@
       "term": "advanced packaging",
       "recent_hits": 6,
       "is_brand_new": false,
-      "streak_days": 8,
+      "streak_days": 9,
       "method": "jieba",
       "reason": "",
       "stocks": [],
@@ -249,37 +316,70 @@
       "term": "Pro",
       "recent_hits": 6,
       "is_brand_new": false,
-      "streak_days": 6,
+      "streak_days": 7,
       "method": "jieba",
       "reason": "",
       "stocks": [],
       "names": {}
     },
     {
-      "term": "毛利率",
-      "recent_hits": 6,
-      "is_brand_new": false,
-      "streak_days": 6,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "美債殖",
-      "recent_hits": 6,
-      "is_brand_new": false,
-      "streak_days": 5,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "LED",
+      "term": "VSMC",
       "recent_hits": 6,
       "is_brand_new": false,
       "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "新戰場",
+      "recent_hits": 5,
+      "is_brand_new": false,
+      "streak_days": 4,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "Nvidia",
+      "recent_hits": 5,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "TPU",
+      "recent_hits": 4,
+      "is_brand_new": false,
+      "streak_days": 9,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "2454",
+        "1459"
+      ],
+      "names": {}
+    },
+    {
+      "term": "下一代",
+      "recent_hits": 4,
+      "is_brand_new": false,
+      "streak_days": 9,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "NVIDIA",
+      "recent_hits": 4,
+      "is_brand_new": false,
+      "streak_days": 9,
       "method": "jieba",
       "reason": "",
       "stocks": [],
@@ -287,74 +387,25 @@
     },
     {
       "term": "data center",
-      "recent_hits": 5,
-      "is_brand_new": false,
-      "streak_days": 8,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "Rubin",
-      "recent_hits": 5,
-      "is_brand_new": false,
-      "streak_days": 5,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "3231"
-      ],
-      "names": {}
-    },
-    {
-      "term": "成關鍵",
-      "recent_hits": 5,
-      "is_brand_new": false,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "高利率",
       "recent_hits": 4,
       "is_brand_new": false,
-      "streak_days": 8,
+      "streak_days": 9,
       "method": "jieba",
       "reason": "",
       "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "Agent",
-      "recent_hits": 4,
-      "is_brand_new": false,
-      "streak_days": 8,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "Vera",
-      "recent_hits": 4,
-      "is_brand_new": false,
-      "streak_days": 8,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "3231"
-      ],
       "names": {}
     }
   ],
   "E2_near_miss": [
     {
-      "theme": "800V HVDC",
-      "ratio": 0.81,
-      "recent_count": 3
+      "theme": "SiC",
+      "ratio": 1.21,
+      "recent_count": 10
+    },
+    {
+      "theme": "HBM",
+      "ratio": 0.85,
+      "recent_count": 16
     }
   ],
   "F_earnings_rising": [
@@ -2790,9 +2841,11 @@
       "dual_confirmed": false
     }
   ],
+  "daily_report": "各位投資先進好，我是台股題材研究員。今日（2026年9月29日）市場結構展現出高度的國際共振與次世代技術鋪陳。我們直接由發酵雷達切入核心買點，並連動題材雷達與候選訊號，為大家梳理今日的盤勢脈絡。\n\n首先在**發酵雷達**方面，今日雖然G區尚無雙邊確認題材，但在「國際先行、台股未燃」的前緣區塊卻出現了大面積的強力訊號。光通訊、矽光子（Silicon Photonics）、CPO、磷化銦（InP），以及先進封裝、HBM與NAND等關鍵字，同時在AAOI、ADI、AXTI、COHR、KEYS、LITE、MRVL、TER、TSEM、AMD、AVGO與TSM等國際大廠的法說與外電中密集釋出，顯示國際資金與技術鏈正全面押注下一代高速傳輸與AI硬體升級。\n\n對應到台股內部，B區「維基關注度剛翹頭」的**矽智財（IP）**題材暴增比來到1.65，帶動多源共振的A區個股如3035、3529、4966與6533獲得明確點名。這形成了一個有趣的對比：國際大廠在光通訊與高階運算（HBM/先進封裝）上強勢發聲，而台股則由矽智財族群率先在維基關注度上築底發酵。不過，投資朋友在面對這些強勢族群時，必須留意個股目前的股價位階。若相關IP個股若已處於🔴高檔位置，即使多源共振訊號強烈，也已大幅反映市場預期，此時切忌盲目追價，應等待技術面拉回或籌碼沉澱再行評估；反之，若有基期🟢位於底部的標的，則值得多加關注其補漲機會。\n\n接著看**題材雷達**（D區與F區），新聞熱度與國際法說正相互印證。D區熱度暴增題材中，**碳化矽（SiC）**熱度暴增2.43倍，涵蓋2301、2308、2342、2434、2457等指標股；同時，HBM4暴增3.15倍（5007）、CoPoS（6937、2330）與GaN（6937、5347）也同步噴出。這與F區國際大廠的法說關鍵詞完美契合——AEHR的burn-in測試設備、AAOI與COHR的800G與capacity擴產、以及TSM的capex與TSMC擴產動能，全面指向AI基礎建設與資料中心（Data Center，如AMD與ON的新提及）的資本支出正持續擴大。\n\n最後，在**候選題材**方面，我們必須以更謹慎的眼光看待早期訊號。今日E區首見的多個新題材中，包括「HBM記憶體供需吃緊」、「AI代理（Agent）應用」、「玻璃基板技術次世代封裝」以及「功率半導體漲價」等，皆是高可信度的AI延伸方向，而連續追蹤長達9天的iPhone、CPU、TPU、advanced packaging與NVIDIA等詞彙，則持續在市場底層發酵，可信度隨時間遞增。至於E2區的近期關注詞，**SiC**（暴增比1.21）與**HBM**（暴增比0.85）目前仍處於成長動能醞釀中、尚未正式跨越1.5倍暴增門檻。在此特別提醒，E2區屬於「初步觀察、非確定訊號」，切莫將其視為已經爆發的題材，但其數據的逐漸靠攏，確實值得我們在日常追蹤中保持高度敏銳。\n\n**今日最值得留意的訊號：** 國際光通訊與矽光子供應鏈（如AAOI、COHR等）在法說中全面點名1.6T/800G與CPO，預告次世代網通升級正由國際大廠帶頭點火，搭配台股IP族群的維基關注度翹頭，盤面正蓄勢等待台股新聞與資金的全面跟進。",
+  "daily_report_date": "2026年09月29日",
   "H_verification_summary": {
     "by_detection_type": {},
-    "pending_count": 39,
-    "total_claims": 39
+    "pending_count": 44,
+    "total_claims": 44
   }
 }
