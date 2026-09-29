@@ -1,12 +1,48 @@
 {
-  "generated_at": "2026-09-29 09:08:35.383483",
+  "generated_at": "2026-09-29 09:24:26.776327",
   "date": "20260929",
   "first_seen": [
     {
-      "term": "AI資料中心電力與液冷散熱",
+      "term": "記憶體與DRAM",
       "sources": [
         "cnyes",
-        "google_news"
+        "eetimes_jp",
+        "google_news",
+        "google_news_us",
+        "ic975",
+        "technews",
+        "trendforce"
+      ],
+      "stocks": [
+        "5007",
+        "2344",
+        "6770",
+        "8096",
+        "3044",
+        "2408",
+        "1303"
+      ],
+      "names": {
+        "5007": "三星",
+        "2344": "華邦電",
+        "6770": "力積電",
+        "8096": "",
+        "3044": "健鼎",
+        "2408": "南亞科",
+        "1303": "南亞"
+      },
+      "hits": 55,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "記憶體晶片漲價與供需變化"
+    },
+    {
+      "term": "HVDC電力",
+      "sources": [
+        "cnyes",
+        "google_news",
+        "invest_like_the_best",
+        "technews"
       ],
       "stocks": [
         "2308"
@@ -14,39 +50,42 @@
       "names": {
         "2308": "台達電"
       },
-      "hits": 16,
+      "hits": 11,
       "streak_days": 1,
       "method": "ai",
-      "reason": "資料中心電力需求激增與液冷散熱商機"
+      "reason": "資料中心高壓直流電與電源架構"
     },
     {
-      "term": "AI代理(Agentic AI)",
+      "term": "人型機器人",
       "sources": [
-        "cna",
-        "cnbc_yahoo",
-        "cnyes",
-        "telegram",
+        "eetimes",
+        "google_news_jp",
+        "google_news_us",
+        "jov",
+        "technews",
         "wapeople"
       ],
       "stocks": [],
       "names": {},
-      "hits": 11,
+      "hits": 8,
       "streak_days": 1,
       "method": "ai",
-      "reason": "代理式AI應用、軟體沙盒與資安工具防護"
+      "reason": "機器人商業化與智慧製造"
     },
     {
-      "term": "碳化矽(SiC)與氮化鎵(GaN)",
+      "term": "碳化矽(SiC)",
       "sources": [
+        "cnyes",
         "google_news",
-        "google_news_us"
+        "google_news_us",
+        "trendforce"
       ],
       "stocks": [],
       "names": {},
-      "hits": 6,
+      "hits": 7,
       "streak_days": 1,
       "method": "ai",
-      "reason": "寬能隙半導體與車用、AI電源需求"
+      "reason": "第三代半導體與基板材料"
     },
     {
       "term": "World",
@@ -79,6 +118,39 @@
       "reason": ""
     },
     {
+      "term": "無人載具",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "eetimes",
+        "wapeople"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 5,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "無人機與國防科技應用"
+    },
+    {
+      "term": "CDU",
+      "sources": [
+        "cnyes",
+        "google_news",
+        "technews"
+      ],
+      "stocks": [
+        "8210",
+        "3324",
+        "3017"
+      ],
+      "names": {},
+      "hits": 5,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
       "term": "李飛飛",
       "sources": [
         "cnyes",
@@ -92,18 +164,50 @@
       "reason": ""
     },
     {
-      "term": "CDU",
+      "term": "車用晶片",
       "sources": [
-        "cnyes",
-        "google_news"
+        "cna",
+        "edn_jp",
+        "eetimes_jp",
+        "google_news_us"
       ],
-      "stocks": [
-        "8210",
-        "3017",
-        "3324"
-      ],
+      "stocks": [],
       "names": {},
       "hits": 4,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "車用電子與車載感測器"
+    },
+    {
+      "term": "EDA與IP",
+      "sources": [
+        "cnyes",
+        "google_news_us",
+        "wapeople"
+      ],
+      "stocks": [
+        "2330"
+      ],
+      "names": {
+        "2330": "台積電"
+      },
+      "hits": 4,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "半導體設計工具與IP授權"
+    },
+    {
+      "term": "劉揚偉",
+      "sources": [
+        "cna",
+        "cnyes",
+        "cnyes_intl"
+      ],
+      "stocks": [
+        "2317"
+      ],
+      "names": {},
+      "hits": 3,
       "streak_days": 1,
       "method": "jieba",
       "reason": ""
@@ -114,6 +218,19 @@
         "cnyes_intl",
         "edn",
         "google_news"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 3,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "VIX",
+      "sources": [
+        "cnyes",
+        "cnyes_intl"
       ],
       "stocks": [],
       "names": {},
@@ -136,6 +253,32 @@
       "reason": ""
     },
     {
+      "term": "H1",
+      "sources": [
+        "ctee",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 3,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "ASP",
+      "sources": [
+        "google_news",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 3,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
       "term": "silicon photonics",
       "sources": [
         "google_news_us",
@@ -144,6 +287,21 @@
       "stocks": [],
       "names": {},
       "hits": 3,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "P5",
+      "sources": [
+        "cnyes_intl",
+        "technews"
+      ],
+      "stocks": [
+        "5007"
+      ],
+      "names": {},
+      "hits": 2,
       "streak_days": 1,
       "method": "jieba",
       "reason": ""
@@ -222,6 +380,19 @@
       "reason": ""
     },
     {
+      "term": "新手村",
+      "sources": [
+        "cnyes",
+        "ctee"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
       "term": "KKR",
       "sources": [
         "cnyes",
@@ -261,7 +432,7 @@
       "reason": ""
     },
     {
-      "term": "VIX",
+      "term": "IPC",
       "sources": [
         "cnyes",
         "cnyes_intl"
@@ -274,10 +445,23 @@
       "reason": ""
     },
     {
-      "term": "IPC",
+      "term": "億關稅",
       "sources": [
-        "cnyes",
-        "cnyes_intl"
+        "cna",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "未表態",
+      "sources": [
+        "cna",
+        "technews"
       ],
       "stocks": [],
       "names": {},
@@ -300,10 +484,101 @@
       "reason": ""
     },
     {
+      "term": "國家級",
+      "sources": [
+        "cna",
+        "ctee"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "健次郎",
+      "sources": [
+        "cna",
+        "google_news_jp"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
       "term": "MW",
       "sources": [
         "google_news",
         "wealth"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "景氣燈",
+      "sources": [
+        "ctee",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "Instinct",
+      "sources": [
+        "cnyes_intl",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "財產權",
+      "sources": [
+        "cnyes_intl",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "LOT",
+      "sources": [
+        "cnyes_intl",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "Network",
+      "sources": [
+        "cnyes_intl",
+        "technews"
       ],
       "stocks": [],
       "names": {},
@@ -352,32 +627,6 @@
       "reason": ""
     },
     {
-      "term": "超車輝",
-      "sources": [
-        "cnyes_intl",
-        "google_news"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
-      "streak_days": 1,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
-      "term": "貢獻者",
-      "sources": [
-        "cnyes_intl",
-        "google_news"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
-      "streak_days": 1,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
       "term": "大空頭",
       "sources": [
         "cnyes_intl",
@@ -404,10 +653,10 @@
       "reason": ""
     },
     {
-      "term": "連假後變",
+      "term": "湧盛將",
       "sources": [
         "cnyes_intl",
-        "google_news"
+        "ctee"
       ],
       "stocks": [],
       "names": {},
@@ -437,11 +686,27 @@
         "cnyes_intl",
         "eetimes_jp",
         "google_news",
-        "google_news_jp"
+        "google_news_jp",
+        "technews"
       ],
       "stocks": [],
       "names": {},
-      "hits": 8,
+      "hits": 9,
+      "streak_days": 9,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "CPU",
+      "sources": [
+        "cnyes",
+        "google_news",
+        "technews",
+        "telegram"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 6,
       "streak_days": 9,
       "method": "jieba",
       "reason": ""
@@ -463,6 +728,23 @@
       "reason": ""
     },
     {
+      "term": "TPU",
+      "sources": [
+        "fugle_blog",
+        "google_news",
+        "technews"
+      ],
+      "stocks": [
+        "1459",
+        "2454"
+      ],
+      "names": {},
+      "hits": 3,
+      "streak_days": 9,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
       "term": "advanced packaging",
       "sources": [
         "google_news_us",
@@ -472,20 +754,6 @@
       "stocks": [],
       "names": {},
       "hits": 9,
-      "streak_days": 9,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
-      "term": "CPU",
-      "sources": [
-        "cnyes",
-        "google_news",
-        "telegram"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 5,
       "streak_days": 9,
       "method": "jieba",
       "reason": ""
@@ -533,15 +801,27 @@
       "reason": ""
     },
     {
-      "term": "TPU",
+      "term": "Vera",
       "sources": [
-        "fugle_blog",
-        "google_news"
+        "google_news",
+        "technews",
+        "telegram"
       ],
-      "stocks": [
-        "1459",
-        "2454"
+      "stocks": [],
+      "names": {},
+      "hits": 3,
+      "streak_days": 9,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "下一代",
+      "sources": [
+        "cnyes_intl",
+        "google_news",
+        "technews"
       ],
+      "stocks": [],
       "names": {},
       "hits": 3,
       "streak_days": 9,
@@ -588,42 +868,19 @@
       "reason": ""
     },
     {
-      "term": "下一代",
-      "sources": [
-        "cnyes_intl",
-        "google_news"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
-      "streak_days": 9,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
-      "term": "Vera",
-      "sources": [
-        "google_news",
-        "telegram"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
-      "streak_days": 9,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
       "term": "Pro",
       "sources": [
         "eetimes_jp",
         "google_news",
         "google_news_jp",
-        "jov"
+        "jov",
+        "technews"
       ],
-      "stocks": [],
+      "stocks": [
+        "1459"
+      ],
       "names": {},
-      "hits": 6,
+      "hits": 7,
       "streak_days": 7,
       "method": "jieba",
       "reason": ""
@@ -633,13 +890,28 @@
       "sources": [
         "cnyes_intl",
         "google_news",
-        "ic975"
+        "ic975",
+        "technews"
       ],
       "stocks": [
         "5007"
       ],
       "names": {},
-      "hits": 8,
+      "hits": 9,
+      "streak_days": 7,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "毛利率",
+      "sources": [
+        "cnyes",
+        "google_news",
+        "youxian"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 3,
       "streak_days": 7,
       "method": "jieba",
       "reason": ""
@@ -659,19 +931,6 @@
       "reason": ""
     },
     {
-      "term": "毛利率",
-      "sources": [
-        "cnyes",
-        "youxian"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
-      "streak_days": 7,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
       "term": "美債殖",
       "sources": [
         "cnyes_intl",
@@ -680,6 +939,19 @@
       "stocks": [],
       "names": {},
       "hits": 9,
+      "streak_days": 6,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "Rubin",
+      "sources": [
+        "google_news",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 3,
       "streak_days": 6,
       "method": "jieba",
       "reason": ""
@@ -702,19 +974,20 @@
       "sources": [
         "cnyes",
         "google_news",
+        "technews",
         "telegram"
       ],
       "stocks": [
         "3016",
-        "2317",
-        "2351",
-        "3324",
         "3017",
-        "2324",
-        "8096"
+        "2351",
+        "2317",
+        "3324",
+        "8096",
+        "2324"
       ],
       "names": {},
-      "hits": 42,
+      "hits": 43,
       "streak_days": 5,
       "method": "jieba",
       "reason": ""
@@ -736,14 +1009,29 @@
       "term": "國發會",
       "sources": [
         "cnyes",
-        "cnyes_intl"
+        "cnyes_intl",
+        "ctee"
       ],
       "stocks": [
         "1459",
         "2454"
       ],
       "names": {},
-      "hits": 2,
+      "hits": 4,
+      "streak_days": 4,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "新戰場",
+      "sources": [
+        "cnyes_intl",
+        "google_news",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 5,
       "streak_days": 4,
       "method": "jieba",
       "reason": ""
@@ -759,19 +1047,6 @@
       ],
       "names": {},
       "hits": 2,
-      "streak_days": 4,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
-      "term": "新戰場",
-      "sources": [
-        "cnyes_intl",
-        "google_news"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 3,
       "streak_days": 4,
       "method": "jieba",
       "reason": ""
@@ -816,6 +1091,19 @@
       "reason": ""
     },
     {
+      "term": "電動車",
+      "sources": [
+        "cnyes",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 3,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
       "term": "MicroLED",
       "sources": [
         "cnyes",
@@ -855,6 +1143,19 @@
       "reason": ""
     },
     {
+      "term": "RTX",
+      "sources": [
+        "google_news",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 3,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
       "term": "利用率",
       "sources": [
         "google_news",
@@ -880,6 +1181,20 @@
       ],
       "names": {},
       "hits": 9,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "Nvidia",
+      "sources": [
+        "cnyes",
+        "jov",
+        "technews"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 6,
       "streak_days": 2,
       "method": "jieba",
       "reason": ""
@@ -913,25 +1228,25 @@
       "reason": ""
     },
     {
-      "term": "貝森特",
-      "sources": [
-        "cnyes",
-        "cnyes_intl",
-        "telegram"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 4,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
       "term": "自動化",
       "sources": [
         "cnyes",
         "google_news_jp",
         "wealth"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 3,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "可能性",
+      "sources": [
+        "eetimes_jp",
+        "google_news_jp",
+        "telegram"
       ],
       "stocks": [],
       "names": {},
@@ -956,19 +1271,6 @@
       "reason": ""
     },
     {
-      "term": "Nvidia",
-      "sources": [
-        "cnyes",
-        "jov"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 5,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
       "term": "NXP",
       "sources": [
         "cnyes",
@@ -977,6 +1279,19 @@
       "stocks": [],
       "names": {},
       "hits": 4,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": ""
+    },
+    {
+      "term": "貝森特",
+      "sources": [
+        "cnyes",
+        "telegram"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 3,
       "streak_days": 2,
       "method": "jieba",
       "reason": ""
@@ -1064,19 +1379,6 @@
       "sources": [
         "eetimes_jp",
         "jov"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": ""
-    },
-    {
-      "term": "可能性",
-      "sources": [
-        "google_news_jp",
-        "telegram"
       ],
       "stocks": [],
       "names": {},
