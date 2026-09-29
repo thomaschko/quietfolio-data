@@ -117,6 +117,18 @@ def build_name2code():
             print(f"  {tag} 股票清單: +{len(name2code)-before} → 累計 {len(name2code)}")
         except Exception as e:
             print(f"  ⚠ {tag} 股票清單抓取失敗: {e}")
+    # 2026-09-29新增:少數公司市場口語慣用全名跟TWSE/TPEx官方公司簡稱欄位
+    # 不一致(推測5347官方簡稱可能只有2字「世界」,但這種極短通用詞不適合
+    # 拿來做子字串比對,誤判風險太高,不採用放寬比對的方式解),改用精確、
+    # 安全的白名單別名對照,不管背後官方欄位實際字串是什麼都能穩定生效。
+    # 這是2026-09-29「世界先進」連續兩次熱詞查詢配對失敗後的根因修正,
+    # 每筆都先確認code2name裡code確實存在才加,避免代碼已下市卻誤留對照。
+    KNOWN_NAME_ALIASES = {
+        "世界先進": "5347",
+    }
+    for alias, code in KNOWN_NAME_ALIASES.items():
+        if code in code2name and alias not in name2code:
+            name2code[alias] = code
     return name2code, code2name
 
 
