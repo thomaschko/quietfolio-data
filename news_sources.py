@@ -154,8 +154,15 @@ def _fetch_technews():
 
 
 def _fetch_ctee():
-    """工商時報即時新聞 HTML(無公開RSS,2026-09-14探測確認HTML可用)。"""
-    return _fetch_html_titles(CTEE_HTML)
+    """工商時報即時新聞(2026-09-29根因修正——連續兩次log顯示0則標題,原本用
+    HTML正則表達式硬解(_fetch_html_titles),推測跟之前jov遇到的問題類似:
+    標題連結旁邊多了分類標籤等巢狀標籤,導致[^<]{10,55}這種「不允許巢狀標籤」
+    的正則表達式抓不到。直接抓取livenews/ctee頁面時,發現頁面本身有官方
+    「訂閱本分類RSS」連結,指向一個結構完整、內容含完整摘要(不只標題)的
+    標準RSS,比HTML硬解穩定,改用跟edn/其他來源同一套_fetch_simple_rss。
+    2026-09-14的探測筆記寫「無公開RSS」應該是當時沒找到這個路徑,不是
+    網站真的沒有,予以更正。"""
+    return _fetch_simple_rss("https://www.ctee.com.tw/rss_web/livenews/ctee")
 
 
 def _fetch_edn():
