@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-29 07:18:25.284611",
+  "generated_at": "2026-09-29 08:12:09.748128",
   "candidates": [
     {
       "term": "Pro",
@@ -15,14 +15,14 @@
       ],
       "is_brand_new": true,
       "related_stocks": [
-        "2454"
+        "1459"
       ],
       "related_names": {
-        "2454": "聯發科"
+        "1459": "聯發"
       },
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "市場傳出輝達RTX Pro 5500獲中國放行採購，且聯發科天璣9600 Pro與蘋果iPhone 18 Pro等新品動態備受關注。",
+      "gemini_summary": "輝達RTX Pro 5500晶片採購傳聞、聯發科2奈米天璣9600 Pro晶片發表及iPhone 18 Pro相關供應鏈消息備受關注。",
       "gemini_unmatched_companies": []
     },
     {
@@ -42,12 +42,14 @@
       "related_names": {},
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "iPhone相關新機傳聞、系統漏洞及軟體災情等話題受到市場關注。",
-      "gemini_unmatched_companies": []
+      "gemini_summary": "iPhone 18系列相關規格傳聞與使用狀況成為熱議話題。",
+      "gemini_unmatched_companies": [
+        "ソニー"
+      ]
     },
     {
       "term": "伺服器",
-      "recent_hits": 43,
+      "recent_hits": 44,
       "baseline_hits": 3,
       "source_count": 4,
       "sources": [
@@ -59,22 +61,22 @@
       "is_brand_new": false,
       "related_stocks": [
         "3016",
-        "3017",
         "2351",
+        "3017",
         "2317",
         "2330",
-        "2324",
         "8096",
+        "2324",
         "3324"
       ],
       "related_names": {
         "3016": "嘉晶",
-        "3017": "奇鋐",
         "2351": "順德",
+        "3017": "奇鋐",
         "2317": "鴻海",
         "2330": "台積電",
-        "2324": "仁寶",
         "8096": "",
+        "2324": "仁寶",
         "3324": ""
       },
       "gemini_checked": false,
@@ -102,16 +104,15 @@
       },
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "世界先進新加坡12吋新廠VSMC正式開幕啟用，產能已售罄並評估建第二座廠，聚焦成熟製程與電源管理晶片需求。",
+      "gemini_summary": "世界先進新加坡12吋新廠VSMC正式啟用，新增產能已售罄並評估建第二座廠，聚焦成熟製程與未來技術布局。",
       "gemini_unmatched_companies": [
         "世界先進",
-        "方略",
-        "莊子壽"
+        "方略"
       ]
     },
     {
       "term": "海力士",
-      "recent_hits": 8,
+      "recent_hits": 9,
       "baseline_hits": 1,
       "source_count": 4,
       "sources": [
@@ -126,29 +127,6 @@
       ],
       "related_names": {
         "5007": "三星"
-      },
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "NVIDIA",
-      "recent_hits": 5,
-      "baseline_hits": 3,
-      "source_count": 4,
-      "sources": [
-        "eetimes_jp",
-        "google_news",
-        "google_news_jp",
-        "telegram"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [
-        "2308"
-      ],
-      "related_names": {
-        "2308": "台達電"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -171,11 +149,27 @@
       "related_names": {},
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "代理式AI爆發帶動伺服器CPU與記憶體等相關供應鏈需求大增，引發市場關注。",
+      "gemini_summary": "代理式AI爆發帶動伺服器CPU與相關晶片需求回神，引發供應鏈交期翻倍與伺服器架構改寫。",
       "gemini_unmatched_companies": [
         "Meta",
         "NVIDIA"
-      ]
+      ],
+      "supply_chain_hints": {
+        "Meta": [
+          "2317鴻海(伺服器/VR裝置組裝)",
+          "2382廣達(AI伺服器ODM)",
+          "3231緯創(AI伺服器ODM)",
+          "2308台達電(電源供應)"
+        ],
+        "NVIDIA": [
+          "2330台積電(晶圓代工)",
+          "2317鴻海(AI伺服器組裝)",
+          "2382廣達(AI伺服器ODM)",
+          "3231緯創(AI伺服器ODM)",
+          "2308台達電(電源/散熱)",
+          "2454聯發科(合作研發)"
+        ]
+      }
     },
     {
       "term": "World",
@@ -193,11 +187,23 @@
       "related_names": {},
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "超微(AMD)斥資鉅額收購AI教母李飛飛創辦的新創公司World Labs以布局實體AI與空間智慧。",
+      "gemini_summary": "超微(AMD)斥資鉅額併購AI新創World Labs並迎來李飛飛加入，布局實體AI與空間智慧領域。",
       "gemini_unmatched_companies": [
         "超微",
         "AMD"
-      ]
+      ],
+      "supply_chain_hints": {
+        "超微": [
+          "2330台積電(晶圓代工)",
+          "3711日月光(封測)",
+          "2317鴻海(伺服器組裝)"
+        ],
+        "AMD": [
+          "2330台積電(晶圓代工)",
+          "3711日月光(封測)",
+          "2317鴻海(伺服器組裝)"
+        ]
+      }
     },
     {
       "term": "Labs",
@@ -219,36 +225,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "TPU",
-      "recent_hits": 4,
-      "baseline_hits": 2,
-      "source_count": 3,
-      "sources": [
-        "fugle_blog",
-        "google_news",
-        "technews"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [
-        "2454",
-        "1459"
-      ],
-      "related_names": {
-        "2454": "聯發科",
-        "1459": "聯發"
-      },
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "advanced packaging",
-      "recent_hits": 9,
+      "term": "wafer",
+      "recent_hits": 6,
       "baseline_hits": 0,
-      "source_count": 3,
+      "source_count": 4,
       "sources": [
         "google_news_us",
+        "invest_like_the_best",
         "the_circuit_podcast",
         "trendforce"
       ],
@@ -261,14 +244,86 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "48K",
-      "recent_hits": 7,
+      "term": "CDU",
+      "recent_hits": 5,
       "baseline_hits": 0,
       "source_count": 3,
       "sources": [
-        "edn",
+        "cnyes",
         "google_news",
-        "moneydj"
+        "technews"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [
+        "3017",
+        "3324",
+        "8210"
+      ],
+      "related_names": {
+        "3017": "奇鋐",
+        "3324": "",
+        "8210": "勤誠"
+      },
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "TPU",
+      "recent_hits": 4,
+      "baseline_hits": 2,
+      "source_count": 3,
+      "sources": [
+        "fugle_blog",
+        "google_news",
+        "technews"
+      ],
+      "is_brand_new": false,
+      "related_stocks": [
+        "1459",
+        "2454"
+      ],
+      "related_names": {
+        "1459": "聯發",
+        "2454": "聯發科"
+      },
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "NVIDIA",
+      "recent_hits": 4,
+      "baseline_hits": 3,
+      "source_count": 3,
+      "sources": [
+        "google_news",
+        "google_news_jp",
+        "telegram"
+      ],
+      "is_brand_new": false,
+      "related_stocks": [
+        "2308"
+      ],
+      "related_names": {
+        "2308": "台達電"
+      },
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "advanced packaging",
+      "recent_hits": 8,
+      "baseline_hits": 0,
+      "source_count": 3,
+      "sources": [
+        "google_news_us",
+        "the_circuit_podcast",
+        "trendforce"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -297,6 +352,24 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "Nvidia",
+      "recent_hits": 6,
+      "baseline_hits": 3,
+      "source_count": 3,
+      "sources": [
+        "cnyes",
+        "jov",
+        "technews"
+      ],
+      "is_brand_new": false,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "VSMC",
       "recent_hits": 6,
       "baseline_hits": 0,
@@ -315,14 +388,14 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "新戰場",
-      "recent_hits": 5,
+      "term": "48K",
+      "recent_hits": 6,
       "baseline_hits": 0,
       "source_count": 3,
       "sources": [
-        "cnyes_intl",
+        "edn",
         "google_news",
-        "technews"
+        "moneydj"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -333,14 +406,14 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "wafer",
+      "term": "新戰場",
       "recent_hits": 5,
       "baseline_hits": 0,
       "source_count": 3,
       "sources": [
-        "invest_like_the_best",
-        "the_circuit_podcast",
-        "trendforce"
+        "cnyes_intl",
+        "google_news",
+        "technews"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -377,24 +450,6 @@
         "cnyes",
         "google_news_jp",
         "wealth"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "下一代",
-      "recent_hits": 4,
-      "baseline_hits": 0,
-      "source_count": 3,
-      "sources": [
-        "cnyes_intl",
-        "google_news",
-        "technews"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -459,24 +514,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "比爾蓋茲",
-      "recent_hits": 3,
-      "baseline_hits": 0,
-      "source_count": 3,
-      "sources": [
-        "cna",
-        "cnyes",
-        "google_news"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "Agent",
       "recent_hits": 3,
       "baseline_hits": 1,
@@ -496,6 +533,24 @@
     },
     {
       "term": "保衛戰",
+      "recent_hits": 3,
+      "baseline_hits": 0,
+      "source_count": 3,
+      "sources": [
+        "cnyes_intl",
+        "google_news",
+        "technews"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "下一代",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 3,
@@ -549,6 +604,24 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "次世代",
+      "recent_hits": 3,
+      "baseline_hits": 0,
+      "source_count": 3,
+      "sources": [
+        "edn_jp",
+        "eetimes_jp",
+        "google_news_jp"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "台達電",
       "recent_hits": 4,
       "baseline_hits": 4,
@@ -563,31 +636,6 @@
       ],
       "related_names": {
         "2308": "台達電"
-      },
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "CDU",
-      "recent_hits": 4,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "cnyes",
-        "google_news"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [
-        "8210",
-        "3017",
-        "3324"
-      ],
-      "related_names": {
-        "8210": "勤誠",
-        "3017": "奇鋐",
-        "3324": ""
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -626,14 +674,14 @@
       ],
       "is_brand_new": true,
       "related_stocks": [
-        "1603",
         "2204",
-        "2412"
+        "2412",
+        "1603"
       ],
       "related_names": {
-        "1603": "華電",
         "2204": "中華",
-        "2412": "中華電"
+        "2412": "中華電",
+        "1603": "華電"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -651,12 +699,12 @@
       ],
       "is_brand_new": false,
       "related_stocks": [
-        "2454",
-        "1459"
+        "1459",
+        "2454"
       ],
       "related_names": {
-        "2454": "聯發科",
-        "1459": "聯發"
+        "1459": "聯發",
+        "2454": "聯發科"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -779,14 +827,14 @@
       ],
       "is_brand_new": true,
       "related_stocks": [
-        "2317",
         "2408",
-        "1303"
+        "1303",
+        "2317"
       ],
       "related_names": {
-        "2317": "鴻海",
         "2408": "南亞科",
-        "1303": "南亞"
+        "1303": "南亞",
+        "2317": "鴻海"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -804,14 +852,14 @@
       ],
       "is_brand_new": true,
       "related_stocks": [
-        "2317",
         "2408",
-        "1303"
+        "1303",
+        "2317"
       ],
       "related_names": {
-        "2317": "鴻海",
         "2408": "南亞科",
-        "1303": "南亞"
+        "1303": "南亞",
+        "2317": "鴻海"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -820,7 +868,7 @@
     },
     {
       "term": "美債殖",
-      "recent_hits": 10,
+      "recent_hits": 9,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
@@ -870,40 +918,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Nvidia",
-      "recent_hits": 5,
-      "baseline_hits": 3,
-      "source_count": 2,
-      "sources": [
-        "cnyes",
-        "jov"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "iPad",
-      "recent_hits": 5,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "google_news",
-        "google_news_jp"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "LED",
       "recent_hits": 4,
       "baseline_hits": 2,
@@ -911,23 +925,6 @@
       "sources": [
         "cnyes",
         "google_news"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "阿里巴巴",
-      "recent_hits": 4,
-      "baseline_hits": 4,
-      "source_count": 2,
-      "sources": [
-        "cnyes",
-        "technews"
       ],
       "is_brand_new": false,
       "related_stocks": [],
@@ -989,6 +986,23 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "阿里巴巴",
+      "recent_hits": 3,
+      "baseline_hits": 4,
+      "source_count": 2,
+      "sources": [
+        "cnyes",
+        "technews"
+      ],
+      "is_brand_new": false,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "Face",
       "recent_hits": 3,
       "baseline_hits": 0,
@@ -1006,15 +1020,15 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "PC",
+      "term": "工研院",
       "recent_hits": 3,
-      "baseline_hits": 2,
+      "baseline_hits": 0,
       "source_count": 2,
       "sources": [
-        "cna",
-        "google_news_jp"
+        "ic975",
+        "wapeople"
       ],
-      "is_brand_new": false,
+      "is_brand_new": true,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -1023,13 +1037,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "工研院",
+      "term": "ASP",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
-        "ic975",
-        "wapeople"
+        "google_news",
+        "technews"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -1108,23 +1122,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Jev",
-      "recent_hits": 3,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "google_news_jp",
-        "wallstreetcn"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "MOSFET",
       "recent_hits": 3,
       "baseline_hits": 0,
@@ -1142,13 +1139,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "mini",
+      "term": "silicon photonics",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
-        "google_news",
-        "google_news_jp"
+        "google_news_us",
+        "the_circuit_podcast"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -1210,15 +1207,32 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Palantir",
+      "term": "生產力",
       "recent_hits": 2,
-      "baseline_hits": 1,
+      "baseline_hits": 0,
       "source_count": 2,
       "sources": [
         "cnyes",
         "cnyes_intl"
       ],
-      "is_brand_new": false,
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "OCS",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "cnyes",
+        "cnyes_intl"
+      ],
+      "is_brand_new": true,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -1380,6 +1394,23 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "比爾蓋茲",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "cna",
+        "cnyes"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "IPC",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -1482,23 +1513,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "LYV",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "cnyes",
-        "cnyes_intl"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "波克夏",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -1550,13 +1564,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "中國車",
+      "term": "Hugging",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
         "cna",
-        "technews"
+        "cnyes_intl"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -1567,15 +1581,15 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Hugging",
+      "term": "PC",
       "recent_hits": 2,
-      "baseline_hits": 0,
+      "baseline_hits": 2,
       "source_count": 2,
       "sources": [
         "cna",
-        "cnyes_intl"
+        "google_news_jp"
       ],
-      "is_brand_new": true,
+      "is_brand_new": false,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -1669,23 +1683,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Duo",
-      "recent_hits": 2,
-      "baseline_hits": 1,
-      "source_count": 2,
-      "sources": [
-        "google_news_jp",
-        "technews"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "AirPods",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -1754,6 +1751,40 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "萬美國",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "cnyes_intl",
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "不可抗力",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "cnyes_intl",
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "FAA",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -1761,40 +1792,6 @@
       "sources": [
         "cnyes_intl",
         "wallstreetcn"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "超車輝",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "cnyes_intl",
-        "google_news"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "貢獻者",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "cnyes_intl",
-        "google_news"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -1924,30 +1921,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "次世代",
+      "term": "2nm",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
-        "edn_jp",
+        "eetimes_jp",
         "google_news_jp"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "silicon photonics",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "google_news_us",
-        "the_circuit_podcast"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -1982,6 +1962,23 @@
       "sources": [
         "google_news",
         "telegram"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "Steam",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "google_news",
+        "google_news_jp"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -2073,12 +2070,60 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "同學會",
+      "recent_hits": 7,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "美联储",
       "recent_hits": 6,
       "baseline_hits": 0,
       "source_count": 1,
       "sources": [
         "wallstreetcn"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "虛擬貨幣盤中",
+      "recent_hits": 5,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "cnyes"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "虛幣漲跌幅",
+      "recent_hits": 5,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "cnyes"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -2121,60 +2166,12 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "亨速報",
-      "recent_hits": 5,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "cnyes_intl"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "foundry",
       "recent_hits": 5,
       "baseline_hits": 0,
       "source_count": 1,
       "sources": [
         "the_circuit_podcast"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "同學會",
-      "recent_hits": 5,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "google_news"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "圓後盾",
-      "recent_hits": 5,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "google_news"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -2201,12 +2198,12 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "虛擬貨幣盤中",
+      "term": "亨速報",
       "recent_hits": 4,
       "baseline_hits": 0,
       "source_count": 1,
       "sources": [
-        "cnyes"
+        "cnyes_intl"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -2217,12 +2214,12 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "虛幣漲跌幅",
+      "term": "特朗普",
       "recent_hits": 4,
       "baseline_hits": 0,
       "source_count": 1,
       "sources": [
-        "cnyes"
+        "wallstreetcn"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -2265,7 +2262,7 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "台中市",
+      "term": "圓後盾",
       "recent_hits": 4,
       "baseline_hits": 0,
       "source_count": 1,
@@ -2281,12 +2278,12 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "ITmedia",
+      "term": "iPad",
       "recent_hits": 4,
       "baseline_hits": 0,
       "source_count": 1,
       "sources": [
-        "google_news_jp"
+        "google_news"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -2409,44 +2406,12 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Factset",
-      "recent_hits": 3,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "cnyes_intl"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "ft",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 1,
       "sources": [
         "ic975"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "特朗普",
-      "recent_hits": 3,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "wallstreetcn"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -2489,6 +2454,22 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "KD",
+      "recent_hits": 3,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "四階段",
       "recent_hits": 3,
       "baseline_hits": 0,
@@ -2521,6 +2502,22 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "台中市",
+      "recent_hits": 3,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "專家點",
       "recent_hits": 3,
       "baseline_hits": 0,
@@ -2537,7 +2534,7 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "NEWS",
+      "term": "ITmedia",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 1,
@@ -2553,7 +2550,7 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Android",
+      "term": "NEWS",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 1,
@@ -2601,14 +2598,14 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "液冷散熱",
+      "term": "Numeraire",
       "recent_hits": 2,
-      "baseline_hits": 1,
+      "baseline_hits": 0,
       "source_count": 1,
       "sources": [
         "cnyes"
       ],
-      "is_brand_new": false,
+      "is_brand_new": true,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -2617,7 +2614,7 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "祖克柏",
+      "term": "生產率",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 1,
@@ -2625,6 +2622,22 @@
         "cnyes"
       ],
       "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "液冷散熱",
+      "recent_hits": 2,
+      "baseline_hits": 1,
+      "source_count": 1,
+      "sources": [
+        "cnyes"
+      ],
+      "is_brand_new": false,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -2953,22 +2966,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "TikTok",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "cna"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "面維持",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -2993,6 +2990,22 @@
         "moneydj"
       ],
       "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "Duo",
+      "recent_hits": 2,
+      "baseline_hits": 1,
+      "source_count": 1,
+      "sources": [
+        "technews"
+      ],
+      "is_brand_new": false,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -3034,6 +3047,22 @@
     },
     {
       "term": "川普否",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "cnyes_intl"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "Factset",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 1,
@@ -3097,6 +3126,22 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "Jev",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "wallstreetcn"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "万亿美元",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -3145,7 +3190,7 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "至營收",
+      "term": "Micro",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 1,
@@ -3161,7 +3206,7 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Micro",
+      "term": "至營收",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 1,
@@ -3313,22 +3358,6 @@
         "google_news"
       ],
       "is_brand_new": false,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "KD",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "google_news"
-      ],
-      "is_brand_new": true,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -3497,6 +3526,38 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "TrendForce",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "KS",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "Micron",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -3514,6 +3575,22 @@
     },
     {
       "term": "Maps",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "mini",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 1,
@@ -3561,39 +3638,23 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Mobile",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "google_news_jp"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "PS5",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 1,
-      "sources": [
-        "google_news_jp"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "Windows",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 1,
+      "sources": [
+        "google_news_jp"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "Android",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 1,
@@ -3688,14 +3749,14 @@
       ],
       "is_brand_new": true,
       "related_stocks": [
-        "2454"
+        "1459"
       ],
       "related_names": {
-        "2454": "聯發科"
+        "1459": "聯發"
       },
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "市場傳出輝達RTX Pro 5500獲中國放行採購，且聯發科天璣9600 Pro與蘋果iPhone 18 Pro等新品動態備受關注。",
+      "gemini_summary": "輝達RTX Pro 5500晶片採購傳聞、聯發科2奈米天璣9600 Pro晶片發表及iPhone 18 Pro相關供應鏈消息備受關注。",
       "gemini_unmatched_companies": []
     },
     {
@@ -3715,12 +3776,14 @@
       "related_names": {},
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "iPhone相關新機傳聞、系統漏洞及軟體災情等話題受到市場關注。",
-      "gemini_unmatched_companies": []
+      "gemini_summary": "iPhone 18系列相關規格傳聞與使用狀況成為熱議話題。",
+      "gemini_unmatched_companies": [
+        "ソニー"
+      ]
     },
     {
       "term": "伺服器",
-      "recent_hits": 43,
+      "recent_hits": 44,
       "baseline_hits": 3,
       "source_count": 4,
       "sources": [
@@ -3732,22 +3795,22 @@
       "is_brand_new": false,
       "related_stocks": [
         "3016",
-        "3017",
         "2351",
+        "3017",
         "2317",
         "2330",
-        "2324",
         "8096",
+        "2324",
         "3324"
       ],
       "related_names": {
         "3016": "嘉晶",
-        "3017": "奇鋐",
         "2351": "順德",
+        "3017": "奇鋐",
         "2317": "鴻海",
         "2330": "台積電",
-        "2324": "仁寶",
         "8096": "",
+        "2324": "仁寶",
         "3324": ""
       },
       "gemini_checked": false,
@@ -3775,16 +3838,15 @@
       },
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "世界先進新加坡12吋新廠VSMC正式開幕啟用，產能已售罄並評估建第二座廠，聚焦成熟製程與電源管理晶片需求。",
+      "gemini_summary": "世界先進新加坡12吋新廠VSMC正式啟用，新增產能已售罄並評估建第二座廠，聚焦成熟製程與未來技術布局。",
       "gemini_unmatched_companies": [
         "世界先進",
-        "方略",
-        "莊子壽"
+        "方略"
       ]
     },
     {
       "term": "海力士",
-      "recent_hits": 8,
+      "recent_hits": 9,
       "baseline_hits": 1,
       "source_count": 4,
       "sources": [
@@ -3799,29 +3861,6 @@
       ],
       "related_names": {
         "5007": "三星"
-      },
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "NVIDIA",
-      "recent_hits": 5,
-      "baseline_hits": 3,
-      "source_count": 4,
-      "sources": [
-        "eetimes_jp",
-        "google_news",
-        "google_news_jp",
-        "telegram"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [
-        "2308"
-      ],
-      "related_names": {
-        "2308": "台達電"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -3844,11 +3883,27 @@
       "related_names": {},
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "代理式AI爆發帶動伺服器CPU與記憶體等相關供應鏈需求大增，引發市場關注。",
+      "gemini_summary": "代理式AI爆發帶動伺服器CPU與相關晶片需求回神，引發供應鏈交期翻倍與伺服器架構改寫。",
       "gemini_unmatched_companies": [
         "Meta",
         "NVIDIA"
-      ]
+      ],
+      "supply_chain_hints": {
+        "Meta": [
+          "2317鴻海(伺服器/VR裝置組裝)",
+          "2382廣達(AI伺服器ODM)",
+          "3231緯創(AI伺服器ODM)",
+          "2308台達電(電源供應)"
+        ],
+        "NVIDIA": [
+          "2330台積電(晶圓代工)",
+          "2317鴻海(AI伺服器組裝)",
+          "2382廣達(AI伺服器ODM)",
+          "3231緯創(AI伺服器ODM)",
+          "2308台達電(電源/散熱)",
+          "2454聯發科(合作研發)"
+        ]
+      }
     },
     {
       "term": "World",
@@ -3866,11 +3921,23 @@
       "related_names": {},
       "gemini_checked": true,
       "gemini_relevant": true,
-      "gemini_summary": "超微(AMD)斥資鉅額收購AI教母李飛飛創辦的新創公司World Labs以布局實體AI與空間智慧。",
+      "gemini_summary": "超微(AMD)斥資鉅額併購AI新創World Labs並迎來李飛飛加入，布局實體AI與空間智慧領域。",
       "gemini_unmatched_companies": [
         "超微",
         "AMD"
-      ]
+      ],
+      "supply_chain_hints": {
+        "超微": [
+          "2330台積電(晶圓代工)",
+          "3711日月光(封測)",
+          "2317鴻海(伺服器組裝)"
+        ],
+        "AMD": [
+          "2330台積電(晶圓代工)",
+          "3711日月光(封測)",
+          "2317鴻海(伺服器組裝)"
+        ]
+      }
     },
     {
       "term": "Labs",
@@ -3892,36 +3959,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "TPU",
-      "recent_hits": 4,
-      "baseline_hits": 2,
-      "source_count": 3,
-      "sources": [
-        "fugle_blog",
-        "google_news",
-        "technews"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [
-        "2454",
-        "1459"
-      ],
-      "related_names": {
-        "2454": "聯發科",
-        "1459": "聯發"
-      },
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "advanced packaging",
-      "recent_hits": 9,
+      "term": "wafer",
+      "recent_hits": 6,
       "baseline_hits": 0,
-      "source_count": 3,
+      "source_count": 4,
       "sources": [
         "google_news_us",
+        "invest_like_the_best",
         "the_circuit_podcast",
         "trendforce"
       ],
@@ -3934,14 +3978,86 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "48K",
-      "recent_hits": 7,
+      "term": "CDU",
+      "recent_hits": 5,
       "baseline_hits": 0,
       "source_count": 3,
       "sources": [
-        "edn",
+        "cnyes",
         "google_news",
-        "moneydj"
+        "technews"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [
+        "3017",
+        "3324",
+        "8210"
+      ],
+      "related_names": {
+        "3017": "奇鋐",
+        "3324": "",
+        "8210": "勤誠"
+      },
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "TPU",
+      "recent_hits": 4,
+      "baseline_hits": 2,
+      "source_count": 3,
+      "sources": [
+        "fugle_blog",
+        "google_news",
+        "technews"
+      ],
+      "is_brand_new": false,
+      "related_stocks": [
+        "1459",
+        "2454"
+      ],
+      "related_names": {
+        "1459": "聯發",
+        "2454": "聯發科"
+      },
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "NVIDIA",
+      "recent_hits": 4,
+      "baseline_hits": 3,
+      "source_count": 3,
+      "sources": [
+        "google_news",
+        "google_news_jp",
+        "telegram"
+      ],
+      "is_brand_new": false,
+      "related_stocks": [
+        "2308"
+      ],
+      "related_names": {
+        "2308": "台達電"
+      },
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "advanced packaging",
+      "recent_hits": 8,
+      "baseline_hits": 0,
+      "source_count": 3,
+      "sources": [
+        "google_news_us",
+        "the_circuit_podcast",
+        "trendforce"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -3970,6 +4086,24 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "Nvidia",
+      "recent_hits": 6,
+      "baseline_hits": 3,
+      "source_count": 3,
+      "sources": [
+        "cnyes",
+        "jov",
+        "technews"
+      ],
+      "is_brand_new": false,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "VSMC",
       "recent_hits": 6,
       "baseline_hits": 0,
@@ -3988,14 +4122,14 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "新戰場",
-      "recent_hits": 5,
+      "term": "48K",
+      "recent_hits": 6,
       "baseline_hits": 0,
       "source_count": 3,
       "sources": [
-        "cnyes_intl",
+        "edn",
         "google_news",
-        "technews"
+        "moneydj"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -4006,14 +4140,14 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "wafer",
+      "term": "新戰場",
       "recent_hits": 5,
       "baseline_hits": 0,
       "source_count": 3,
       "sources": [
-        "invest_like_the_best",
-        "the_circuit_podcast",
-        "trendforce"
+        "cnyes_intl",
+        "google_news",
+        "technews"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -4050,24 +4184,6 @@
         "cnyes",
         "google_news_jp",
         "wealth"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "下一代",
-      "recent_hits": 4,
-      "baseline_hits": 0,
-      "source_count": 3,
-      "sources": [
-        "cnyes_intl",
-        "google_news",
-        "technews"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -4132,24 +4248,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "比爾蓋茲",
-      "recent_hits": 3,
-      "baseline_hits": 0,
-      "source_count": 3,
-      "sources": [
-        "cna",
-        "cnyes",
-        "google_news"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "Agent",
       "recent_hits": 3,
       "baseline_hits": 1,
@@ -4169,6 +4267,24 @@
     },
     {
       "term": "保衛戰",
+      "recent_hits": 3,
+      "baseline_hits": 0,
+      "source_count": 3,
+      "sources": [
+        "cnyes_intl",
+        "google_news",
+        "technews"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "下一代",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 3,
@@ -4222,6 +4338,24 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "次世代",
+      "recent_hits": 3,
+      "baseline_hits": 0,
+      "source_count": 3,
+      "sources": [
+        "edn_jp",
+        "eetimes_jp",
+        "google_news_jp"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "台達電",
       "recent_hits": 4,
       "baseline_hits": 4,
@@ -4236,31 +4370,6 @@
       ],
       "related_names": {
         "2308": "台達電"
-      },
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "CDU",
-      "recent_hits": 4,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "cnyes",
-        "google_news"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [
-        "8210",
-        "3017",
-        "3324"
-      ],
-      "related_names": {
-        "8210": "勤誠",
-        "3017": "奇鋐",
-        "3324": ""
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -4299,14 +4408,14 @@
       ],
       "is_brand_new": true,
       "related_stocks": [
-        "1603",
         "2204",
-        "2412"
+        "2412",
+        "1603"
       ],
       "related_names": {
-        "1603": "華電",
         "2204": "中華",
-        "2412": "中華電"
+        "2412": "中華電",
+        "1603": "華電"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -4324,12 +4433,12 @@
       ],
       "is_brand_new": false,
       "related_stocks": [
-        "2454",
-        "1459"
+        "1459",
+        "2454"
       ],
       "related_names": {
-        "2454": "聯發科",
-        "1459": "聯發"
+        "1459": "聯發",
+        "2454": "聯發科"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -4452,14 +4561,14 @@
       ],
       "is_brand_new": true,
       "related_stocks": [
-        "2317",
         "2408",
-        "1303"
+        "1303",
+        "2317"
       ],
       "related_names": {
-        "2317": "鴻海",
         "2408": "南亞科",
-        "1303": "南亞"
+        "1303": "南亞",
+        "2317": "鴻海"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -4477,14 +4586,14 @@
       ],
       "is_brand_new": true,
       "related_stocks": [
-        "2317",
         "2408",
-        "1303"
+        "1303",
+        "2317"
       ],
       "related_names": {
-        "2317": "鴻海",
         "2408": "南亞科",
-        "1303": "南亞"
+        "1303": "南亞",
+        "2317": "鴻海"
       },
       "gemini_checked": false,
       "gemini_relevant": null,
@@ -4493,7 +4602,7 @@
     },
     {
       "term": "美債殖",
-      "recent_hits": 10,
+      "recent_hits": 9,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
@@ -4543,40 +4652,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Nvidia",
-      "recent_hits": 5,
-      "baseline_hits": 3,
-      "source_count": 2,
-      "sources": [
-        "cnyes",
-        "jov"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "iPad",
-      "recent_hits": 5,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "google_news",
-        "google_news_jp"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "LED",
       "recent_hits": 4,
       "baseline_hits": 2,
@@ -4584,23 +4659,6 @@
       "sources": [
         "cnyes",
         "google_news"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "阿里巴巴",
-      "recent_hits": 4,
-      "baseline_hits": 4,
-      "source_count": 2,
-      "sources": [
-        "cnyes",
-        "technews"
       ],
       "is_brand_new": false,
       "related_stocks": [],
@@ -4662,6 +4720,23 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "阿里巴巴",
+      "recent_hits": 3,
+      "baseline_hits": 4,
+      "source_count": 2,
+      "sources": [
+        "cnyes",
+        "technews"
+      ],
+      "is_brand_new": false,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "Face",
       "recent_hits": 3,
       "baseline_hits": 0,
@@ -4679,15 +4754,15 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "PC",
+      "term": "工研院",
       "recent_hits": 3,
-      "baseline_hits": 2,
+      "baseline_hits": 0,
       "source_count": 2,
       "sources": [
-        "cna",
-        "google_news_jp"
+        "ic975",
+        "wapeople"
       ],
-      "is_brand_new": false,
+      "is_brand_new": true,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -4696,13 +4771,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "工研院",
+      "term": "ASP",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
-        "ic975",
-        "wapeople"
+        "google_news",
+        "technews"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -4781,23 +4856,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Jev",
-      "recent_hits": 3,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "google_news_jp",
-        "wallstreetcn"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "MOSFET",
       "recent_hits": 3,
       "baseline_hits": 0,
@@ -4815,13 +4873,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "mini",
+      "term": "silicon photonics",
       "recent_hits": 3,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
-        "google_news",
-        "google_news_jp"
+        "google_news_us",
+        "the_circuit_podcast"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -4883,15 +4941,32 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Palantir",
+      "term": "生產力",
       "recent_hits": 2,
-      "baseline_hits": 1,
+      "baseline_hits": 0,
       "source_count": 2,
       "sources": [
         "cnyes",
         "cnyes_intl"
       ],
-      "is_brand_new": false,
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "OCS",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "cnyes",
+        "cnyes_intl"
+      ],
+      "is_brand_new": true,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -5053,6 +5128,23 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "比爾蓋茲",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "cna",
+        "cnyes"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "IPC",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -5155,23 +5247,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "LYV",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "cnyes",
-        "cnyes_intl"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "波克夏",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -5223,13 +5298,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "中國車",
+      "term": "Hugging",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
         "cna",
-        "technews"
+        "cnyes_intl"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -5240,15 +5315,15 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Hugging",
+      "term": "PC",
       "recent_hits": 2,
-      "baseline_hits": 0,
+      "baseline_hits": 2,
       "source_count": 2,
       "sources": [
         "cna",
-        "cnyes_intl"
+        "google_news_jp"
       ],
-      "is_brand_new": true,
+      "is_brand_new": false,
       "related_stocks": [],
       "related_names": {},
       "gemini_checked": false,
@@ -5342,23 +5417,6 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "Duo",
-      "recent_hits": 2,
-      "baseline_hits": 1,
-      "source_count": 2,
-      "sources": [
-        "google_news_jp",
-        "technews"
-      ],
-      "is_brand_new": false,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
       "term": "AirPods",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -5427,6 +5485,40 @@
       "gemini_unmatched_companies": []
     },
     {
+      "term": "萬美國",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "cnyes_intl",
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "不可抗力",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "cnyes_intl",
+        "google_news"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
       "term": "FAA",
       "recent_hits": 2,
       "baseline_hits": 0,
@@ -5434,40 +5526,6 @@
       "sources": [
         "cnyes_intl",
         "wallstreetcn"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "超車輝",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "cnyes_intl",
-        "google_news"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "貢獻者",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "cnyes_intl",
-        "google_news"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -5597,30 +5655,13 @@
       "gemini_unmatched_companies": []
     },
     {
-      "term": "次世代",
+      "term": "2nm",
       "recent_hits": 2,
       "baseline_hits": 0,
       "source_count": 2,
       "sources": [
-        "edn_jp",
+        "eetimes_jp",
         "google_news_jp"
-      ],
-      "is_brand_new": true,
-      "related_stocks": [],
-      "related_names": {},
-      "gemini_checked": false,
-      "gemini_relevant": null,
-      "gemini_summary": "",
-      "gemini_unmatched_companies": []
-    },
-    {
-      "term": "silicon photonics",
-      "recent_hits": 2,
-      "baseline_hits": 0,
-      "source_count": 2,
-      "sources": [
-        "google_news_us",
-        "the_circuit_podcast"
       ],
       "is_brand_new": true,
       "related_stocks": [],
@@ -5655,6 +5696,23 @@
       "sources": [
         "google_news",
         "telegram"
+      ],
+      "is_brand_new": true,
+      "related_stocks": [],
+      "related_names": {},
+      "gemini_checked": false,
+      "gemini_relevant": null,
+      "gemini_summary": "",
+      "gemini_unmatched_companies": []
+    },
+    {
+      "term": "Steam",
+      "recent_hits": 2,
+      "baseline_hits": 0,
+      "source_count": 2,
+      "sources": [
+        "google_news",
+        "google_news_jp"
       ],
       "is_brand_new": true,
       "related_stocks": [],
