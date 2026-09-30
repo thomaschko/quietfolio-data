@@ -401,18 +401,29 @@ def _fetch_bg2_pod():
     return _fetch_simple_rss("https://anchor.fm/s/f06c2370/podcast/rss")
 
 
-def _fetch_gavin_baker_newsletter():
-    """Gavin Baker電子報「Thoughts from Arrakis」(2026-09-29新增,使用者
-    指定追蹤。Gavin Baker是Atreides Management創辦人/CIO,前Fidelity
-    OTC基金經理人,深耕半導體產業研究超過20年,《Invest Like the Best》
-    (Colossus)常客(已上過六次,專門談「Watts and Wafers」——AI基礎建設
-    的兩大實體限制供電與晶圓),也是上一輪查證的BG2 Pod座上賓,產業判斷
-    在科技投資圈份量很重。用Substack官方標準RSS格式(gavinsbaker.substack
-    .com/feed,注意網域是gavinsbaker不是gavinbaker,兩者是不同帳號,後者
-    像是廢棄的舊帳號)。⚠️工具限制未能直接測試這個feed本身的實際內容
-    (只能確認網站本身活躍、1000+訂閱),依循Substack官方文件記載的通用
-    格式規則,下次log需優先確認這個來源有沒有真的抓到內容。"""
-    return _fetch_simple_rss("https://gavinsbaker.substack.com/feed")
+def _fetch_digitaltoday_kr():
+    """DigitalToday/디지털투데이(2026-09-30新增,使用者提供。2007年創刊的
+    韓國數位經濟媒體(前身IT Today/KeyNews),涵蓋IT、半導體、金融科技、
+    行動通訊等領域,跟既有的etnews_kr互補,強化韓國地理覆蓋。網站有獨立
+    英文版(digitaltoday.co.kr/en/),未來如果中韓文混雜斷詞效果不佳,
+    可考慮改抓英文版。用韓國同類新聞CMS系統的標準RSS路徑慣例(已用
+    mediatoday.co.kr、ftoday.co.kr、insnews.co.kr等同款CMS網站驗證這個
+    路徑格式真實存在且穩定沿用),⚠️工具限制未能直接測試這個網站本身的
+    feed內容(只驗證了路徑格式的普遍性,沒驗證這個特定網站),下次log
+    需優先確認有沒有真的抓到內容。"""
+    return _fetch_simple_rss("https://www.digitaltoday.co.kr/rss/allArticle.xml")
+
+
+# 2026-09-30移除_fetch_gavin_baker_newsletter:連續4-5次log都是0則標題,
+# 深入查證後確認根因不是網址寫錯或暫時性問題,是這個管道本身已經沒有
+# 活躍內容——Substack兩個帳號(gavinbaker.substack.com/gavinsbaker.
+# substack.com)都查到停滯多年,Medium(gavin-baker.medium.com)最後一篇
+# 文章是2021年5月,同樣是死的。Gavin Baker現在真正活躍的陣地是X(推特),
+# 但X多年前就關閉公開RSS,沒有可行的訂閱管道。不是查不到替代品,是
+# 這個人目前沒有在維護任何可訂閱的寫作管道——他的重要發言其實已經
+# 透過既有的bg2_pod、invest_like_the_best這兩個Podcast來源間接覆蓋
+# (他是這兩個節目的常客),這才是實際追蹤到他觀點的正確管道,不需要
+# 額外接一個空的feed。
 
 
 def _fetch_simpletechtrend():
@@ -773,7 +784,7 @@ def fetch_titles_by_source():
         "etnews_kr": _fetch_etnews_kr(),
         "the_circuit_podcast": _fetch_the_circuit_podcast(),
         "bg2_pod": _fetch_bg2_pod(),
-        "gavin_baker_newsletter": _fetch_gavin_baker_newsletter(),
+        "digitaltoday_kr": _fetch_digitaltoday_kr(),
         "simpletechtrend": _fetch_simpletechtrend(),
         "tomshardware": _fetch_tomshardware(),
         "techcrunch_semi": _fetch_techcrunch_semi(),
