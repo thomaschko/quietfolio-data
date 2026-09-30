@@ -443,6 +443,21 @@ def _fetch_tomshardware():
     return _fetch_simple_rss("https://www.tomshardware.com/feeds/all")
 
 
+def _fetch_techcrunch_semi():
+    """TechCrunch半導體分類(2026-09-29新增,使用者提供一份美系消費科技媒體
+    清單查證後,發現這份清單多數是產品測評媒體(Digital Trends/SlashGear/
+    Trusted Reviews/Reviewed.com/TopTenReviews/TechHive鎖定手機/家電/
+    掃地機器人開箱,跟供應鏈分析無關,予以排除),TechCrunch則例外——查證
+    半導體專屬分類(tag/semiconductors)內容精準度高:SpaceX砸119億美元
+    蓋Terafab晶片廠、Intel與Musk合作案、台灣承諾赴美投資2500億美元半導體
+    製造、NVIDIA以20億美元入股Synopsys、美國核准TSMC鳳凰城66億美元補助。
+    官方主要feed(techcrunch.com/feed)是每天20-40篇新創募資新聞為主的
+    總覽,雜訊過多,改用WordPress標準的分類專屬feed格式(techcrunch.com/
+    tag/{分類}/feed/,已用同網站另一分類virus/feed/驗證這個格式真實存在)
+    只抓半導體分類,避開新創募資雜訊。"""
+    return _fetch_simple_rss("https://techcrunch.com/tag/semiconductors/feed/")
+
+
 def _fetch_invest_like_the_best():
     """Invest Like the Best(2026-09-29新增,查證Gavin Baker常態出現的節目
     後發現本身也值得獨立接入。Patrick O'Shaughnessy主持,Colossus旗下
@@ -761,6 +776,7 @@ def fetch_titles_by_source():
         "gavin_baker_newsletter": _fetch_gavin_baker_newsletter(),
         "simpletechtrend": _fetch_simpletechtrend(),
         "tomshardware": _fetch_tomshardware(),
+        "techcrunch_semi": _fetch_techcrunch_semi(),
         "invest_like_the_best": _fetch_invest_like_the_best(),
         "google_trends_tw": _fetch_google_trends_tw(),
         "youxian": _fetch_youxian(),
