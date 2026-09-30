@@ -415,6 +415,34 @@ def _fetch_gavin_baker_newsletter():
     return _fetch_simple_rss("https://gavinsbaker.substack.com/feed")
 
 
+def _fetch_simpletechtrend():
+    """Simple Tech Trend(STT,2026-09-29新增,使用者提供具體文章網址要求
+    加入)。中文光通訊/矽光子/CPO專屬深度分析部落格,查證這幾篇ECOC 2026
+    報導內容技術深度極高(雷射封裝良率、$/bit轉GPU使用率衡量標準轉變、
+    InP/GaAs產能瓶頸、CPO/NPO/LPO技術路線圖),精準對應既有光通訊/矽光子
+    題材家族,而且是中文寫作,比純英文的The Circuit更容易被jieba正確斷詞。
+    網站架構為Wix(網址含/post/),用Wix官方內建的blog-feed.xml路徑(Wix
+    社群論壇原話確認:「Wix has built-in posting of the blog-feed.xml
+    file」)。⚠️工具限制未能直接測試這個feed本身的實際內容(跟上面
+    gavin_baker_newsletter同樣的限制,只能確認Wix平台本身有這個內建
+    路徑,沒辦法實際抓到這個網站的即時內容驗證),下次log需優先確認這個
+    來源有沒有真的抓到內容。"""
+    return _fetch_simple_rss("https://www.simpletechtrend.com/blog-feed.xml")
+
+
+def _fetch_tomshardware():
+    """Tom's Hardware(2026-09-29新增,使用者要求「更廣的美系科技媒體覆蓋,
+    以news為主」,測試性質接入。美國第二大消費科技媒體,官方RSS(社群經理
+    親自確認https://www.tomshardware.com/feeds/all是目前唯一保留的官方
+    feed,143篇/週)。⚠️刻意記錄一個取捨:官方原本有news.xml這個純新聞
+    分類feed,但已被官方停用(社群經理原話:「it's likely we'll just
+    have the main feed」),沒有乾淨的純新聞分類可用,只能用這個總覽feed,
+    內容會混雜大量主機板評測/筆電優惠/周邊開箱等消費級內容,不是純供應鏈
+    新聞,跟The Circuit/EE Times這類產業聚焦來源性質不同,屬於測試性質
+    接入,後續依實際跨源命中效果評估是否保留。"""
+    return _fetch_simple_rss("https://www.tomshardware.com/feeds/all")
+
+
 def _fetch_invest_like_the_best():
     """Invest Like the Best(2026-09-29新增,查證Gavin Baker常態出現的節目
     後發現本身也值得獨立接入。Patrick O'Shaughnessy主持,Colossus旗下
@@ -731,6 +759,8 @@ def fetch_titles_by_source():
         "the_circuit_podcast": _fetch_the_circuit_podcast(),
         "bg2_pod": _fetch_bg2_pod(),
         "gavin_baker_newsletter": _fetch_gavin_baker_newsletter(),
+        "simpletechtrend": _fetch_simpletechtrend(),
+        "tomshardware": _fetch_tomshardware(),
         "invest_like_the_best": _fetch_invest_like_the_best(),
         "google_trends_tw": _fetch_google_trends_tw(),
         "youxian": _fetch_youxian(),
