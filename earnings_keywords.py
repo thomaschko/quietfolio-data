@@ -106,6 +106,16 @@ KEYWORDS = {
         "Vera Rubin", "Rubin", "Blackwell", "NVLink", "co-design",
         "supply chain", "foundry", "capacity", "lead time", "bottleneck",
         "yield",
+        # 2026-10-01新增:COT/SerDes/交換器晶片(使用者提議查詢海外美股
+        # 對應詞,查證確認AVGO自家法說會逐字稿執行長Hock Tan本人反覆親口
+        # 使用「COT」「customer-owned tooling」,分析師每季必問;SerDes跟
+        # Tomahawk也是逐字稿原文用詞(200G/400G SerDes,Tomahawk 6 switch)。
+        # AVGO已在COMPANIES清單(標註「競爭-ASIC/網通」),直接補關鍵字即可。
+        # 用複合詞Ethernet switch/switch ASIC,不用裸詞switch避免誤判
+        # (法說會逐字稿常有「switch to」「switch gears」這類無關用法)
+        "COT", "customer-owned tooling", "customer owned tooling",
+        "SerDes", "Ethernet switch", "switch ASIC", "Tomahawk", "Trident",
+        "Jericho",
     ],
     "台廠點名": [
         "TSMC", "Taiwan", "Alchip", "eMemory", "MediaTek",
@@ -136,6 +146,11 @@ KEYWORDS = {
     "IC設計架構": [
         "RF front-end", "processor architecture", "IP licensing",
         "analog", "signal chain", "mixed-signal", "instruction set",
+        # 2026-10-01新增:資安晶片技術詞(使用者提議,ARM已在COMPANIES清單
+        # 標註「IC設計-Arm(處理器架構授權)」,TrustZone是ARM最知名的硬體
+        # 資安IP品牌,長期是其安全架構核心產品線,PUF/root of trust/secure
+        # boot則是較通用的硬體資安術語,可能出現在ARM或其他IC設計廠法說會
+        "TrustZone", "root of trust", "secure boot", "PUF",
     ],
     # 資料中心電源(對應新增VRT,HVDC題材)
     "資料中心電源": [
