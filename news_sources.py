@@ -336,6 +336,40 @@ def _fetch_jov():
         return []
 
 
+def _fetch_etime_cn():
+    """Etime資訊/IC交易網(2026-10-01新增,使用者提供網址並要求繼續評估接入
+    方式。1999年成立的中國大陸電子元器件交易平台旗下資訊媒體,查證RSSHub
+    只有功能請求、沒有真正做出來的路由,也沒有官方RSS,但直接抓取首頁
+    確認完全沒被robots.txt擋下,內容新鮮(最新一篇就在查證前一天),且精準
+    度很高——「NOR Flash一超多強成型」「村田MLCC產能大調整」「華邦收購
+    英飛凌NOR Flash業務」(直接點名你系統已追蹤的華邦電2344),固定有
+    「創芯指數分析報告」追蹤元件漲價潮,對應DDR4/NAND/NOR/MLCC等既有
+    題材。頁面結構的文章網址固定是articalInfo.php?NewsID=數字這種穩定
+    格式,比照jov的修正方式錨定這個網址格式、允許嵌套標籤,不用容易
+    因排版微調就失效的通用長度正則表達式。"""
+    try:
+        r = requests.get("https://www.etime.net.cn/", headers=UA, timeout=20)
+        r.encoding = "utf-8"
+        if r.status_code != 200:
+            return []
+        titles = []
+        for m in re.finditer(
+                r'<a[^>]+href="[^"]*articalInfo\.php\?NewsID=\d+"[^>]*>(.*?)</a>',
+                r.text, re.DOTALL):
+            raw = m.group(1)
+            txt = re.sub(r'<[^>]+>', '', raw).strip()  # 清掉可能的內部子標籤
+            txt = re.sub(r'\s+', ' ', txt)
+            if txt and re.search(r'[\u4e00-\u9fff]', txt) and not NOISE.search(txt):
+                titles.append(txt)
+        seen, uniq = set(), []
+        for t in titles:
+            if t not in seen:
+                seen.add(t); uniq.append(t)
+        return uniq
+    except Exception:
+        return []
+
+
 def _fetch_wallstreetcn():
     """華爾街見聞(2026-09-23新增,補上中國大陸財經媒體這塊地理缺口——
     先前查證DSP晶片缺貨漲價這則消息時發現,源頭是中國大陸財經社群/媒體
@@ -783,6 +817,7 @@ def fetch_titles_by_source():
         "wapeople_pod": _fetch_wapeople_podcast(),
         "fugle_blog": _fetch_fugle_blog(),
         "jov": _fetch_jov(),
+        "etime_cn": _fetch_etime_cn(),
         "wallstreetcn": _fetch_wallstreetcn(),
         "eetimes_jp": _fetch_eetimes_jp(),
         "edn_jp": _fetch_edn_jp(),
