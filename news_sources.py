@@ -90,6 +90,11 @@ IC975_KEEP_PREFIXES = ("【科技領航家】", "【iSEE夢想家】", "【科�
 TELEGRAM_CHANNELS = {
     "gooaye_view": {"handle": "Gooaye", "label": "股癌(謝孟恭)"},
     "investanchors": {"handle": "investanchors", "label": "定錨產業筆記"},
+    # 2026-09-30新增,使用者提供4個頻道,沿用既有t.me/s/機制,不需另寫抓取邏輯:
+    "cruelshistoryoffinancial": {"handle": "CruelsHistoryOfFinancial", "label": "財經殘酷史(宏觀/美股ETF分析)"},
+    "ieobserve": {"handle": "ieobserve", "label": "IEObserve國際經濟觀察(國際財經/科技/商業觀察)"},
+    "azureblue_stock_note": {"handle": "AzureBlue_stock_note", "label": "AzureBlue股票筆記(⚠️查無獨立佐證資料,內容品質未經驗證,依使用者指定加入)"},
+    "fomosoc": {"handle": "fomosoc", "label": "FOMO研究院(KP,查證曾寫光通訊/CPO、記憶體週期、微軟亞馬遜Meta財報自研晶片深度分析,內容密度高)"},
 }
 TELEGRAM_SNIPPET_MAX_LEN = 80  # 硬性截斷,只取標題等級片段,不存完整貼文全文
 
