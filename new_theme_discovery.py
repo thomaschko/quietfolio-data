@@ -1,448 +1,590 @@
 # -*- coding: utf-8 -*-
 """
-new_theme_discovery.py — 偵測源4:新題材發現(多源跨源交叉升級版)
 ============================================================
-升級重點(相對舊版):
-  1. 多源標題池:鉅亨keyword標籤 + 中央社/財訊/Wa-people 標題(jieba斷詞)
-  2. 跨源交叉:一個新詞出現在越多【不同來源】,越可能是真題材(非單一媒體用語)
-     → 這是過濾雜訊的核心:奶茶/鹽燈只在單源出現一次,真題材跨源出現
-  3. 強化停用詞:雜誌套語、泛詞、總經詞
-  4. 排序:跨源數 > 出現次數 > 是否對應個股
+event_theme_radar.py — 事件/題材交易雷達 (GitHub Actions 端)
+============================================================
+兩個偵測源(v2:砍掉純高頻詞自動偵測,那產出全是泛詞雜訊):
+  1. 固定關鍵字熱度暴增:讀 themes_watchlist.txt,用鉅亨 search API
+     算「近3日日均 vs 20日基線日均」的暴增比,>=門檻即題材發酵
+  2. MOPS 重訊硬事件:改用 TWSE/TPEx OpenAPI 的 keyless JSON gateway
+     (t187ap04_L / t187ap04_O),過濾接單/擴產/簽約等硬事件關鍵字
 
-處置:每日輸出候選,人工升格(不自動改 watchlist)。
+輸出: event_theme_raw.json → 推到 quietfolio-data repo,供 GAS 端讀取
+依賴: requests (jieba 已不需要,但留著也無妨)
+
+資料源(全部免費、免金鑰):
+  鉅亨關鍵字搜  https://api.cnyes.com/media/api/v1/search/news?q={kw}&page={n}
+  TWSE 股票清單 https://openapi.twse.com.tw/v1/opendata/t187ap03_L
+  TPEx 股票清單 https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_O
+  TWSE 重大訊息 https://openapi.twse.com.tw/v1/opendata/t187ap04_L
+  TPEx 重大訊息 https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap04_O
 ============================================================
 """
-import requests, datetime as dt, json, time, re
-from collections import defaultdict
 
-# 2026-09-22新增:讓jieba跨源發現的新題材,也能套用跟watchlist關鍵字同一套
-# 嚴謹的股號抽取邏輯(CUBE消歧義、THEME_STOCK_EXCLUDE、弱命中門檻、綜述文排除),
-# 取代原本只有鉅亨網、而且是鉅亨自己API標籤、沒有任何安全防護的粗糙股號關聯。
-from event_theme_radar import build_name2code, extract_stock_codes_from_articles, extract_codes
+import requests
+import re
+import json
+import time
+import datetime as dt
+import urllib3
 
-# 2026-09-23新增:使用者提議的機制——同日多源爆量的熱詞(即使只有第一天,
-# 不需要累積連續天數),直接觸發針對性Gemini查詢,問法是「這個詞背後有哪些
-# 台股關聯」,不是「這算不算題材」,刻意避開ai_theme_discovery.py主流程
-# 那套「半導體供應鏈範圍限制」的排除規則——那套規則是為了主題材判定設計的,
-# 用在「查詢已知熱詞的關聯個股」這種事實查找任務上並不合適。
-from ai_theme_discovery import call_gemini
+# 2026-09-18新增:讓src1的股號抽取也能看到23源(src4)已收集到的標題池,
+# 不再只信任cnyes一個搜尋引擎的收錄範圍。根因:實測發現9/17當天MoneyDJ
+# 有兩篇明確提及貿聯-KY(3665)+800VDC+Vera Rubin的深度報導,但cnyes搜尋
+# 沒收錄到,導致src1完全漏掉這組訊號,即使MoneyDJ本身就是23源之一。
+# 注意:只用來擴充「股號抽取」的文字池,暴增比(近3日 vs 前17日基線)
+# 的計算仍然只用cnyes資料,不能混入23源去污染這個校準過的比例。
+try:
+    from news_sources import fetch_titles_by_source
+    SRC4_AVAILABLE = True
+except Exception as _e:
+    SRC4_AVAILABLE = False
+    print(f"  ⚠ 23源標題池不可用,股號抽取將只用cnyes: {_e}")
 
-HOT_TERM_SOURCE_THRESHOLD = 4  # 比一般跨源門檻(2)更嚴格,只對真正爆量的詞觸發,控制API用量
-HOT_TERM_MAX_QUERIES = 5       # 每次執行最多查詢幾個熱詞,避免額度暴衝
+# ============================================================
+# 安全性提醒(2026-09-14,已與使用者確認接受此取捨):
+# TPEx(www.tpex.org.tw)伺服器憑證鏈缺少中繼憑證,並非客戶端CA包過期
+# (已試過pip install --upgrade certifi無效),故下方對TPEx的兩個請求
+# 明確關閉SSL驗證(verify=False),範圍嚴格限定在這兩個網址,不影響
+# TWSE、鉅亨或任何其他請求的驗證。這裡抓的是公開政府開放資料
+# (唯讀GET、無帳密、非敏感個資),風險可控。
+# 只抑制"InsecureRequestWarning"這一種警告,其餘警告不受影響。
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# 2026-09-29新增:使用者提議——Meta/NVIDIA/超微(AMD)這類國際巨頭被熱詞
-# 命中時,雖然本身沒有台股代碼(正確不硬湊),但可以反查「公開報導證實」的
-# 台灣供應鏈廠商,當作參考線索。刻意跟related_stocks(直接命中)分開存放、
-# 分開顯示,不能混進A/D區的硬訊號判斷——這是「該公司的已知供應鏈」,不是
-# 「這篇新聞明確點名了這家台廠」,兩者的訊號強度完全不同,混在一起會稀釋
-# 既有偵測機制的精準度。清單刻意保守,只收錄廣泛見諸科技財經報導、非推測
-# 性質的公開供應鏈關係,涵蓋範圍暫以最常見的AI/半導體客戶為主,之後可視
-# 熱詞查詢實際命中的公司持續擴充。
-INTL_SUPPLY_CHAIN_HINTS = {
-    "NVIDIA": ["2330台積電(晶圓代工)", "2317鴻海(AI伺服器組裝)",
-               "2382廣達(AI伺服器ODM)", "3231緯創(AI伺服器ODM)",
-               "2308台達電(電源/散熱)", "2454聯發科(合作研發)"],
-    "超微": ["2330台積電(晶圓代工)", "3711日月光(封測)", "2317鴻海(伺服器組裝)"],
-    "AMD": ["2330台積電(晶圓代工)", "3711日月光(封測)", "2317鴻海(伺服器組裝)"],
-    "Meta": ["2317鴻海(伺服器/VR裝置組裝)", "2382廣達(AI伺服器ODM)",
-             "3231緯創(AI伺服器ODM)", "2308台達電(電源供應)"],
-    "蘋果": ["2317鴻海(組裝)", "2382廣達(組裝)", "3231緯創(組裝)",
-             "2454聯發科(晶片供應)", "3008大立光(鏡頭)"],
-    "Apple": ["2317鴻海(組裝)", "2382廣達(組裝)", "3231緯創(組裝)",
-              "2454聯發科(晶片供應)", "3008大立光(鏡頭)"],
-    "微軟": ["2330台積電(晶圓代工)", "2382廣達(伺服器ODM)"],
-    "Microsoft": ["2330台積電(晶圓代工)", "2382廣達(伺服器ODM)"],
-    "Google": ["2330台積電(晶圓代工/TPU)", "2382廣達(伺服器ODM)"],
-    "谷歌": ["2330台積電(晶圓代工/TPU)", "2382廣達(伺服器ODM)"],
-    "亞馬遜": ["2330台積電(晶圓代工)", "2382廣達(伺服器ODM)"],
-    "Amazon": ["2330台積電(晶圓代工)", "2382廣達(伺服器ODM)"],
-}
-
-
-def find_supply_chain_hints(unmatched_names):
-    """對熱詞查詢裡配不到台股代碼的國際公司名稱,反查已知台灣供應鏈廠商
-    (僅供參考,不算股號命中)。回傳{公司名稱: [廠商清單]},查無資料的
-    公司名稱不會出現在回傳結果裡。"""
-    hints = {}
-    for name in unmatched_names:
-        chain = INTL_SUPPLY_CHAIN_HINTS.get(name)
-        if chain:
-            hints[name] = chain
-    return hints
-
-HOT_TERM_SYSTEM_PROMPT = """你是台股新聞分析助理。使用者會給你一個今天在多個新聞來源
-同時被提及的熱門詞彙,以及提到這個詞的新聞標題清單。
-
-請務必只根據下面提供的標題內容判斷,不要用你自己的知識庫做過度推測或聯想。
-
-任務:
-1. 判斷這個詞代表的話題,對台股是否可能有實質影響(不限於半導體供應鏈,任何
-   合理的產業關聯都算——包括消費性電子、AI應用、終端品牌等衍生出的供應鏈效應)
-2. 標題裡有沒有明確提到哪些台股上市櫃公司受惠或相關——只列標題文字裡真的有
-   出現的公司名稱或股號,不要自己聯想沒有在標題裡出現的公司
-3. 用一句話總結這個話題在講什麼
-
-嚴格用以下JSON格式回答,不要有其他文字:
-{"is_relevant": true/false, "summary": "一句話總結", "mentioned_companies": ["標題裡出現的公司名稱或股號"]}"""
-
-
-def verify_hot_term_with_gemini(term, titles):
-    """對單一同日多源爆量的熱詞,做針對性Gemini查詢。回傳dict或None(失敗時)。"""
-    prompt = f"熱門詞彙:{term}\n\n相關新聞標題:\n" + "\n".join(f"- {t}" for t in titles[:30])
-    return call_gemini(prompt, system_instruction=HOT_TERM_SYSTEM_PROMPT)
-
-
-
-UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
+# ============================================================
+# 設定
+# ============================================================
+UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 CNYES_BASE = "https://api.cnyes.com/media/api/v1"
-SEED_QUERIES = [
-    "台股", "AI", "半導體", "輝達", "記憶體", "台積電", "AI伺服器",
-    # 國際/美股廣詞(2026-09-10新增,補NPO案例暴露的缺口:
-    # 原本廣詞池全是台股本位,漏掉「國際市場先發生、還沒被主流報導」的訊號)
-    "美股", "花旗", "高盛", "外資報告", "那斯達克", "科技股",
-]
-RECENT_DAYS, BASELINE_DAYS = 3, 20
-MIN_RECENT_HITS, SURGE_RATIO, MAX_BASELINE_HITS = 2, 1.5, 5
-# 放寬紀錄(2026-09-10):
-#   MIN_RECENT_HITS 3→2:降低候選門檻,讓更多詞進來(雜訊也會增加)
-#   MAX_BASELINE_HITS 2→5:不只抓全新詞,也抓基線期已有但持續熱度上升的詞
-#   SURGE_RATIO 2.0→1.5:配合基線放寬,門檻同步降低(否則基線變大會更難達到暴增比)
+OUT_FILE = "event_theme_raw.json"
 WATCHLIST_FILE = "themes_watchlist.txt"
 
-STOPWORDS = {
-    # 盤面/交易術語
-    "盤中漲跌速","盤中漲跌幅","盤中漲跌停","領漲跌產業","漲停","跌停","漲跌",
-    "市場預估","盤前","盤後","收盤","開盤","台股盤","法人","融資","融券","主力",
-    # 泛詞
-    "台灣","台股","eps","出口","匯率","手機","面板","債券","債市","分紅",
-    "拋售","股價","營收","獲利","財報","股利","除息","除權","殖利率","本益比",
-    "指出","表示","看好","看壞","上漲","下跌","大漲","大跌","飆漲","重挫",
-    # 宏觀/國際
-    "國際油價","油價","日元","日圓","日債","全球債市","美債","美元","通膨",
-    "升息","降息","fed","聯準會","cpi","gdp","景氣","基金","非農","新興市場",
-    "esg","永續","fomc","歐洲","美國","中國","日本","比特幣","加密貨幣","黃金",
-    "利率","就業","消費","零售","製造業","pmi","財政","關稅","貿易","選舉",
-    # 大盤/指數/機構
-    "msci","台積電","加權指數","道瓊","那斯達克","標普","費半","token",
-    # 雜誌/媒體套語
-    "獨家","專訪","專題","封面","焦點","解析","深度","報導","一次看","懶人包",
-    "重磅","快訊","即時","最新","熱門","精選","推薦","分析","觀點","評論","社論",
-    # 補充停用詞(theme_tracker實測發現的漏網通用詞)
-    "新台幣","發表會","下半年","上半年","本季","上季","下季",
-    "今日","昨日","明日","本週","上週","下週","...","…",
-    # 英文碎詞/停用詞(英文標題被jieba切碎產生,或AI模型名非題材)
-    "as","the","of","to","in","on","for","and","or","by","with","reportedly",
-    "prices","price","says","said","new","update","report","reports","spot",
-    "astra","agi","gpt","llm","chatgpt","gemini","claude","copilot","samsung",
-    "sk","intel","china","us","eu","q1","q2","q3","q4","inc","corp","ltd",
-    # 通用碎詞(jieba斷詞產生的高頻通用詞,非題材)
-    "一次","風險","全球","代理","模型","億元","台積","智慧","技術","關鍵",
-    "企業","經濟","最大","新高","啟動","推出","股盤","應鏈","表格","盤中",
-    "台股","除權息","盤後","速報","韓股","泡沫","安全","財經","金色","股市",
-    "美股","陸股","日股","歐股","國際","市場","投資","法人","外資","投信",
-    "布局","題材","概念","類股","族群","營運","展望","看好","目標","評等",
-    "報告","研究","預估","調查","數據","統計","指數","漲幅","跌幅","成長",
-    "產業","公司","集團","廠商","供應","需求","訂單","出貨","產能","營收",
-    "獲利","毛利","財報","法說","股價","股東","董事","高層","執行長","董事長",
-    "一年","一天","今年","明年","去年","本月","上月","下月","本週","上週",
-    "美元","台幣","人民幣","日圓","歐元","匯率","利率","升息","降息",
-    "中國","美國","日本","韓國","台灣","歐洲","印度","越南","德國","英國",
-    "系統","平台","服務","方案","應用","功能","版本","升級","發布","發表",
-    "合作","結盟","收購","入股","投資案","簽約","協議","布局","進軍","跨足",
-    # 2026-09-22新增:實跑發現的斷詞殘留
-    # KY:台股很多股票有「-KY」後綴(開曼群島註冊,如貿聯-KY、GIS-KY),
-    # jieba把後綴切成獨立2字英文token,因為ASCII token門檻只要2字(要讓
-    # AI/5G/PC這類合法縮寫通過),導致KY這種純粹是「很多不同公司名共用
-    # 後綴」的雜訊也混進跨源題材候選。這不是單一複合詞,沒辦法靠補詞典
-    # 修正,只能直接停用。
-    "ky",
-    # 體產業:「半導體產業」被切錯位置產生的殘缺片段,已經在上面補「半導體」
-    # 進自訂詞典解決根因,這裡留著當安全網(以防其他路徑也產生同樣殘留)。
-    "體產業",
-}
+RECENT_DAYS = 3
+BASELINE_DAYS = 20
+SURGE_RATIO = 1.5          # 放寬:近期日均 >= 基線日均的1.5倍即算暴增
+MIN_RECENT_COUNT = 3       # 且近3日至少要有這麼多則,避免小基數假訊號
+NEAR_MISS_LOW = 0.8        # 2026-09-15新增:近期關注區下限,暴增比落在[0.8,1.5)算「有動能但未過門檻」
 
-# 雜誌/廣告/公告雜訊(標題含這些整條丟棄)
-TITLE_NOISE = re.compile(r'商城|水晶|鹽燈|詐騙|澄清|報名|購買|電子報|廣告|抽獎|活動|優惠|折扣|免費|奶茶|美食|旅遊|餐廳|飯店')
-
-
-# 英文技術詞白名單:英文來源標題直接比對這些完整詞(不靠jieba斷詞)
-EN_TECH_TERMS = [
-    "advanced packaging", "glass substrate", "silicon photonics", "co-packaged",
-    "spot price", "HBM", "HBM4", "DRAM", "NAND", "DDR5", "LPDDR", "base die",
-    "CoWoS", "CoPoS", "FOPLP", "panel-level", "TSV", "interposer", "chiplet",
-    "800G", "1.6T", "transceiver", "EML", "InP", "indium phosphide", "laser",
-    "NPO", "near-package optics", "wafer-level testing", "laser array",
-    "SiC", "GaN", "power semiconductor", "solid-state battery", "humanoid",
-    "liquid cooling", "immersion cooling", "HVDC", "800V", "data center",
-    "passive component", "MLCC", "substrate", "wafer", "foundry", "yield",
+# MOPS 硬事件關鍵字(出現在重訊主旨中才算)
+MOPS_EVENT_KEYWORDS = [
+    "接獲訂單", "取得訂單", "承接", "接單", "擴產", "擴充產能", "新增產能",
+    "產能", "合作", "簽約", "簽署", "策略聯盟", "技術授權", "授權",
+    "調升", "調漲", "漲價", "投資", "併購", "收購", "取得",
+    "認證", "通過", "量產", "出貨", "開發成功", "訂單", "增資",
+    "私募", "處分", "重大", "得標", "標案",
+]
+# 排除純例行公告(這些主旨含上面關鍵字但無交易意義)
+MOPS_EXCLUDE = [
+    "董事會決議", "股利", "股東會", "更正", "澄清", "本公司代",
+    "代子公司", "財務報告", "現金股利", "召開", "受益人",
 ]
 
 
-def load_watchlist_terms():
-    terms = set()
-    try:
-        with open(WATCHLIST_FILE, encoding="utf-8") as f:
-            for ln in f:
-                ln = ln.strip()
-                if ln and not ln.startswith("#"):
-                    terms.add(ln.lower())
-    except FileNotFoundError:
-        pass
-    return terms
+# ============================================================
+# 股號↔股名對照表
+# ============================================================
+def build_name2code():
+    name2code = {}
+    code2name = {}  # 反向對照:代碼→官方公司簡稱(給顯示用,不含alias變體)
+    sources = [
+        ("https://openapi.twse.com.tw/v1/opendata/t187ap03_L", "TWSE"),
+        ("https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_O", "TPEx"),
+    ]
+    for url, tag in sources:
+        try:
+            # 2026-09-14:TPEx伺服器憑證鏈缺少中繼憑證(非客戶端CA包過期,升級certifi無效),
+            # 已與使用者確認,限定只對tpex.org.tw關閉SSL驗證,其他所有請求(含TWSE)維持驗證。
+            verify_ssl = "tpex.org.tw" not in url
+            r = requests.get(url, headers=UA, timeout=20, verify=verify_ssl)
+            r.raise_for_status()
+            data = r.json()
+            before = len(name2code)
+            # 2026-09-29根因修正:這輪對話裡「TPEx 股票清單: +0」出現在每一次
+            # log,查證後發現極可能是TPEx的mopsfin_t187ap03_O端點用英文欄位名
+            # (跟TWSE的t187ap03_L用中文欄位名「公司代號」「公司簡稱」不同),
+            # 原本只認中文欄位名,導致TPEx每一列都被row.get()的預設空字串
+            # 擋下、整批資料實質上被靜默丟棄——這也是「世界先進(5347,櫃買
+            # 股票)」熱詞查詢一直配不到股號的真正根因(不是官方簡稱字串
+            # 差異的問題,是TPEx資料從一開始就沒有載入任何一筆)。改成
+            # 同時嘗試中英文候選欄位名,盡量不用再猜第二次。
+            CODE_KEYS = ("公司代號", "Code", "CompanyCode", "SecuritiesCompanyCode", "StockCode")
+            SHORT_KEYS = ("公司簡稱", "CompanyAbbreviation", "Company", "CompanyName", "Name", "Abbreviation")
+            for row in data:
+                code = short = ""
+                for k in CODE_KEYS:
+                    if row.get(k):
+                        code = str(row[k]).strip()
+                        break
+                for k in SHORT_KEYS:
+                    if row.get(k):
+                        short = str(row[k]).strip()
+                        break
+                if not (code and short and re.match(r"^\d{4,6}$", code)):
+                    continue
+                name2code[short] = code
+                code2name[code] = short  # 用官方公司簡稱當顯示名稱(不是alias)
+                # 2026-09-17根因修正:「材料-KY」去掉-KY後變成別名「材料」,
+                # 這是極常見的中文詞彙(半導體材料/封裝材料到處都在講),
+                # 任何2字以下的別名都有這種「巧合變成常用詞」的高風險,
+                # 一律不產生這種別名(完整名稱如「材料-KY」仍在name2code裡,
+                # 不影響正常比對,只是不額外產生這個過短、易誤判的捷徑)。
+                alias = short.replace("-KY", "").replace("＊", "").replace("*", "").strip()
+                if alias and alias != short and len(alias) >= 3 and alias not in name2code:
+                    name2code[alias] = code
+            added = len(name2code) - before
+            print(f"  {tag} 股票清單: +{added} → 累計 {len(name2code)}")
+            # 2026-09-29新增:如果整批資料都沒配對成功(candidate欄位名全猜錯),
+            # 印出第一列實際的原始鍵名,下次log直接看得到TPEx真正的欄位長
+            # 什麼樣子,不用再靠搜尋間接推測。
+            if added == 0 and data:
+                print(f"    ⚠ {tag} 本次0筆配對成功,第一列原始欄位鍵名: {list(data[0].keys())}")
+        except Exception as e:
+            print(f"  ⚠ {tag} 股票清單抓取失敗: {e}")
+    # 2026-09-29新增:少數公司市場口語慣用全名跟TWSE/TPEx官方公司簡稱欄位
+    # 不一致(推測5347官方簡稱可能只有2字「世界」,但這種極短通用詞不適合
+    # 拿來做子字串比對,誤判風險太高,不採用放寬比對的方式解),改用精確、
+    # 安全的白名單別名對照,不管背後官方欄位實際字串是什麼都能穩定生效。
+    # 這是2026-09-29「世界先進」連續兩次熱詞查詢配對失敗後的根因修正,
+    # 每筆都先確認code2name裡code確實存在才加,避免代碼已下市卻誤留對照。
+    KNOWN_NAME_ALIASES = {
+        "世界先進": "5347",
+    }
+    for alias, code in KNOWN_NAME_ALIASES.items():
+        if code in code2name and alias not in name2code:
+            name2code[alias] = code
+    # 2026-10-01新增:使用者回報「5007三星是做螺絲螺帽,並非記憶體相關」,
+    # 查證確認根因——5007官方公司簡稱剛好是2字「三星」(台南鋼鐵扣件廠
+    # 三星科技),跟極知名的韓國三星電子(Samsung)撞名。這是跟「世界先進」
+    # 完全相反方向的同一類風險:世界先進是官方簡稱太短「查不到」,三星
+    # 則是官方簡稱太短「查過頭」——只要新聞提到韓國三星電子(記憶體/HBM
+    # 報導常態性出現),就會被誤判成台股5007,已經連續污染HBM4/南亞科/
+    # GaN/擴產/漲價等多個不同題材的受惠股清單,不是單一題材的問題,
+    # THEME_STOCK_EXCLUDE(逐題材排除)在這種跨題材全面污染的情況下不
+    # 適用,需要從股號字典源頭直接移除這個危險的2字對照,之後新聞如果
+    # 真的要討論台股5007三星科技,仍然可以靠完整公司名「三星科技」或
+    # 股號「5007」直接比對(name2code一樣有收錄這些更安全的全名寫法)。
+    NAME_COLLISION_BLACKLIST = {
+        "三星": "5007",  # 跟韓國Samsung撞名,5007台股實際是螺絲螺帽扣件廠
+    }
+    for bad_alias, code in NAME_COLLISION_BLACKLIST.items():
+        if name2code.get(bad_alias) == code:
+            del name2code[bad_alias]
+    return name2code, code2name
 
 
-def _get_keywords(it):
-    kw = it.get("keyword") or it.get("keywords")
-    if isinstance(kw, str): return [kw]
-    if isinstance(kw, list): return kw
-    return []
+def extract_codes(text, name2code):
+    """回傳 {code: weight}。有股號格式(1234)=明確點名權重2;純股名比對權重1。"""
+    if not text:
+        return {}
+    codes = {}
+    # 明確股號格式 (1234) → 高可信度
+    for m in re.findall(r"[（(](\d{4})[)）]", text):
+        codes[m] = 2
+    # 純股名比對 → 低可信度(易誤中,尤其2字股名)
+    for nm, cd in name2code.items():
+        if len(nm) >= 2 and nm in text:
+            if cd not in codes:
+                codes[cd] = 1
+    return codes
 
 
-def _get_tickers(it):
-    tk = it.get("related_tickers") or it.get("relatedTickers") or []
-    return [str(t.get("ticker")) for t in tk if isinstance(t, dict) and t.get("market") == "TW"]
+def extract_stock_codes_from_articles(kw, texts, name2code, log_evidence=False):
+    """從一批文章文字裡,用「強命中優先、綜述文整篇排除」的安全邏輯抽取
+    相關股票代碼。這是2026-09-17一連串除錯後確認的最終版邏輯,被
+    event_theme_radar.py(watchlist關鍵字題材)和ai_theme_discovery.py
+    (AI自由發現題材)共用,確保兩種題材來源使用同一套已驗證過的安全機制,
+    不重複寫、不各自累積不同的bug。
+
+    kw: 用於查詢DISAMBIGUATION/THEME_STOCK_EXCLUDE字典的鍵(watchlist
+        關鍵字或AI題材名稱皆可,查無對應項目時自動略過,不影響抽取邏輯本身)。
+    texts: 文章文字清單(list of str,通常是title或title+summary)。
+    回傳: (codes, evidence) — codes是排序後的股號清單,evidence是
+        {code: [文字片段]} 供人工回查用。
+    """
+    DISAMBIGUATION = {
+        "CUBE": ["記憶體", "華邦", "3D堆疊", "TSV", "類HBM",
+                 "邊緣AI", "3DCaaS", "堆疊技術", "混合鍵合"],
+    }
+    THEME_STOCK_EXCLUDE = {
+        "sidecar power": {"2395"},
+        "power shelf": {"2395"},
+        "power rack": {"2395"},
+        "HVDC": {"2395"},
+        "800V HVDC": {"2395"},
+    }
+    filtered_texts = texts
+    if kw in DISAMBIGUATION:
+        filtered_texts = [t for t in texts if any(ctx in t for ctx in DISAMBIGUATION[kw])]
+    excluded_for_kw = THEME_STOCK_EXCLUDE.get(kw, set())
+
+    strong_hits, weak_score, evidence = {}, {}, {}
+    for text in filtered_texts:
+        hits = extract_codes(text, name2code)
+        is_roundup = len(hits) > 4  # 單篇命中>4檔視為大盤綜述文,整篇不採計
+        if is_roundup:
+            if log_evidence:
+                print(f"      ⊘ 綜述文排除(命中{len(hits)}檔,不採計): "
+                      f"{sorted(hits.keys())} ← {text[:50]}")
+            continue
+        for cd, w in hits.items():
+            if cd in excluded_for_kw:
+                continue
+            if w == 2:  # 強命中(明確股號格式)
+                strong_hits[cd] = strong_hits.get(cd, 0) + 1
+            else:  # 弱命中(純股名)
+                weak_score[cd] = weak_score.get(cd, 0) + w
+            evidence.setdefault(cd, [])
+            if len(evidence[cd]) < 3:
+                evidence[cd].append(text[:60])
+
+    all_codes = set(strong_hits) | set(weak_score)
+    code_score = {cd: strong_hits.get(cd, 0) * 2 + weak_score.get(cd, 0)
+                  for cd in all_codes}
+    codes = sorted(
+        [cd for cd in all_codes
+         if strong_hits.get(cd, 0) >= 1 or weak_score.get(cd, 0) >= 2],
+        key=lambda c: -code_score[c])
+    return codes, evidence
 
 
-def fetch_cnyes(query, max_pages=8):
-    """鉅亨搜尋,回傳 [{title, keywords, tickers, ts}]"""
+# ============================================================
+# 鉅亨關鍵字搜尋
+# ============================================================
+def cnyes_search(keyword, start_ts, max_pages=10):
+    """回傳 keyword 近期新聞 list(只取 publishAt >= start_ts)。"""
     out = []
     for page in range(1, max_pages + 1):
-        url = f"{CNYES_BASE}/search/news?q={requests.utils.quote(query)}&page={page}"
+        url = f"{CNYES_BASE}/search/news?q={requests.utils.quote(keyword)}&page={page}"
         try:
             r = requests.get(url, headers=UA, timeout=20)
-            if r.status_code != 200: break
+            if r.status_code != 200:
+                break
             items = (r.json().get("items") or {}).get("data") or []
-            if not items: break
+            if not items:
+                break
+            stop = False
             for it in items:
-                out.append({"newsId": it.get("newsId"), "title": it.get("title",""),
-                            "keywords": _get_keywords(it), "tickers": _get_tickers(it),
-                            "ts": it.get("publishAt") or 0})
-            last = (r.json().get("items") or {}).get("last_page", 1)
-            if page >= last: break
+                pub = it.get("publishAt") or 0
+                if pub < start_ts:
+                    stop = True
+                    continue
+                out.append({
+                    "publishAt": pub,
+                    "title": it.get("title", ""),
+                    "summary": it.get("summary", "") or it.get("content", ""),
+                })
+            if stop:
+                break
+            last_page = (r.json().get("items") or {}).get("last_page", 1)
+            if page >= last_page:
+                break
             time.sleep(0.3)
-        except Exception:
+        except Exception as e:
+            print(f"  ⚠ 搜尋 {keyword} 第{page}頁失敗: {e}")
             break
     return out
 
 
-def main():
-    now = dt.datetime.now()
-    recent_cut = (now - dt.timedelta(days=RECENT_DAYS)).timestamp()
-    base_cut = (now - dt.timedelta(days=BASELINE_DAYS + RECENT_DAYS)).timestamp()
-    watchlist = load_watchlist_terms()
-    print("=" * 64)
-    print(f"新題材發現(多源跨源交叉版 v2025-09-10-filterfix)  排除{len(watchlist)}個已知詞")
-    print("=" * 64)
-
-    import jieba
-    for t in watchlist:
-        jieba.add_word(t)
-    # 補一批完整專有名詞進詞典,避免被切碎(供應鏈→應鏈、台積電→台積 等)
-    for w in ["供應鏈","台積電","聯發科","日月光","南亞科","華邦電","力積電",
-              "環球晶","中美晶","探針卡","矽晶圓","載板","覆晶","打線","封測",
-              "矽光子","光收發","光模組","雷射二極體","磷化銦","氮化鎵","碳化矽",
-              "人形機器人","諧波減速機","伺服馬達","固態電池","鈉離子電池",
-              "低軌衛星","衛星通訊","超級電容","液冷散熱","浸沒式散熱",
-              "先進封裝","玻璃基板","面板級封裝","矽中介層","記憶體","超級循環",
-              # 2026-09-22新增:半導體(原本沒進詞典,導致「半導體產業」被切錯
-              # 位置,切出「體產業」這種殘缺片段當成獨立跨源題材誤判)
-              "半導體"]:
-        jieba.add_word(w)
-
-    print("[前置] 建立股號↔股名對照表(供跨源題材的嚴謹股號抽取用)")
-    name2code, code2name = build_name2code()
-
-    # 每個詞記錄:近期次數、基線次數、來源集合、關聯標題原文(供事後嚴謹股號抽取用)
-    term_recent = defaultdict(int)
-    term_base = defaultdict(int)
-    term_sources = defaultdict(set)   # 跨源交叉核心
-    term_titles = defaultdict(list)   # 2026-09-22新增:取代原本鉅亨專屬、不安全的term_tickers,
-                                       # 改存原始標題文字,事後統一套extract_stock_codes_from_articles()
-    term_sample = {}
-
-    def add_term(term, source, in_recent, title=None):
-        k = term.strip()
-        # 純中文詞要≥3字(2字多為通用詞);含英數的技術詞(HBM/CoWoS)≥2字即可
-        has_ascii = any(c.isascii() and c.isalnum() for c in k)
-        min_len = 2 if has_ascii else 3
-        if len(k) < min_len or k.isdigit(): return
-        if k.lower() in watchlist or k.lower() in STOPWORDS: return
-        # 過濾:全是通用單字組成的詞(如「一次」「全球」已在STOPWORDS,這裡擋漏網)
-        if not has_ascii and len(k) <= 2: return
-        # 過濾:純數字/百分比/純符號(如「30%」「50億」這類斷詞殘留,不是題材)
-        if re.match(r'^[\d.,]+[%億萬元次年月日]*$', k): return
-        if in_recent:
-            term_recent[k] += 1
-            term_sources[k].add(source)
-            term_sample.setdefault(k, source)
-            if title:
-                term_titles[k].append(title)
-        else:
-            term_base[k] += 1
-
-    # ── 來源1:鉅亨(keyword標籤 + 時序)──
-    seen = set()
-    cnyes_news = []
-    for q in SEED_QUERIES:
-        for n in fetch_cnyes(q):
-            nid = n["newsId"]
-            if nid and nid not in seen:
-                seen.add(nid); cnyes_news.append(n)
-    print(f"  鉅亨: {len(cnyes_news)} 則")
-    for n in cnyes_news:
-        in_recent = n["ts"] >= recent_cut
-        in_base = base_cut <= n["ts"] < recent_cut
-        if not (in_recent or in_base): continue
-        for kw in n["keywords"]:
-            add_term(kw, "cnyes", in_recent, n.get("title", ""))
-
-    # ── 來源2-5:中央社/MoneyDJ/財訊/Wa-people(標題斷詞,當今日=recent)──
+# ============================================================
+# 偵測源 1: 固定關鍵字熱度暴增
+# ============================================================
+def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None):
+    print("[偵測源1] 固定關鍵字熱度追蹤")
     try:
-        from news_sources import fetch_titles_by_source
-        by_source = fetch_titles_by_source()
-        EN_SOURCES = {"trendforce", "eetimes", "cnbc_yahoo", "gs_exchanges", "google_news_us"}  # 英文為主的來源
-        for src, titles in by_source.items():
-            cnt = 0
-            for title in titles:
-                if TITLE_NOISE.search(title): continue
-                # 判斷標題是否以英文為主
-                ascii_ratio = sum(1 for c in title if c.isascii()) / max(len(title), 1)
-                if src in EN_SOURCES or ascii_ratio > 0.6:
-                    # 英文標題:只比對英文技術詞白名單(不靠jieba)
-                    low = title.lower()
-                    for term in EN_TECH_TERMS:
-                        if term.lower() in low:
-                            add_term(term, src, True, title)
-                    # 中文技術詞也撈(混合標題)
-                    for w in jieba.lcut(title):
-                        if len(w) >= 3 and not w.isascii():
-                            add_term(w, src, True, title)
-                else:
-                    # 中文標題:jieba斷詞
-                    for w in jieba.lcut(title):
-                        if len(w) >= 2:
-                            add_term(w, src, True, title)
-                cnt += 1
-            print(f"  {src}: {cnt} 則標題")
+        with open(WATCHLIST_FILE, "r", encoding="utf-8") as f:
+            raw_keywords = [ln.strip() for ln in f
+                            if ln.strip() and not ln.startswith("#")]
+        # 去重(保留原順序):避免watchlist.txt裡不慎重複的詞被掃描/輸出兩次
+        # (2026-09-16修正:發現NAND曾因歷史編輯疏漏重複列在兩個分類段落底下)
+        seen_kw = set()
+        keywords = []
+        for kw in raw_keywords:
+            if kw not in seen_kw:
+                seen_kw.add(kw)
+                keywords.append(kw)
+    except FileNotFoundError:
+        print(f"  找不到 {WATCHLIST_FILE}")
+        return []
+
+    recent_start = now_ts - RECENT_DAYS * 86400
+    base_start = now_ts - BASELINE_DAYS * 86400
+    results = []
+    near_miss_themes = []
+
+    # 補充來源(中央社+MoneyDJ)今日標題,當「當日新聞加成」計入 recent
+    try:
+        from news_sources import fetch_supplement_titles
+        supplement_titles = fetch_supplement_titles()
+        print(f"  補充來源(中央社+MoneyDJ): {len(supplement_titles)} 則今日標題")
     except Exception as e:
-        print(f"  ⚠ 補充來源失敗(不影響鉅亨): {e}")
+        print(f"  ⚠ 補充來源抓取失敗(不影響鉅亨): {e}")
+        supplement_titles = []
 
-    # ── 篩選新題材候選 ──
-    candidates = []
-    for term, rc in term_recent.items():
-        if rc < MIN_RECENT_HITS: continue
-        bc = term_base.get(term, 0)
-        if bc > MAX_BASELINE_HITS: continue
-        r_daily = rc / RECENT_DAYS
-        b_daily = bc / BASELINE_DAYS if bc else 0
-        ratio = (r_daily / b_daily) if b_daily > 0 else float("inf")
-        if ratio < SURGE_RATIO and bc > 0: continue
-        n_sources = len(term_sources[term])
-        candidates.append({
-            "term": term, "recent_hits": rc, "baseline_hits": bc,
-            "source_count": n_sources, "sources": sorted(term_sources[term]),
-            "is_brand_new": bc == 0,
-            "related_stocks": [], "related_names": {},  # 下面只對跨源候選填入
-            "gemini_checked": False, "gemini_relevant": None, "gemini_summary": "",
-            "gemini_unmatched_companies": [],
-        })
+    for kw in keywords:
+        news = cnyes_search(kw, base_start)   # 一次抓20日內全部
+        recent = [n for n in news if n["publishAt"] >= recent_start]
+        # 補充來源:標題含此關鍵字的,計入近期(視為今日新聞)
+        supp_hits = [t for t in supplement_titles if kw in t]
+        if supp_hits:
+            recent = recent + [{"title": t, "summary": "", "publishAt": now_ts} for t in supp_hits]
+        base = news   # 20日內全部(含近3日)
+        recent_daily = len(recent) / RECENT_DAYS
+        base_daily = len(base) / BASELINE_DAYS if base else 0.01
+        # 用「近期 vs 前段(20日扣掉近3日)」比,基期較純
+        earlier = [n for n in news if n["publishAt"] < recent_start]
+        earlier_daily = len(earlier) / (BASELINE_DAYS - RECENT_DAYS) if earlier else 0.01
+        ratio = round(recent_daily / earlier_daily, 2) if earlier_daily else 999
 
-    # 分區(先分,再只對跨源那批做嚴謹股號抽取——避免對所有候選詞逐一抽取,
-    # 拖慢執行時間;跨源本來就是唯一有機會被人工採用的高信心分區,單源僅供參考)
-    multi = [c for c in candidates if c["source_count"] >= 2]
-    single = [c for c in candidates if c["source_count"] < 2]
+        # 小基數假訊號防護:前段幾乎沒新聞(日均<0.15,約20日內<3則)時,
+        # 近期冒幾則就會爆表,這種不算真暴增,需前段有基礎量才採計
+        enough_base = earlier_daily >= 0.15
+        surge = (ratio >= SURGE_RATIO and len(recent) >= MIN_RECENT_COUNT
+                 and enough_base)
+        # 2026-09-15新增:近期關注區(暴增比0.8~1.5之間,真的在成長但還沒過門檻)。
+        # 套用跟暴增判斷一樣的防護(enough_base+MIN_RECENT_COUNT),避免eMMC那種
+        # 小基數雜訊(暴增比33.33但前段基期太小)被誤列進來;也排除NOR Flash這種
+        # 暴增比<0.8的「下降」情況,只留「真的在往上走、只是還沒衝過門檻」的詞。
+        near_miss = (not surge and NEAR_MISS_LOW <= ratio < SURGE_RATIO
+                     and len(recent) >= MIN_RECENT_COUNT and enough_base)
+        flag = "🔥暴增" if surge else ("👀關注中" if near_miss else
+                                      ("(基數過小略過)" if ratio >= SURGE_RATIO
+                                       and len(recent) >= MIN_RECENT_COUNT else ""))
+        print(f"  {kw}: 近{RECENT_DAYS}日={len(recent)} 前段日均={round(earlier_daily,2)} "
+              f"暴增比={ratio} {flag}")
 
-    print(f"[股號抽取] 對{len(multi)}個跨源候選套用嚴謹抽取邏輯"
-          f"(CUBE消歧義/THEME_STOCK_EXCLUDE/弱命中門檻,跟watchlist關鍵字同一套)")
-    for c in multi:
-        texts = term_titles.get(c["term"], [])
-        if not texts:
-            continue
-        codes, _ = extract_stock_codes_from_articles(c["term"], texts, name2code)
-        c["related_stocks"] = codes
-        c["related_names"] = {cd: code2name.get(cd, "") for cd in codes}
+        if near_miss:
+            near_miss_themes.append({
+                "theme": kw, "ratio": ratio, "recent_count": len(recent),
+            })
 
-    # 2026-09-23新增:同日多源爆量、但字面比對抽不到股號的熱詞,額外觸發
-    # 針對性Gemini查詢(使用者提議)——解決像Meta Muse這種話題,新聞標題本身
-    # 常用「聯發科」「AMD」這種公司名稱、而非精確對應到watchlist詞彙,導致
-    # 字面比對找不到、但話題本身明顯有跨源熱度的案例。只挑source_count最高
-    # 的前幾個查,控制API用量。
-    hot_unresolved = [c for c in multi
-                       if c["source_count"] >= HOT_TERM_SOURCE_THRESHOLD
-                       and not c["related_stocks"]]
-    hot_unresolved.sort(key=lambda x: -x["source_count"])
-    hot_unresolved = hot_unresolved[:HOT_TERM_MAX_QUERIES]
-    if hot_unresolved:
-        print(f"\n[熱詞查詢] {len(hot_unresolved)}個同日多源爆量但抽不到股號的詞,"
-              f"觸發針對性Gemini查詢(門檻:{HOT_TERM_SOURCE_THRESHOLD}源以上)")
-    for c in hot_unresolved:
-        texts = term_titles.get(c["term"], [])
-        result = verify_hot_term_with_gemini(c["term"], texts)
-        if not result:
-            print(f"  ⚠ 「{c['term']}」查詢失敗,跳過")
-            continue
-        c["gemini_checked"] = True
-        c["gemini_relevant"] = bool(result.get("is_relevant"))
-        c["gemini_summary"] = result.get("summary", "")
-        # Gemini回傳的是公司名稱,不一定是股號,這裡嘗試對照name2code轉成股號;
-        # 對不到的公司名稱原樣保留在gemini_companies,不強行湊股號
-        # 2026-09-29根因修正:原本用name2code.get(name)精確字典查找,要求
-        # Gemini回傳字串跟資料庫公司簡稱一字不差才配對成功,比系統其他地方
-        # (extract_stock_codes_from_articles)用的子字串包含比對脆弱很多——
-        # 實測「世界先進」(5347,確認上市)被Gemini正確點名,卻因為這段脆弱
-        # 邏輯配對失敗,錯放進unmatched_names。改用extract_codes()同一套
-        # 已驗證的子字串比對,跟系統其他偵測路徑統一,不再重複造一個較弱的版本。
-        mentioned = result.get("mentioned_companies", []) or []
-        matched_codes, unmatched_names = [], []
-        for name in mentioned:
-            hits = extract_codes(name, name2code)
-            if hits:
-                # 一個公司名稱理論上只會命中一檔股票,取信心分數最高的那個
-                best_code = max(hits, key=hits.get)
-                matched_codes.append(best_code)
+        if surge:
+            # 題材→個股關聯,優先順序:
+            #   1. My-TW-Coverage 權威主題檔(人工審核過的供應鏈研究)
+            #   2. 查無對應主題檔 → 退回新聞內文可信度分數法(舊機制)
+            codes_source = "關鍵字暴增"
+            coverage_result = None
+            try:
+                from tw_coverage_lookup import lookup_theme
+                coverage_result = lookup_theme(kw)
+            except Exception as e:
+                print(f"    ⚠ My-TW-Coverage 查詢失敗(退回新聞猜測): {e}")
+
+            if coverage_result:
+                codes = coverage_result["codes"]
+                names = coverage_result["names"]  # My-TW-Coverage本身就有{code:name}
+                codes_source = "my-tw-coverage"
+                print(f"    ✓ My-TW-Coverage 找到 {coverage_result['company_count']} 家公司(取代新聞猜測)")
             else:
-                unmatched_names.append(name)
-        if matched_codes:
-            c["related_stocks"] = matched_codes
-            c["related_names"] = {cd: code2name.get(cd, "") for cd in matched_codes}
-        c["gemini_unmatched_companies"] = unmatched_names
-        # 2026-09-29新增:對配不到股號的國際公司,反查已知供應鏈廠商(僅供參考)
-        supply_hints = find_supply_chain_hints(unmatched_names)
-        if supply_hints:
-            c["supply_chain_hints"] = supply_hints
-        tag = "✅相關" if c["gemini_relevant"] else "❌判定不相關"
-        stk_str = " ".join(cd + code2name.get(cd, "") for cd in matched_codes)
-        hint_str = ""
-        if supply_hints:
-            parts = [f"{nm}→{'/'.join(chain)}" for nm, chain in supply_hints.items()]
-            hint_str = f" [供應鏈參考:{'; '.join(parts)}]"
-        print(f"  「{c['term']}」{tag}: {c['gemini_summary']}"
-              + (f" 股:{stk_str}" if stk_str else "")
-              + (f" (未對到股號的公司:{unmatched_names})" if unmatched_names else "")
-              + hint_str)
+                print(f"    · My-TW-Coverage 查無對應主題檔,退回新聞猜測法")
+                # 退回:累計每檔股票的可信度分數(跨新聞),過濾雜訊
+                # 2026-09-16修正:原本「綜述文降權減半+分數>=2保留」的機制,
+                # 讓材料-KY(4763)/研華(2395)/國泰金(2882)這類跟題材完全無關的
+                # 股票,只因為在多篇文章裡被順帶提及(純股名比對的弱命中),
+                # 分數就跨過門檻被誤判成受惠股(人工查證後確認業務完全不相關)。
+                # 修正邏輯:
+                #   - 強命中(文章裡明確寫出股號,如「(3665)」)永遠不打折,只要
+                #     出現1次就視為高可信度,因為這是作者刻意點名,不是巧合
+                # 呼叫共用函式(跟ai_theme_discovery.py共用同一套已驗證邏輯,
+                # 不再各自維護一份、各自累積不同的bug)
+                texts = [n["title"] + " " + n["summary"] for n in recent]
+                # 併入23源標題池裡「有出現這個關鍵字」的標題(只做字面比對,
+                # 不影響上面的暴增比計算,只補強股號抽取的文字來源廣度)
+                if src4_titles:
+                    texts += [t for t in src4_titles if kw in t]
+                codes, evidence = extract_stock_codes_from_articles(
+                    kw, texts, name2code, log_evidence=True)
+                names = {cd: code2name.get(cd, "") for cd in codes}  # 2026-09-17新增:補上名稱
+                if codes:
+                    for cd in codes[:5]:
+                        print(f"      · {cd}{names.get(cd,'')} 命中證據: {evidence.get(cd, [])[:2]}")
 
-    # 排序:跨源數優先 > 有個股 > 出現次數(跨源=真題材的最強訊號)
-    candidates.sort(key=lambda x: (-x["source_count"], not x["related_stocks"], -x["recent_hits"]))
-    multi.sort(key=lambda x: (-x["source_count"], not x["related_stocks"], -x["recent_hits"]))
+            results.append({
+                "theme": kw,
+                "ratio": ratio,
+                "recent_count": len(recent),
+                "codes": codes,
+                "names": names,  # 2026-09-17新增:{code: 股票名稱}
+                "source": "關鍵字暴增",
+                "codes_source": codes_source,  # 標記這批codes是權威資料庫還是新聞猜測
+            })
+        time.sleep(0.3)
+    return results, near_miss_themes
 
-    print(f"\n新題材候選:{len(candidates)} 個")
-    print(f"\n★ 跨源出現(高信心,{len(multi)}個 — 多個來源同時提):")
-    for c in multi[:20]:
-        names = c.get("related_names", {})
-        stk_str = " ".join(cd + names.get(cd, "") for cd in c["related_stocks"])
-        stk = " 股:" + stk_str if stk_str else ""
-        tag = "🆕" if c["is_brand_new"] else ""
-        print(f"  {tag}{c['term']}  {c['source_count']}源({' '.join(c['sources'])}) 近{c['recent_hits']}次{stk}")
-    print(f"\n○ 單源出現(參考,前10/{len(single)}個):")
-    for c in single[:10]:
-        tag = "🆕" if c["is_brand_new"] else ""
-        print(f"  {tag}{c['term']}  {c['sources'][0]} 近{c['recent_hits']}次")
 
-    json.dump({"generated_at": str(now), "candidates": candidates,
-               "multi_source": multi},
-              open("new_theme_candidates.json", "w", encoding="utf-8"),
-              ensure_ascii=False, indent=2)
-    print(f"\n→ new_theme_candidates.json 已寫出(跨源{len(multi)}個)")
+# ============================================================
+# 偵測源 2: MOPS 重訊(改用 OpenAPI keyless JSON)
+# ============================================================
+def _mops_index(fields_sample):
+    """依欄位名動態定位 代號/名稱/主旨 欄。
+    上市用中文欄名(公司代號/主旨),上櫃用英文欄名(SecuritiesCompanyCode/CompanyName),
+    兩者都要涵蓋。"""
+    idx = {"code": None, "name": None, "subject": None, "date": None}
+    for k in fields_sample:
+        kk = str(k).replace(" ", "")
+        kl = kk.lower()
+        # 股號:中文「公司代號」或英文 SecuritiesCompanyCode / CompanyCode / Code
+        if idx["code"] is None and ("公司代號" in kk or "代號" in kk
+                or "securitiescompanycode" in kl or "companycode" in kl
+                or kl == "code"):
+            idx["code"] = k
+        # 公司名:中文或英文 CompanyName
+        if idx["name"] is None and ("公司名稱" in kk or "公司簡稱" in kk or "名稱" in kk
+                or "companyname" in kl):
+            idx["name"] = k
+        # 主旨
+        if idx["subject"] is None and ("主旨" in kk or "說明" in kk or "標題" in kk
+                or "subject" in kl or "title" in kl):
+            idx["subject"] = k
+        # 日期
+        if idx["date"] is None and ("發言日期" in kk or "日期" in kk or kl == "date"):
+            idx["date"] = k
+    return idx
+
+
+def detect_mops_events(name2code, code2name, today):
+    print("[偵測源2] MOPS 重大訊息事件(OpenAPI JSON)")
+    sources = [
+        ("https://openapi.twse.com.tw/v1/opendata/t187ap04_L", "上市"),
+        ("https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap04_O", "上櫃"),
+    ]
+    today_roc = f"{today.year - 1911:03d}{today.month:02d}{today.day:02d}"  # 1150828
+    results = []
+
+    for url, market in sources:
+        try:
+            # 2026-09-14:同上,只對tpex.org.tw關閉SSL驗證
+            verify_ssl = "tpex.org.tw" not in url
+            r = requests.get(url, headers=UA, timeout=25, verify=verify_ssl)
+            if r.status_code != 200:
+                print(f"  ⚠ MOPS {market} HTTP {r.status_code}")
+                continue
+            data = r.json()
+            if not data:
+                print(f"  MOPS {market}: 回傳空")
+                continue
+
+            idx = _mops_index(data[0].keys())
+            if not idx["code"] or not idx["subject"]:
+                print(f"  ⚠ MOPS {market} 欄位定位失敗,實際欄位: {list(data[0].keys())}")
+                continue
+
+            hit_cnt = 0
+            for row in data:
+                code = str(row.get(idx["code"], "")).strip()
+                subject = str(row.get(idx["subject"], "")).strip()
+                if not re.match(r"^\d{4,6}$", code) or not subject:
+                    continue
+                subj_clean = re.sub(r"\s+", "", subject)
+
+                # 只留當日(若有日期欄);OpenAPI 通常就是最新一批,無日期欄則全收
+                if idx["date"]:
+                    d = str(row.get(idx["date"], "")).strip()
+                    if d and today_roc not in d and d not in today_roc:
+                        # 日期不符當日就跳過(容忍格式差異)
+                        pass  # OpenAPI多為最新快照,放寬不強制過濾
+
+                # 排除例行公告
+                if any(ex in subj_clean for ex in MOPS_EXCLUDE):
+                    continue
+                # 命中硬事件關鍵字
+                hit = [kw for kw in MOPS_EVENT_KEYWORDS if kw in subj_clean]
+                if hit:
+                    results.append({
+                        "theme": "重訊:" + "/".join(hit[:2]),
+                        "ratio": None,
+                        "recent_count": 1,
+                        "codes": [code],
+                        "names": {code: code2name.get(code, "")},  # 2026-09-17新增
+                        "subject": subj_clean[:80],
+                        "source": "MOPS重訊",
+                    })
+                    hit_cnt += 1
+            print(f"  MOPS {market}: 命中 {hit_cnt} 筆硬事件 (共{len(data)}則公告)")
+        except Exception as e:
+            print(f"  ⚠ MOPS {market} 失敗: {e}")
+    return results
+
+
+# ============================================================
+# 主流程
+# ============================================================
+def main():
+    print("=" * 50)
+    print("EventThemeRadar 開始 (v2: 關鍵字暴增 + MOPS重訊)")
+    now = dt.datetime.now()
+    now_ts = int(now.timestamp())
+
+    print("[前置] 建立股號↔股名對照表")
+    name2code, code2name = build_name2code()
+    print(f"  對照表共 {len(name2code)} 個名稱")
+
+    # 2026-09-18新增:抓一次23源標題池,供股號抽取補強用(不影響暴增比計算)
+    src4_titles = []
+    if SRC4_AVAILABLE:
+        try:
+            print("[前置] 抓取23源標題池(供股號抽取補強,一次抓取全部關鍵字共用)")
+            pool = fetch_titles_by_source()
+            src4_titles = [t for titles in pool.values() for t in titles]
+            print(f"  23源標題池共 {len(src4_titles)} 則")
+        except Exception as e:
+            print(f"  ⚠ 23源標題池抓取失敗,股號抽取退回只用cnyes: {e}")
+
+    src1, src1_near_miss = detect_fixed_keywords(name2code, code2name, now_ts, src4_titles)
+    src2 = detect_mops_events(name2code, code2name, now)
+
+    # 偵測源3:維基題材關注度(發酵前緣)。獨立檔,抓不到不影響前兩源。
+    try:
+        from wiki_detector import detect_wiki_attention
+        src3 = detect_wiki_attention()
+    except Exception as e:
+        print(f"  ⚠ 維基偵測源3失敗(不影響其他源): {e}")
+        src3 = []
+
+    all_themes = src1 + src2 + src3
+    code_hits = {}
+    for t in all_themes:
+        for cd in t["codes"]:
+            entry = code_hits.setdefault(cd, {"themes": set(), "sources": set(),
+                                              "subjects": [], "wiki_stages": set()})
+            entry["themes"].add(t["theme"])
+            entry["sources"].add(t["source"])
+            if t.get("subject"):
+                entry["subjects"].append(t["subject"])
+            if t.get("wiki_stage"):
+                entry["wiki_stages"].add(t["wiki_stage"])
+
+    # 清洗:所有 theme 的 codes 統一轉 sorted list(src3 產出的是 set,JSON 不能存 set)
+    for t in all_themes:
+        if isinstance(t.get("codes"), set):
+            t["codes"] = sorted(t["codes"])
+
+    out = {
+        "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
+        "date": now.strftime("%Y%m%d"),
+        "themes": all_themes,
+        "near_miss_themes": sorted(src1_near_miss, key=lambda x: -x["ratio"]),
+        "stocks": [
+            {
+                "code": cd,
+                "themes": sorted(v["themes"]),
+                "sources": sorted(v["sources"]),
+                "hit_count": len(v["themes"]),
+                "subjects": v["subjects"][:3],
+                # 發酵標記:pre-ferment 優先(還沒發酵、最有價值),否則取有的第一個
+                "fermentation": ("pre-ferment" if "pre-ferment" in v.get("wiki_stages", set())
+                                 else ("active" if "active" in v.get("wiki_stages", set())
+                                       else None)),
+            }
+            for cd, v in sorted(code_hits.items(),
+                                key=lambda kv: len(kv[1]["themes"]), reverse=True)
+        ],
+    }
+
+    with open(OUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+    print(f"\n輸出 {OUT_FILE}: {len(all_themes)} 個題材/事件, "
+          f"{len(out['stocks'])} 檔受惠股")
+    print("=" * 50)
 
 
 if __name__ == "__main__":
