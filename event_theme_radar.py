@@ -152,6 +152,23 @@ def build_name2code():
     for alias, code in KNOWN_NAME_ALIASES.items():
         if code in code2name and alias not in name2code:
             name2code[alias] = code
+    # 2026-10-01新增:使用者回報「5007三星是做螺絲螺帽,並非記憶體相關」,
+    # 查證確認根因——5007官方公司簡稱剛好是2字「三星」(台南鋼鐵扣件廠
+    # 三星科技),跟極知名的韓國三星電子(Samsung)撞名。這是跟「世界先進」
+    # 完全相反方向的同一類風險:世界先進是官方簡稱太短「查不到」,三星
+    # 則是官方簡稱太短「查過頭」——只要新聞提到韓國三星電子(記憶體/HBM
+    # 報導常態性出現),就會被誤判成台股5007,已經連續污染HBM4/南亞科/
+    # GaN/擴產/漲價等多個不同題材的受惠股清單,不是單一題材的問題,
+    # THEME_STOCK_EXCLUDE(逐題材排除)在這種跨題材全面污染的情況下不
+    # 適用,需要從股號字典源頭直接移除這個危險的2字對照,之後新聞如果
+    # 真的要討論台股5007三星科技,仍然可以靠完整公司名「三星科技」或
+    # 股號「5007」直接比對(name2code一樣有收錄這些更安全的全名寫法)。
+    NAME_COLLISION_BLACKLIST = {
+        "三星": "5007",  # 跟韓國Samsung撞名,5007台股實際是螺絲螺帽扣件廠
+    }
+    for bad_alias, code in NAME_COLLISION_BLACKLIST.items():
+        if name2code.get(bad_alias) == code:
+            del name2code[bad_alias]
     return name2code, code2name
 
 
