@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-10-03 13:40:16",
-  "date": "20261003",
+  "generated_at": "2026-10-04 14:17:05",
+  "date": "20261004",
   "summary_counts": {
-    "resonance": 10,
-    "preferment_themes": 0,
+    "resonance": 2,
+    "preferment_themes": 1,
     "broker_coverage": 0,
-    "surge_themes": 15,
+    "surge_themes": 10,
     "new_candidates": 15,
     "earnings_rising": 140,
-    "cross_confirmed": 2
+    "cross_confirmed": 1
   },
   "intl_news_heat": [
     {
@@ -49,227 +49,74 @@
   ],
   "A_multi_source_resonance": [
     {
-      "code": "3455",
+      "code": "1723",
       "source_count": 2,
       "sources": [
-        "MOPS重訊",
-        "關鍵字暴增"
+        "wiki",
+        "wiki_preferment"
       ],
-      "hit_count": 2,
+      "hit_count": 1,
       "themes": [
-        "先進封裝",
-        "重訊:投資"
+        "鈉離子電池"
       ],
-      "fermentation": null,
+      "fermentation": "pre-ferment",
       "broker_count": null,
       "via_source_diversity": true,
       "via_theme_cluster": false
     },
     {
-      "code": "2301",
+      "code": "6509",
       "source_count": 2,
       "sources": [
-        "MOPS重訊",
-        "關鍵字暴增"
+        "wiki",
+        "wiki_preferment"
       ],
-      "hit_count": 2,
+      "hit_count": 1,
       "themes": [
-        "碳化矽",
-        "重訊:投資/通過"
+        "鈉離子電池"
       ],
-      "fermentation": null,
+      "fermentation": "pre-ferment",
       "broker_count": null,
       "via_source_diversity": true,
       "via_theme_cluster": false
-    },
-    {
-      "code": "8046",
-      "source_count": 2,
-      "sources": [
-        "MOPS重訊",
-        "關鍵字暴增"
-      ],
-      "hit_count": 2,
-      "themes": [
-        "擴產",
-        "重訊:投資/重大"
-      ],
-      "fermentation": null,
-      "broker_count": null,
-      "via_source_diversity": true,
-      "via_theme_cluster": false
-    },
-    {
-      "code": "6664",
-      "source_count": 1,
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 4,
-      "themes": [
-        "FOPLP",
-        "先進封裝",
-        "接單",
-        "擴產"
-      ],
-      "fermentation": null,
-      "broker_count": null,
-      "via_source_diversity": false,
-      "via_theme_cluster": true
-    },
-    {
-      "code": "2330",
-      "source_count": 1,
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 4,
-      "themes": [
-        "HBM4",
-        "High-NA EUV",
-        "擴產",
-        "被動元件"
-      ],
-      "fermentation": null,
-      "broker_count": null,
-      "via_source_diversity": false,
-      "via_theme_cluster": true
-    },
-    {
-      "code": "4551",
-      "source_count": 1,
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 4,
-      "themes": [
-        "GB200",
-        "GB300",
-        "High-NA EUV",
-        "NVL72"
-      ],
-      "fermentation": null,
-      "broker_count": null,
-      "via_source_diversity": false,
-      "via_theme_cluster": true
-    },
-    {
-      "code": "2464",
-      "source_count": 1,
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "themes": [
-        "先進封裝",
-        "接單",
-        "擴產"
-      ],
-      "fermentation": null,
-      "broker_count": null,
-      "via_source_diversity": false,
-      "via_theme_cluster": true
-    },
-    {
-      "code": "2492",
-      "source_count": 1,
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "themes": [
-        "接單",
-        "擴產",
-        "被動元件"
-      ],
-      "fermentation": null,
-      "broker_count": null,
-      "via_source_diversity": false,
-      "via_theme_cluster": true
-    },
-    {
-      "code": "1605",
-      "source_count": 1,
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "themes": [
-        "接單",
-        "擴產",
-        "被動元件"
-      ],
-      "fermentation": null,
-      "broker_count": null,
-      "via_source_diversity": false,
-      "via_theme_cluster": true
-    },
-    {
-      "code": "2327",
-      "source_count": 1,
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "themes": [
-        "MLCC",
-        "接單",
-        "被動元件"
-      ],
-      "fermentation": null,
-      "broker_count": null,
-      "via_source_diversity": false,
-      "via_theme_cluster": true
     }
   ],
-  "B_preferment_themes": [],
+  "B_preferment_themes": [
+    {
+      "theme": "鈉離子電池",
+      "ratio": 1.56,
+      "baseline": 51.0,
+      "codes": [
+        "1723",
+        "6509"
+      ],
+      "names": {},
+      "semantic_risk": ""
+    }
+  ],
   "C_broker_coverage": [],
   "D_surge_themes": [
     {
-      "theme": "被動元件",
-      "ratio": 9.71,
-      "codes": [
-        "2330",
-        "2492",
-        "1605",
-        "3026",
-        "2327"
-      ],
-      "names": {
-        "2330": "台積電",
-        "2492": "華新科",
-        "1605": "華新",
-        "3026": "禾伸堂",
-        "2327": "國巨*"
-      }
-    },
-    {
-      "theme": "NVL72",
-      "ratio": 3.78,
-      "codes": [
-        "4551"
-      ],
-      "names": {
-        "4551": "智伸科"
-      }
+      "theme": "Grace Hopper",
+      "ratio": 4.53,
+      "codes": [],
+      "names": {}
     },
     {
       "theme": "GB300",
-      "ratio": 3.19,
+      "ratio": 3.92,
       "codes": [
-        "3013",
-        "4551",
-        "4938"
+        "2317",
+        "3013"
       ],
       "names": {
-        "3013": "晟銘電",
-        "4551": "智伸科",
-        "4938": "和碩"
+        "2317": "鴻海",
+        "3013": "晟銘電"
       }
     },
     {
       "theme": "碳化矽",
-      "ratio": 2.83,
+      "ratio": 3.4,
       "codes": [
         "2301",
         "2308",
@@ -320,202 +167,28 @@
       }
     },
     {
-      "theme": "MLCC",
-      "ratio": 2.64,
-      "codes": [
-        "2327"
-      ],
-      "names": {
-        "2327": "國巨*"
-      }
-    },
-    {
-      "theme": "ABF載板",
-      "ratio": 2.43,
+      "theme": "NVL72",
+      "ratio": 2.83,
       "codes": [],
       "names": {}
     },
     {
-      "theme": "FOPLP",
-      "ratio": 2.43,
-      "codes": [
-        "6664",
-        "3563"
-      ],
-      "names": {
-        "6664": "群翊",
-        "3563": "牧德"
-      }
-    },
-    {
-      "theme": "GB200",
-      "ratio": 2.36,
-      "codes": [
-        "4551"
-      ],
-      "names": {
-        "4551": "智伸科"
-      }
-    },
-    {
-      "theme": "BBU",
-      "ratio": 2.12,
-      "codes": [],
-      "names": {}
-    },
-    {
-      "theme": "HBM4",
-      "ratio": 2.12,
-      "codes": [
-        "4923",
-        "2330"
-      ],
-      "names": {
-        "4923": "力士",
-        "2330": "台積電"
-      }
-    },
-    {
-      "theme": "High-NA EUV",
-      "ratio": 1.89,
+      "theme": "被動元件",
+      "ratio": 2.83,
       "codes": [
         "2330",
-        "3178",
-        "3680",
-        "4551",
-        "4768",
-        "6517",
-        "6823",
-        "6895",
-        "6909"
+        "2492",
+        "1605"
       ],
       "names": {
         "2330": "台積電",
-        "6909": "創控",
-        "6517": "保勝光學",
-        "6823": "濾能",
-        "4551": "智伸科",
-        "6895": "宏碩系統",
-        "3178": "公準",
-        "3680": "家登",
-        "4768": "晶呈科技"
-      }
-    },
-    {
-      "theme": "先進封裝",
-      "ratio": 1.67,
-      "codes": [
-        "1717",
-        "1721",
-        "2464",
-        "3037",
-        "3131",
-        "3167",
-        "3289",
-        "3443",
-        "3455",
-        "3485",
-        "3535",
-        "3577",
-        "3580",
-        "3583",
-        "3595",
-        "3661",
-        "3680",
-        "3711",
-        "4510",
-        "4573",
-        "4755",
-        "5234",
-        "5443",
-        "5493",
-        "6139",
-        "6187",
-        "6207",
-        "6239",
-        "6425",
-        "6515",
-        "6531",
-        "6570",
-        "6664",
-        "6691",
-        "6706",
-        "6742",
-        "6903",
-        "8070",
-        "8227"
-      ],
-      "names": {
-        "3167": "大量",
-        "3580": "友威科",
-        "4510": "高鋒",
-        "6664": "群翊",
-        "6706": "惠特",
-        "3535": "晶彩科",
-        "6742": "澤米",
-        "1717": "長興",
-        "1721": "三晃",
-        "3577": "泓格",
-        "3455": "由田",
-        "4573": "高明鐵",
-        "5493": "三聯",
-        "8070": "長華",
-        "6139": "亞翔",
-        "6691": "洋基工程",
-        "6903": "巨漢",
-        "3131": "弘塑",
-        "4755": "三福化",
-        "6570": "維田",
-        "3037": "欣興",
-        "3595": "山太士",
-        "6207": "雷科",
-        "5443": "均豪",
-        "6425": "易發",
-        "3289": "宜特",
-        "3443": "創意",
-        "3583": "辛耘",
-        "3661": "世芯-KY",
-        "3680": "家登",
-        "3711": "日月光投控",
-        "6239": "力成",
-        "6515": "穎崴",
-        "6531": "愛普",
-        "8227": "巨有科技",
-        "5234": "達興材料",
-        "2464": "盟立",
-        "3485": "敘豐",
-        "6187": "萬潤"
-      }
-    },
-    {
-      "theme": "接單",
-      "ratio": 1.62,
-      "codes": [
-        "2033",
-        "2492",
-        "2464",
-        "2327",
-        "1605",
-        "6664",
-        "3013",
-        "3042",
-        "6532"
-      ],
-      "names": {
-        "2033": "佳大",
         "2492": "華新科",
-        "2464": "盟立",
-        "2327": "國巨*",
-        "1605": "華新",
-        "6664": "群翊",
-        "3013": "晟銘電",
-        "3042": "晶技",
-        "6532": "瑞耘"
+        "1605": "華新"
       }
     },
     {
       "theme": "磷化銦",
-      "ratio": 1.55,
+      "ratio": 2.52,
       "codes": [
         "2455",
         "3081",
@@ -532,42 +205,32 @@
       }
     },
     {
-      "theme": "擴產",
-      "ratio": 1.51,
+      "theme": "InP",
+      "ratio": 2.12,
       "codes": [
-        "2330",
-        "3037",
-        "2317",
-        "6196",
-        "3023",
-        "3563",
-        "2492",
-        "6139",
-        "3189",
-        "1605",
-        "8147",
-        "6664",
-        "2344",
-        "2464",
-        "8046"
+        "4971"
       ],
       "names": {
-        "2330": "台積電",
-        "3037": "欣興",
-        "2317": "鴻海",
-        "6196": "帆宣",
-        "3023": "信邦",
-        "3563": "牧德",
-        "2492": "華新科",
-        "6139": "亞翔",
-        "3189": "景碩",
-        "1605": "華新",
-        "8147": "正淩",
-        "6664": "群翊",
-        "2344": "華邦電",
-        "2464": "盟立",
-        "8046": "南電"
+        "4971": "IET-KY"
       }
+    },
+    {
+      "theme": "Blackwell",
+      "ratio": 1.74,
+      "codes": [],
+      "names": {}
+    },
+    {
+      "theme": "MLCC",
+      "ratio": 1.67,
+      "codes": [],
+      "names": {}
+    },
+    {
+      "theme": "人形機器人",
+      "ratio": 1.51,
+      "codes": [],
+      "names": {}
     }
   ],
   "E_new_candidates": [
@@ -575,39 +238,52 @@
       "term": "供應鏈",
       "recent_hits": 63,
       "is_brand_new": false,
-      "streak_days": 3,
+      "streak_days": 4,
       "method": "jieba",
       "reason": "",
       "stocks": [
         "2330",
-        "6196"
+        "2404",
+        "6196",
+        "6139"
       ],
       "names": {}
     },
     {
       "term": "伺服器",
-      "recent_hits": 59,
+      "recent_hits": 53,
       "is_brand_new": false,
-      "streak_days": 9,
+      "streak_days": 10,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "4938",
         "2330",
-        "7711",
-        "6933",
-        "2382",
-        "2329",
         "2317",
-        "3231"
+        "3037",
+        "2329"
+      ],
+      "names": {}
+    },
+    {
+      "term": "概念股",
+      "recent_hits": 18,
+      "is_brand_new": false,
+      "streak_days": 6,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "4772",
+        "4749",
+        "7856",
+        "3711"
       ],
       "names": {}
     },
     {
       "term": "NVIDIA",
-      "recent_hits": 16,
+      "recent_hits": 13,
       "is_brand_new": false,
-      "streak_days": 13,
+      "streak_days": 14,
       "method": "jieba",
       "reason": "",
       "stocks": [
@@ -617,44 +293,9 @@
     },
     {
       "term": "iPhone",
-      "recent_hits": 12,
+      "recent_hits": 10,
       "is_brand_new": false,
-      "streak_days": 13,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "概念股",
-      "recent_hits": 12,
-      "is_brand_new": false,
-      "streak_days": 5,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "4749",
-        "4772"
-      ],
-      "names": {}
-    },
-    {
-      "term": "工研院",
-      "recent_hits": 9,
-      "is_brand_new": false,
-      "streak_days": 6,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "9937"
-      ],
-      "names": {}
-    },
-    {
-      "term": "華爾街",
-      "recent_hits": 9,
-      "is_brand_new": false,
-      "streak_days": 3,
+      "streak_days": 14,
       "method": "jieba",
       "reason": "",
       "stocks": [
@@ -663,46 +304,46 @@
       "names": {}
     },
     {
-      "term": "AOI",
-      "recent_hits": 9,
+      "term": "Pro",
+      "recent_hits": 10,
       "is_brand_new": false,
-      "streak_days": 3,
+      "streak_days": 12,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "9937",
-        "3563",
-        "3030"
+        "1459",
+        "2330"
       ],
       "names": {}
     },
     {
-      "term": "IC",
-      "recent_hits": 8,
+      "term": "熱門股",
+      "recent_hits": 10,
       "is_brand_new": false,
-      "streak_days": 13,
+      "streak_days": 2,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "2329"
+        "3162",
+        "8111"
       ],
-      "names": {}
-    },
-    {
-      "term": "data center",
-      "recent_hits": 8,
-      "is_brand_new": false,
-      "streak_days": 13,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
       "names": {}
     },
     {
       "term": "美債殖",
       "recent_hits": 8,
       "is_brand_new": false,
-      "streak_days": 10,
+      "streak_days": 11,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "wafer",
+      "recent_hits": 8,
+      "is_brand_new": false,
+      "streak_days": 6,
       "method": "jieba",
       "reason": "",
       "stocks": [],
@@ -712,136 +353,132 @@
       "term": "HDD",
       "recent_hits": 8,
       "is_brand_new": false,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "PC",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 13,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "2454",
-        "1459"
-      ],
-      "names": {}
-    },
-    {
-      "term": "毛利率",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 11,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "投資人",
-      "recent_hits": 7,
-      "is_brand_new": false,
       "streak_days": 3,
       "method": "jieba",
       "reason": "",
       "stocks": [],
       "names": {}
+    },
+    {
+      "term": "data center",
+      "recent_hits": 7,
+      "is_brand_new": false,
+      "streak_days": 14,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "IC",
+      "recent_hits": 7,
+      "is_brand_new": false,
+      "streak_days": 14,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "2329"
+      ],
+      "names": {}
+    },
+    {
+      "term": "PC",
+      "recent_hits": 6,
+      "is_brand_new": false,
+      "streak_days": 14,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "1459",
+        "2454"
+      ],
+      "names": {}
+    },
+    {
+      "term": "自動化",
+      "recent_hits": 6,
+      "is_brand_new": false,
+      "streak_days": 7,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "2317"
+      ],
+      "names": {}
+    },
+    {
+      "term": "工研院",
+      "recent_hits": 6,
+      "is_brand_new": false,
+      "streak_days": 7,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "9937"
+      ],
+      "names": {}
     }
   ],
   "E2_near_miss": [
     {
-      "theme": "人形機器人",
+      "theme": "Grace Blackwell",
       "ratio": 1.42,
       "recent_count": 4
     },
     {
-      "theme": "併購",
-      "ratio": 1.42,
-      "recent_count": 11
+      "theme": "光通訊",
+      "ratio": 1.33,
+      "recent_count": 8
     },
     {
-      "theme": "Blackwell",
-      "ratio": 1.42,
+      "theme": "GB200",
+      "ratio": 1.21,
+      "recent_count": 3
+    },
+    {
+      "theme": "矽光子",
+      "ratio": 1.13,
+      "recent_count": 4
+    },
+    {
+      "theme": "先進封裝",
+      "ratio": 0.94,
       "recent_count": 3
     },
     {
       "theme": "sidecar power",
-      "ratio": 1.34,
+      "ratio": 0.92,
+      "recent_count": 6
+    },
+    {
+      "theme": "接單",
+      "ratio": 0.91,
       "recent_count": 9
     },
     {
-      "theme": "光通訊",
-      "ratio": 1.3,
-      "recent_count": 8
-    },
-    {
-      "theme": "漲價",
-      "ratio": 1.2,
-      "recent_count": 27
+      "theme": "擴產",
+      "ratio": 0.9,
+      "recent_count": 26
     },
     {
       "theme": "調漲",
-      "ratio": 1.2,
-      "recent_count": 15
+      "ratio": 0.9,
+      "recent_count": 11
     },
     {
-      "theme": "Grace Blackwell",
-      "ratio": 1.06,
+      "theme": "Blackwell Ultra",
+      "ratio": 0.9,
+      "recent_count": 7
+    },
+    {
+      "theme": "HBM4",
+      "ratio": 0.89,
       "recent_count": 3
     },
     {
       "theme": "power rack",
-      "ratio": 1.05,
-      "recent_count": 8
-    },
-    {
-      "theme": "power shelf",
-      "ratio": 1.04,
-      "recent_count": 7
-    },
-    {
-      "theme": "HBM",
-      "ratio": 1.03,
-      "recent_count": 19
-    },
-    {
-      "theme": "Blackwell Ultra",
-      "ratio": 1.03,
-      "recent_count": 8
-    },
-    {
-      "theme": "液冷",
-      "ratio": 0.99,
-      "recent_count": 8
-    },
-    {
-      "theme": "DRAM",
-      "ratio": 0.89,
-      "recent_count": 18
-    },
-    {
-      "theme": "華邦電",
-      "ratio": 0.88,
-      "recent_count": 11
-    },
-    {
-      "theme": "矽光子",
-      "ratio": 0.81,
-      "recent_count": 3
-    },
-    {
-      "theme": "Rubin Ultra",
-      "ratio": 0.81,
-      "recent_count": 11
-    },
-    {
-      "theme": "南亞科",
-      "ratio": 0.81,
-      "recent_count": 7
+      "ratio": 0.83,
+      "recent_count": 6
     }
   ],
   "F_earnings_rising": [
@@ -2261,18 +1898,6 @@
       "dual_confirmed": true
     },
     {
-      "theme": "先進封裝",
-      "intl_companies": [
-        "AMAT",
-        "QCOM"
-      ],
-      "intl_keywords": [
-        "advanced packaging"
-      ],
-      "tw_active": true,
-      "dual_confirmed": true
-    },
-    {
       "theme": "記憶體",
       "intl_companies": [
         "AAPL",
@@ -2375,6 +2000,18 @@
       "dual_confirmed": false
     },
     {
+      "theme": "先進封裝",
+      "intl_companies": [
+        "AMAT",
+        "QCOM"
+      ],
+      "intl_keywords": [
+        "advanced packaging"
+      ],
+      "tw_active": false,
+      "dual_confirmed": false
+    },
+    {
       "theme": "NAND",
       "intl_companies": [
         "AMAT"
@@ -2397,11 +2034,11 @@
       "dual_confirmed": false
     }
   ],
-  "daily_report": "各位投資朋友好，我是台股題材研究員。今日（2026年10月3日）市場結構展現出高度的「國際法說先行、台股新聞醞釀」的跨區共振特徵，我們直接切入核心買點與潛在機會。\n\n從發酵雷達來看，G區「雙邊確認題材」點名了磷化銦與先進封裝，這代表台股已有在地訊號、國際大廠（如AVGO、COHR、LITE、AMAT、QCOM）亦同步聚焦。不過需特別留意的是，目前受惠股在結構上顯示「底部0檔／高檔0檔」，這暗示市場正處於尋找共識或評價重估的過渡期。此外，國際先行但台股新聞尚未全面跟上的前緣訊號相當扎實，包括記憶體、光通訊、矽光子、CPO、HBM以及CoWoS/Rubin等，國際大廠如NVDA、MRVL、AVGO、COHR等法說已頻繁點名（如F區顯示COHR提及CPO與indium phosphide、AMAT點名DRAM等），這正是典型的「國際大廠點火、國內供應鏈蓄勢待發」的前哨站。在A區多源共振個股方面，包含如3455、2301、8046等透過MOPS重訊與關鍵字暴增雙重驗證的標的，以及2330、6664等在先進封裝、HBM4與FOPLP有實質擴產與接單動作的公司，是盤面資金實際走入基本面的核心線索。\n\n接著看題材雷達的D區熱度暴增，新聞熱度最顯著的集中在「被動元件」（暴增9.71倍，帶動2330、2492、1605、2327等）以及AI伺服器相關的「NVL72」、「GB300」、「GB200」與「碳化矽」（暴增2.83倍）。此處我們必須嚴守交易紀律：像部分GB系列與高熱度AI概念股若短線股價已處於🔴高檔，即使題材暴增比驚人，也務必提醒自己這已大幅反映市場預期，切忌盲目追價；相對地，若能從中挖掘位處🟢底部、或由被動元件與漲價循環（如MLCC）帶動且基期相對合理的族群，會是風險報酬比較具優勢的佈局方向。\n\n最後，在尚未確認的候選題材（E區與E2區）中，我們看到了值得高度關注的早期訊號。E區今日首見的新題材涵蓋了「HBM/DDR記憶體漲價」、「AI資料中心電源/液冷」、「太空AI資料中心」以及「特斯拉機器人/實體AI」等高可信度項目；而連續追蹤中長達13天的NVIDIA、data center與advanced packaging則持續提供產業長線護城河。至於E2區的近期關注項目（如暴增比介於1.04至1.42之間的「人形機器人」、「併購」、「Blackwell」、「光通訊」及各類電源架構如「sidecar power」、「power rack」），**請特別留意：這些僅是暴增比尚未跨過1.5倍門檻的早期動能，屬於「初步觀察、非確定訊號」，切勿過度解讀或過早押注**，但它們確實預告了次波資金輪動的潛在候選名單。\n\n總結今日最值得留意的訊號：**國際大廠法說對光通訊、CPO與磷化銦的密集點火（F區/G區），正與台股先進封裝及被動元件的熱度（D區）形成跨國共振，建議優先鎖定基期相對合理的供應鏈，對高檔過熱追價保持高度戒心。**",
-  "daily_report_date": "2026年10月03日",
+  "daily_report": "各位好，我是台股題材研究員。今日（2026年10月4日）的市場結構釋出了一個相當明確的訊號：國際大廠的法說與全球供應鏈的討論熱度正在快速升溫，但台股的實際新聞與股價反應呈現出明顯的「國際先行、台股未燃」落差。以下為您梳理今日的核心研究報告。\n\n首先從最高優先的**發酵雷達**看起。今日最具代表性的雙邊確認題材為**磷化銦（Indium Phosphide）**。它不僅在台股新聞中熱度暴增超過2倍（如2455、3081、3234、4971、4991等），同時也獲得國際大廠如AVGO、COHR、LITE的法說點名，形成完美的「台股訊號×國際法說」雙邊共振。不過需要特別留意的是，目前相關個股的股價位置多落在高檔或整理區間，追價風險不低，建議以逢低關注為主，切勿盲目追高。\n\n除了磷化銦，發酵雷達中更出現了大量的「國際先行、台股未燃」最前緣訊號，包含**記憶體（DRAM）、光通訊（1.6T/800G/EML）、矽光子、CPO、HBM、CoWoS及先進封裝**。這些關鍵字被AAPL、ADI、AEHR、AMAT、ARM、AVGO、KEYS、MRVL、NVDA、QCOM等一長串國際科技巨頭頻繁提及，顯示國際資本對AI基礎設施次世代技術（如Rubin架構、CPO光互連等）的佈局已如火如荼，台股相關供應鏈的實質新聞與情緒後續有望跟進發酵。另外，在A區與B區方面，維基關注度剛翹頭的「鈉離子電池」（暴增比1.56，關聯1723、6509）則展現了多源共振的早期跡象，值得放入次要追蹤名單。\n\n接著看**題材雷達**的熱度分布。D區新聞熱度暴增的題材中，除了上述的磷化銦外，還包括**GB300（暴增3.92倍，如2317、3013）**、**碳化矽（暴增3.4倍，如2301、2308等）**、以及**被動元件（暴增2.83倍，如2330、2492、1605）**。F區的國際法說關鍵字則進一步驗證了這股趨勢，例如COHR提及容量與CPO、AMAT提及DRAM、AVGO提及Tomahawk交換器晶片等。特別提醒投資朋友，像台積電等權值股或部分已大漲的AI供應鏈，雖有題材加持，但股價多已處於相對高檔，不建議在此時擴大部位追價。\n\n最後，在**候選題材**的早期訊號中，今日首見（E區）的高可信度新題材涵蓋了「AI代理與Agentic AI」、「ABF與PCB載板」、「機器人與實體AI」、「液冷與散熱」以及「客製化晶片與ASIC」等，均為未來幾季的產業主軸；而「NVIDIA」、「data center」、「advanced packaging」等連續追蹤長達14天的詞彙，則持續鞏固其長線主流地位。\n\n至於E2區的近期關注項目（如暴增比剛過1.33的光通訊、1.42的Grace Blackwell、1.21的GB200等），**這屬於「還在觀察階段」的訊號**，雖然尚未跨越1.5倍的正式觸發門檻，但其累積動能已相當明顯，值得密切留意其後續轉為正式發酵題材的契機。\n\n**今日最值得留意的訊號：** 國際法說大舉點名光通訊、矽光子與CPO等前緣技術，搭配國內磷化銦與GB300熱度同步暴增，顯示次世代AI傳輸架構的國際共振已然成形，建議優先追蹤基期相對合理、具備實質訂單支撐的相關供應鏈。",
+  "daily_report_date": "2026年10月04日",
   "H_verification_summary": {
     "by_detection_type": {},
-    "pending_count": 197,
-    "total_claims": 197
+    "pending_count": 199,
+    "total_claims": 199
   }
 }
