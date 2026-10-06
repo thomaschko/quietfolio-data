@@ -42,7 +42,7 @@ UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
 HIST_DIR = "price_history"
 BACKFILL_FILE = os.path.join(HIST_DIR, "backfill.json")   # {code: {YYYYMMDD: [close, vol]}}
 KEEP_DAYS = 45
-MAX_BACKFILL_CODES = 60
+MAX_BACKFILL_CODES = 130
 
 # ── 門檻(初始值,未校準)──
 OVERHEAT_CHG20 = 30.0
@@ -59,6 +59,27 @@ STAGE_TO_POS = {"潛伏": "low", "啟動": "mid", "過熱": "high"}
 # ============================================================
 # 抓取
 # ============================================================
+def _get_json(url, verify=True, timeout=25, tries=4):
+    """帶重試的JSON抓取。
+    2026-10-06 實跑發現:TPEx openapi 會間歇性回 "Response ended prematurely"
+    (IncompleteRead,verification_ledger同一天也中招),導致當天快照缺上櫃股。
+    重試時改用 Accept-Encoding: identity(避開壓縮串流被截斷),每次間隔拉長。"""
+    last = None
+    for i in range(tries):
+        try:
+            h = dict(UA)
+            if i >= 1:
+                h["Accept-Encoding"] = "identity"
+            r = requests.get(url, headers=h, timeout=timeout, verify=verify)
+            r.raise_for_status()
+            return r.json()
+        except Exception as e:
+            last = e
+            if i < tries - 1:
+                time.sleep(3 * (i + 1))
+    raise last
+
+
 def _num(x):
     try:
         return float(str(x).replace(",", "").replace("+", "").strip())
@@ -81,10 +102,7 @@ def fetch_market_snapshot():
     snap, market, dates = {}, {}, []
 
     try:
-        r = requests.get("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL",
-                         headers=UA, timeout=25)
-        r.raise_for_status()
-        for row in r.json():
+        for row in _get_json("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL"):
             code = str(row.get("Code", "")).strip()
             close = _num(row.get("ClosingPrice"))
             vol = _num(row.get("TradeVolume"))
@@ -100,10 +118,8 @@ def fetch_market_snapshot():
 
     try:
         before = len(snap)
-        r = requests.get("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes",
-                         headers=UA, timeout=25, verify=False)
-        r.raise_for_status()
-        for row in r.json():
+        for row in _get_json("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes",
+                             verify=False):
             code = str(row.get("SecuritiesCompanyCode", "")).strip()
             close = _num(row.get("Close"))
             vol = _num(row.get("TradingShares") or row.get("TradingVolume") or row.get("TradeVolume"))
@@ -165,8 +181,7 @@ def save_snapshot(date, snap):
 def _backfill_twse(code, ym):
     url = (f"https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json"
            f"&date={ym}01&stockNo={code}")
-    r = requests.get(url, headers=UA, timeout=20)
-    j = r.json()
+    j = _get_json(url, timeout=20, tries=2)
     out = {}
     for row in j.get("data", []):
         d = _parse_row_date(row[0].replace("/", ""))
@@ -180,9 +195,9 @@ def _backfill_tpex(code, ym):
     roc = f"{int(ym[:4]) - 1911}/{ym[4:6]}"
     url = ("https://www.tpex.org.tw/web/stock/aftertrading/daily_trading_info/"
            f"st43_result.php?l=zh-tw&d={roc}&stkno={code}")
-    r = requests.get(url, headers=UA, timeout=20, verify=False)
-    j = r.json()
+    j = _get_json(url, verify=False, timeout=20, tries=2)
     out = {}
+    _backfill_tpex.last_keys = list(j.keys()) if isinstance(j, dict) else type(j).__name__
     rows = j.get("aaData")
     if not rows and isinstance(j.get("tables"), list) and j["tables"]:
         rows = j["tables"][0].get("data")
@@ -204,6 +219,8 @@ def backfill(codes, market):
     months = [today.strftime("%Y%m"),
               (today.replace(day=1) - dt.timedelta(days=1)).strftime("%Y%m")]
     ok = fail = 0
+    empty = {"TWSE": 0, "TPEx": 0}
+    shown = 0
     for code in list(codes)[:MAX_BACKFILL_CODES]:
         if len(store.get(code, {})) >= 21:
             continue
@@ -219,10 +236,17 @@ def backfill(codes, market):
         if got:
             store.setdefault(code, {}).update(got)
             ok += 1
+        else:
+            mk = market.get(code, "TWSE")
+            empty[mk] = empty.get(mk, 0) + 1
+            if shown < 3:   # 診斷:前3檔抓不到資料的,印出市場與TPEx回傳結構
+                shown += 1
+                print(f"    · {code}({mk}) 補抓無資料"
+                      + (f" TPEx回傳結構={getattr(_backfill_tpex, 'last_keys', None)}" if mk == "TPEx" else ""))
     os.makedirs(HIST_DIR, exist_ok=True)
     with open(BACKFILL_FILE, "w", encoding="utf-8") as f:
         json.dump(store, f, ensure_ascii=False, separators=(",", ":"))
-    print(f"  個股補抓: 成功 {ok} 檔 / 失敗請求 {fail} 次")
+    print(f"  個股補抓: 成功 {ok} 檔 / 失敗請求 {fail} 次 / 無資料 {empty}")
 
 
 # ============================================================
