@@ -286,7 +286,46 @@ def build_digest():
         "F_earnings_rising": earnings_rising,
         "G_cross_confirmed": cross_confirmed,
     }
+
+    # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
+    # 讓每檔股票帶「潛伏/啟動/過熱」。同時填入A區的price_pos(low/mid/high),
+    # daily_report.py本來就會讀這個欄位(🟢底部/🟡中段/🔴高檔),但先前沒有
+    # 任何程式產生它,等於一直是空的。
+    try:
+        from price_stage import stage_for_codes
+        codes = set()
+        for r in resonance:
+            codes.add(r["code"])
+        for key in ("D_surge_themes", "B_preferment_themes"):
+            for t in digest.get(key, []):
+                codes.update(t.get("codes", []))
+        for c in new_candidates:
+            codes.update(c.get("stocks", []))
+        stage_map = stage_for_codes(codes, event.get("overheat", {}))
+        digest["price_stage"] = stage_map
+        for r in resonance:
+            info = stage_map.get(r["code"])
+            if info:
+                r["stage"] = info["stage"]
+                r["price_pos"] = info["price_pos"]
+                r["chg20"] = info.get("chg20")
+                r["chg5"] = info.get("chg5")
+    except Exception as e:
+        print(f"  ⚠ 價量階段標籤略過: {e}")
+        digest["price_stage"] = {}
     return digest
+
+
+def _stage_tag(d, code):
+    """顯示用:' [🔴過熱+35%⚠注意交易]';沒資料回空字串。"""
+    info = (d.get("price_stage") or {}).get(code)
+    if not info:
+        return ""
+    try:
+        from price_stage import tag
+        return f" [{tag(info)}]"
+    except Exception:
+        return ""
 
 
 def print_digest(d):
@@ -324,7 +363,8 @@ def print_digest(d):
                 tags.append(f"{r['source_count']}源: {' '.join(r['sources'])}")
             if r.get("via_theme_cluster"):
                 tags.append(f"🌾題材群聚: {r['hit_count']}個關鍵字同時命中")
-            print(f"  {r['code']}  [{' | '.join(tags)}]{ferm}  {themes}")
+            _stg = _stage_tag(d, r["code"])
+            print(f"  {r['code']}  [{' | '.join(tags)}]{ferm}{_stg}  {themes}")
     else:
         print("  (今日無多源共振)")
 
@@ -343,7 +383,7 @@ def print_digest(d):
     print("\n▍D. 熱度暴增題材(新聞討論升溫)")
     for t in d["D_surge_themes"][:8]:
         names = t.get("names", {})  # 2026-09-17新增
-        stock_str = " ".join(f"{cd}{names.get(cd,'')}" for cd in t["codes"][:5])
+        stock_str = " ".join(f"{cd}{names.get(cd,'')}{_stage_tag(d, cd)}" for cd in t["codes"][:5])
         print(f"  {t['theme']}  暴增{t['ratio']}  股:{stock_str}")
 
     print("\n▍E. 新題材候選(參考 — 需人工判斷)")
