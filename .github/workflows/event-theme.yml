@@ -67,6 +67,12 @@ jobs:
         run: python theme_tracker.py
 
       # 每日摘要整合:匯整 src1-6 輸出成 daily_digest.json(A-G區)
+      # 價量階段標籤(2026-10-06新增):抓全市場收盤價+成交量存快照,
+      # 給每檔雷達股票標「潛伏/啟動/過熱」。放在digest之前,digest會讀它。
+      - name: Price stage snapshot
+        continue-on-error: true
+        run: python price_stage.py
+
       - name: Build daily digest
         continue-on-error: true
         run: python daily_digest.py
@@ -106,6 +112,8 @@ jobs:
           [ -f gemini_search_candidates.json ] && git add gemini_search_candidates.json || true
           [ -f theme_tracker.json ] && git add theme_tracker.json || true
           git add theme_history/ 2>/dev/null || true
+          git add price_history/ 2>/dev/null || true
+          [ -f price_stage.json ] && git add price_stage.json || true
           git add company_history/ 2>/dev/null || true
           [ -f theme_promotions.json ] && git add theme_promotions.json || true
           [ -f themes_watchlist.txt ] && git add themes_watchlist.txt || true
