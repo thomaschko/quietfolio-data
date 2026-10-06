@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-05 17:22:39",
-  "date": "20261005",
+  "generated_at": "2026-10-06 07:05:39",
+  "date": "20261006",
   "summary_counts": {
     "resonance": 5,
-    "preferment_themes": 2,
+    "preferment_themes": 1,
     "broker_coverage": 0,
-    "surge_themes": 8,
+    "surge_themes": 13,
     "new_candidates": 15,
     "earnings_rising": 140,
     "cross_confirmed": 3
@@ -49,6 +49,23 @@
   ],
   "A_multi_source_resonance": [
     {
+      "code": "3105",
+      "source_count": 2,
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "hit_count": 2,
+      "themes": [
+        "低軌衛星",
+        "重訊:增資"
+      ],
+      "fermentation": null,
+      "broker_count": null,
+      "via_source_diversity": true,
+      "via_theme_cluster": false
+    },
+    {
       "code": "2344",
       "source_count": 2,
       "sources": [
@@ -62,7 +79,11 @@
       "fermentation": "pre-ferment",
       "broker_count": null,
       "via_source_diversity": true,
-      "via_theme_cluster": false
+      "via_theme_cluster": false,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg20": 2.0,
+      "chg5": 2.0
     },
     {
       "code": "4967",
@@ -78,7 +99,11 @@
       "fermentation": "pre-ferment",
       "broker_count": null,
       "via_source_diversity": true,
-      "via_theme_cluster": false
+      "via_theme_cluster": false,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg20": -3.3,
+      "chg5": -1.8
     },
     {
       "code": "8299",
@@ -97,58 +122,32 @@
       "via_theme_cluster": false
     },
     {
-      "code": "1723",
-      "source_count": 2,
+      "code": "5512",
+      "source_count": 1,
       "sources": [
-        "wiki",
-        "wiki_preferment"
+        "MOPS重訊"
       ],
-      "hit_count": 1,
+      "hit_count": 3,
       "themes": [
-        "鈉離子電池"
+        "重訊:取得",
+        "重訊:處分",
+        "重訊:通過"
       ],
-      "fermentation": "pre-ferment",
+      "fermentation": null,
       "broker_count": null,
-      "via_source_diversity": true,
-      "via_theme_cluster": false
-    },
-    {
-      "code": "6509",
-      "source_count": 2,
-      "sources": [
-        "wiki",
-        "wiki_preferment"
-      ],
-      "hit_count": 1,
-      "themes": [
-        "鈉離子電池"
-      ],
-      "fermentation": "pre-ferment",
-      "broker_count": null,
-      "via_source_diversity": true,
-      "via_theme_cluster": false
+      "via_source_diversity": false,
+      "via_theme_cluster": true
     }
   ],
   "B_preferment_themes": [
     {
       "theme": "HBM",
-      "ratio": 1.66,
-      "baseline": 15.3,
+      "ratio": 1.65,
+      "baseline": 15.2,
       "codes": [
         "2344",
         "4967",
         "8299"
-      ],
-      "names": {},
-      "semantic_risk": ""
-    },
-    {
-      "theme": "鈉離子電池",
-      "ratio": 1.67,
-      "baseline": 50.5,
-      "codes": [
-        "1723",
-        "6509"
       ],
       "names": {},
       "semantic_risk": ""
@@ -158,29 +157,19 @@
   "D_surge_themes": [
     {
       "theme": "Grace Hopper",
-      "ratio": 2.83,
+      "ratio": 3.24,
       "codes": [],
       "names": {}
     },
     {
       "theme": "Blackwell",
-      "ratio": 2.36,
+      "ratio": 3.05,
       "codes": [],
       "names": {}
     },
     {
-      "theme": "BBU",
-      "ratio": 2.27,
-      "codes": [
-        "3597"
-      ],
-      "names": {
-        "3597": "映興"
-      }
-    },
-    {
       "theme": "矽光子",
-      "ratio": 2.16,
+      "ratio": 2.52,
       "codes": [
         "3019",
         "3081",
@@ -217,20 +206,8 @@
       }
     },
     {
-      "theme": "CoPoS",
-      "ratio": 2.12,
-      "codes": [
-        "4760",
-        "6187"
-      ],
-      "names": {
-        "4760": "勤凱科技",
-        "6187": "萬潤"
-      }
-    },
-    {
       "theme": "GB300",
-      "ratio": 1.89,
+      "ratio": 2.52,
       "codes": [
         "2317"
       ],
@@ -240,13 +217,149 @@
     },
     {
       "theme": "Grace Blackwell",
-      "ratio": 1.89,
+      "ratio": 2.48,
       "codes": [],
       "names": {}
     },
     {
+      "theme": "GaN",
+      "ratio": 2.43,
+      "codes": [],
+      "names": {}
+    },
+    {
+      "theme": "DDR4",
+      "ratio": 2.43,
+      "codes": [
+        "3006"
+      ],
+      "names": {
+        "3006": "晶豪科"
+      }
+    },
+    {
+      "theme": "BBU",
+      "ratio": 2.27,
+      "codes": [
+        "3597"
+      ],
+      "names": {
+        "3597": "映興"
+      }
+    },
+    {
+      "theme": "CoPoS",
+      "ratio": 2.12,
+      "codes": [
+        "6187",
+        "4760"
+      ],
+      "names": {
+        "6187": "萬潤",
+        "4760": "勤凱科技"
+      }
+    },
+    {
+      "theme": "低軌衛星",
+      "ratio": 2.02,
+      "codes": [
+        "1582",
+        "1609",
+        "2301",
+        "2313",
+        "2314",
+        "2355",
+        "2367",
+        "2383",
+        "2462",
+        "2485",
+        "3105",
+        "3138",
+        "3152",
+        "3178",
+        "3221",
+        "3419",
+        "3466",
+        "3481",
+        "3491",
+        "3663",
+        "3684",
+        "3701",
+        "4590",
+        "4909",
+        "4916",
+        "5222",
+        "5243",
+        "5291",
+        "5457",
+        "5543",
+        "6133",
+        "6134",
+        "6152",
+        "6269",
+        "6271",
+        "6274",
+        "6285",
+        "6412",
+        "6426",
+        "6486",
+        "6672",
+        "6792",
+        "6818",
+        "6928",
+        "7812"
+      ],
+      "names": {
+        "2485": "兆赫",
+        "6285": "啟��",
+        "5243": "乙盛-KY",
+        "2314": "台揚",
+        "3419": "譁裕",
+        "6792": "詠業",
+        "6818": "連騰",
+        "5543": "桓鼎-KY",
+        "3221": "台嘉碩",
+        "3491": "昇達科",
+        "6134": "萬旭",
+        "6928": "攸泰科技",
+        "6412": "群電",
+        "2313": "華通",
+        "2367": "燿華",
+        "5291": "邑昇",
+        "5222": "全訊",
+        "6271": "同欣電",
+        "3138": "耀登",
+        "3466": "德晉",
+        "6152": "百一",
+        "6426": "統新",
+        "7812": "稜研科技",
+        "2301": "光寶科",
+        "3701": "大眾控",
+        "4916": "事欣科",
+        "2462": "良得電",
+        "1609": "大亞",
+        "6133": "金橋",
+        "1582": "信錦",
+        "2355": "敬鵬",
+        "2383": "台光電",
+        "3152": "璟德",
+        "3481": "群創",
+        "3684": "榮昌",
+        "4909": "新復興",
+        "5457": "宣德",
+        "6269": "台郡",
+        "6274": "台燿",
+        "6672": "騰輝電子-KY",
+        "3663": "鑫科",
+        "3178": "公準",
+        "3105": "穩懋",
+        "6486": "互動",
+        "4590": "富田-創"
+      }
+    },
+    {
       "theme": "磷化銦",
-      "ratio": 1.55,
+      "ratio": 1.89,
       "codes": [
         "2455",
         "3081",
@@ -261,28 +374,34 @@
         "4991": "環宇-KY",
         "4971": "IET-KY"
       }
+    },
+    {
+      "theme": "HVDC",
+      "ratio": 1.7,
+      "codes": [
+        "3597"
+      ],
+      "names": {
+        "3597": "映興"
+      }
+    },
+    {
+      "theme": "玻纖布",
+      "ratio": 1.62,
+      "codes": [
+        "2383"
+      ],
+      "names": {
+        "2383": "台光電"
+      }
     }
   ],
   "E_new_candidates": [
     {
-      "term": "機器人與實體AI",
-      "recent_hits": 18,
-      "is_brand_new": false,
-      "streak_days": 2,
-      "method": "ai",
-      "reason": "人形機器人商業化與自動化組裝供應鏈",
-      "stocks": [
-        "2317"
-      ],
-      "names": {
-        "2317": "鴻海"
-      }
-    },
-    {
       "term": "供應鏈",
-      "recent_hits": 71,
+      "recent_hits": 82,
       "is_brand_new": false,
-      "streak_days": 5,
+      "streak_days": 6,
       "method": "jieba",
       "reason": "",
       "stocks": [
@@ -293,24 +412,27 @@
     },
     {
       "term": "伺服器",
-      "recent_hits": 65,
+      "recent_hits": 77,
       "is_brand_new": false,
-      "streak_days": 11,
+      "streak_days": 12,
       "method": "jieba",
       "reason": "",
       "stocks": [
         "2317",
         "2330",
         "2382",
-        "6412",
+        "6669",
+        "2383",
+        "1303",
+        "2368",
         "8424",
-        "3037"
+        "6412"
       ],
       "names": {}
     },
     {
       "term": "data center",
-      "recent_hits": 12,
+      "recent_hits": 14,
       "is_brand_new": false,
       "streak_days": 15,
       "method": "jieba",
@@ -319,36 +441,96 @@
       "names": {}
     },
     {
-      "term": "大立光",
-      "recent_hits": 10,
+      "term": "毛利率",
+      "recent_hits": 11,
+      "is_brand_new": false,
+      "streak_days": 14,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "3289",
+        "6166",
+        "8215"
+      ],
+      "names": {}
+    },
+    {
+      "term": "蘇姿丰",
+      "recent_hits": 11,
       "is_brand_new": false,
       "streak_days": 2,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "3008",
-        "4716"
+        "2330"
       ],
       "names": {}
     },
     {
-      "term": "iPhone",
-      "recent_hits": 9,
+      "term": "silicon photonics",
+      "recent_hits": 10,
       "is_brand_new": false,
-      "streak_days": 15,
+      "streak_days": 8,
       "method": "jieba",
       "reason": "",
       "stocks": [],
       "names": {}
     },
     {
-      "term": "silicon photonics",
+      "term": "摩根士丹利",
       "recent_hits": 9,
       "is_brand_new": false,
-      "streak_days": 7,
+      "streak_days": 4,
       "method": "jieba",
       "reason": "",
       "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "ADR",
+      "recent_hits": 9,
+      "is_brand_new": false,
+      "streak_days": 3,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "2330"
+      ],
+      "names": {}
+    },
+    {
+      "term": "PC",
+      "recent_hits": 8,
+      "is_brand_new": false,
+      "streak_days": 15,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "1459",
+        "2454"
+      ],
+      "names": {}
+    },
+    {
+      "term": "foundry",
+      "recent_hits": 8,
+      "is_brand_new": false,
+      "streak_days": 3,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "台光電",
+      "recent_hits": 8,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "2383"
+      ],
       "names": {}
     },
     {
@@ -362,43 +544,20 @@
       "names": {}
     },
     {
-      "term": "毛利率",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 13,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "8215",
-        "3289"
-      ],
-      "names": {}
-    },
-    {
       "term": "wafer",
       "recent_hits": 7,
       "is_brand_new": false,
-      "streak_days": 7,
+      "streak_days": 8,
       "method": "jieba",
       "reason": "",
       "stocks": [],
       "names": {}
     },
     {
-      "term": "主動式",
+      "term": "概念股",
       "recent_hits": 7,
       "is_brand_new": false,
-      "streak_days": 5,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "華爾街",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 5,
+      "streak_days": 8,
       "method": "jieba",
       "reason": "",
       "stocks": [
@@ -407,96 +566,129 @@
       "names": {}
     },
     {
-      "term": "foundry",
+      "term": "大立光",
       "recent_hits": 7,
       "is_brand_new": false,
-      "streak_days": 2,
+      "streak_days": 3,
       "method": "jieba",
       "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "Pro",
-      "recent_hits": 6,
-      "is_brand_new": false,
-      "streak_days": 13,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
-    },
-    {
-      "term": "美債殖",
-      "recent_hits": 6,
-      "is_brand_new": false,
-      "streak_days": 12,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
+      "stocks": [
+        "4716",
+        "3008"
+      ],
       "names": {}
     }
   ],
   "E2_near_miss": [
     {
-      "theme": "低軌衛星",
+      "theme": "DDR5",
       "ratio": 1.42,
-      "recent_count": 4
+      "recent_count": 5
     },
     {
-      "theme": "光通訊",
-      "ratio": 1.26,
-      "recent_count": 8
-    },
-    {
-      "theme": "HBM4",
-      "ratio": 1.26,
-      "recent_count": 4
-    },
-    {
-      "theme": "人形機器人",
-      "ratio": 1.0,
-      "recent_count": 3
-    },
-    {
-      "theme": "擴產",
-      "ratio": 0.96,
-      "recent_count": 27
-    },
-    {
-      "theme": "漲價",
-      "ratio": 0.95,
-      "recent_count": 22
-    },
-    {
-      "theme": "CPO",
-      "ratio": 0.92,
-      "recent_count": 13
-    },
-    {
-      "theme": "接單",
-      "ratio": 0.91,
-      "recent_count": 9
-    },
-    {
-      "theme": "調漲",
-      "ratio": 0.89,
-      "recent_count": 11
+      "theme": "800V HVDC",
+      "ratio": 1.35,
+      "recent_count": 5
     },
     {
       "theme": "Blackwell Ultra",
-      "ratio": 0.88,
+      "ratio": 1.29,
+      "recent_count": 10
+    },
+    {
+      "theme": "漲價",
+      "ratio": 1.28,
+      "recent_count": 29
+    },
+    {
+      "theme": "光通訊",
+      "ratio": 1.13,
       "recent_count": 7
     },
     {
-      "theme": "MLCC",
-      "ratio": 0.85,
-      "recent_count": 3
+      "theme": "power shelf",
+      "ratio": 1.13,
+      "recent_count": 6
+    },
+    {
+      "theme": "sidecar power",
+      "ratio": 1.06,
+      "recent_count": 6
+    },
+    {
+      "theme": "擴產",
+      "ratio": 1.05,
+      "recent_count": 29
+    },
+    {
+      "theme": "ASIC",
+      "ratio": 1.03,
+      "recent_count": 22
+    },
+    {
+      "theme": "Vera Rubin",
+      "ratio": 1.01,
+      "recent_count": 8
+    },
+    {
+      "theme": "CPO",
+      "ratio": 1.0,
+      "recent_count": 14
     },
     {
       "theme": "CoWoS",
+      "ratio": 1.0,
+      "recent_count": 6
+    },
+    {
+      "theme": "接單",
+      "ratio": 0.99,
+      "recent_count": 10
+    },
+    {
+      "theme": "調漲",
+      "ratio": 0.99,
+      "recent_count": 12
+    },
+    {
+      "theme": "power rack",
+      "ratio": 0.97,
+      "recent_count": 6
+    },
+    {
+      "theme": "無人機",
+      "ratio": 0.96,
+      "recent_count": 17
+    },
+    {
+      "theme": "HBM",
+      "ratio": 0.95,
+      "recent_count": 17
+    },
+    {
+      "theme": "華邦電",
+      "ratio": 0.94,
+      "recent_count": 10
+    },
+    {
+      "theme": "Rubin Ultra",
+      "ratio": 0.93,
+      "recent_count": 11
+    },
+    {
+      "theme": "先進封裝",
+      "ratio": 0.89,
+      "recent_count": 3
+    },
+    {
+      "theme": "MLCC",
+      "ratio": 0.89,
+      "recent_count": 3
+    },
+    {
+      "theme": "南亞科",
       "ratio": 0.81,
-      "recent_count": 5
+      "recent_count": 6
     }
   ],
   "F_earnings_rising": [
@@ -2052,11 +2244,564 @@
       "dual_confirmed": false
     }
   ],
-  "daily_report": "各位投資朋友好，我是台股題材研究員。今日（2026年10月5日）市場結構展現出高度的國際大廠法說與台股熱度共振特性，我們直接切入核心焦點。\n\n首先在**發酵雷達與題材雷達**的交會處，我們看到「矽光子」、「磷化銦」與「HBM」同時站上G區的雙邊確認（台股有訊號、國際法說同步提及如AEHR、AMAT、COHR、AVGO等大廠），這代表跨國產業共識極高。進一步對應到D區熱度暴增題材，矽光子（如3019、3081、3163等）與磷化銦（如2455、3081、3234等）的媒體與市場熱度分別暴增2.16倍與1.55倍；同時，Blackwell、Grace Hopper及BBU（如3597）也同步呈現2倍以上的熱度暴增。\n\n不過，面對這些熱度極高的族群，我們必須保持清醒的交易紀律：從G區的結構來看，受惠股落在「底部0檔／高檔0檔」或多數已在D區伴隨強勢暴增，這意味著多數指標股可能已經歷一段漲幅，甚至處於相對高檔區間。即使國際法說關鍵詞如COHR的CPO、MRVL與ADI的data center需求持續升溫，已大幅反映的標的不建議在此時盲目追價，應等待籌碼沈澱或技術面拉回再行評量。至於「記憶體、光通訊、CPO、CoWoS」等屬於國際先行、台股新聞尚未全面大肆跟上的最前緣訊號，則可視為下一波潛在的佈局口袋名單。\n\n接著，我們看**候選題材（早期訊號與觀察區）**。在今日首見的E區新題材中，「記憶體超級週期與HBM」、「先進封裝與玻璃基板」以及「AI資料中心電源與HVDC」獲得多方國際研究機構與媒體（如TrendForce、Semianalysis）的高可信度點名，顯示次世代架構的硬體革新正在蓄積能量；而連續追蹤達15天的「data center」、「advanced packaging」與「Agent」等詞彙，其可信度隨著時間拉長而遞增，屬於大趨勢的長期主軸。\n\n至於E2區的近期關注項目，包括「低軌衛星」（暴增比1.42）、「光通訊」（暴增比1.26）與「HBM4」（暴增比1.26），雖然近期動能逐漸增溫，但現階段**尚未正式跨過1.5倍的暴增門檻**。必須特別強調，這僅是初步觀察的早期動能、非確定訊號，投資朋友在解讀上切勿過度篤定，應將其視為值得持續追蹤、等待其量能與新聞熱度正式引爆的潛在觀察名單。\n\n總結今日的研究視角：**今日最值得留意的訊號，是國際大廠在CPO、矽光子與HBM上法說關鍵詞的持續升溫，帶動相關供應鏈熱度暴增，但在多數指標已處高檔之際，應將目光轉向國際已提前布局、而台股尚未全面發酵的光通訊與先進封裝次領域進行潛在追蹤。**",
-  "daily_report_date": "2026年10月05日",
+  "price_stage": {
+    "4590": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -0.1,
+      "chg5": -0.3,
+      "chg20": -1.6,
+      "vol_ratio": 0.7,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2313": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 1.4,
+      "chg5": 11.5,
+      "chg20": 1.0,
+      "vol_ratio": 4.4,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "2344": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -1.9,
+      "chg5": 2.0,
+      "chg20": 2.0,
+      "vol_ratio": 0.6,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "7812": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2355": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": -1.9,
+      "chg5": 5.3,
+      "chg20": 2.3,
+      "vol_ratio": 3.1,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "1609": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.4,
+      "chg5": -0.4,
+      "chg20": 2.7,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "1303": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 2.4,
+      "chg5": 18.6,
+      "chg20": 29.9,
+      "vol_ratio": 1.7,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "6426": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4967": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -0.9,
+      "chg5": -1.8,
+      "chg20": -3.3,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "8215": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2367": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": -4.0,
+      "chg5": 12.8,
+      "chg20": 10.6,
+      "vol_ratio": 8.1,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "6928": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "1582": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -1.1,
+      "chg5": 2.1,
+      "chg20": -3.4,
+      "vol_ratio": 2.3,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2462": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -2.9,
+      "chg5": 1.3,
+      "chg20": 0.5,
+      "vol_ratio": 3.7,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6672": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "5222": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6669": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3701": {
+      "history_days": 24,
+      "stage": "過熱",
+      "price_pos": "high",
+      "chg1": -2.6,
+      "chg5": 42.0,
+      "chg20": 41.4,
+      "vol_ratio": 10.0,
+      "limit_up_10d": 4,
+      "overheat_notice": true
+    },
+    "2368": {
+      "history_days": 24,
+      "stage": "過熱",
+      "price_pos": "high",
+      "chg1": 3.7,
+      "chg5": 12.5,
+      "chg20": 20.6,
+      "vol_ratio": 2.5,
+      "limit_up_10d": 2,
+      "overheat_notice": false
+    },
+    "6152": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6153": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6133": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3450": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -3.1,
+      "chg5": 1.1,
+      "chg20": -8.4,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "1459": {
+      "history_days": 24,
+      "stage": "過熱",
+      "price_pos": "high",
+      "chg1": -8.3,
+      "chg5": 17.8,
+      "chg20": 20.4,
+      "vol_ratio": 28.4,
+      "limit_up_10d": 2,
+      "overheat_notice": false
+    },
+    "4916": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.5,
+      "chg5": 3.9,
+      "chg20": 8.4,
+      "vol_ratio": 2.1,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2383": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 5.2,
+      "chg5": 21.8,
+      "chg20": 10.7,
+      "vol_ratio": 2.5,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "6792": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6166": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3008": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 1.9,
+      "chg5": 13.9,
+      "chg20": -7.4,
+      "vol_ratio": 1.0,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4906": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 2.0,
+      "chg5": 7.0,
+      "chg20": 16.5,
+      "vol_ratio": 2.5,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3138": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -2.4,
+      "chg5": 4.5,
+      "chg20": 7.3,
+      "vol_ratio": 1.9,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6412": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6706": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2485": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": -3.8,
+      "chg5": 7.9,
+      "chg20": 3.9,
+      "vol_ratio": 15.2,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3019": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -0.4,
+      "chg5": 4.1,
+      "chg20": -2.4,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2317": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.8,
+      "chg5": 2.2,
+      "chg20": 0.0,
+      "vol_ratio": 3.0,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3481": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -2.3,
+      "chg5": 2.7,
+      "chg20": 5.4,
+      "vol_ratio": 0.6,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "3006": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -3.0,
+      "chg5": -4.0,
+      "chg20": -1.8,
+      "vol_ratio": 0.5,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2454": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": -4.7,
+      "chg5": 0.2,
+      "chg20": 11.4,
+      "vol_ratio": 1.2,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "5243": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2382": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.8,
+      "chg5": -0.9,
+      "chg20": -3.3,
+      "vol_ratio": 0.7,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3419": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -1.2,
+      "chg5": 0.8,
+      "chg20": 1.7,
+      "vol_ratio": 0.4,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "6269": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2455": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -6.4,
+      "chg5": 4.4,
+      "chg20": 7.4,
+      "vol_ratio": 2.0,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2301": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.3,
+      "chg5": 6.4,
+      "chg20": -2.9,
+      "vol_ratio": 1.0,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3591": {
+      "history_days": 17,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": -2.7,
+      "chg5": 2.5,
+      "chg20": 19.2,
+      "vol_ratio": 0.3,
+      "limit_up_10d": 0,
+      "overheat_notice": false,
+      "chg20_days": 16
+    },
+    "6271": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2314": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": -1.8,
+      "chg5": -1.4,
+      "chg20": -4.0,
+      "vol_ratio": 1.1,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6285": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2330": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.4,
+      "chg5": 4.4,
+      "chg20": 7.3,
+      "vol_ratio": 0.9,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    }
+  },
+  "daily_report": "各位投資朋友好，今日（2026年10月6日）台股與國際市場的題材連動相當精彩，我們直接切入核心結構來看看資金的流向與潛在機會。\n\n首先在發酵雷達的最高優先（G區）中，**矽光子**、**磷化銦**與**HBM**同步達成了「台股有訊號×國際大廠法說點名」的雙邊確認，顯示這些次世代半導體與光通訊技術不只是題材炒作，而是有實際的國際大廠法說（如AEHR、AMAT、COHR、AVGO等）作為基本面靠山。特別值得注意的是A區多源共振與B區維基關注度，**HBM概念股中的2344與4967**同時被多源訊號點名，且**股價位置落在🟢底部**，這組雙星在維基關注度暴增比達到1.65的推波助瀾下，是目前盤面上少數具備基本面共振、國際法說支持、且基期相對安全的核心焦點，值得列為重點追蹤。不過，也要提醒投資朋友，雖然G區的記憶體、光通訊、CPO與CoWoS等國際先行訊號熱度極高，但多數屬於國際大廠已提及、台股新聞尚在醞釀的前緣階段，切忌盲目追高尚未表態的個股。\n\n接著看到題材雷達（D/F區），新聞熱度暴增區（D區）展現了強烈的AI硬體升級浪潮。**Blackwell暴增3.05倍**、**GB300暴增2.52倍**，連帶讓散熱與電源週邊如**BBU（3597）**暴增2.27倍，顯示輝達新一代架構的供應鏈拉貨動能已全面轉強；同時，**矽光子（暴增2.52倍，涵蓋3019、3081、3163、3339、3450）**與F區Coherent（COHR）法說同步釋出CPO與indium phosphide（磷化銦）的新增關鍵詞，形成了完美的跨區塊印證——國際大廠的擴產與技術藍圖，正在國內新聞與盤面上激起強烈火花。然而，對於D區中熱度暴增但部分個股可能已在相對高檔的族群，我們必須保持警覺，**若股價已處於🔴高檔，即使題材再熱、暴增比再高，也僅適合作為短線熱度參考，絕對不建議在此時盲目追價**，以免承受過大的乖離風險。\n\n最後，在候選題材（E/E2區）的早期訊號中，我們看到了許多值得人工判斷的萌芽機會。在E區今日首見的新題材裡，「特斯拉Terafab（馬斯克尋求與台積電合作）」、「台英科技合作推動矽光子」以及「實體AI與人形機器人商業化加速」等，都是高可信度的全新發現，屬於「初步觀察、非確定訊號」，需要時間驗證其後續的產業實質合約與訂單落地。而在連續追蹤中，PC、Data Center、NVIDIA、Advanced Packaging等均已連續追蹤15天，累積了相當高的可信度。至於E2區的近期關注詞，如**DDR5（暴增比1.42）**、**800V HVDC（暴增比1.35）**、**Blackwell Ultra（1.29）**以及**光通訊（1.13）**與**ASIC（1.03）**，這些是還沒正式跨過1.5倍暴增門檻、但在多次統計中已呈現穩定成長動能的項目，**這些訊號僅代表蓄勢中，投資朋友切勿將其當作已爆發的題材看待，但絕對是未來幾週觀察資金擴散的重要風向球**。\n\n**今日最值得留意的訊號**：國際法說與國內新聞雙邊確認的「矽光子與HBM族群」，其中基期落在🟢底部的HBM概念股（如2344、4967）兼具多源共振與籌碼關注，是兼顧安全邊際與成長動能的關注重點。",
+  "daily_report_date": "2026年10月06日",
   "H_verification_summary": {
     "by_detection_type": {},
-    "pending_count": 211,
-    "total_claims": 211
+    "pending_count": 213,
+    "total_claims": 213
   }
 }
