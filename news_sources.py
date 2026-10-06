@@ -370,6 +370,45 @@ def _fetch_etime_cn():
         return []
 
 
+def _fetch_cyclesinvest():
+    """Cycles Invest投資研究部落格(2026-10-06新增,使用者提供大甲2221文章時評估)。
+    WordPress官方RSS(/feed/)實測有效,每天更新,標題固定「股號 公司名:觀點」
+    (例:6174 安碁、3543 州巧),extract_codes可直接命中。
+    定位:【事後確認/擁擠度】,不是領先源——大甲9/3漲停,該站9/8才出文。
+    單一作者站,權重不宜高。用途是看「某檔被研究者點名」的密度。"""
+    return _fetch_simple_rss("https://blog.cyclesinvest.com/feed/")
+
+
+def _fetch_iek_news():
+    """IEK產業情報網每日新聞精選(2026-10-06新增,使用者提供大甲2221文章時評估)。
+    內容轉載經濟日報/工商時報等媒體的產業要聞,大甲「跨足先進封裝」4/21就是
+    由此轉載(股價9/3才動,領先約4.5個月)。無RSS、無robots限制(robots.txt空)。
+    文章連結固定格式 news_more.aspx?...nsl_id=<32碼hex>,比照etime/jov錨定
+    這個格式,不用通用長度正則。⚠ 實作時只能用WebFetch確認連結格式,
+    shell端到ieknet.iek.org.tw被allowlist擋,首次GHA執行請看log標題數。"""
+    try:
+        r = requests.get("https://ieknet.iek.org.tw/ieknews/default.aspx?actiontype=ieknews&indu_idno=1",
+                         headers=UA, timeout=20)
+        r.encoding = "utf-8"
+        if r.status_code != 200:
+            return []
+        titles = []
+        for m in re.finditer(
+                r'<a[^>]+href="[^"]*news_more\.aspx\?[^"]*nsl_id=[0-9a-f]{32}[^"]*"[^>]*>(.*?)</a>',
+                r.text, re.DOTALL | re.IGNORECASE):
+            txt = re.sub(r'<[^>]+>', '', m.group(1)).strip()
+            txt = re.sub(r'\s+', ' ', txt)
+            if txt and re.search(r'[\u4e00-\u9fff]', txt) and not NOISE.search(txt):
+                titles.append(txt)
+        seen, uniq = set(), []
+        for t in titles:
+            if t not in seen:
+                seen.add(t); uniq.append(t)
+        return uniq
+    except Exception:
+        return []
+
+
 def _fetch_wallstreetcn():
     """華爾街見聞(2026-09-23新增,補上中國大陸財經媒體這塊地理缺口——
     先前查證DSP晶片缺貨漲價這則消息時發現,源頭是中國大陸財經社群/媒體
@@ -818,6 +857,8 @@ def fetch_titles_by_source():
         "fugle_blog": _fetch_fugle_blog(),
         "jov": _fetch_jov(),
         "etime_cn": _fetch_etime_cn(),
+        "cyclesinvest": _fetch_cyclesinvest(),
+        "iek_news": _fetch_iek_news(),
         "wallstreetcn": _fetch_wallstreetcn(),
         "eetimes_jp": _fetch_eetimes_jp(),
         "edn_jp": _fetch_edn_jp(),
