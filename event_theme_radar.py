@@ -86,6 +86,22 @@ MOPS_EXCLUDE = [
 # ============================================================
 # 股號↔股名對照表
 # ============================================================
+def _get_retry(url, tries=3, **kw):
+    """2026-10-06:TPEx端點今天連續出現Read timed out / IncompleteRead
+    (股票清單、全市場收盤價都中),加簡單重試。"""
+    last = None
+    for i in range(tries):
+        try:
+            r = requests.get(url, **kw)
+            r.raise_for_status()
+            return r
+        except Exception as e:
+            last = e
+            if i < tries - 1:
+                time.sleep(3 * (i + 1))
+    raise last
+
+
 def build_name2code():
     name2code = {}
     code2name = {}  # 反向對照:代碼→官方公司簡稱(給顯示用,不含alias變體)
@@ -98,8 +114,7 @@ def build_name2code():
             # 2026-09-14:TPEx伺服器憑證鏈缺少中繼憑證(非客戶端CA包過期,升級certifi無效),
             # 已與使用者確認,限定只對tpex.org.tw關閉SSL驗證,其他所有請求(含TWSE)維持驗證。
             verify_ssl = "tpex.org.tw" not in url
-            r = requests.get(url, headers=UA, timeout=20, verify=verify_ssl)
-            r.raise_for_status()
+            r = _get_retry(url, headers=UA, timeout=20, verify=verify_ssl)
             data = r.json()
             before = len(name2code)
             # 2026-09-29根因修正:這輪對話裡「TPEx 股票清單: +0」出現在每一次
