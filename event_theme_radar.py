@@ -441,6 +441,12 @@ def _mops_index(fields_sample):
     return idx
 
 
+# 2026-10-06:MOPS抓取統計,寫進event_theme_raw.json的mops_stats。
+# 原因:raw檔只存「命中硬事件」的筆數,看不出命中0是「API抓失敗」「公告本身少」
+# 還是「關鍵字沒中」;再加上端點是即時快照、日期過濾是no-op,事後無法驗證。
+MOPS_STATS = {}
+
+
 def detect_mops_events(name2code, code2name, today):
     print("[偵測源2] MOPS 重大訊息事件(OpenAPI JSON)")
     sources = [
@@ -455,6 +461,8 @@ def detect_mops_events(name2code, code2name, today):
             # 2026-09-14:同上,只對tpex.org.tw關閉SSL驗證
             verify_ssl = "tpex.org.tw" not in url
             r = requests.get(url, headers=UA, timeout=25, verify=verify_ssl)
+            MOPS_STATS[market] = {"http": r.status_code, "total": 0, "hits": 0,
+                                  "fetched_at": dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
             if r.status_code != 200:
                 print(f"  ⚠ MOPS {market} HTTP {r.status_code}")
                 continue
@@ -462,8 +470,16 @@ def detect_mops_events(name2code, code2name, today):
             if not data:
                 print(f"  MOPS {market}: 回傳空")
                 continue
+            MOPS_STATS[market]["total"] = len(data)
 
             idx = _mops_index(data[0].keys())
+            if idx["date"]:
+                # 公告日期分布:看快照裡是「只有今天」還是「混了前幾天」
+                _dc = {}
+                for _row in data:
+                    _d = str(_row.get(idx["date"], "")).strip()
+                    _dc[_d] = _dc.get(_d, 0) + 1
+                MOPS_STATS[market]["date_dist"] = dict(sorted(_dc.items())[-5:])
             if not idx["code"] or not idx["subject"]:
                 print(f"  ⚠ MOPS {market} 欄位定位失敗,實際欄位: {list(data[0].keys())}")
                 continue
@@ -499,8 +515,11 @@ def detect_mops_events(name2code, code2name, today):
                         "source": "MOPS重訊",
                     })
                     hit_cnt += 1
-            print(f"  MOPS {market}: 命中 {hit_cnt} 筆硬事件 (共{len(data)}則公告)")
+            MOPS_STATS[market]["hits"] = hit_cnt
+            print(f"  MOPS {market}: 命中 {hit_cnt} 筆硬事件 (共{len(data)}則公告) "
+                  f"日期分布={MOPS_STATS[market].get('date_dist')}")
         except Exception as e:
+            MOPS_STATS.setdefault(market, {})["error"] = str(e)[:120]
             print(f"  ⚠ MOPS {market} 失敗: {e}")
     return results
 
@@ -561,6 +580,7 @@ def main():
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
         "date": now.strftime("%Y%m%d"),
+        "mops_stats": MOPS_STATS,
         "themes": all_themes,
         "near_miss_themes": sorted(src1_near_miss, key=lambda x: -x["ratio"]),
         "stocks": [
