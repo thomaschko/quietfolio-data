@@ -376,8 +376,10 @@ def build_digest():
     # 追蹤,就在G區比對時各算各的、互相看不到對方。
     tw_active_themes = set()
     # 同時收集每個正規化題材群組底下有哪些受惠股代號,供G區算
-    # stocks_low/stocks_high用(user要求的股價位置底部/高檔檔數,改讀
-    # price_stage.py算出的階段,不再自己另外打Yahoo Finance)。
+    # stocks_dormant/stocks_overheated用(user要求的股價位置底部/高檔檔數,
+    # 改讀price_stage.py算出的動能階段,不再自己另外打Yahoo Finance;
+    # 2026-10-06再修正:price_stage量的是動能不是價格區間位置,底部/高檔
+    # 這組命名跟文字也一併改成潛伏/過熱,避免暗示資料沒有的「股價位置」)。
     theme_codes_by_canonical = defaultdict(set)
     for t in event.get("themes", []):
         src = t.get("source", "")
@@ -432,9 +434,9 @@ def build_digest():
     }
 
     # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
-    # 讓每檔股票帶「潛伏/啟動/過熱」。同時填入A區的price_pos(low/mid/high),
-    # daily_report.py本來就會讀這個欄位(🟢底部/🟡中段/🔴高檔),但先前沒有
-    # 任何程式產生它,等於一直是空的。
+    # 讓每檔股票帶「潛伏/啟動/過熱」動能階段。同時填入A區的price_pos
+    # (low/mid/high,內部分類鍵,語意是動能階段不是價格區間位置——先前
+    # 沒有任何程式產生它,daily_report.py一直讀到空值)。
     try:
         from price_stage import stage_for_codes
         codes = set()
@@ -467,15 +469,17 @@ def build_digest():
             if info:
                 c["price_pos"] = info["price_pos"]
                 c["stage"] = info["stage"]
-        # 2026-10-06新增:G區統計受惠股裡幾檔底部/高檔(user要求的
-        # stocks_low/stocks_high),改讀price_stage算出的結果,不用再
-        # 另外打Yahoo Finance。price_data_available區分「真的查到0檔」
-        # 跟「這批代號完全沒有股價位置資料可查」,避免daily_report.py
-        # 把後者誤印成「底部0檔」。
+        # 2026-10-06新增,同日再修正:G區統計受惠股裡幾檔動能潛伏/過熱
+        # (user原本要求的是股價位置底部/高檔檔數,但price_stage量的是
+        # 動能階段,近20日+4%或-2%都只代表「沒有大漲」,不能說是底部,
+        # 更不是安全邊際;欄位改名stocks_dormant/stocks_overheated,
+        # 避免用「low/high」衍生的命名繼續暗示價格區間位置)。
+        # price_data_available區分「真的查到0檔」跟「這批代號完全沒有
+        # 動能資料可查」,避免daily_report.py把後者誤印成「0檔」。
         for x in cross_confirmed:
             positions = [stage_map.get(cd, {}).get("price_pos") for cd in x.get("codes", [])]
-            x["stocks_low"] = sum(1 for p in positions if p == "low")
-            x["stocks_high"] = sum(1 for p in positions if p == "high")
+            x["stocks_dormant"] = sum(1 for p in positions if p == "low")
+            x["stocks_overheated"] = sum(1 for p in positions if p == "high")
             x["price_data_available"] = any(p is not None for p in positions)
     except Exception as e:
         print(f"  ⚠ 價量階段標籤略過: {e}")

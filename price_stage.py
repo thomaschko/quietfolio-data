@@ -22,8 +22,13 @@ price_stage.py — 價量階段標籤(潛伏 / 啟動 / 過熱)
   潛伏:以上皆非,且有足夠歷史可判斷
   未知:歷史不足(<6個交易日),只有單日漲跌可看
 
-對應 daily_report.py 既有的 price_pos 欄位:
-  潛伏→low(🟢底部)  啟動→mid(🟡中段)  過熱→high(🔴高檔)
+對應 daily_report.py 的 price_pos 欄位(low/mid/high是內部分類鍵,語意是
+「動能階段」不是「價格區間位置」——這是動能指標,近20日漲幅+4%或-2%都只是
+「沒有大漲」,不能說明股價在52週區間的哪裡,更不等於底部/安全邊際。
+2026-10-06修正:daily_report.py原本把這三個鍵顯示成「底部/中段/高檔」,
+會讓Gemini寫出「位居底部、安全邊際」這種資料不支持的結論,已改顯示成
+「潛伏(近20日未大漲)/啟動/過熱」,不再暗示價格區間位置):
+  潛伏→low(🟢潛伏)  啟動→mid(🟡啟動)  過熱→high(🔴過熱)
 ============================================================
 """
 
@@ -233,6 +238,9 @@ def backfill(codes, market, current_month_only=False, force=False):
     ok = fail = 0
     empty = 0
     shown = 0
+    shown_fail = 0
+    tpex_streak = 0
+    tpex_dead = False   # 連續失敗太多次就放棄本輪TPEx個股端點,避免白等+洗版
     for code in list(codes)[:MAX_BACKFILL_CODES]:
         if not force and len(store.get(code, {})) >= 21:
             continue
@@ -240,13 +248,26 @@ def backfill(codes, market, current_month_only=False, force=False):
         order = [known] if known else ["TWSE", "TPEx"]
         got, used = {}, None
         for mk in order:
+            if mk == "TPEx" and tpex_dead:
+                continue
             fn = _backfill_tpex if mk == "TPEx" else _backfill_twse
             for ym in months:
                 try:
                     got.update(fn(code, ym))
+                    if mk == "TPEx":
+                        tpex_streak = 0
                 except Exception as e:
                     fail += 1
-                    print(f"    ⚠ 補抓 {code}({mk}) {ym} 失敗: {str(e)[:60]}")
+                    if shown_fail < 3:
+                        shown_fail += 1
+                        print(f"    ⚠ 補抓 {code}({mk}) {ym} 失敗: {str(e)[:60]}")
+                    if mk == "TPEx":
+                        tpex_streak += 1
+                        if tpex_streak >= 6 and not tpex_dead:
+                            tpex_dead = True
+                            print("    ⚠ TPEx個股端點連續失敗6次,本輪放棄(上櫃股歷史改靠每日全市場快照累積)")
+                        if tpex_dead:
+                            break
                 time.sleep(1.0)
             if got:
                 used = mk
