@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-06 08:03:14",
+  "generated_at": "2026-10-06 09:12:26",
   "date": "20261006",
   "summary_counts": {
     "resonance": 5,
     "preferment_themes": 1,
     "broker_coverage": 0,
-    "surge_themes": 13,
+    "surge_themes": 14,
     "new_candidates": 15,
     "earnings_rising": 140,
     "cross_confirmed": 3
@@ -63,7 +63,11 @@
       "fermentation": null,
       "broker_count": null,
       "via_source_diversity": true,
-      "via_theme_cluster": false
+      "via_theme_cluster": false,
+      "stage": "未知",
+      "price_pos": null,
+      "chg20": null,
+      "chg5": null
     },
     {
       "code": "2344",
@@ -82,8 +86,8 @@
       "via_theme_cluster": false,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg20": 2.0,
-      "chg5": 2.0
+      "chg20": 4.0,
+      "chg5": 4.0
     },
     {
       "code": "4967",
@@ -102,8 +106,8 @@
       "via_theme_cluster": false,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg20": -3.3,
-      "chg5": -1.8
+      "chg20": -2.4,
+      "chg5": -0.9
     },
     {
       "code": "8299",
@@ -119,7 +123,11 @@
       "fermentation": "pre-ferment",
       "broker_count": null,
       "via_source_diversity": true,
-      "via_theme_cluster": false
+      "via_theme_cluster": false,
+      "stage": "未知",
+      "price_pos": null,
+      "chg20": null,
+      "chg5": null
     },
     {
       "code": "5512",
@@ -136,7 +144,11 @@
       "fermentation": null,
       "broker_count": null,
       "via_source_diversity": false,
-      "via_theme_cluster": true
+      "via_theme_cluster": true,
+      "stage": "未知",
+      "price_pos": null,
+      "chg20": null,
+      "chg5": null
     }
   ],
   "B_preferment_themes": [
@@ -206,6 +218,16 @@
       }
     },
     {
+      "theme": "BBU",
+      "ratio": 2.52,
+      "codes": [
+        "3597"
+      ],
+      "names": {
+        "3597": "映興"
+      }
+    },
+    {
       "theme": "GB300",
       "ratio": 2.52,
       "codes": [
@@ -238,23 +260,15 @@
       }
     },
     {
-      "theme": "BBU",
-      "ratio": 2.27,
-      "codes": [
-        "3597"
-      ],
-      "names": {
-        "3597": ""
-      }
-    },
-    {
       "theme": "CoPoS",
       "ratio": 2.12,
       "codes": [
+        "6187",
         "4760"
       ],
       "names": {
-        "4760": ""
+        "6187": "萬潤",
+        "4760": "勤凱科技"
       }
     },
     {
@@ -375,12 +389,22 @@
     },
     {
       "theme": "HVDC",
-      "ratio": 1.7,
+      "ratio": 1.89,
       "codes": [
         "3597"
       ],
       "names": {
-        "3597": ""
+        "3597": "映興"
+      }
+    },
+    {
+      "theme": "MLCC",
+      "ratio": 1.79,
+      "codes": [
+        "4760"
+      ],
+      "names": {
+        "4760": "勤凱科技"
       }
     },
     {
@@ -396,8 +420,38 @@
   ],
   "E_new_candidates": [
     {
+      "term": "先進封裝與玻璃基板",
+      "recent_hits": 36,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "ai",
+      "reason": "CoWoS、玻璃基板等先進封裝擴產",
+      "stocks": [
+        "2330",
+        "6983"
+      ],
+      "names": {
+        "2330": "台積電",
+        "6983": "華洋精機"
+      }
+    },
+    {
+      "term": "機器人與實體AI",
+      "recent_hits": 15,
+      "is_brand_new": false,
+      "streak_days": 3,
+      "method": "ai",
+      "reason": "人形機器人商業化與實體AI應用",
+      "stocks": [
+        "6414"
+      ],
+      "names": {
+        "6414": "樺漢"
+      }
+    },
+    {
       "term": "供應鏈",
-      "recent_hits": 88,
+      "recent_hits": 87,
       "is_brand_new": false,
       "streak_days": 6,
       "method": "jieba",
@@ -410,7 +464,7 @@
     },
     {
       "term": "伺服器",
-      "recent_hits": 77,
+      "recent_hits": 76,
       "is_brand_new": false,
       "streak_days": 12,
       "method": "jieba",
@@ -420,18 +474,17 @@
         "2330",
         "2383",
         "6669",
+        "1303",
+        "2368",
         "2382",
         "6412",
-        "6584",
-        "2368",
-        "8424",
-        "1303"
+        "6584"
       ],
       "names": {}
     },
     {
       "term": "蘇姿丰",
-      "recent_hits": 14,
+      "recent_hits": 16,
       "is_brand_new": false,
       "streak_days": 2,
       "method": "jieba",
@@ -453,27 +506,15 @@
     },
     {
       "term": "毛利率",
-      "recent_hits": 11,
+      "recent_hits": 10,
       "is_brand_new": false,
       "streak_days": 14,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "8215",
+        "6166",
         "3289",
-        "6166"
-      ],
-      "names": {}
-    },
-    {
-      "term": "NVIDIA",
-      "recent_hits": 10,
-      "is_brand_new": false,
-      "streak_days": 15,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "2330"
+        "8215"
       ],
       "names": {}
     },
@@ -488,6 +529,31 @@
       "names": {}
     },
     {
+      "term": "台光電",
+      "recent_hits": 10,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "2383",
+        "6213"
+      ],
+      "names": {}
+    },
+    {
+      "term": "NVIDIA",
+      "recent_hits": 9,
+      "is_brand_new": false,
+      "streak_days": 15,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [
+        "2330"
+      ],
+      "names": {}
+    },
+    {
       "term": "摩根士丹利",
       "recent_hits": 9,
       "is_brand_new": false,
@@ -498,15 +564,14 @@
       "names": {}
     },
     {
-      "term": "台光電",
-      "recent_hits": 9,
+      "term": "概念股",
+      "recent_hits": 8,
       "is_brand_new": false,
-      "streak_days": 2,
+      "streak_days": 8,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "2383",
-        "6213"
+        "2330"
       ],
       "names": {}
     },
@@ -530,8 +595,8 @@
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "2454",
-        "1459"
+        "1459",
+        "2454"
       ],
       "names": {}
     },
@@ -544,47 +609,12 @@
       "reason": "",
       "stocks": [],
       "names": {}
-    },
-    {
-      "term": "概念股",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 8,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "2330"
-      ],
-      "names": {}
-    },
-    {
-      "term": "大立光",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 3,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "4716",
-        "3008"
-      ],
-      "names": {}
-    },
-    {
-      "term": "foundry",
-      "recent_hits": 7,
-      "is_brand_new": false,
-      "streak_days": 3,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [],
-      "names": {}
     }
   ],
   "E2_near_miss": [
     {
-      "theme": "MLCC",
-      "ratio": 1.49,
+      "theme": "800V HVDC",
+      "ratio": 1.42,
       "recent_count": 5
     },
     {
@@ -593,19 +623,14 @@
       "recent_count": 5
     },
     {
-      "theme": "800V HVDC",
-      "ratio": 1.35,
-      "recent_count": 5
-    },
-    {
       "theme": "Blackwell Ultra",
-      "ratio": 1.32,
+      "ratio": 1.35,
       "recent_count": 10
     },
     {
       "theme": "漲價",
-      "ratio": 1.28,
-      "recent_count": 29
+      "ratio": 1.33,
+      "recent_count": 30
     },
     {
       "theme": "光通訊",
@@ -613,48 +638,53 @@
       "recent_count": 7
     },
     {
-      "theme": "power shelf",
-      "ratio": 1.13,
-      "recent_count": 6
+      "theme": "CoWoS",
+      "ratio": 1.17,
+      "recent_count": 7
     },
     {
-      "theme": "ASIC",
-      "ratio": 1.09,
-      "recent_count": 23
+      "theme": "power shelf",
+      "ratio": 1.17,
+      "recent_count": 6
     },
     {
       "theme": "擴產",
-      "ratio": 1.09,
-      "recent_count": 30
+      "ratio": 1.13,
+      "recent_count": 31
+    },
+    {
+      "theme": "ASIC",
+      "ratio": 1.1,
+      "recent_count": 23
     },
     {
       "theme": "sidecar power",
-      "ratio": 1.06,
+      "ratio": 1.1,
       "recent_count": 6
     },
     {
+      "theme": "HBM",
+      "ratio": 1.09,
+      "recent_count": 19
+    },
+    {
       "theme": "CPO",
-      "ratio": 1.04,
+      "ratio": 1.06,
       "recent_count": 14
     },
     {
-      "theme": "HBM",
-      "ratio": 1.03,
-      "recent_count": 18
-    },
-    {
       "theme": "接單",
-      "ratio": 1.01,
+      "ratio": 1.03,
       "recent_count": 10
     },
     {
       "theme": "Vera Rubin",
-      "ratio": 1.01,
+      "ratio": 1.03,
       "recent_count": 8
     },
     {
-      "theme": "CoWoS",
-      "ratio": 1.0,
+      "theme": "power rack",
+      "ratio": 1.03,
       "recent_count": 6
     },
     {
@@ -663,18 +693,8 @@
       "recent_count": 12
     },
     {
-      "theme": "power rack",
-      "ratio": 0.97,
-      "recent_count": 6
-    },
-    {
-      "theme": "無人機",
-      "ratio": 0.96,
-      "recent_count": 17
-    },
-    {
       "theme": "Rubin Ultra",
-      "ratio": 0.94,
+      "ratio": 0.96,
       "recent_count": 11
     },
     {
@@ -683,9 +703,19 @@
       "recent_count": 10
     },
     {
+      "theme": "無人機",
+      "ratio": 0.91,
+      "recent_count": 16
+    },
+    {
       "theme": "先進封裝",
       "ratio": 0.89,
       "recent_count": 3
+    },
+    {
+      "theme": "併購",
+      "ratio": 0.81,
+      "recent_count": 6
     },
     {
       "theme": "南亞科",
@@ -2247,47 +2277,124 @@
     }
   ],
   "price_stage": {
-    "6706": {
+    "8299": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2367": {
       "history_days": 24,
       "stage": "啟動",
       "price_pos": "mid",
-      "chg1": -2.3,
-      "chg5": -2.0,
-      "chg20": 16.5,
-      "vol_ratio": 0.3,
+      "chg1": 0.0,
+      "chg5": 17.5,
+      "chg20": 15.2,
+      "vol_ratio": 6.6,
       "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "3466": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2313": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 10.0,
+      "chg20": -0.4,
+      "vol_ratio": 2.3,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "3081": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
       "overheat_notice": false
     },
     "2383": {
       "history_days": 24,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": 5.2,
-      "chg5": 21.8,
-      "chg20": 10.7,
-      "vol_ratio": 2.5,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 15.9,
+      "chg20": 5.3,
+      "vol_ratio": 0.6,
       "limit_up_10d": 1,
       "overheat_notice": false
     },
-    "2455": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -6.4,
-      "chg5": 4.4,
-      "chg20": 7.4,
-      "vol_ratio": 2.0,
+    "6983": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "2462": {
+    "8215": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 2.1,
+      "chg20": 11.9,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "2382": {
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": -2.9,
-      "chg5": 1.3,
-      "chg20": 0.5,
-      "vol_ratio": 3.7,
+      "chg1": 0.0,
+      "chg5": -1.6,
+      "chg20": -4.1,
+      "vol_ratio": 1.0,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "5243": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 7.9,
+      "chg20": 6.3,
+      "vol_ratio": 1.9,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3491": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
@@ -2295,10 +2402,43 @@
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": -1.1,
-      "chg5": 2.1,
-      "chg20": -3.4,
-      "vol_ratio": 2.3,
+      "chg1": 0.0,
+      "chg5": 3.3,
+      "chg20": -2.3,
+      "vol_ratio": 1.7,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3663": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3289": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3234": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
@@ -2306,175 +2446,64 @@
       "history_days": 24,
       "stage": "過熱",
       "price_pos": "high",
-      "chg1": -8.3,
-      "chg5": 17.8,
-      "chg20": 20.4,
-      "vol_ratio": 28.4,
+      "chg1": 0.0,
+      "chg5": 28.4,
+      "chg20": 31.3,
+      "vol_ratio": 4.8,
       "limit_up_10d": 2,
       "overheat_notice": false
     },
-    "2485": {
+    "5222": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 1.0,
+      "chg20": 1.0,
+      "vol_ratio": 1.2,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6791": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6414": {
+      "history_days": 2,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": 0.0,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6706": {
       "history_days": 24,
       "stage": "啟動",
       "price_pos": "mid",
-      "chg1": -3.8,
-      "chg5": 7.9,
-      "chg20": 3.9,
-      "vol_ratio": 15.2,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "6269": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -0.5,
-      "chg5": -0.2,
-      "chg20": -4.3,
-      "vol_ratio": 0.6,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "6928": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -4.3,
-      "chg5": -3.8,
-      "chg20": -9.8,
-      "vol_ratio": 2.7,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "3481": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -2.3,
-      "chg5": 2.7,
-      "chg20": 5.4,
-      "vol_ratio": 0.6,
+      "chg1": 0.0,
+      "chg5": 0.3,
+      "chg20": 19.3,
+      "vol_ratio": 0.3,
       "limit_up_10d": 1,
-      "overheat_notice": false
-    },
-    "6213": {
-      "history_days": 24,
-      "stage": "過熱",
-      "price_pos": "high",
-      "chg1": 4.8,
-      "chg5": 26.9,
-      "chg20": 52.2,
-      "vol_ratio": 1.8,
-      "limit_up_10d": 2,
-      "overheat_notice": false
-    },
-    "7812": {
-      "history_days": 9,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -1.4,
-      "chg5": -6.9,
-      "chg20": null,
-      "vol_ratio": 0.5,
-      "limit_up_10d": 0,
       "overheat_notice": false
     },
     "3019": {
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": -0.4,
-      "chg5": 4.1,
-      "chg20": -2.4,
-      "vol_ratio": 0.8,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "3591": {
-      "history_days": 17,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": -2.7,
-      "chg5": 2.5,
-      "chg20": 19.2,
-      "vol_ratio": 0.3,
-      "limit_up_10d": 0,
-      "overheat_notice": false,
-      "chg20_days": 16
-    },
-    "6426": {
-      "history_days": 24,
-      "stage": "過熱",
-      "price_pos": "high",
-      "chg1": -1.8,
-      "chg5": -0.8,
-      "chg20": 30.2,
-      "vol_ratio": 0.7,
-      "limit_up_10d": 1,
-      "overheat_notice": false
-    },
-    "2301": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": 0.3,
-      "chg5": 6.4,
-      "chg20": -2.9,
-      "vol_ratio": 1.0,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "4967": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -0.9,
-      "chg5": -1.8,
-      "chg20": -3.3,
-      "vol_ratio": 0.8,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "4916": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": 0.5,
-      "chg5": 3.9,
-      "chg20": 8.4,
-      "vol_ratio": 2.1,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "2454": {
-      "history_days": 24,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": -4.7,
-      "chg5": 0.2,
-      "chg20": 11.4,
-      "vol_ratio": 1.2,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "3006": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -3.0,
-      "chg5": -4.0,
-      "chg20": -1.8,
-      "vol_ratio": 0.5,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "6669": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": 6.5,
-      "chg5": 9.0,
-      "chg20": -10.7,
+      "chg1": 0.0,
+      "chg5": 4.4,
+      "chg20": -2.1,
       "vol_ratio": 1.4,
       "limit_up_10d": 0,
       "overheat_notice": false
@@ -2483,153 +2512,65 @@
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": 0.8,
-      "chg5": 2.2,
-      "chg20": 0.0,
-      "vol_ratio": 3.0,
+      "chg1": 0.0,
+      "chg5": 1.4,
+      "chg20": -0.8,
+      "vol_ratio": 1.6,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "4590": {
+    "7728": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "5457": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2301": {
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": -0.1,
-      "chg5": -0.3,
-      "chg20": -1.6,
-      "vol_ratio": 0.7,
+      "chg1": 0.0,
+      "chg5": 6.0,
+      "chg20": -3.2,
+      "vol_ratio": 1.8,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "3008": {
+    "6792": {
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": 1.9,
-      "chg5": 13.9,
-      "chg20": -7.4,
-      "vol_ratio": 1.0,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "5243": {
-      "history_days": 24,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": 2.2,
-      "chg5": 10.3,
-      "chg20": 8.7,
-      "vol_ratio": 2.8,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "6412": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -1.5,
-      "chg5": -0.1,
-      "chg20": -4.4,
-      "vol_ratio": 1.9,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "2314": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -1.8,
-      "chg5": -1.4,
-      "chg20": -4.0,
+      "chg1": 0.0,
+      "chg5": -0.7,
+      "chg20": -2.7,
       "vol_ratio": 1.1,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "1303": {
-      "history_days": 24,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": 2.4,
-      "chg5": 18.6,
-      "chg20": 29.9,
-      "vol_ratio": 1.7,
-      "limit_up_10d": 1,
-      "overheat_notice": false
-    },
-    "6285": {
-      "history_days": 24,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": 2.6,
-      "chg5": 10.1,
-      "chg20": 5.1,
-      "vol_ratio": 5.7,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "4906": {
-      "history_days": 24,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": 2.0,
-      "chg5": 7.0,
-      "chg20": 16.5,
-      "vol_ratio": 2.5,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "1609": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": 0.4,
-      "chg5": -0.4,
-      "chg20": 2.7,
-      "vol_ratio": 0.8,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "2367": {
-      "history_days": 24,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": -4.0,
-      "chg5": 12.8,
-      "chg20": 10.6,
-      "vol_ratio": 8.1,
-      "limit_up_10d": 1,
-      "overheat_notice": false
-    },
-    "2313": {
-      "history_days": 24,
-      "stage": "啟動",
-      "price_pos": "mid",
-      "chg1": 1.4,
-      "chg5": 11.5,
-      "chg20": 1.0,
-      "vol_ratio": 4.4,
-      "limit_up_10d": 1,
-      "overheat_notice": false
-    },
-    "5222": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -2.8,
-      "chg5": -1.9,
-      "chg20": -1.9,
-      "vol_ratio": 3.1,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "6153": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": 0.8,
-      "chg5": 2.0,
-      "chg20": 2.0,
-      "vol_ratio": 1.4,
+    "3597": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
@@ -2637,98 +2578,164 @@
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": -1.2,
-      "chg5": 0.8,
-      "chg20": 1.7,
-      "vol_ratio": 0.4,
+      "chg1": 0.0,
+      "chg5": 2.1,
+      "chg20": 3.0,
+      "vol_ratio": 0.6,
       "limit_up_10d": 1,
       "overheat_notice": false
     },
-    "6792": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": 2.2,
-      "chg5": 1.5,
-      "chg20": -0.5,
-      "vol_ratio": 0.8,
+    "5512": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "8215": {
+    "6285": {
       "history_days": 24,
       "stage": "啟動",
       "price_pos": "mid",
-      "chg1": -1.2,
-      "chg5": 0.9,
-      "chg20": 10.6,
-      "vol_ratio": 0.5,
-      "limit_up_10d": 1,
+      "chg1": 0.0,
+      "chg5": 7.3,
+      "chg20": 2.5,
+      "vol_ratio": 2.7,
+      "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "6152": {
+    "6213": {
       "history_days": 24,
       "stage": "過熱",
       "price_pos": "high",
-      "chg1": 9.9,
-      "chg5": 25.5,
-      "chg20": 37.3,
-      "vol_ratio": 3.4,
+      "chg1": 0.0,
+      "chg5": 21.1,
+      "chg20": 45.3,
+      "vol_ratio": 1.1,
       "limit_up_10d": 2,
+      "overheat_notice": false
+    },
+    "3178": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4991": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6498": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
       "overheat_notice": false
     },
     "3138": {
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": -2.4,
-      "chg5": 4.5,
-      "chg20": 7.3,
-      "vol_ratio": 1.9,
+      "chg1": 0.0,
+      "chg5": 7.0,
+      "chg20": 9.9,
+      "vol_ratio": 1.5,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "6133": {
+    "3684": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3339": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6530": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2330": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 4.0,
+      "chg20": 6.8,
+      "vol_ratio": 1.2,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3105": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2454": {
       "history_days": 24,
       "stage": "啟動",
       "price_pos": "mid",
-      "chg1": -4.3,
-      "chg5": -1.8,
-      "chg20": 17.9,
-      "vol_ratio": 0.7,
-      "limit_up_10d": 1,
+      "chg1": 0.0,
+      "chg5": 5.2,
+      "chg20": 17.0,
+      "vol_ratio": 0.9,
+      "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "3450": {
+    "6269": {
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": -3.1,
-      "chg5": 1.1,
-      "chg20": -8.4,
+      "chg1": 0.0,
+      "chg5": 0.3,
+      "chg20": -3.8,
       "vol_ratio": 0.8,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "2344": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": -1.9,
-      "chg5": 2.0,
-      "chg20": 2.0,
-      "vol_ratio": 0.6,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "2382": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": 0.8,
-      "chg5": -0.9,
-      "chg20": -3.3,
-      "vol_ratio": 0.7,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
@@ -2736,54 +2743,54 @@
       "history_days": 24,
       "stage": "潛伏",
       "price_pos": "low",
-      "chg1": 0.4,
-      "chg5": -3.7,
-      "chg20": 7.0,
+      "chg1": 0.0,
+      "chg5": -4.1,
+      "chg20": 6.6,
       "vol_ratio": 0.6,
       "limit_up_10d": 1,
       "overheat_notice": false
     },
-    "6672": {
-      "history_days": 24,
-      "stage": "過熱",
-      "price_pos": "high",
-      "chg1": 1.9,
-      "chg5": 37.0,
-      "chg20": 59.0,
-      "vol_ratio": 0.4,
-      "limit_up_10d": 3,
-      "overheat_notice": false
-    },
-    "2330": {
-      "history_days": 24,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "chg1": 0.4,
-      "chg5": 4.4,
-      "chg20": 7.3,
-      "vol_ratio": 0.9,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "2368": {
-      "history_days": 24,
-      "stage": "過熱",
-      "price_pos": "high",
-      "chg1": 3.7,
-      "chg5": 12.5,
-      "chg20": 20.6,
-      "vol_ratio": 2.5,
-      "limit_up_10d": 2,
-      "overheat_notice": false
-    },
-    "2355": {
+    "6133": {
       "history_days": 24,
       "stage": "啟動",
       "price_pos": "mid",
-      "chg1": -1.9,
-      "chg5": 5.3,
-      "chg20": 2.3,
-      "vol_ratio": 3.1,
+      "chg1": 0.0,
+      "chg5": 2.6,
+      "chg20": 23.2,
+      "vol_ratio": 1.2,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "6134": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3152": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2485": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 12.2,
+      "chg20": 8.0,
+      "vol_ratio": 6.3,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
@@ -2794,7 +2801,73 @@
       "chg1": 0.0,
       "chg5": 5.1,
       "chg20": 0.6,
+      "vol_ratio": 1.1,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6153": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 1.1,
+      "chg20": 1.1,
+      "vol_ratio": 1.1,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2455": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 11.6,
+      "chg20": 14.8,
+      "vol_ratio": 0.3,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4967": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": -0.9,
+      "chg20": -2.4,
       "vol_ratio": 1.0,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6152": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 14.2,
+      "chg20": 25.0,
+      "vol_ratio": 4.7,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "4760": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4590": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": -0.2,
+      "chg20": -1.5,
+      "vol_ratio": 0.8,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
@@ -2802,19 +2875,350 @@
       "history_days": 24,
       "stage": "過熱",
       "price_pos": "high",
-      "chg1": -2.6,
-      "chg5": 42.0,
-      "chg20": 41.4,
-      "vol_ratio": 10.0,
+      "chg1": 0.0,
+      "chg5": 45.9,
+      "chg20": 45.2,
+      "vol_ratio": 2.1,
       "limit_up_10d": 4,
       "overheat_notice": true
+    },
+    "3163": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3481": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 5.1,
+      "chg20": 7.8,
+      "vol_ratio": 1.6,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "6669": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 2.4,
+      "chg20": -16.2,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "1303": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 15.8,
+      "chg20": 26.8,
+      "vol_ratio": 1.3,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "2344": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 4.0,
+      "chg20": 4.0,
+      "vol_ratio": 0.9,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2462": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 4.3,
+      "chg20": 3.5,
+      "vol_ratio": 4.9,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3591": {
+      "history_days": 17,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 5.3,
+      "chg20": 22.5,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false,
+      "chg20_days": 16
+    },
+    "4908": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "1609": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": -0.8,
+      "chg20": 2.3,
+      "vol_ratio": 1.1,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "7812": {
+      "history_days": 9,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": -5.6,
+      "chg20": null,
+      "vol_ratio": 0.9,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2314": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 0.5,
+      "chg20": -2.2,
+      "vol_ratio": 0.7,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4909": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6928": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 0.4,
+      "chg20": -5.8,
+      "vol_ratio": 1.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4916": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 3.4,
+      "chg20": 7.9,
+      "vol_ratio": 1.5,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6412": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 1.3,
+      "chg20": -3.0,
+      "vol_ratio": 1.4,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3006": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": -1.1,
+      "chg20": 1.3,
+      "vol_ratio": 1.0,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3221": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "5543": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "5291": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2368": {
+      "history_days": 24,
+      "stage": "過熱",
+      "price_pos": "high",
+      "chg1": 0.0,
+      "chg5": 8.5,
+      "chg20": 16.3,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 2,
+      "overheat_notice": false
+    },
+    "6426": {
+      "history_days": 24,
+      "stage": "過熱",
+      "price_pos": "high",
+      "chg1": 0.0,
+      "chg5": 1.0,
+      "chg20": 32.7,
+      "vol_ratio": 0.9,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "4906": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 4.9,
+      "chg20": 14.2,
+      "vol_ratio": 2.5,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6187": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2355": {
+      "history_days": 24,
+      "stage": "啟動",
+      "price_pos": "mid",
+      "chg1": 0.0,
+      "chg5": 7.3,
+      "chg20": 4.3,
+      "vol_ratio": 3.9,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6672": {
+      "history_days": 24,
+      "stage": "過熱",
+      "price_pos": "high",
+      "chg1": 0.0,
+      "chg5": 34.4,
+      "chg20": 56.1,
+      "vol_ratio": 1.6,
+      "limit_up_10d": 3,
+      "overheat_notice": false
+    },
+    "6584": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6486": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "6274": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3450": {
+      "history_days": 24,
+      "stage": "潛伏",
+      "price_pos": "low",
+      "chg1": 0.0,
+      "chg5": 4.4,
+      "chg20": -5.5,
+      "vol_ratio": 1.6,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4971": {
+      "history_days": 1,
+      "stage": "未知",
+      "price_pos": null,
+      "chg1": null,
+      "chg5": null,
+      "chg20": null,
+      "vol_ratio": null,
+      "limit_up_10d": 0,
+      "overheat_notice": false
     }
   },
-  "daily_report": "各位投資朋友好，我是台股題材研究員。今日（2026年10月6日）市場的結構化數據展現出非常清晰的「國際巨頭點火、台股熱度擴散」交織脈絡。我們透過發酵雷達、題材雷達與候選題材的交叉比對，來一窺今日的最強市場訊號。\n\n首先在核心買點所在的**發酵雷達**中，我們看到了「矽光子」、「磷化銦」以及「HBM」在G區同步實現了台股訊號與國際法說（如AEHR、AMAT、COHR、AVGO等）的雙邊確認。這代表國際大廠在法說會上的談話與台股的市場關注度正在高度共振。特別值得注意的是A區多源共振標的，其中與HBM高度相關的 **2344** 與 **4967** 同時被標註在 🟢底部 位置，這兩檔個股在維基關注度剛翹頭（B區HBM暴增比達1.65）的背景下，正處於底部起漲或剛打底完成的階段，是籌碼與題材共振下極具價值、值得優先追蹤的關注重點。至於其他高檔標的，雖然題材強勢，但我們必須時刻提醒：若股價已在大幅反映預期，切忌盲目追高。此外，在「國際先行、台股未燃」的最前緣訊號中，記憶體、光通訊、CPO、CoWoS與先進封裝等關鍵字已在 Apple、ADI、AEHR、AMAT、ARM、AVGO、NVDA 等國際大廠法說中頻繁被提及，但台股新聞尚未全面跟上，這正是我們提前卡位、嗅覺領先市場的重要依據。\n\n接著看**題材雷達**的熱度表現，D區展現了新聞熱度的急遽暴增，其中「矽光子」暴增2.52倍（帶動3019、3081、3163、3339、3450等指標股）、GB300暴增2.52倍（2317）、DDR4暴增2.43倍（3006）以及BBU暴增2.27倍（3597）。這與F區國際大廠法說的關鍵詞完美呼應——例如 COHR 新提及了 CPO 與 indium phosphide（磷化銦），完美呼應了G區的雙邊確認；而 AMAT、AAPL 提及 DRAM/memory，MRVL 與 ADI 點名 data center，AVGO 提到 Tomahawk 網通平台，均在在顯示AI基礎設施的擴建與次世代運算規格正在全球供應鏈全面升溫。\n\n最後，在**候選題材**部分，我們必須保持審慎客觀。E區今日首見的新題材如 HBM/高頻寬記憶體、CoWoS/先進封裝、HVDC/液冷散熱、AI代理及衛星通訊等，均為高可信度的初步發現，尚需時間驗證；而連續追蹤長達15天的 NVIDIA、data center、advanced packaging 則具備高度的可信度與持久性。至於 **E2區的近期關注**（如 MLCC 暴增比 1.49、DDR5 暴增比 1.42、800V HVDC 暴增比 1.35、光通訊 1.17 等），這些詞彙雖然呈現成長動能，但**目前尚未達到 1.5 倍的暴增門檻，屬於初步觀察、非確定訊號**，千萬不要過度解讀成已經爆發的主流題材，但它們絕對是盤面下潛藏、值得持續追蹤的次波潛力股。\n\n總結今日研究：**「國際大廠法說點火光通訊與CPO次世代技術，搭配底部共振的HBM概念股（如2344、4967），是今日最值得深度挖掘與留意的雙邊確認訊號。」**",
+  "daily_report": "各位夥伴好，我是台股題材研究員。今日（2026年10月6日）的市場訊號相當耐人尋味，國際法說與台股新聞在多個前緣科技上交會，形成了一幅「國際先行、國內熱度加溫」的清晰圖景。我們從發酵雷達、題材雷達一路看到候選題材的脈動。\n\n### 發酵雷達與題材雷達：雙邊確認與熱度暴增的交會\n\n首先看核心買點的**發酵雷達**。在G區「雙邊確認題材」中，**矽光子**與**HBM**同時具備台股訊號與國際大廠（如AEHR、AMAT、AVGO、COHR等）法說的背書，顯示這並非純粹的國內炒作，而是全球資本支出的共振方向。特別值得注意的是A區的多源共振個股，其中如**2344**與**4967**兩檔個股同時被點名與HBM題材高度相關，且難得可貴的是，這兩檔標的目前正位於**🟢底部**位置，在B區維基關注度剛翹頭（暴增比1.65）的輔助下，提供了一個基本面與題材面兼具、且位階相對安全的安全邊際，是今日盤面上最值得優先聚焦的亮點。\n\n反觀D區的「熱度暴增題材」，則展現了極強的新聞熱度。例如 **Blackwell**（暴增3.05倍）、**Grace Blackwell**（暴增2.48倍）以及 **GB300**（暴增2.52倍，如2317）等輝達新架構相關詞彙熱度狂飆；同時，**矽光子**（如3019、3081、3163、3339、3450）暴增2.52倍，與G區的雙邊確認相互呼應。\n\n然而，必須嚴格提醒的是：**多數高熱度題材（如Blackwell系列、GB300等供應鏈）目前股價多已處於🔴高檔或在熱度推升下大幅反映，即使國際大廠如MRVL、ADI持續釋出強勁的 data center 需求，也不建議投資人在新聞熱度最燙的時候盲目追價**。追價風險高，應以拉回量縮或底部標的（如上述提及的HBM底部股）作為觀察重心。\n\n在國際先行區（國際已提及、台股尚未完全跟上）部分，包括**記憶體、光通訊、CPO、CoWoS與先進封裝**等關鍵字，在AAPL、NVDA、AMAT等國際大廠法說中頻繁出現（如F區 AMAT DRAM、COHR CPO與indium phosphide新提及），這意味著這些領域將是下一波台股新聞與資金接棒點火的潛在溫床，值得提前布局追蹤。\n\n---\n\n### 候選題材：早期訊號與近期動能觀察\n\n除了已經點火的區塊，我們也把目光投向尚未完全成熟、但極具前瞻性的**候選題材**。\n\n在今日首見的E區新題材中，透過跨來源（CNYES、Google News、TechNews等）高可信度篩選，我們發現了幾個值得長期追蹤的方向，包含：**高階CCL與PCB材料**（AI伺服器帶動玻纖布需求）、**AI資料中心電源與散熱**（HVDC與液冷革命）、**低軌衛星與太空運算**，以及**功率半導體與漲價潮**。這些「今日首見」的題材目前仍處於初步發現階段，需要更多時間與新聞頻率來驗證其續航力，切勿過度解讀。\n\n而在連續追蹤中天數最長的題材（如 **data center、NVIDIA、advanced packaging、Agent** 等已連續15天洗版），則形塑了目前大盤結構的護城河，可信度極高。\n\n至於 E2區的「近期關注」（有動能但尚未跨過1.5倍暴增門檻的詞彙），我們看到了幾項非常敏感的零組件與規格詞正在蓄勢待發：例如 **800V HVDC**（暴增比1.42）、**DDR5**（1.42）、**Blackwell Ultra**（1.35）、**漲價**（1.33）、**光通訊**（1.17）、**CoWoS**（1.17）、**power shelf**（1.17）以及 **ASIC**（1.1）。**必須強調，這些是「尚未確認、僅具備成長動能」的觀察訊號**，它們還沒達到D區的爆發標準，但從近5次到近30次的頻率累積來看，市場資金正悄悄往這些方向靠攏，值得密切留意其何時正式突圍。\n\n### 結語\n\n今日最值得留意的訊號，莫過於**國際法說與台股共振指向矽光子與HBM，且盤面上剛好有位居🟢底部的HBM相關個股（如2344、4967）浮現，在追價高檔AI權值股風險漸增之際，提供了一個兼具題材與位階優勢的觀察方向。**",
   "daily_report_date": "2026年10月06日",
   "H_verification_summary": {
     "by_detection_type": {},
-    "pending_count": 213,
-    "total_claims": 213
+    "pending_count": 217,
+    "total_claims": 217
   }
 }
