@@ -41,6 +41,7 @@ urllib3.disable_warnings()
 UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
 HIST_DIR = "price_history"
 BACKFILL_FILE = os.path.join(HIST_DIR, "backfill.json")   # {code: {YYYYMMDD: [close, vol]}}
+MARKET_FILE = os.path.join(HIST_DIR, "market.json")       # {code: "TWSE"|"TPEx"} 補抓時學到的上市/上櫃歸屬
 KEEP_DAYS = 45
 MAX_BACKFILL_CODES = 130
 
@@ -209,44 +210,65 @@ def _backfill_tpex(code, ym):
     return out
 
 
-def backfill(codes, market):
+def _load_json_file(path):
     try:
-        with open(BACKFILL_FILE, encoding="utf-8") as f:
-            store = json.load(f)
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
     except Exception:
-        store = {}
+        return {}
+
+
+def backfill(codes, market, current_month_only=False, force=False):
+    """個股月資料補抓。
+    2026-10-06 修正(實跑發現):TPEx 全市場快照持續失敗 → market 對照表沒有上櫃股
+    → 上櫃股被誤送 TWSE 端點、全部「無資料」(42檔)。現在:歸屬未知的股票
+    先試 TWSE、沒資料再試 TPEx,並把學到的歸屬存進 market.json 供之後使用。
+    current_month_only+force:給「今天快照缺的股票」每天刷新當月資料用。"""
+    store = _load_json_file(BACKFILL_FILE)
+    learned = _load_json_file(MARKET_FILE)
     today = dt.date.today()
-    months = [today.strftime("%Y%m"),
-              (today.replace(day=1) - dt.timedelta(days=1)).strftime("%Y%m")]
+    months = [today.strftime("%Y%m")]
+    if not current_month_only:
+        months.append((today.replace(day=1) - dt.timedelta(days=1)).strftime("%Y%m"))
     ok = fail = 0
-    empty = {"TWSE": 0, "TPEx": 0}
+    empty = 0
     shown = 0
     for code in list(codes)[:MAX_BACKFILL_CODES]:
-        if len(store.get(code, {})) >= 21:
+        if not force and len(store.get(code, {})) >= 21:
             continue
-        got = {}
-        for ym in months:
-            try:
-                fn = _backfill_tpex if market.get(code) == "TPEx" else _backfill_twse
-                got.update(fn(code, ym))
-            except Exception as e:
-                fail += 1
-                print(f"    ⚠ 補抓 {code} {ym} 失敗: {str(e)[:60]}")
-            time.sleep(1.0)
+        known = market.get(code) or learned.get(code)
+        order = [known] if known else ["TWSE", "TPEx"]
+        got, used = {}, None
+        for mk in order:
+            fn = _backfill_tpex if mk == "TPEx" else _backfill_twse
+            for ym in months:
+                try:
+                    got.update(fn(code, ym))
+                except Exception as e:
+                    fail += 1
+                    print(f"    ⚠ 補抓 {code}({mk}) {ym} 失敗: {str(e)[:60]}")
+                time.sleep(1.0)
+            if got:
+                used = mk
+                break
         if got:
             store.setdefault(code, {}).update(got)
+            if used and learned.get(code) != used:
+                learned[code] = used
             ok += 1
         else:
-            mk = market.get(code, "TWSE")
-            empty[mk] = empty.get(mk, 0) + 1
-            if shown < 3:   # 診斷:前3檔抓不到資料的,印出市場與TPEx回傳結構
+            empty += 1
+            if shown < 3:
                 shown += 1
-                print(f"    · {code}({mk}) 補抓無資料"
-                      + (f" TPEx回傳結構={getattr(_backfill_tpex, 'last_keys', None)}" if mk == "TPEx" else ""))
+                print(f"    · {code} 補抓無資料(試過 {order})"
+                      + (f" TPEx回傳結構={getattr(_backfill_tpex, 'last_keys', None)}"
+                         if "TPEx" in order else ""))
     os.makedirs(HIST_DIR, exist_ok=True)
     with open(BACKFILL_FILE, "w", encoding="utf-8") as f:
         json.dump(store, f, ensure_ascii=False, separators=(",", ":"))
-    print(f"  個股補抓: 成功 {ok} 檔 / 失敗請求 {fail} 次 / 無資料 {empty}")
+    with open(MARKET_FILE, "w", encoding="utf-8") as f:
+        json.dump(learned, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"  個股補抓: 成功 {ok} 檔 / 失敗請求 {fail} 次 / 無資料 {empty} 檔")
 
 
 # ============================================================
@@ -374,6 +396,8 @@ def main():
     if not snap:
         print("  ⚠ 兩邊快照都失敗,略過(不影響其他流程)")
         return
+    print(f"  快照資料日期={date or '無Date欄位'}  執行日期={dt.date.today().strftime('%Y%m%d')}"
+          "(若資料日期落後,代表交易所資料尚未更新,排程宜再晚一點)")
     save_snapshot(date, snap)
 
     targets, overheat = _collect_targets()
@@ -387,6 +411,12 @@ def main():
     print(f"  雷達股票 {len(targets)} 檔,歷史不足21日 {len(need)} 檔")
     if need:
         backfill(need, market)
+    # 今天快照裡缺的股票(例如TPEx全市場快照失敗時的上櫃股):逐檔刷新當月資料,
+    # 否則它們的序列會停在上次補抓日,階段判斷會用到舊價格。
+    missing_today = [c for c in sorted(targets) if c not in snap and c not in need]
+    if missing_today:
+        print(f"  今日快照缺 {len(missing_today)} 檔,逐檔刷新當月資料")
+        backfill(missing_today, market, current_month_only=True, force=True)
 
     stages = stage_for_codes(targets, overheat)
     with open("price_stage.json", "w", encoding="utf-8") as f:
