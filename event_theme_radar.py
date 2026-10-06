@@ -69,7 +69,10 @@ NEAR_MISS_LOW = 0.8        # 2026-09-15新增:近期關注區下限,暴增比落
 MOPS_EVENT_KEYWORDS = [
     "接獲訂單", "取得訂單", "承接", "接單", "擴產", "擴充產能", "新增產能",
     "產能", "合作", "簽約", "簽署", "策略聯盟", "技術授權", "授權",
-    "調升", "調漲", "漲價", "投資", "併購", "收購", "取得",
+    "調升", "調漲", "漲價", "併購", "收購", "取得",
+    # 2026-10-06:原本是單字「投資」,會誤中「以利投資人區別暸解」(大甲9/22
+    # 轉債注意交易資訊公告被標成「重訊:投資」)。改成明確的投資行為用語。
+    "對外投資", "轉投資", "投資設立", "投資新設", "投資興建", "投資入股", "投資案",
     "認證", "通過", "量產", "出貨", "開發成功", "訂單", "增資",
     "私募", "處分", "重大", "得標", "標案",
 ]
@@ -446,6 +449,14 @@ def _mops_index(fields_sample):
 # 還是「關鍵字沒中」;再加上端點是即時快照、日期過濾是no-op,事後無法驗證。
 MOPS_STATS = {}
 
+# 2026-10-06:「注意交易資訊」「處置」是交易所依股價/量能異常發布的警示,
+# 代表這檔【已經】漲多/爆量,是落後訊號,不是題材事件。大甲(2221)案例:
+# 4/21題材出現、9/3漲停,雷達9/22第一筆卻是轉債注意交易公告。
+# 這類公告不再算題材命中,改記到 MOPS_OVERHEAT,輸出成 overheat 欄位,
+# 由 price_stage.py 當成「過熱」旗標。
+OVERHEAT_KEYWORDS = ["注意交易資訊", "公布處置", "處置措施", "處置期間"]
+MOPS_OVERHEAT = {}
+
 
 def detect_mops_events(name2code, code2name, today):
     print("[偵測源2] MOPS 重大訊息事件(OpenAPI JSON)")
@@ -498,6 +509,11 @@ def detect_mops_events(name2code, code2name, today):
                     if d and today_roc not in d and d not in today_roc:
                         # 日期不符當日就跳過(容忍格式差異)
                         pass  # OpenAPI多為最新快照,放寬不強制過濾
+
+                # 過熱警示:不算題材命中,另外記錄
+                if any(k in subj_clean for k in OVERHEAT_KEYWORDS):
+                    MOPS_OVERHEAT[code] = subj_clean[:60]
+                    continue
 
                 # 排除例行公告
                 if any(ex in subj_clean for ex in MOPS_EXCLUDE):
@@ -581,6 +597,7 @@ def main():
         "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
         "date": now.strftime("%Y%m%d"),
         "mops_stats": MOPS_STATS,
+        "overheat": MOPS_OVERHEAT,
         "themes": all_themes,
         "near_miss_themes": sorted(src1_near_miss, key=lambda x: -x["ratio"]),
         "stocks": [
