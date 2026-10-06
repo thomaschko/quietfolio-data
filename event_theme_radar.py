@@ -416,6 +416,26 @@ def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None):
                     for cd in codes[:5]:
                         print(f"      · {cd}{names.get(cd,'')} 命中證據: {evidence.get(cd, [])[:2]}")
 
+            # 2026-10-06新增:手動補充表(manual_theme_stocks.py),跟上面
+            # 任何一條路徑的結果取聯集,不是取代——My-TW-Coverage有收錄但
+            # 不完整的題材(如BBU只對到映興3597一檔),這裡補上你自己研究
+            # 確認的廠商;My-TW-Coverage完全沒收錄的題材,manual表單獨也能
+            # 補上結果,不用退回新聞猜測法。
+            try:
+                from manual_theme_stocks import lookup_manual_theme
+                manual_names = lookup_manual_theme(kw)
+            except Exception as e:
+                manual_names = None
+                print(f"    ⚠ 手動補充表查詢失敗: {e}")
+            if manual_names:
+                added = [cd for cd in manual_names if cd not in names]
+                names = {**names, **manual_names}
+                codes = sorted(set(codes) | set(manual_names.keys()))
+                if added:
+                    codes_source = codes_source + "+manual"
+                    print(f"    ✓ 手動補充表新增 {len(added)} 家: "
+                          f"{', '.join(f'{cd}{manual_names[cd]}' for cd in added)}")
+
             results.append({
                 "theme": kw,
                 "ratio": ratio,
@@ -585,7 +605,7 @@ def main():
     # 偵測源3:維基題材關注度(發酵前緣)。獨立檔,抓不到不影響前兩源。
     try:
         from wiki_detector import detect_wiki_attention
-        src3 = detect_wiki_attention()
+        src3 = detect_wiki_attention(code2name)  # 2026-10-06:補上名稱,見wiki_detector.py
     except Exception as e:
         print(f"  ⚠ 維基偵測源3失敗(不影響其他源): {e}")
         src3 = []

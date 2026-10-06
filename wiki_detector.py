@@ -72,9 +72,15 @@ def _analyze(vals):
             "recent_mean": round(r_mean, 1), "stage": stage}
 
 
-def detect_wiki_attention():
-    """回傳 radar 格式的 theme list。只回報 pre-ferment 與 active(flat 不輸出以免雜訊)。"""
+def detect_wiki_attention(code2name=None):
+    """回傳 radar 格式的 theme list。只回報 pre-ferment 與 active(flat 不輸出以免雜訊)。
+    2026-10-06新增code2name參數:wiki_theme_map.py的stocks只是代號陣列,
+    沒有名稱,daily_digest.py的B區(未發酵題材)因此一直輸出names={}——
+    這裡比照src1/src2既有的「names = {cd: code2name.get(cd,'') for cd in codes}」
+    寫法補上,呼叫端(event_theme_radar.py)已經有現成的code2name可以傳進來,
+    不用另外打API。沒傳時names退回{}(呼叫端若未更新,行為不變)。"""
     print("[偵測源3] 維基題材關注度(發酵前緣)")
+    code2name = code2name or {}
     if get_theme_map is None:
         return []
     theme_map = get_theme_map()
@@ -96,11 +102,20 @@ def detect_wiki_attention():
             continue
         if a["stage"] == "flat":
             continue  # 平淡不輸出
+        # 2026-10-06新增:direct/indirect區分(見wiki_theme_map.py欄位說明)。
+        # codes仍然是direct+indirect的聯集(維持既有行為,畫面上還是看得到
+        # 間接受惠股),但額外帶stock_relation讓呼叫端可以分開顯示/降權,
+        # 不會再把間接受惠股當成題材本身的核心供應鏈個股看待。
+        direct = set(cfg["stocks"])
+        indirect = set(cfg.get("indirect_stocks", []))
+        codes = sorted(direct | indirect)
         results.append({
             "theme": theme,
             "ratio": a["ratio"],
             "recent_count": a["recent_mean"],
-            "codes": sorted(set(cfg["stocks"])),
+            "codes": codes,
+            "names": {cd: code2name.get(cd, "") for cd in codes},  # 2026-10-06新增
+            "stock_relation": {cd: ("direct" if cd in direct else "indirect") for cd in codes},
             "source": "wiki",
             "wiki_stage": a["stage"],           # pre-ferment / active
             "baseline_mean": a["baseline_mean"],

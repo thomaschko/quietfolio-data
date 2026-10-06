@@ -19,8 +19,14 @@ wiki_theme_map.py — 正式題材對照表(人工語意確認版)
   GaN + 氮化鎵 → 同條目「氮化鎵」,合併為 氮化鎵
 
 欄位:
-  wiki   : 維基條目正式名(寫死,絕不 fallback)
-  stocks : 相關個股代號(人工維護,題材觸發時輸出這些給你看)
+  wiki            : 維基條目正式名(寫死,絕不 fallback)
+  stocks          : 直接受惠個股代號(該題材的核心供應鏈/原廠,人工維護)
+  indirect_stocks : 間接受惠個股代號(2026-10-06新增,選填,預設無此欄位視為空
+                     清單)——業務本身不屬於這個題材的核心供應鏈,但因為題材
+                     發酵產生的排擠/替代效應而間接受惠。例如HBM產能排擠傳統
+                     記憶體供給,讓做NOR Flash/利基型DRAM/NAND模組的台廠
+                     「間接」受惠,但這些公司本身不生產HBM。混在stocks裡會
+                     讓使用者誤以為是題材本身的供應鏈個股,過度解讀訊號強度。
   note   : 標記(weak=訊號較弱,confirmed=語意精準)
 ============================================================
 """
@@ -64,9 +70,17 @@ THEME_WIKI_MAP = {
 
     # ── 記憶體 ──
     # 原廠:華邦電2344 旺宏2337 南亞科2408 群聯8299 十銓4967 宜鼎5289 威剛3260
+    # 2026-10-06修正:這3檔(華邦電/群聯/十銓)原本放在stocks(直接受惠),
+    # 但三者都不是HBM供應商——HBM由Samsung/SK海力士/Micron生產,台灣目前
+    # 沒有直接的HBM原廠。這3檔的真實邏輯是:HBM排擠Samsung/SK海力士的
+    # 傳統DRAM/NAND/NOR Flash產能,讓台廠在這些利基型記憶體產品線上間接
+    # 受惠(供給收緊、漲價)——跟「做HBM本身賺錢」是完全不同的受益機制、
+    # 不同的訊號強度,原本混在一起會讓人誤判這3檔是HBM核心供應鏈。
+    # 改標為indirect_stocks,目前沒有已知的台灣HBM直接供應鏈,stocks留空。
     "HBM": {
         "wiki": "HBM",
-        "stocks": ["2344", "8299", "4967"],  # 華邦電 群聯 十銓
+        "stocks": [],
+        "indirect_stocks": ["2344", "8299", "4967"],  # 華邦電 群聯 十銓(產能排擠受惠,非HBM供應商)
         "note": "confirmed",
     },
     "NAND": {
@@ -147,6 +161,8 @@ if __name__ == "__main__":
     print(f"正式題材對照表:{len(THEME_WIKI_MAP)} 個題材")
     total_stocks = set()
     for t, v in THEME_WIKI_MAP.items():
-        total_stocks |= set(v["stocks"])
-        print(f"  {t:8s} → 維基「{v['wiki']}」 → {len(v['stocks'])}檔 {v['note']}")
-    print(f"涵蓋個股:{len(total_stocks)} 檔")
+        indirect = v.get("indirect_stocks", [])
+        total_stocks |= set(v["stocks"]) | set(indirect)
+        tail = f" +間接{len(indirect)}檔" if indirect else ""
+        print(f"  {t:8s} → 維基「{v['wiki']}」 → 直接{len(v['stocks'])}檔{tail} {v['note']}")
+    print(f"涵蓋個股(直接+間接):{len(total_stocks)} 檔")
