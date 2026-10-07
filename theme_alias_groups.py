@@ -28,11 +28,24 @@ theme_alias_groups.py — 題材別名群組表(2026-10-06新增)
 # 群組:key是正規化後的統一名稱,value是這個敘事底下所有分開追蹤的題材名稱
 # (含watchlist.txt的關鍵字字面值、wiki_theme_map.py的題材key、KW_TO_THEME
 # 的中文題材目標值)。
+# 2026-10-07修正:「記憶體」群組原本漏了DRAM(裸詞)、DDR4、南亞科、華邦電
+# ——10/06當天DDR4暴增2.43倍、南亞科Q3營收+60%,但因為這四個關鍵字不在
+# 成員名單裡,canonical_theme()不會把它們正規化成「記憶體」,G區判斷
+# tw_active時完全看不到這兩筆訊號,才會誤判成「國際先行、台股未燃」。
+# 同時新增NAND/先進封裝/CPO三個群組(成員依watchlist.txt現有關鍵字),
+# 解決同一類「同一敘事被拆成多個獨立關鍵字各自追蹤、互相看不到對方」的問題。
 ALIAS_GROUPS = {
     "記憶體": [
-        "記憶體", "記憶體漲價", "記憶體模組", "DRAM合約價",
-        "HBM", "HBM4", "HBM4E", "DDR5", "利基型記憶體",
+        "記憶體", "記憶體漲價", "記憶體模組", "DRAM合約價", "DRAM", "DDR4",
+        "HBM", "HBM4", "HBM4E", "DDR5", "LPDDR", "利基型記憶體",
+        "南亞科", "華邦電",
     ],
+    "NAND": ["NAND", "SLC NAND", "eMMC", "UFS", "群聯", "旺宏"],
+    "先進封裝": [
+        "先進封裝", "CoWoS", "CoPoS", "SoIC", "FOPLP",
+        "面板級封裝", "2.5D封裝", "3D封裝", "矽中介層",
+    ],
+    "CPO": ["CPO", "共同封裝光學", "矽光子與CPO"],
     "磷化銦": ["磷化銦", "InP", "indium phosphide"],
     "NVIDIA平台": [
         "Vera Rubin", "Rubin", "Rubin Ultra", "Blackwell", "Blackwell Ultra",
