@@ -35,11 +35,14 @@ price_stage.py — 價量階段標籤(潛伏 / 啟動 / 過熱)
     POS_HIGH_MAX_PCT/POS_LOW_MIN_PCT。沒有真正涵蓋回溯一年的歷史資料
     (回溯天數不足,或窗口內資料太稀疏)時,price_pos=None,顯示「位階
     未知」——不用stage或短期漲跌幅代打,資料不夠就是不夠。
-一年歷史的資料來源:只對「當天雷達實際點名到的個股」(跟backfill()既有
-範圍邏輯一樣,不對全市場做一年回補)用TWSE STOCK_DAY逐月自行回補,見
-backfill_one_year()。TPEx的st43個股歷史端點目前是壞的(backfill()裡的
-電路斷路器會證實這點),上櫃股的一年歷史只能靠每日全市場快照慢慢累積
-(約252個交易日),這段時間price_pos照實回None。
+一年歷史的資料來源(2026-10-07再修正):發現Quietfolio GAS專案裡
+NewHighLow.js的price_high_state機制已經是成熟運作中的系統——全市場
+(上市+上櫃都有,不受本檔TPEx端點壞掉的限制)、每日15:35更新「追蹤以來
+最高收盤」。改成優先讀GAS推回本repo的price_high_state.json(見
+_load_gas_high_state()),只有GAS沒收錄的股票(例如興櫃新股,GAS明確
+排除興櫃)才退回本檔自己用TWSE STOCK_DAY逐月回補的方式(backfill_one_year(),
+範圍限縮在當天雷達實際點名到的個股)。兩種方式都一樣:沒有足夠歷史就
+price_pos=None,不用短期漲跌幅代打。
 ============================================================
 """
 
@@ -58,10 +61,13 @@ UA = {"User-Agent": "Mozilla/5.0 (quietfolio-radar)"}
 HIST_DIR = "price_history"
 BACKFILL_FILE = os.path.join(HIST_DIR, "backfill.json")   # {code: {YYYYMMDD: [close, vol]}}
 MARKET_FILE = os.path.join(HIST_DIR, "market.json")       # {code: "TWSE"|"TPEx"} 補抓時學到的上市/上櫃歸屬
+# 2026-10-07新增:Quietfolio GAS專案(NewHighLow.js)每日15:35推回本repo的
+# 全市場「追蹤以來最高收盤」狀態表,見_load_gas_high_state()。
+GAS_HIGH_STATE_FILE = "price_high_state.json"
 KEEP_DAYS = 45
 MAX_BACKFILL_CODES = 130
 
-VERSION = "2026-10-07a"  # price_pos與stage脫鉤+save_snapshot分交易所比對重複
+VERSION = "2026-10-07b"  # price_pos改優先採GAS price_high_state.json,自算backfill退為備援
 
 # ── 門檻(初始值,未校準)──
 OVERHEAT_CHG20 = 30.0
@@ -400,24 +406,22 @@ def _series_for(code, hist, store):
     return [(d, v[0], v[1]) for d, v in sorted(merged.items())]
 
 
-def _price_position(series):
-    """距一年收盤新高的跌幅,跟stage(動能)完全獨立計算。
-    需要真正涵蓋回溯一年的歷史(見MIN_HIGH_SPAN_DAYS/MIN_HIGH_WINDOW_DAYS),
-    不足就回(None, None)——顯示「位階未知」,不用stage或短期漲跌幅代打。
-    回傳 (price_pos, pct_below_high)。"""
-    if not series:
-        return None, None
-    today = dt.date.today()
-    first_date = dt.datetime.strptime(series[0][0], "%Y%m%d").date()
-    if (today - first_date).days < MIN_HIGH_SPAN_DAYS:
-        return None, None
-    cutoff = today - dt.timedelta(days=HIGH_LOOKBACK_DAYS)
-    window = [c for d, c, v in series if dt.datetime.strptime(d, "%Y%m%d").date() >= cutoff]
-    if len(window) < MIN_HIGH_WINDOW_DAYS:
-        return None, None
-    high = max(window)
-    last = series[-1][1]
-    if not high:
+def _load_gas_high_state():
+    """2026-10-07新增:讀GAS(Quietfolio GAS專案NewHighLow.js)每日15:35
+    推回本repo的price_high_state.json——全市場(含TPEx上櫃,不受本檔
+    _backfill_tpex端點壞掉的限制)、已經實際運作中的「追蹤以來最高收盤」
+    狀態表,比本檔自己backfill的視窗更完整,優先採用。檔案不存在(還沒
+    推過,或GAS那邊停了)就回空dict,呼叫端會自動退回本檔自算的方式。"""
+    try:
+        with open(GAS_HIGH_STATE_FILE, encoding="utf-8") as f:
+            return json.load(f).get("state", {})
+    except Exception:
+        return {}
+
+
+def _pos_from_high(high, last):
+    """共用:給定「最高收盤」跟「最新收盤」,算price_pos+距高點跌幅%。"""
+    if not high or not last:
         return None, None
     pct_below = round((high - last) / high * 100, 1)
     if pct_below < POS_HIGH_MAX_PCT:
@@ -429,11 +433,44 @@ def _price_position(series):
     return pos, pct_below
 
 
-def _classify(series, overheat_flag):
+def _price_position(series, code=None, gas_state=None):
+    """距一年收盤新高的跌幅,跟stage(動能)完全獨立計算。
+    2026-10-07修正:優先用GAS推回的price_high_state.json(見
+    _load_gas_high_state())——這是全市場、已經在正式運作的機制,比本檔
+    自己backfill的視窗更完整(尤其TPEx,本檔的_backfill_tpex端點目前是
+    壞的)。只有GAS沒收錄這檔(例如興櫃新股,GAS的NewHighLow.js明確排除
+    興櫃)或price_high_state.json還沒推送過,才退回本檔自算的「回溯一年
+    視窗」方式。兩種方式都需要真正涵蓋回溯一年的歷史,不足就回
+    (None, None, None)——顯示「位階未知」,不用stage或短期漲跌幅代打。
+    回傳 (price_pos, pct_below_high, source)。"""
+    if not series:
+        return None, None, None
+    last = series[-1][1]
+    gas_state = gas_state or {}
+    if code and code in gas_state:
+        high = gas_state[code].get("maxClose")
+        pos, pct_below = _pos_from_high(high, last)
+        if pos is not None:
+            return pos, pct_below, "gas_price_high_state"
+    # 退回:本檔自算的回溯一年視窗(見模組docstring)
+    today = dt.date.today()
+    first_date = dt.datetime.strptime(series[0][0], "%Y%m%d").date()
+    if (today - first_date).days < MIN_HIGH_SPAN_DAYS:
+        return None, None, None
+    cutoff = today - dt.timedelta(days=HIGH_LOOKBACK_DAYS)
+    window = [c for d, c, v in series if dt.datetime.strptime(d, "%Y%m%d").date() >= cutoff]
+    if len(window) < MIN_HIGH_WINDOW_DAYS:
+        return None, None, None
+    pos, pct_below = _pos_from_high(max(window), last)
+    return pos, pct_below, ("self_backfill" if pos is not None else None)
+
+
+def _classify(series, overheat_flag, code=None, gas_state=None):
     n = len(series)
     closes = [s[1] for s in series]
     vols = [s[2] for s in series]
     res = {"history_days": n, "stage": "未知", "price_pos": None, "pct_below_high": None,
+           "price_pos_source": None,
            "chg1": None, "chg5": None, "chg20": None, "vol_ratio": None,
            "limit_up_10d": 0, "overheat_notice": bool(overheat_flag)}
     if n >= 2 and closes[-2] > 0:
@@ -466,7 +503,8 @@ def _classify(series, overheat_flag):
     else:
         stage = "潛伏"
     res["stage"] = stage
-    res["price_pos"], res["pct_below_high"] = _price_position(series)
+    res["price_pos"], res["pct_below_high"], res["price_pos_source"] = _price_position(
+        series, code=code, gas_state=gas_state)
     return res
 
 
@@ -474,6 +512,7 @@ def stage_for_codes(codes, overheat=None):
     """供 daily_digest.py 呼叫。純讀本地檔。回傳 {code: {...}}(只含有價格資料的股票)。"""
     overheat = overheat or {}
     hist = load_history()
+    gas_state = _load_gas_high_state()
     try:
         with open(BACKFILL_FILE, encoding="utf-8") as f:
             store = json.load(f)
@@ -484,7 +523,7 @@ def stage_for_codes(codes, overheat=None):
         series = _series_for(code, hist, store)
         if not series:
             continue
-        out[code] = _classify(series, overheat.get(code))
+        out[code] = _classify(series, overheat.get(code), code=code, gas_state=gas_state)
     return out
 
 
@@ -587,11 +626,15 @@ def main():
                    "stages": stages}, f, ensure_ascii=False, indent=1)
     cnt = {}
     pos_cnt = {}
+    pos_src_cnt = {}
     for v in stages.values():
         cnt[v["stage"]] = cnt.get(v["stage"], 0) + 1
         pos_cnt[v["price_pos"]] = pos_cnt.get(v["price_pos"], 0) + 1
+        pos_src_cnt[v["price_pos_source"]] = pos_src_cnt.get(v["price_pos_source"], 0) + 1
     print(f"  動能階段分布: {cnt}")
     print(f"  價格位階分布(price_pos,None=位階未知): {pos_cnt}")
+    print(f"  價格位階資料來源分布: {pos_src_cnt}"
+          "(gas_price_high_state=GAS推回/self_backfill=本檔自算/None=兩邊都沒有)")
     for c in sorted(stages, key=lambda x: -(stages[x].get("chg20") or -999))[:15]:
         print(f"    {c} {tag(stages[c])} {pos_tag(stages[c])}  歷史{stages[c]['history_days']}日 "
               f"量比{stages[c].get('vol_ratio')}")
