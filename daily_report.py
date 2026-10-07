@@ -22,6 +22,8 @@ import json
 import datetime as dt
 import requests
 
+VERSION = "2026-10-07a"  # price_pos改顯示真實位階(底部/中段/高檔),與stage(動能)分開描述
+
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")  # 複用你已有的Gemini key,免費層
 GEMINI_MODEL = "gemini-3.5-flash-lite"
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
@@ -55,23 +57,24 @@ def format_digest_for_prompt(digest, tracker):
     lines.append("\n【G區 雙邊確認題材(最高優先)】")
     if dual:
         for x in dual:
-            # 2026-10-06修正:price_stage.py量的是「動能階段」(近20日漲幅/
-            # 量比/漲停次數),不是「股價在52週區間的位置」——近20日+4%或-2%
-            # 都只代表「沒有大漲」,不能說是底部、更不是安全邊際。原本這裡寫
-            # 「受惠股底部X檔/高檔X檔」,曾經讓Gemini寫出「位居底部、安全邊際」
-            # 這種資料不支持的結論(真實發生過的案例)。改用「潛伏」(沒有
-            # 大漲)/「過熱」(漲多或有注意交易)的動能語言,不再暗示價格
-            # 區間位置。price_data_available區分「真的查到0檔」跟「這批
-            # 代號完全沒有動能資料可查」,後者不能印成0檔。
+            # 2026-10-07修正:price_pos現在是price_stage.py獨立算出的「距
+            # 一年收盤新高跌幅」,跟動能階段stage(近20日漲幅/量比/漲停次數)
+            # 完全脫鉤——2026-10-06舊版曾經直接把stage硬套成price_pos,
+            # 導致台積電(2330)10/06創歷史新高收盤卻被標成「底部」這種
+            # 誤導。現在price_pos是真的位階資料,才能講「底部/高檔」這種
+            # 話。price_data_available區分「真的查到0檔」跟「這批代號
+            # 完全沒有一年歷史可查(回溯不夠久)」,後者不能印成0檔。
             if x.get("price_data_available"):
-                pos_text = (f"受惠股動能潛伏(近20日未大漲){x.get('stocks_dormant', 0)}檔/"
-                            f"過熱(漲多或有注意交易){x.get('stocks_overheated', 0)}檔")
+                pos_text = (f"受惠股位階低檔(距一年高點>25%){x.get('stocks_low', 0)}檔/"
+                            f"高檔(距一年高點<10%){x.get('stocks_high', 0)}檔")
             else:
-                pos_text = "受惠股動能階段資料暫缺,不得推論其股價位置"
+                pos_text = "受惠股位階資料暫缺(歷史回溯不足一年),不得推論其股價位置"
+            trig = x.get("tw_trigger_keywords", [])
+            trig_text = f",台股觸發關鍵字:{'/'.join(trig)}" if trig else ""
             ev = x.get("evidence", {})
             ev_text = f"[{ev.get('level','')}:{'/'.join(ev.get('sources', []))}]" if ev.get("sources") else ""
             lines.append(f"- {x['theme']} {ev_text}: 台股有訊號 + 國際法說({'/'.join(x.get('intl_companies', []))}), "
-                        f"關鍵詞:{'/'.join(x.get('intl_keywords', [])[:5])}, {pos_text}")
+                        f"關鍵詞:{'/'.join(x.get('intl_keywords', [])[:5])}, {pos_text}{trig_text}")
     else:
         lines.append("- 今日無雙邊確認題材")
     lines.append("\n【國際先行、台股未燃(最前緣訊號)】")
@@ -86,13 +89,17 @@ def format_digest_for_prompt(digest, tracker):
     lines.append("\n【A區 多源共振個股】")
     if reso:
         for r in reso[:10]:
-            # 2026-10-06修正:price_pos是price_stage.py的動能分類(近20日
-            # 漲幅/量比/漲停次數),不是價格在52週區間的位置,不能顯示成
-            # 「底部/高檔」(見下方G區同樣的修正說明)。
-            pos = {"low": "🟢潛伏", "mid": "🟡啟動", "high": "🔴過熱"}.get(r.get("price_pos"), "")
+            # 2026-10-07修正:stage(動能階段,近20日漲幅/量比/漲停次數)跟
+            # price_pos(股價位階,距一年收盤新高的跌幅)現在完全脫鉤,各自
+            # 獨立顯示,不能混為一談——「潛伏」只代表近期沒有大漲,不等於
+            # 股價位置低;底部/高檔才是真正的價格位置結論,且只有在真的
+            # 有一年歷史可比時才會有值,沒有就老實標「位階未知」。
+            stage_text = {"潛伏": "🟢潛伏(近20日未大漲)", "啟動": "🟡啟動",
+                          "過熱": "🔴過熱"}.get(r.get("stage"), "")
+            pos_text = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}.get(r.get("price_pos"), "位階未知")
             name = r.get("name", "")
             lines.append(f"- {r['code']}{name} [{r.get('source_count')}源:{'/'.join(r.get('sources', []))}] "
-                        f"{pos} 相關題材:{'/'.join(r.get('themes', [])[:3])}")
+                        f"{stage_text} {pos_text} 相關題材:{'/'.join(r.get('themes', [])[:3])}")
     else:
         lines.append("- 今日無多源共振個股")
 
@@ -120,9 +127,12 @@ def format_digest_for_prompt(digest, tracker):
     if chips:
         for c in chips[:8]:
             name = c.get("name", "")
-            pos = {"low": "🟢潛伏", "mid": "🟡啟動", "high": "🔴過熱"}.get(c.get("price_pos"), "")
+            # 2026-10-07:同A區,stage(動能)/price_pos(位階)分開顯示。
+            stage_text = {"潛伏": "🟢潛伏(近20日未大漲)", "啟動": "🟡啟動",
+                          "過熱": "🔴過熱"}.get(c.get("stage"), "")
+            pos_text = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}.get(c.get("price_pos"), "位階未知")
             flag = " 🔥" if c.get("surge") else ""
-            lines.append(f"- {c['code']}{name} {pos}{flag}: {c.get('broker_count', 0)}家券商, "
+            lines.append(f"- {c['code']}{name} {stage_text} {pos_text}{flag}: {c.get('broker_count', 0)}家券商, "
                         f"{'/'.join(c.get('brokers', []))}")
     else:
         lines.append("- 今日無券商覆蓋暴增個股")
@@ -213,15 +223,22 @@ SYSTEM_PROMPT = """你是台股題材研究員,根據結構化資料撰寫每日
 1. 用繁體中文,語氣像研究員在跟熟悉市場的朋友做簡報,不是罐頭式條列數字。
 2. 三大類都要有一段,依優先順序展開(發酵雷達>題材雷達>候選題材),
    但不用生硬地分「第一部分第二部分」,用自然的段落過渡銜接。
-3. 交易哲學要貫穿全文:🟢潛伏(近20日未大漲)的標的可以優先展開、標出來是
-   關注重點,但這只代表「還沒大漲」,絕對不能講成「位居底部」「安全邊際」
-   「低檔」這種暗示價格區間位置的話——這是動能指標,不是價格區間位置指標,
-   沒有股票的52週高低點資料,不能做這種推論。🔴過熱(近20日大漲或有交易所
-   注意交易/處置警示)的標的即使訊號很強,也要明確提醒「短期漲多,此時追價
-   風險較高」,不能因為訊號強就淡化提醒。資料裡如果沒有標動能階段(沒有
-   🟢🟡🔴標記,或文字明寫「動能階段資料暫缺」),絕對不要自己推測或編造
-   這檔股票現在是過熱還是潛伏——沒有資料就是沒有資料,照實說「資料暫缺」,
-   不能因為要配合交易哲學的敘事就腦補一個階段。
+3. 交易哲學要貫穿全文,但資料裡有兩組完全獨立、不能混為一談的標記:
+   (a) 動能階段——🟢潛伏(近20日未大漲)/🟡啟動/🔴過熱,量的是近期漲跌快慢。
+       🟢潛伏只代表「最近沒有大漲」,絕對不能因此講成「位居底部」「安全
+       邊際」「低檔」——動能跟價格位置是兩件不相干的事,不能因為某檔
+       標的最近沒漲就推論它現在股價很低。🔴過熱(近20日大漲或有交易所
+       注意交易/處置警示)即使訊號很強,也要明確提醒「短期漲多,此時
+       追價風險較高」,不能因為訊號強就淡化提醒。
+   (b) 股價位階——🟢底部/🟡中段/🔴高檔,量的是「距一年收盤新高的跌幅」,
+       是唯一可以講「底部」「高檔」「安全邊際」這類價格區間位置用語的
+       依據。沒有一年歷史資料可比時會明寫「位階未知」,這種情況下絕對
+       不要自己推測或編造這檔股票現在是底部還是高檔——沒有資料就是
+       沒有資料,照實說「位階未知」,不能因為該股同時被標「潛伏」就
+       順勢腦補成「位居低檔、安全邊際」,這是兩組完全不同的資料,潛伏
+       不等於底部,啟動/過熱也不等於中段/高檔。
+   資料裡如果完全沒有標動能階段或股價位階(例如文字明寫「位階資料暫缺」),
+   同樣不要自己推測或編造。
 4. E2區的「近期關注」要明確跟E區/D區區分語氣——這是「還在觀察階段」的訊號,
    暴增比還沒過門檻,用「值得留意但尚未確認」這種謹慎語氣,不要講得像已經是題材。
 5. 「今日首見」的新題材要註明是初步發現、需要時間驗證;「連續追蹤中」天數
@@ -269,7 +286,7 @@ def main():
     now = dt.datetime.now()
     date_str = now.strftime("%Y年%m月%d日")
     print("=" * 60)
-    print(f"每日題材研究報告生成  {date_str}")
+    print(f"每日題材研究報告生成  {date_str}  [版本 {VERSION}]")
     print("=" * 60)
 
     digest = load_json(DIGEST_FILE)
