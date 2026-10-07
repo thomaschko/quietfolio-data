@@ -22,13 +22,24 @@ price_stage.py — 價量階段標籤(潛伏 / 啟動 / 過熱)
   潛伏:以上皆非,且有足夠歷史可判斷
   未知:歷史不足(<6個交易日),只有單日漲跌可看
 
-對應 daily_report.py 的 price_pos 欄位(low/mid/high是內部分類鍵,語意是
-「動能階段」不是「價格區間位置」——這是動能指標,近20日漲幅+4%或-2%都只是
-「沒有大漲」,不能說明股價在52週區間的哪裡,更不等於底部/安全邊際。
-2026-10-06修正:daily_report.py原本把這三個鍵顯示成「底部/中段/高檔」,
-會讓Gemini寫出「位居底部、安全邊際」這種資料不支持的結論,已改顯示成
-「潛伏(近20日未大漲)/啟動/過熱」,不再暗示價格區間位置):
-  潛伏→low(🟢潛伏)  啟動→mid(🟡啟動)  過熱→high(🔴過熱)
+2026-10-07修正:stage(動能階段)跟price_pos(價格位階)原本是同一件事
+「硬套」出來的(STAGE_TO_POS = {潛伏:low, 啟動:mid, 過熱:high}),但stage
+只量近20日漲幅/量比/漲停次數,跟股價在一年區間的哪個位置完全是兩件不
+相干的事——實測發現台積電(2330)10/06創歷史新高收盤,卻因為近20日沒有
+爆量大漲被標成「潛伏/low」,報告裡還被顯示成「🟢底部」;穎崴(6515)只
+從高點回檔12%,卻因為同一套邏輯被講成「具安全邊際的切入契機」。
+現在兩者完全脫鉤、各自獨立計算:
+  stage:維持上面的動能定義不變,門檻數字不動。
+  price_pos:改成「距一年收盤新高的跌幅」—— <10%→high(🔴高檔)、
+    10~25%→mid(🟡中段)、>25%→low(🟢底部),門檻數字見下方
+    POS_HIGH_MAX_PCT/POS_LOW_MIN_PCT。沒有真正涵蓋回溯一年的歷史資料
+    (回溯天數不足,或窗口內資料太稀疏)時,price_pos=None,顯示「位階
+    未知」——不用stage或短期漲跌幅代打,資料不夠就是不夠。
+一年歷史的資料來源:只對「當天雷達實際點名到的個股」(跟backfill()既有
+範圍邏輯一樣,不對全市場做一年回補)用TWSE STOCK_DAY逐月自行回補,見
+backfill_one_year()。TPEx的st43個股歷史端點目前是壞的(backfill()裡的
+電路斷路器會證實這點),上櫃股的一年歷史只能靠每日全市場快照慢慢累積
+(約252個交易日),這段時間price_pos照實回None。
 ============================================================
 """
 
@@ -50,6 +61,8 @@ MARKET_FILE = os.path.join(HIST_DIR, "market.json")       # {code: "TWSE"|"TPEx"
 KEEP_DAYS = 45
 MAX_BACKFILL_CODES = 130
 
+VERSION = "2026-10-07a"  # price_pos與stage脫鉤+save_snapshot分交易所比對重複
+
 # ── 門檻(初始值,未校準)──
 OVERHEAT_CHG20 = 30.0
 ACTIVE_CHG20 = 10.0
@@ -59,7 +72,14 @@ LIMIT_UP_PCT = 9.5
 OVERHEAT_LIMIT_UP_DAYS = 2
 MIN_HISTORY_DAYS = 6
 
-STAGE_TO_POS = {"潛伏": "low", "啟動": "mid", "過熱": "high"}
+# ── 一年新高位階門檻(2026-10-07新增,見price_pos說明)──
+POS_HIGH_MAX_PCT = 10.0   # 距一年收盤新高跌幅 <10% → high(🔴高檔)
+POS_LOW_MIN_PCT = 25.0    # 距一年收盤新高跌幅 >25% → low(🟢底部),10~25%之間是mid
+HIGH_LOOKBACK_DAYS = 365  # 一年新高判斷窗口(日曆天)
+MIN_HIGH_SPAN_DAYS = 330  # 該股歷史至少要回溯這麼多天,才敢說「有一年可比」
+MIN_HIGH_WINDOW_DAYS = 150  # 一年窗口內至少要有這麼多個交易日資料,避免太稀疏
+HIGH_LOOKBACK_MONTHS = 12   # backfill_one_year() 目標月數
+HIGH_BACKFILL_MAX_CODES = 60  # 一年新高回補每次最多處理幾檔(只動TWSE,每檔一個月)
 
 
 # ============================================================
@@ -156,15 +176,36 @@ def load_history():
     return out
 
 
-def save_snapshot(date, snap):
-    """存今日快照。若與最新一份幾乎完全相同(假日重複抓到上個交易日),不存。"""
+def save_snapshot(date, snap, market):
+    """存今日快照。若與最新一份幾乎完全相同(假日重複抓到上個交易日),不存。
+
+    2026-10-07修正:原本拿整份快照(TWSE+TPEx混在一起)跟上一份比對相同
+    比例,門檻0.9。實測10/06當天TWSE資料其實跟前一天100%一字不差(抓到
+    還沒更新的舊資料),但因為同一次執行裡TPEx有6599檔是新抓到的,混在
+    一起算的相同比例被稀釋到只剩15.9%,遠低於0.9門檻,導致這份「TWSE其實
+    是重複的」快照被當成新的一天存了進去,下游chg1=0.0整批出現。改成
+    分別比對TWSE、TPEx各自的相同比例,只有兩邊都跟前一天幾乎一樣(都
+    ≥0.9)才判定整份重複不存;任一邊有新資料,就代表這份快照有價值,
+    整份存下來(不逐檔拆開存,維持原本「一天一個檔案」的簡單格式)。"""
     os.makedirs(HIST_DIR, exist_ok=True)
     hist = load_history()
     if hist:
         last_d, last = hist[-1]
-        same = sum(1 for c, v in snap.items() if c in last and last[c][0] == v[0] and last[c][1] == v[1])
-        if snap and same / len(snap) >= 0.9:
-            print(f"  快照與 {last_d} 相同(休市日),不重複存")
+
+        def _match_ratio(codes):
+            codes = [c for c in codes if c in snap]
+            if not codes:
+                return 1.0  # 這個交易所今天完全沒抓到資料,不構成「有新資料」的理由
+            same = sum(1 for c in codes if c in last and last[c][0] == snap[c][0] and last[c][1] == snap[c][1])
+            return same / len(codes)
+
+        twse_codes = [c for c, m in market.items() if m == "TWSE"]
+        tpex_codes = [c for c, m in market.items() if m == "TPEx"]
+        twse_same = _match_ratio(twse_codes)
+        tpex_same = _match_ratio(tpex_codes)
+        if twse_same >= 0.9 and tpex_same >= 0.9:
+            print(f"  快照與 {last_d} 相同(休市日),不重複存"
+                  f"(TWSE相同比{twse_same:.0%} TPEx相同比{tpex_same:.0%})")
             return None
         if date is None:
             date = dt.date.today().strftime("%Y%m%d")
@@ -221,6 +262,59 @@ def _load_json_file(path):
             return json.load(f)
     except Exception:
         return {}
+
+
+def _year_months(n):
+    """回傳含當月、往前推n-1個月的'YYYYMM'清單,由新到舊。"""
+    out = []
+    y, m = dt.date.today().year, dt.date.today().month
+    for _ in range(n):
+        out.append(f"{y}{m:02d}")
+        m -= 1
+        if m == 0:
+            m, y = 12, y - 1
+    return out
+
+
+def _missing_year_months(code, hist, store):
+    """這檔股票近12個月裡,還沒有任何資料覆蓋的月份(新到舊排序)。"""
+    series = _series_for(code, hist, store)
+    covered = {d[:6] for d, _, _ in series}
+    return [ym for ym in _year_months(HIGH_LOOKBACK_MONTHS) if ym not in covered]
+
+
+def backfill_one_year(codes, market):
+    """2026-10-07新增:一年新高的資料來源——自行用TWSE STOCK_DAY逐月回補,
+    範圍限縮在當天雷達實際點名到的個股(跟backfill()既有範圍邏輯一樣,
+    不對全市場做一年回補)。每次只替每檔補「最舊一個還缺的月份」(不是
+    一次補滿12個月),一天進一點,約2週內讓有出現在雷達裡的TWSE股票
+    累積滿12個月、算出真正的一年新高,避免單次執行為了一次補滿12個月
+    狂打上百個請求、拖垮執行時間。
+    只做TWSE——TPEx的st43個股歷史端點目前是壞的(backfill()裡的電路
+    斷路器已證實這點),上櫃股的一年歷史只能靠每日全市場快照慢慢累積
+    (約252個交易日),這段時間price_pos照實回None、顯示「位階未知」,
+    不用短期漲跌幅代打。"""
+    hist = load_history()
+    store = _load_json_file(BACKFILL_FILE)
+    ok = fail = skip = 0
+    for code in [c for c in codes if market.get(c) == "TWSE"][:HIGH_BACKFILL_MAX_CODES]:
+        missing = _missing_year_months(code, hist, store)
+        if not missing:
+            skip += 1
+            continue
+        ym = missing[-1]  # 最舊的缺口先補,由遠到近逐步補滿
+        try:
+            got = _backfill_twse(code, ym)
+            if got:
+                store.setdefault(code, {}).update(got)
+                ok += 1
+        except Exception:
+            fail += 1
+        time.sleep(1.0)
+    with open(BACKFILL_FILE, "w", encoding="utf-8") as f:
+        json.dump(store, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"  一年新高回補(TWSE,每檔補最舊缺的一個月): 成功 {ok} 檔 / "
+          f"失敗 {fail} 檔 / 已滿12個月 {skip} 檔")
 
 
 def backfill(codes, market, current_month_only=False, force=False):
@@ -306,11 +400,40 @@ def _series_for(code, hist, store):
     return [(d, v[0], v[1]) for d, v in sorted(merged.items())]
 
 
+def _price_position(series):
+    """距一年收盤新高的跌幅,跟stage(動能)完全獨立計算。
+    需要真正涵蓋回溯一年的歷史(見MIN_HIGH_SPAN_DAYS/MIN_HIGH_WINDOW_DAYS),
+    不足就回(None, None)——顯示「位階未知」,不用stage或短期漲跌幅代打。
+    回傳 (price_pos, pct_below_high)。"""
+    if not series:
+        return None, None
+    today = dt.date.today()
+    first_date = dt.datetime.strptime(series[0][0], "%Y%m%d").date()
+    if (today - first_date).days < MIN_HIGH_SPAN_DAYS:
+        return None, None
+    cutoff = today - dt.timedelta(days=HIGH_LOOKBACK_DAYS)
+    window = [c for d, c, v in series if dt.datetime.strptime(d, "%Y%m%d").date() >= cutoff]
+    if len(window) < MIN_HIGH_WINDOW_DAYS:
+        return None, None
+    high = max(window)
+    last = series[-1][1]
+    if not high:
+        return None, None
+    pct_below = round((high - last) / high * 100, 1)
+    if pct_below < POS_HIGH_MAX_PCT:
+        pos = "high"
+    elif pct_below <= POS_LOW_MIN_PCT:
+        pos = "mid"
+    else:
+        pos = "low"
+    return pos, pct_below
+
+
 def _classify(series, overheat_flag):
     n = len(series)
     closes = [s[1] for s in series]
     vols = [s[2] for s in series]
-    res = {"history_days": n, "stage": "未知", "price_pos": None,
+    res = {"history_days": n, "stage": "未知", "price_pos": None, "pct_below_high": None,
            "chg1": None, "chg5": None, "chg20": None, "vol_ratio": None,
            "limit_up_10d": 0, "overheat_notice": bool(overheat_flag)}
     if n >= 2 and closes[-2] > 0:
@@ -343,7 +466,7 @@ def _classify(series, overheat_flag):
     else:
         stage = "潛伏"
     res["stage"] = stage
-    res["price_pos"] = STAGE_TO_POS.get(stage)
+    res["price_pos"], res["pct_below_high"] = _price_position(series)
     return res
 
 
@@ -366,7 +489,7 @@ def stage_for_codes(codes, overheat=None):
 
 
 def tag(info):
-    """顯示用短標籤,例:'🔴過熱+35.2%' / '🟢潛伏' / '⚪未知'。"""
+    """顯示用短標籤(動能階段),例:'🔴過熱+35.2%' / '🟢潛伏' / '⚪未知'。"""
     if not info:
         return ""
     icon = {"潛伏": "🟢", "啟動": "🟡", "過熱": "🔴"}.get(info["stage"], "⚪")
@@ -378,6 +501,18 @@ def tag(info):
     if info.get("overheat_notice"):
         s += "⚠注意交易"
     return s
+
+
+def pos_tag(info):
+    """顯示用短標籤(價格位階,跟上面的動能階段tag()完全獨立),例:
+    '🔴高檔(距高點-6%)' / '🟢底部(距高點-32%)' / '位階未知'。"""
+    if not info or info.get("price_pos") is None:
+        return "位階未知"
+    icon = {"low": "🟢", "mid": "🟡", "high": "🔴"}.get(info["price_pos"], "⚪")
+    label = {"low": "底部", "mid": "中段", "high": "高檔"}.get(info["price_pos"], "")
+    pct = info.get("pct_below_high")
+    pct_str = f"(距高點-{pct:.0f}%)" if pct is not None else ""
+    return f"{icon}{label}{pct_str}"
 
 
 # ============================================================
@@ -411,7 +546,7 @@ def _collect_targets():
 
 def main():
     print("=" * 50)
-    print("price_stage 開始(價量階段標籤)")
+    print(f"price_stage 開始(價量階段標籤) [版本 {VERSION}]")
     print("=" * 50)
     date, snap, market = fetch_market_snapshot()
     if not snap:
@@ -419,7 +554,7 @@ def main():
         return
     print(f"  快照資料日期={date or '無Date欄位'}  執行日期={dt.date.today().strftime('%Y%m%d')}"
           "(若資料日期落後,代表交易所資料尚未更新,排程宜再晚一點)")
-    save_snapshot(date, snap)
+    save_snapshot(date, snap, market)
 
     targets, overheat = _collect_targets()
     hist = load_history()
@@ -439,16 +574,26 @@ def main():
         print(f"  今日快照缺 {len(missing_today)} 檔,逐檔刷新當月資料")
         backfill(missing_today, market, current_month_only=True, force=True)
 
+    # 2026-10-07新增:一年新高回補(見backfill_one_year docstring),只對
+    # TWSE股票逐檔補最舊缺的一個月,跟上面tier-1(近21日)的回補分開跑。
+    learned_market = _load_json_file(MARKET_FILE)
+    twse_targets = [c for c in sorted(targets) if (market.get(c) or learned_market.get(c)) == "TWSE"]
+    if twse_targets:
+        backfill_one_year(twse_targets, {**learned_market, **market})
+
     stages = stage_for_codes(targets, overheat)
     with open("price_stage.json", "w", encoding="utf-8") as f:
         json.dump({"generated_at": dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                    "stages": stages}, f, ensure_ascii=False, indent=1)
     cnt = {}
+    pos_cnt = {}
     for v in stages.values():
         cnt[v["stage"]] = cnt.get(v["stage"], 0) + 1
-    print(f"  階段分布: {cnt}")
+        pos_cnt[v["price_pos"]] = pos_cnt.get(v["price_pos"], 0) + 1
+    print(f"  動能階段分布: {cnt}")
+    print(f"  價格位階分布(price_pos,None=位階未知): {pos_cnt}")
     for c in sorted(stages, key=lambda x: -(stages[x].get("chg20") or -999))[:15]:
-        print(f"    {c} {tag(stages[c])}  歷史{stages[c]['history_days']}日 "
+        print(f"    {c} {tag(stages[c])} {pos_tag(stages[c])}  歷史{stages[c]['history_days']}日 "
               f"量比{stages[c].get('vol_ratio')}")
 
 
