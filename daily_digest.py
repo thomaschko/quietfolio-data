@@ -27,6 +27,8 @@ import json
 import datetime as dt
 from collections import defaultdict
 
+from theme_alias_groups import canonical_theme
+
 
 def load_json(path):
     try:
@@ -34,6 +36,88 @@ def load_json(path):
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         return None
+
+
+def build_code2name(event, newtheme, tracker):
+    """2026-10-06新增:彙整一份全域code->name對照表,供A區(多源共振)標名稱用。
+    event_theme_radar.py自己建的code2name只在該腳本內部用,沒有存進
+    event_theme_raw.json頂層;但每個題材/候選項目自己已經帶了{code:name}
+    (names/related_names),這裡把各來源已經抓到的名稱全部彙整起來重用,
+    不必為了補名稱另外打一次TWSE/TPEx API。後出現的來源會覆蓋先出現的
+    空字串(例如某來源查無名稱但另一來源有),盡量填滿。"""
+    code2name = {}
+    for t in event.get("themes", []):
+        for cd, nm in (t.get("names") or {}).items():
+            if nm and not code2name.get(cd):
+                code2name[cd] = nm
+    for c in newtheme.get("candidates", []):
+        for cd, nm in (c.get("related_names") or c.get("names") or {}).items():
+            if nm and not code2name.get(cd):
+                code2name[cd] = nm
+    for bucket in ("first_seen", "ongoing"):
+        for e in tracker.get(bucket, []):
+            for cd, nm in (e.get("names") or {}).items():
+                if nm and not code2name.get(cd):
+                    code2name[cd] = nm
+    return code2name
+
+
+EVIDENCE_LABELS = {
+    "keyword_surge": "台股新聞",
+    "mops": "公開資訊觀測站",
+    "wiki": "維基",
+    "earnings": "國際法說",
+    "intl_news": "國際新聞",
+    "ai_extraction": "AI萃取",
+}
+
+
+def build_theme_evidence(event, earnings_rising, intl_news_heat, tracker, kw_to_theme):
+    """2026-10-06新增:每個題材(正規化後)背後有哪幾類獨立來源佐證,分級:
+    單一來源/雙來源/三源以上。只看「來源類別」不看「來源數量」——同一類別
+    (例如src1關鍵字暴增)命中好幾次還是算一種來源,不能靠同一種偵測機制
+    重複出現就灌水成多來源(這正是item1要修的同一種問題,這裡從一開始
+    就用類別去重,不會重蹈覆轍)。
+    回傳 {canonical_theme: {"sources": [標籤,...], "level": "單一來源"/"雙來源"/"三源以上"}}
+    """
+    evidence = defaultdict(set)
+
+    for t in event.get("themes", []):
+        canon = canonical_theme(t["theme"])
+        src = t.get("source", "")
+        is_keyword_src = ("暴增" in src) or ("關鍵字" in src) or (src == "cnyes")
+        if t.get("wiki_stage"):
+            evidence[canon].add("wiki")
+        elif src == "MOPS重訊" or src.startswith("重訊"):
+            evidence[canon].add("mops")
+        elif is_keyword_src:
+            evidence[canon].add("keyword_surge")
+
+    for r in earnings_rising:
+        theme = kw_to_theme.get(r.get("keyword"))
+        if theme:
+            evidence[canonical_theme(theme)].add("earnings")
+
+    for h in intl_news_heat:
+        theme = kw_to_theme.get(h.get("keyword"))
+        if theme:
+            evidence[canonical_theme(theme)].add("intl_news")
+
+    for bucket in ("first_seen", "ongoing"):
+        for e in tracker.get(bucket, []):
+            method = e.get("method", "")
+            if ("ai" in method or "search" in method) and e.get("term"):
+                evidence[canonical_theme(e["term"])].add("ai_extraction")
+
+    result = {}
+    for canon, cats in evidence.items():
+        n = len(cats)
+        level = "單一來源" if n <= 1 else ("雙來源" if n == 2 else "三源以上")
+        result[canon] = {
+            "sources": sorted(EVIDENCE_LABELS.get(c, c) for c in cats),
+            "level": level,
+        }
+    return result
 
 
 def build_digest():
@@ -45,9 +129,25 @@ def build_digest():
     broker = load_json("broker_coverage.json") or {}
     earnings = load_json("earnings_keywords.json") or {}  # src6
     tracker = load_json("theme_tracker.json") or {}  # 題材追蹤(AI語意+jieba整合,含首見/追蹤中)
+    code2name = build_code2name(event, newtheme, tracker)  # 2026-10-06新增
 
-    # 以個股為中心聚合:code -> {sources:set, detail:{}}
-    stock_signals = defaultdict(lambda: {"sources": set(), "detail": {}})
+    # 2026-10-06新增:來源「類別」對照——wiki關注度與wiki發酵階段標記本質上
+    # 是同一個偵測機制(src3維基),不該被當成兩個獨立來源分別計數。
+    # 根因:event_theme_radar.py的stocks[].sources已經含"wiki"(來自
+    # t["source"]),daily_digest.py原本又依fermentation另外疊加
+    # "wiki_preferment"/"wiki"進同一個集合,wiki單一來源命中時
+    # len(sources)直接變成2,直接觸發via_source_diversity的多源共振,
+    # 但背後其實只有一種偵測機制給出訊號。改成先把每個來源字串正規化成
+    # 「類別」再計數,wiki/wiki_preferment一律算同一類。
+    SOURCE_CATEGORY = {
+        "wiki": "wiki", "wiki_preferment": "wiki",
+    }
+
+    def source_category(src):
+        return SOURCE_CATEGORY.get(src, src)
+
+    # 以個股為中心聚合:code -> {source_categories:set, detail:{}}
+    stock_signals = defaultdict(lambda: {"source_categories": set(), "detail": {}})
 
     # src1-3:event_theme 的 stocks
     for s in event.get("stocks", []):
@@ -56,11 +156,12 @@ def build_digest():
             continue
         sig = stock_signals[code]
         for src in s.get("sources", []):
-            sig["sources"].add(src)  # cnyes/mops/wiki
+            sig["source_categories"].add(source_category(src))  # cnyes/mops/wiki
         sig["detail"]["themes"] = s.get("themes", [])
         sig["detail"]["hit_count"] = s.get("hit_count", 0)
         if s.get("fermentation"):
-            sig["sources"].add("wiki_preferment" if s["fermentation"] == "pre-ferment" else "wiki")
+            # 發酵階段只存進detail供顯示用,不再額外塞進來源集合裡(避免
+            # 跟上面已經算進sources的"wiki"重複計數成兩個來源)
             sig["detail"]["fermentation"] = s["fermentation"]
 
     # src5:券商覆蓋率
@@ -71,7 +172,7 @@ def build_digest():
             continue
         if c.get("recentBrokerCount", c.get("recent_broker_count", 0)) >= 3:
             sig = stock_signals[code]
-            sig["sources"].add("broker")
+            sig["source_categories"].add("broker")
             sig["detail"]["broker_count"] = c.get("recentBrokerCount", c.get("recent_broker_count"))
             sig["detail"]["brokers"] = c.get("recentBrokers", c.get("recent_brokers", []))
             if c.get("surge"):
@@ -94,15 +195,16 @@ def build_digest():
     HIT_COUNT_THRESHOLD = 3
     resonance = []
     for code, sig in stock_signals.items():
-        n = len(sig["sources"])
+        n = len(sig["source_categories"])
         hit_count = sig["detail"].get("hit_count", 0)
         via_source_diversity = n >= 2
         via_theme_cluster = hit_count >= HIT_COUNT_THRESHOLD
         if via_source_diversity or via_theme_cluster:
             resonance.append({
                 "code": code,
+                "name": code2name.get(code, ""),  # 2026-10-06新增
                 "source_count": n,
-                "sources": sorted(sig["sources"]),
+                "sources": sorted(sig["source_categories"]),
                 "hit_count": hit_count,
                 "themes": sig["detail"].get("themes", []),
                 "fermentation": sig["detail"].get("fermentation"),
@@ -125,6 +227,7 @@ def build_digest():
                 "baseline": t.get("baseline_mean"),
                 "codes": t.get("codes", []),
                 "names": t.get("names", {}),  # 2026-09-17新增
+                "stock_relation": t.get("stock_relation", {}),  # 2026-10-06新增:direct/indirect
                 "semantic_risk": t.get("semantic_risk", ""),
             })
 
@@ -135,6 +238,7 @@ def build_digest():
         if cnt >= 3:
             coverage_list.append({
                 "code": c.get("code"),
+                "name": code2name.get(c.get("code"), ""),  # 2026-10-06新增
                 "broker_count": cnt,
                 "brokers": c.get("recentBrokers", c.get("recent_brokers", [])),
                 "surge": c.get("surge", False),
@@ -174,7 +278,13 @@ def build_digest():
             if has_search: return (1, -n_sources)
             if has_ai: return (2, -n_sources)
             return (3, -n_sources)  # 純jieba
-        pool.sort(key=lambda x: (x["_bucket"], _method_score(x.get("method")), -x.get("hits", 0)))
+        # 2026-10-06修正:排序鍵原本把_bucket(連續追蹤中=0優先)放在
+        # _method_score前面,導致純jieba、連續追蹤中的通用詞(供應鏈/伺服器/
+        # 毛利率這類高頻但無鑑別度的詞,只要連續出現幾天就會「連續追蹤中」)
+        # 排到ai_theme_candidates.json裡high confidence的AI背書新題材前面,
+        # E區前15名被通用詞佔滿。改成來源可信度(_method_score)優先,同一
+        # 可信度等級內再看是否連續追蹤中、最後看出現次數。
+        pool.sort(key=lambda x: (_method_score(x.get("method")), x["_bucket"], -x.get("hits", 0)))
         for e in pool[:15]:
             new_candidates.append({
                 "term": e.get("term"),
@@ -198,7 +308,12 @@ def build_digest():
             })
 
     # F. 國際法說訊號(src6)—— 頻率上升的關鍵詞,依公司整理
+    # 2026-10-06:rising_keywords裡混了三種status(見earnings_keywords.py),
+    # 單季額度模式下沒有基期的no_baseline_count不算「上升」,全部原樣保留
+    # 顯示(F區仍要看得到這些絕對次數訊號),但summary_counts跟「上升」語意
+    # 相關的統計只算真正有基期可比的rising/new_mention。
     earnings_rising = earnings.get("rising_keywords", [])
+    earnings_rising_with_baseline = [r for r in earnings_rising if r.get("status") != "no_baseline_count"]
     intl_news_heat = earnings.get("intl_news_heat", [])  # 國際新聞每日熱度(CNBC+Yahoo)
     # 法說關鍵詞 → 你的中文題材對應橋(讓國際訊號對到台股題材)
     KW_TO_THEME = {
@@ -224,28 +339,55 @@ def build_digest():
         "smart glasses": "智慧眼鏡", "AR": "AR光學", "waveguide": "波導技術",
         "agentic": "代理式AI", "edge computing": "邊緣運算", "on-device": "端側模型",
     }
+
+    # 2026-10-06新增:證據等級(見build_theme_evidence)。放在B/D區已經建好
+    # 之後才算,所以這裡回填進去;G區在下面建立時直接查這份表。
+    theme_evidence = build_theme_evidence(event, earnings_rising, intl_news_heat, tracker, KW_TO_THEME)
+    _no_evidence = {"sources": [], "level": "單一來源"}
+    for t in preferment_themes:
+        t["evidence"] = theme_evidence.get(canonical_theme(t["theme"]), _no_evidence)
+    for t in surge_themes:
+        t["evidence"] = theme_evidence.get(canonical_theme(t["theme"]), _no_evidence)
+
     # 統計每個「台股題材」被幾家國際大廠法說提及升溫
+    # 2026-10-06:KW_TO_THEME的目標值先經canonical_theme正規化,讓HBM/DDR5/
+    # 記憶體漲價等同義詞收斂到同一個group key,避免同一敘事被拆成好幾個
+    # theme_earnings_backing條目,各自都湊不滿國際背書家數。
     theme_earnings_backing = defaultdict(lambda: {"companies": set(), "keywords": set()})
     for r in earnings_rising:
         theme = KW_TO_THEME.get(r["keyword"])
         if theme:
+            theme = canonical_theme(theme)
             theme_earnings_backing[theme]["companies"].add(r["symbol"])
             theme_earnings_backing[theme]["keywords"].add(r["keyword"])
     # 國際新聞熱度(CNBC+Yahoo)也算國際背書 —— 用 "新聞" 當來源標記
     for h in intl_news_heat:
         theme = KW_TO_THEME.get(h["keyword"])
         if theme:
+            theme = canonical_theme(theme)
             theme_earnings_backing[theme]["companies"].add("國際新聞")
             theme_earnings_backing[theme]["keywords"].add(h["keyword"])
 
     # G. 交叉:哪些題材「同時有台股訊號 + 國際法說背書」(最高價值)
     # 收集當日有台股訊號的題材(src1暴增 或 src3未發酵)
+    # 2026-10-06:同樣先正規化再收進集合——HBM已經發酵時,「記憶體」這個
+    # 分開追蹤的watchlist關鍵字即使自己沒過暴增門檻,也該被視為同一個
+    # 「記憶體」敘事台股已有訊號,不能因為watchlist把它們拆成不同關鍵字
+    # 追蹤,就在G區比對時各算各的、互相看不到對方。
     tw_active_themes = set()
+    # 同時收集每個正規化題材群組底下有哪些受惠股代號,供G區算
+    # stocks_dormant/stocks_overheated用(user要求的股價位置底部/高檔檔數,
+    # 改讀price_stage.py算出的動能階段,不再自己另外打Yahoo Finance;
+    # 2026-10-06再修正:price_stage量的是動能不是價格區間位置,底部/高檔
+    # 這組命名跟文字也一併改成潛伏/過熱,避免暗示資料沒有的「股價位置」)。
+    theme_codes_by_canonical = defaultdict(set)
     for t in event.get("themes", []):
         src = t.get("source", "")
         is_keyword_src = ("暴增" in src) or ("關鍵字" in src) or (src == "cnyes")
         if t.get("wiki_stage") == "pre-ferment" or (is_keyword_src and t.get("ratio", 0) >= 1.5):
-            tw_active_themes.add(t["theme"])
+            canon = canonical_theme(t["theme"])
+            tw_active_themes.add(canon)
+            theme_codes_by_canonical[canon].update(t.get("codes", []))
     cross_confirmed = []
     for theme, backing in theme_earnings_backing.items():
         n_intl = len(backing["companies"])
@@ -257,6 +399,10 @@ def build_digest():
             "tw_active": in_tw,
             # 雙邊確認 = 台股有訊號 且 國際法說背書
             "dual_confirmed": in_tw and n_intl >= 1,
+            # 2026-10-06新增:受惠股代號(只在tw_active時有意義,未發酵題材
+            # 沒有台股代號可言),限前10檔避免股價位置查詢量暴衝
+            "codes": sorted(theme_codes_by_canonical.get(theme, set()))[:10],
+            "evidence": theme_evidence.get(theme, _no_evidence),
         })
     # 雙邊確認的排前面,再按國際家數
     cross_confirmed.sort(key=lambda x: (not x["dual_confirmed"], -len(x["intl_companies"])))
@@ -270,7 +416,7 @@ def build_digest():
             "broker_coverage": len(coverage_list),
             "surge_themes": len(surge_themes),
             "new_candidates": len(new_candidates),
-            "earnings_rising": len(earnings_rising),
+            "earnings_rising": len(earnings_rising_with_baseline),
             "cross_confirmed": len([c for c in cross_confirmed if c["dual_confirmed"]]),
         },
         "intl_news_heat": intl_news_heat,
@@ -288,9 +434,9 @@ def build_digest():
     }
 
     # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
-    # 讓每檔股票帶「潛伏/啟動/過熱」。同時填入A區的price_pos(low/mid/high),
-    # daily_report.py本來就會讀這個欄位(🟢底部/🟡中段/🔴高檔),但先前沒有
-    # 任何程式產生它,等於一直是空的。
+    # 讓每檔股票帶「潛伏/啟動/過熱」動能階段。同時填入A區的price_pos
+    # (low/mid/high,內部分類鍵,語意是動能階段不是價格區間位置——先前
+    # 沒有任何程式產生它,daily_report.py一直讀到空值)。
     try:
         from price_stage import stage_for_codes
         codes = set()
@@ -301,6 +447,13 @@ def build_digest():
                 codes.update(t.get("codes", []))
         for c in new_candidates:
             codes.update(c.get("stocks", []))
+        # 2026-10-06新增:C區(券商覆蓋)跟G區(雙邊確認的受惠股)也要查,
+        # 原本只查A/B/D/E區的代號。
+        for c in coverage_list:
+            if c.get("code"):
+                codes.add(c["code"])
+        for x in cross_confirmed:
+            codes.update(x.get("codes", []))
         stage_map = stage_for_codes(codes, event.get("overheat", {}))
         digest["price_stage"] = stage_map
         for r in resonance:
@@ -310,6 +463,24 @@ def build_digest():
                 r["price_pos"] = info["price_pos"]
                 r["chg20"] = info.get("chg20")
                 r["chg5"] = info.get("chg5")
+        # 2026-10-06新增:C區個股也補上price_pos(daily_report.py的C區會讀)
+        for c in coverage_list:
+            info = stage_map.get(c.get("code"))
+            if info:
+                c["price_pos"] = info["price_pos"]
+                c["stage"] = info["stage"]
+        # 2026-10-06新增,同日再修正:G區統計受惠股裡幾檔動能潛伏/過熱
+        # (user原本要求的是股價位置底部/高檔檔數,但price_stage量的是
+        # 動能階段,近20日+4%或-2%都只代表「沒有大漲」,不能說是底部,
+        # 更不是安全邊際;欄位改名stocks_dormant/stocks_overheated,
+        # 避免用「low/high」衍生的命名繼續暗示價格區間位置)。
+        # price_data_available區分「真的查到0檔」跟「這批代號完全沒有
+        # 動能資料可查」,避免daily_report.py把後者誤印成「0檔」。
+        for x in cross_confirmed:
+            positions = [stage_map.get(cd, {}).get("price_pos") for cd in x.get("codes", [])]
+            x["stocks_dormant"] = sum(1 for p in positions if p == "low")
+            x["stocks_overheated"] = sum(1 for p in positions if p == "high")
+            x["price_data_available"] = any(p is not None for p in positions)
     except Exception as e:
         print(f"  ⚠ 價量階段標籤略過: {e}")
         digest["price_stage"] = {}
@@ -342,7 +513,9 @@ def print_digest(d):
     dual = [x for x in d.get("G_cross_confirmed", []) if x["dual_confirmed"]]
     if dual:
         for x in dual:
-            print(f"  ✅ {x['theme']}  台股訊號✓ + 國際法說: {' '.join(x['intl_companies'])} "
+            ev = x.get("evidence", {})
+            ev_tag = f" [{ev.get('level','')}]" if ev.get("sources") else ""
+            print(f"  ✅ {x['theme']}{ev_tag}  台股訊號✓ + 國際法說: {' '.join(x['intl_companies'])} "
                   f"({' '.join(x['intl_keywords'][:4])})")
     else:
         print("  (今日無雙邊確認)")
@@ -364,7 +537,7 @@ def print_digest(d):
             if r.get("via_theme_cluster"):
                 tags.append(f"🌾題材群聚: {r['hit_count']}個關鍵字同時命中")
             _stg = _stage_tag(d, r["code"])
-            print(f"  {r['code']}  [{' | '.join(tags)}]{ferm}{_stg}  {themes}")
+            print(f"  {r['code']}{r.get('name','')}  [{' | '.join(tags)}]{ferm}{_stg}  {themes}")
     else:
         print("  (今日無多源共振)")
 
@@ -372,19 +545,27 @@ def print_digest(d):
     for t in d["B_preferment_themes"]:
         risk = " ⚠" + t["semantic_risk"][:20] if t.get("semantic_risk") else ""
         names = t.get("names", {})  # 2026-09-17新增,舊來源查無此欄位時優雅退回純代碼
-        stock_str = " ".join(f"{cd}{names.get(cd,'')}" for cd in t["codes"][:5])
-        print(f"  {t['theme']}  暴增{t['ratio']} 基線{t['baseline']}  股:{stock_str}{risk}")
+        relation = t.get("stock_relation", {})  # 2026-10-06新增
+        # 間接受惠股標(間接)字樣,不跟直接供應鏈股混淆
+        stock_str = " ".join(
+            f"{cd}{names.get(cd,'')}" + ("(間接)" if relation.get(cd) == "indirect" else "")
+            for cd in t["codes"][:5])
+        ev = t.get("evidence", {})
+        ev_tag = f" [{ev.get('level','')}]" if ev.get("sources") else ""
+        print(f"  {t['theme']}{ev_tag}  暴增{t['ratio']} 基線{t['baseline']}  股:{stock_str}{risk}")
 
     print("\n▍C. 券商覆蓋暴增(機構領先 — 多家券商同時cover)")
     for c in d["C_broker_coverage"]:
         flag = " 🔥" if c["surge"] else ""
-        print(f"  {c['code']}  {c['broker_count']}家券商{flag}  {' '.join(c['brokers'])}")
+        print(f"  {c['code']}{c.get('name','')}  {c['broker_count']}家券商{flag}  {' '.join(c['brokers'])}")
 
     print("\n▍D. 熱度暴增題材(新聞討論升溫)")
     for t in d["D_surge_themes"][:8]:
         names = t.get("names", {})  # 2026-09-17新增
         stock_str = " ".join(f"{cd}{names.get(cd,'')}{_stage_tag(d, cd)}" for cd in t["codes"][:5])
-        print(f"  {t['theme']}  暴增{t['ratio']}  股:{stock_str}")
+        ev = t.get("evidence", {})
+        ev_tag = f" [{ev.get('level','')}]" if ev.get("sources") else ""
+        print(f"  {t['theme']}{ev_tag}  暴增{t['ratio']}  股:{stock_str}")
 
     print("\n▍E. 新題材候選(參考 — 需人工判斷)")
     for c in d["E_new_candidates"][:8]:
@@ -405,7 +586,13 @@ def print_digest(d):
     er = d.get("F_earnings_rising", [])
     if er:
         for r in er[:12]:
-            flag = "🆕新提及" if r.get("prev_count", 0) == 0 else f"↑{r.get('prev_count')}→{r.get('this_count')}"
+            status = r.get("status")
+            if status == "no_baseline_count":
+                flag = f"提及×{r.get('this_count')}(無基期可比)"
+            elif status == "new_mention":
+                flag = "🆕新提及"
+            else:
+                flag = f"↑{r.get('prev_count')}→{r.get('this_count')}"
             print(f"  {r['symbol']:5s} {r['keyword']:18s} [{r['category']}] {flag}")
     else:
         print("  (無 src6 資料,或非財報季)")

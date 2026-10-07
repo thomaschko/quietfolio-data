@@ -55,9 +55,23 @@ def format_digest_for_prompt(digest, tracker):
     lines.append("\n【G區 雙邊確認題材(最高優先)】")
     if dual:
         for x in dual:
-            lines.append(f"- {x['theme']}: 台股有訊號 + 國際法說({'/'.join(x.get('intl_companies', []))}), "
-                        f"關鍵詞:{'/'.join(x.get('intl_keywords', [])[:5])}, "
-                        f"受惠股底部{x.get('stocks_low', 0)}檔/高檔{x.get('stocks_high', 0)}檔")
+            # 2026-10-06修正:price_stage.py量的是「動能階段」(近20日漲幅/
+            # 量比/漲停次數),不是「股價在52週區間的位置」——近20日+4%或-2%
+            # 都只代表「沒有大漲」,不能說是底部、更不是安全邊際。原本這裡寫
+            # 「受惠股底部X檔/高檔X檔」,曾經讓Gemini寫出「位居底部、安全邊際」
+            # 這種資料不支持的結論(真實發生過的案例)。改用「潛伏」(沒有
+            # 大漲)/「過熱」(漲多或有注意交易)的動能語言,不再暗示價格
+            # 區間位置。price_data_available區分「真的查到0檔」跟「這批
+            # 代號完全沒有動能資料可查」,後者不能印成0檔。
+            if x.get("price_data_available"):
+                pos_text = (f"受惠股動能潛伏(近20日未大漲){x.get('stocks_dormant', 0)}檔/"
+                            f"過熱(漲多或有注意交易){x.get('stocks_overheated', 0)}檔")
+            else:
+                pos_text = "受惠股動能階段資料暫缺,不得推論其股價位置"
+            ev = x.get("evidence", {})
+            ev_text = f"[{ev.get('level','')}:{'/'.join(ev.get('sources', []))}]" if ev.get("sources") else ""
+            lines.append(f"- {x['theme']} {ev_text}: 台股有訊號 + 國際法說({'/'.join(x.get('intl_companies', []))}), "
+                        f"關鍵詞:{'/'.join(x.get('intl_keywords', [])[:5])}, {pos_text}")
     else:
         lines.append("- 今日無雙邊確認題材")
     lines.append("\n【國際先行、台股未燃(最前緣訊號)】")
@@ -72,7 +86,10 @@ def format_digest_for_prompt(digest, tracker):
     lines.append("\n【A區 多源共振個股】")
     if reso:
         for r in reso[:10]:
-            pos = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}.get(r.get("price_pos"), "")
+            # 2026-10-06修正:price_pos是price_stage.py的動能分類(近20日
+            # 漲幅/量比/漲停次數),不是價格在52週區間的位置,不能顯示成
+            # 「底部/高檔」(見下方G區同樣的修正說明)。
+            pos = {"low": "🟢潛伏", "mid": "🟡啟動", "high": "🔴過熱"}.get(r.get("price_pos"), "")
             name = r.get("name", "")
             lines.append(f"- {r['code']}{name} [{r.get('source_count')}源:{'/'.join(r.get('sources', []))}] "
                         f"{pos} 相關題材:{'/'.join(r.get('themes', [])[:3])}")
@@ -83,21 +100,32 @@ def format_digest_for_prompt(digest, tracker):
     lines.append("\n【B區 未發酵題材(維基關注度剛翹頭)】")
     if pre:
         for t in pre:
-            lines.append(f"- {t['theme']}: 暴增比{t.get('ratio')} 基線{t.get('baseline')} "
+            # 2026-10-06新增:證據等級,單一來源的題材明寫出來(使用者要求——
+            # 只有一種獨立偵測機制支持的題材,可信度比多源互證的低,報告裡
+            # 不能含糊帶過)
+            ev = t.get("evidence", {})
+            ev_text = f"[{ev.get('level','單一來源')}:{'/'.join(ev.get('sources', []))}]" if ev.get("sources") else ""
+            lines.append(f"- {t['theme']} {ev_text}: 暴增比{t.get('ratio')} 基線{t.get('baseline')} "
                         f"相關股:{'/'.join(t.get('codes', [])[:5])}")
     else:
         lines.append("- 無")
 
-    chips = digest.get("C_chip_signals", [])
-    lines.append("\n【C區 籌碼共振】")
+    # 2026-10-06修正:這裡原本讀"C_chip_signals",但daily_digest.py實際輸出的
+    # key是"C_broker_coverage"(券商覆蓋暴增),兩者從未對上過,C區在報告裡
+    # 恆為空。改讀正確的key,並改用該資料實際有的欄位(broker_count/brokers/
+    # surge),原本期待的inst_total/mainforce_broker不存在於這個資料源,
+    # 不再引用(price_pos待股價位置資料就緒後再補,見daily_digest.py)。
+    chips = digest.get("C_broker_coverage", [])
+    lines.append("\n【C區 券商覆蓋暴增(多家券商近期同時cover)】")
     if chips:
         for c in chips[:8]:
             name = c.get("name", "")
-            pos = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}.get(c.get("price_pos"), "")
-            lines.append(f"- {c['code']}{name} {pos}: 法人合計{c.get('inst_total', 0)}, "
-                        f"主力{c.get('mainforce_broker', '無')}")
+            pos = {"low": "🟢潛伏", "mid": "🟡啟動", "high": "🔴過熱"}.get(c.get("price_pos"), "")
+            flag = " 🔥" if c.get("surge") else ""
+            lines.append(f"- {c['code']}{name} {pos}{flag}: {c.get('broker_count', 0)}家券商, "
+                        f"{'/'.join(c.get('brokers', []))}")
     else:
-        lines.append("- 今日無籌碼共振個股")
+        lines.append("- 今日無券商覆蓋暴增個股")
 
     # ════════════════════════════════════════
     # 第二部分:題材雷達(熱度與國際法說)
@@ -112,15 +140,26 @@ def format_digest_for_prompt(digest, tracker):
             pos_str = " ".join(f"{p.get('code')}{p.get('name', '')}"
                               f"{'🟢' if p.get('pos') == 'low' else '🔴' if p.get('pos') == 'high' else '🟡'}"
                               for p in positions[:5]) or " ".join(t.get("codes", [])[:5])
-            lines.append(f"- {t['theme']} 暴增{t.get('ratio')}倍: {pos_str}")
+            ev = t.get("evidence", {})
+            ev_text = f"[{ev.get('level','單一來源')}:{'/'.join(ev.get('sources', []))}]" if ev.get("sources") else ""
+            lines.append(f"- {t['theme']} {ev_text} 暴增{t.get('ratio')}倍: {pos_str}")
     else:
         lines.append("- 無")
 
     earnings = digest.get("F_earnings_rising", [])
     lines.append("\n【F區 國際大廠法說關鍵詞升溫】")
+    # 2026-10-06:status區分三種狀態,no_baseline_count沒有上一季可比,只是
+    # 這季的絕對提及次數,prompt文字不能用「上升」「升溫」這種暗示趨勢的字眼
+    # 描述它,避免Gemini寫報告時誤判成真的有成長趨勢。
     if earnings:
         for e in earnings[:10]:
-            flag = "新提及" if e.get("prev_count", 0) == 0 else f"{e.get('prev_count')}→{e.get('this_count')}"
+            status = e.get("status")
+            if status == "no_baseline_count":
+                flag = f"本季提及{e.get('this_count')}次(無上一季資料可比較,非上升趨勢)"
+            elif status == "new_mention":
+                flag = "新提及(上一季未提及)"
+            else:
+                flag = f"{e.get('prev_count')}→{e.get('this_count')}(較上季上升)"
             lines.append(f"- {e.get('symbol')} {e.get('keyword')} [{e.get('category')}] {flag}")
     else:
         lines.append("- 無(本週非法說更新日)")
@@ -174,15 +213,26 @@ SYSTEM_PROMPT = """你是台股題材研究員,根據結構化資料撰寫每日
 1. 用繁體中文,語氣像研究員在跟熟悉市場的朋友做簡報,不是罐頭式條列數字。
 2. 三大類都要有一段,依優先順序展開(發酵雷達>題材雷達>候選題材),
    但不用生硬地分「第一部分第二部分」,用自然的段落過渡銜接。
-3. 交易哲學要貫穿全文:股價位置🟢底部的標的要優先展開、明確標出來是關注重點;
-   🔴高檔的標的即使訊號很強,也要明確提醒「已大幅反映,不建議此時追價」,
-   不能因為訊號強就淡化追高風險提醒。
+3. 交易哲學要貫穿全文:🟢潛伏(近20日未大漲)的標的可以優先展開、標出來是
+   關注重點,但這只代表「還沒大漲」,絕對不能講成「位居底部」「安全邊際」
+   「低檔」這種暗示價格區間位置的話——這是動能指標,不是價格區間位置指標,
+   沒有股票的52週高低點資料,不能做這種推論。🔴過熱(近20日大漲或有交易所
+   注意交易/處置警示)的標的即使訊號很強,也要明確提醒「短期漲多,此時追價
+   風險較高」,不能因為訊號強就淡化提醒。資料裡如果沒有標動能階段(沒有
+   🟢🟡🔴標記,或文字明寫「動能階段資料暫缺」),絕對不要自己推測或編造
+   這檔股票現在是過熱還是潛伏——沒有資料就是沒有資料,照實說「資料暫缺」,
+   不能因為要配合交易哲學的敘事就腦補一個階段。
 4. E2區的「近期關注」要明確跟E區/D區區分語氣——這是「還在觀察階段」的訊號,
    暴增比還沒過門檻,用「值得留意但尚未確認」這種謹慎語氣,不要講得像已經是題材。
 5. 「今日首見」的新題材要註明是初步發現、需要時間驗證;「連續追蹤中」天數
    越長的題材可信度越高,可以講得更肯定。
 6. 不要重複列出所有原始資料,要做「解讀」——例如指出某題材同時出現在G區和
    D區,代表台股熱度和國際法說互相印證,這種跨區塊關聯才是報告的價值所在。
+9. 每個題材後面的[單一來源:xxx]/[雙來源:xxx/yyy]/[三源以上:...]標記是
+   證據等級,代表這個題材背後有幾種「獨立偵測機制」同時支持。只有單一
+   來源的題材,報告裡必須明確寫出「僅單一來源(xxx)佐證,尚待其他來源
+   印證」這種保留語氣,不能因為訊號強度(暴增比高)就當成跟雙源/三源
+   以上同等可信——來源數量本身就是可信度的一部分,不能被訊號強度掩蓋。
 7. 篇幅約700-1000字(比純題材雷達的版本略長,因為現在要涵蓋三大類),
    結尾用一句話點出「今天最值得留意的訊號」。
 8. 不涉及任何個人持股、帳戶、部位資訊——只分析市場公開資料本身。"""

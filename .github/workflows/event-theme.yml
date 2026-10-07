@@ -1,15 +1,20 @@
 name: Event Theme Radar
 
-# 每天盤後跑一次(台北 16:30 → UTC 08:30)
+# 每天盤後跑一次(台北 17:00 → UTC 09:00)
 # 2026-09-21修正:原本只在交易日(週一到週五)跑,假設是「沒開盤就不用跑」,
 # 但題材新聞討論(尤其國際法說、國際媒體)不會因為台股休市而停止,週末
 # 不跑會在theme_history留下缺口,連帶讓theme_tracker.py的連續天數計算
 # (逐日往回比對,遇到缺資料的日期就視為中斷)在每個週一被錯誤重置——
 # 不是題材真的斷了,是資料本身缺了兩天。改成每天都跑,從源頭解決,
 # 不用在下游的連續天數邏輯裡另外容忍缺口。
+# 2026-10-06修正:原本16:30觸發,但實測TWSE/TPEx STOCK_DAY_ALL/
+# tpex_mainboard_daily_close_quotes在16:03還是前一天的資料,約17:12
+# 才更新成當天——16:30跑price_stage.py抓到的常是舊的一天。整條流程
+# (radar→...→price_stage)約需25分鐘,改17:00觸發,price_stage實際
+# 抓價約落在17:20前後,在17:12已更新之後,留有餘裕。
 on:
   schedule:
-    - cron: '30 8 * * *'   # 每天 UTC 08:30 = 台北 16:30
+    - cron: '0 9 * * *'   # 每天 UTC 09:00 = 台北 17:00
   workflow_dispatch:          # 允許手動觸發測試
 
 permissions:
@@ -35,12 +40,14 @@ jobs:
 
       # 主雷達:src1鉅亨暴增 + src2 MOPS + src3維基關注度
       - name: Run radar
+        id: radar
         run: python event_theme_radar.py
 
       # 偵測源4a:新題材發現 jieba跨源版(獨立產出,出錯不擋主流程)
       # 2026-09-23新增:同日多源爆量的熱詞查詢機制也需要GEMINI_API_KEY
       # (之前漏加,導致「iPhone」「貝森特」等熱詞查詢失敗,已修正)。
       - name: Run new theme discovery
+        id: new_theme
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -48,6 +55,7 @@ jobs:
 
       # 偵測源4b:AI語意版新題材發現(Gemini被動萃取,從收集到的新聞裡找題材)
       - name: Run AI theme discovery
+        id: ai_theme
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -61,6 +69,7 @@ jobs:
       # 題材追蹤:整合三個候選來源(主動搜尋+AI萃取+jieba),分辨今日首見vs連續追蹤中
       # 含自動升格進watchlist、國際大廠反查自動升格進src6(都需GEMINI_API_KEY)
       - name: Track theme history
+        id: theme_tracker
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -70,10 +79,12 @@ jobs:
       # 價量階段標籤(2026-10-06新增):抓全市場收盤價+成交量存快照,
       # 給每檔雷達股票標「潛伏/啟動/過熱」。放在digest之前,digest會讀它。
       - name: Price stage snapshot
+        id: price_stage
         continue-on-error: true
         run: python price_stage.py
 
       - name: Build daily digest
+        id: digest
         continue-on-error: true
         run: python daily_digest.py
 
@@ -82,6 +93,7 @@ jobs:
       # 用Gemini產出一篇700-1000字繁中研究報告,但先前從未被接進任何
       # workflow執行過,一直是死程式碼。這次補上,讓它真正每天執行。
       - name: Generate daily research report
+        id: report
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -91,6 +103,7 @@ jobs:
       # 30天後回頭比對真實收盤價,自動判✅印證/❌反駁,累積後可按
       # 偵測類型(題材群聚/跨來源共振/關鍵字暴增)分開統計命中率。
       - name: Update verification ledger
+        id: ledger
         continue-on-error: true
         run: python verification_ledger.py
 
@@ -99,10 +112,35 @@ jobs:
       # 內的8-K申報,即時性比季度才跑一次的earnings_keywords.py高——
       # 事件觸發、4個工作天內必須申報,不用等法說會才知道。
       - name: Track US 8-K material events
+        id: us8k
         continue-on-error: true
         run: python us_8k_events.py
 
+      # 管線狀態記錄(2026-10-06新增):上面每個步驟都是continue-on-error,
+      # 單一步驟失敗不會讓workflow顯示紅字——這一步把每個步驟的真實結果
+      # 寫進daily_digest.json的pipeline_status欄位,並且在digest.date不是
+      # 今天(UTC)時讓這個步驟本身失敗,使這次run在GitHub Actions介面上
+      # 顯示失敗,不再靜默吃掉「資料其實是舊的」這件事。故意不加
+      # continue-on-error,讓它是整個workflow裡唯一「真的會讓run變紅」的
+      # 檢查點;下面的commit步驟用if: always()確保狀態仍會被記錄並推送,
+      # 不會因為這一步失敗就漏commit。
+      - name: Record pipeline status
+        id: pipeline_status
+        if: always()
+        env:
+          STEP_RADAR: ${{ steps.radar.outcome }}
+          STEP_NEW_THEME: ${{ steps.new_theme.outcome }}
+          STEP_AI_THEME: ${{ steps.ai_theme.outcome }}
+          STEP_THEME_TRACKER: ${{ steps.theme_tracker.outcome }}
+          STEP_PRICE_STAGE: ${{ steps.price_stage.outcome }}
+          STEP_DIGEST: ${{ steps.digest.outcome }}
+          STEP_REPORT: ${{ steps.report.outcome }}
+          STEP_LEDGER: ${{ steps.ledger.outcome }}
+          STEP_US8K: ${{ steps.us8k.outcome }}
+        run: python record_pipeline_status.py
+
       - name: Commit and push
+        if: always()
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"

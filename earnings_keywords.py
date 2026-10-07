@@ -272,6 +272,14 @@ def main():
     print("\n" + "=" * 60)
     print("季度對比:關鍵詞頻率上升(客戶端/供應鏈訊號升溫)")
     print("=" * 60)
+    # 2026-10-06新增status欄位:prev_q是否為空字串,區分三種完全不同意義的狀態
+    # (QUARTERS_PER_COMPANY=1導致絕大多數公司只抓得到單季,prev_q==""不代表
+    # 「上一季沒提到」,只代表「沒有上一季可比較」——原本下游只看prev_count==0
+    # 就說「新提及」,把這兩種狀態混為一談,也把它算進summary_counts.earnings_rising,
+    # 造成法說關鍵詞「升溫」數字虛高):
+    #   rising            — 有基期(兩季都抓到)且這季次數確實比上季高
+    #   new_mention       — 有基期、上季次數是0、這季首次提到(真正的「新提及」)
+    #   no_baseline_count — 單季額度模式,沒有基期可比,只是這季的絕對提及次數
     rising = []
     for symbol, d in all_data.items():
         qs = list(d["quarters"].keys())
@@ -289,9 +297,11 @@ def main():
                         "symbol": symbol, "keyword": kw, "category": info["category"],
                         "this_count": now_n, "prev_count": prev_n,
                         "delta": now_n - prev_n, "this_q": this_q, "prev_q": prev_q,
+                        "status": "new_mention" if prev_n == 0 else "rising",
                     })
         elif len(qs) == 1:
-            # 單季(額度模式):絕對頻率,提到≥2次就算訊號
+            # 單季(額度模式):絕對頻率,提到≥2次就算訊號(但沒有基期可比,
+            # 不算「上升」,status標記清楚,下游不得描述成上升/升溫)
             this_q = qs[0]
             this_c = d["quarters"][this_q]
             for kw, info in this_c.items():
@@ -300,11 +310,16 @@ def main():
                         "symbol": symbol, "keyword": kw, "category": info["category"],
                         "this_count": info["count"], "prev_count": 0,
                         "delta": info["count"], "this_q": this_q, "prev_q": "",
+                        "status": "no_baseline_count",
                     })
     rising.sort(key=lambda x: -x["delta"])
     for r in rising[:25]:
-        newflag = ("提及×" + str(r["this_count"])) if not r["prev_q"] else (
-            "🆕新提及" if r["prev_count"] == 0 else f"↑{r['prev_count']}→{r['this_count']}")
+        if r["status"] == "no_baseline_count":
+            newflag = "提及×" + str(r["this_count"])
+        elif r["status"] == "new_mention":
+            newflag = "🆕新提及"
+        else:
+            newflag = f"↑{r['prev_count']}→{r['this_count']}"
         qinfo = f"({r['this_q']})" if not r["prev_q"] else f"({r['prev_q']}→{r['this_q']})"
         print(f"  {r['symbol']:5s} {r['keyword']:20s} [{r['category']}] {newflag} {qinfo}")
 

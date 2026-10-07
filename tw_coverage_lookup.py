@@ -56,17 +56,43 @@ def _fetch(url):
         return None
 
 
+SUPPLY_CHAIN_SECTION_RE = re.compile(r'上游|中游|下游|相關公司')
+_CODE_NAME_RE = re.compile(r'\*\*(\d{4})\s+([^\*]+?)\*\*')
+
+
 def _parse_codes_from_theme_md(text):
     """
     解析主題檔內容,抓「## 上游/中游/下游/相關公司」段落裡的股票代號。
     格式:- **3167 大量** (Specialty Industrial Machinery)
     回傳 {code: name} dict(保留公司名,供輸出時對照用)。
+
+    2026-10-06修正:docstring/註解原本就寫明「只在這幾個段落裡找」,但舊版
+    實作其實是對整份文件無差別掃描,沒有真的限制段落——任何地方只要出現
+    「**NNNN 名稱**」這個格式就會被收進來,包括跟supply chain無關的段落
+    (例如「排擠/替代效應」「相關新聞」這類提及其他公司的脈絡文字)。
+    改成先用markdown標題(# / ## / ###...)切段落,只在標題文字含「上游/
+    中游/下游/相關公司」的段落裡找代號。如果整份文件完全沒有符合的標題
+    (代表這份主題檔沒有用這套慣例),退回舊的全文掃描,不讓格式稍有不同
+    的主題檔突然查無資料。
     """
+    sections = re.split(r'(?m)^#{1,6}\s*(.+?)\s*$', text)
+    # re.split with a capturing group returns [pre-match, header1, body1, header2, body2, ...]
+    bodies = []
+    for i in range(1, len(sections), 2):
+        header = sections[i]
+        body = sections[i + 1] if i + 1 < len(sections) else ""
+        if SUPPLY_CHAIN_SECTION_RE.search(header):
+            bodies.append(body)
+
+    if not bodies:
+        # 沒有任何標題符合慣例,退回全文掃描(保留舊行為,不讓這類主題檔查無資料)
+        bodies = [text]
+
     codes = {}
-    # 只在「## 上游」「## 中游」「## 下游」「## 相關公司」這幾個段落裡找
-    for m in re.finditer(r'\*\*(\d{4})\s+([^\*]+?)\*\*', text):
-        code, name = m.group(1), m.group(2).strip()
-        codes[code] = name
+    for body in bodies:
+        for m in _CODE_NAME_RE.finditer(body):
+            code, name = m.group(1), m.group(2).strip()
+            codes[code] = name
     return codes
 
 
