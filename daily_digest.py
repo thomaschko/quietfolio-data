@@ -29,6 +29,8 @@ from collections import defaultdict
 
 from theme_alias_groups import canonical_theme
 
+VERSION = "2026-10-07a"  # G區題材家族擴充(記憶體/NAND/先進封裝/CPO)+tw_trigger_keywords
+
 
 def load_json(path):
     try:
@@ -376,11 +378,14 @@ def build_digest():
     # 追蹤,就在G區比對時各算各的、互相看不到對方。
     tw_active_themes = set()
     # 同時收集每個正規化題材群組底下有哪些受惠股代號,供G區算
-    # stocks_dormant/stocks_overheated用(user要求的股價位置底部/高檔檔數,
-    # 改讀price_stage.py算出的動能階段,不再自己另外打Yahoo Finance;
-    # 2026-10-06再修正:price_stage量的是動能不是價格區間位置,底部/高檔
-    # 這組命名跟文字也一併改成潛伏/過熱,避免暗示資料沒有的「股價位置」)。
+    # stocks_low/stocks_high用(股價位置檔數,2026-10-07改讀price_stage.py
+    # 獨立算出的price_pos——跟動能階段stage完全脫鉤,不再是硬套值)。
     theme_codes_by_canonical = defaultdict(set)
+    # 2026-10-07新增(item2.4):記錄每個正規化題材實際是被watchlist裡的
+    # 哪個/哪些字面關鍵字觸發tw_active的,供G區顯示+事後稽核(不然像
+    # DDR4/DDR5觸發「記憶體」這種跨關鍵字正規化,看報告完全不知道背後
+    # 是哪個關鍵字真的暴增)。
+    theme_triggers_by_canonical = defaultdict(set)
     for t in event.get("themes", []):
         src = t.get("source", "")
         is_keyword_src = ("暴增" in src) or ("關鍵字" in src) or (src == "cnyes")
@@ -388,6 +393,7 @@ def build_digest():
             canon = canonical_theme(t["theme"])
             tw_active_themes.add(canon)
             theme_codes_by_canonical[canon].update(t.get("codes", []))
+            theme_triggers_by_canonical[canon].add(t["theme"])
     cross_confirmed = []
     for theme, backing in theme_earnings_backing.items():
         n_intl = len(backing["companies"])
@@ -402,6 +408,8 @@ def build_digest():
             # 2026-10-06新增:受惠股代號(只在tw_active時有意義,未發酵題材
             # 沒有台股代號可言),限前10檔避免股價位置查詢量暴衝
             "codes": sorted(theme_codes_by_canonical.get(theme, set()))[:10],
+            # 2026-10-07新增:實際觸發tw_active的watchlist字面關鍵字
+            "tw_trigger_keywords": sorted(theme_triggers_by_canonical.get(theme, set())),
             "evidence": theme_evidence.get(theme, _no_evidence),
         })
     # 雙邊確認的排前面,再按國際家數
@@ -434,9 +442,9 @@ def build_digest():
     }
 
     # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
-    # 讓每檔股票帶「潛伏/啟動/過熱」動能階段。同時填入A區的price_pos
-    # (low/mid/high,內部分類鍵,語意是動能階段不是價格區間位置——先前
-    # 沒有任何程式產生它,daily_report.py一直讀到空值)。
+    # 讓每檔股票帶「潛伏/啟動/過熱」動能階段(stage)。2026-10-07:price_pos
+    # 已跟stage完全脫鉤,改成price_stage.py獨立算出的「距一年收盤新高跌幅」
+    # (low=底部/mid=中段/high=高檔),歷史不足時為None(位階未知)。
     try:
         from price_stage import stage_for_codes
         codes = set()
@@ -461,6 +469,7 @@ def build_digest():
             if info:
                 r["stage"] = info["stage"]
                 r["price_pos"] = info["price_pos"]
+                r["pct_below_high"] = info.get("pct_below_high")
                 r["chg20"] = info.get("chg20")
                 r["chg5"] = info.get("chg5")
         # 2026-10-06新增:C區個股也補上price_pos(daily_report.py的C區會讀)
@@ -468,18 +477,18 @@ def build_digest():
             info = stage_map.get(c.get("code"))
             if info:
                 c["price_pos"] = info["price_pos"]
+                c["pct_below_high"] = info.get("pct_below_high")
                 c["stage"] = info["stage"]
-        # 2026-10-06新增,同日再修正:G區統計受惠股裡幾檔動能潛伏/過熱
-        # (user原本要求的是股價位置底部/高檔檔數,但price_stage量的是
-        # 動能階段,近20日+4%或-2%都只代表「沒有大漲」,不能說是底部,
-        # 更不是安全邊際;欄位改名stocks_dormant/stocks_overheated,
-        # 避免用「low/high」衍生的命名繼續暗示價格區間位置)。
+        # 2026-10-07:G區統計受惠股裡幾檔股價位置在底部/高檔——price_pos
+        # 現在是獨立算出的「距一年收盤新高跌幅」,不再是stage硬套出來的值,
+        # 欄位改名stocks_low/stocks_high對應真正的股價位置語意。
         # price_data_available區分「真的查到0檔」跟「這批代號完全沒有
-        # 動能資料可查」,避免daily_report.py把後者誤印成「0檔」。
+        # 位階資料可查(歷史不足一年)」,避免daily_report.py把後者誤印成
+        # 「0檔」。
         for x in cross_confirmed:
             positions = [stage_map.get(cd, {}).get("price_pos") for cd in x.get("codes", [])]
-            x["stocks_dormant"] = sum(1 for p in positions if p == "low")
-            x["stocks_overheated"] = sum(1 for p in positions if p == "high")
+            x["stocks_low"] = sum(1 for p in positions if p == "low")
+            x["stocks_high"] = sum(1 for p in positions if p == "high")
             x["price_data_available"] = any(p is not None for p in positions)
     except Exception as e:
         print(f"  ⚠ 價量階段標籤略過: {e}")
@@ -488,7 +497,7 @@ def build_digest():
 
 
 def _stage_tag(d, code):
-    """顯示用:' [🔴過熱+35%⚠注意交易]';沒資料回空字串。"""
+    """顯示用(動能階段):' [🔴過熱+35%⚠注意交易]';沒資料回空字串。"""
     info = (d.get("price_stage") or {}).get(code)
     if not info:
         return ""
@@ -499,9 +508,22 @@ def _stage_tag(d, code):
         return ""
 
 
+def _pos_tag(d, code):
+    """顯示用(股價位階,跟上面的動能階段_stage_tag完全獨立):
+    ' [🟢底部(距高點-32%)]';沒資料回空字串(不是直接印「位階未知」洗版)。"""
+    info = (d.get("price_stage") or {}).get(code)
+    if not info or info.get("price_pos") is None:
+        return ""
+    try:
+        from price_stage import pos_tag
+        return f" [{pos_tag(info)}]"
+    except Exception:
+        return ""
+
+
 def print_digest(d):
     print("=" * 60)
-    print(f"每日題材雷達摘要  {d['date']}")
+    print(f"每日題材雷達摘要  {d['date']}  [版本 {VERSION}]")
     print("=" * 60)
     c = d["summary_counts"]
     print(f"多源共振{c['resonance']} | 未發酵題材{c['preferment_themes']} | "
@@ -515,8 +537,10 @@ def print_digest(d):
         for x in dual:
             ev = x.get("evidence", {})
             ev_tag = f" [{ev.get('level','')}]" if ev.get("sources") else ""
+            trig = x.get("tw_trigger_keywords", [])
+            trig_tag = f"  觸發關鍵字:{'/'.join(trig)}" if trig else ""
             print(f"  ✅ {x['theme']}{ev_tag}  台股訊號✓ + 國際法說: {' '.join(x['intl_companies'])} "
-                  f"({' '.join(x['intl_keywords'][:4])})")
+                  f"({' '.join(x['intl_keywords'][:4])}){trig_tag}")
     else:
         print("  (今日無雙邊確認)")
     # 只有國際法說、台股還沒燒的(發酵前純訊號)
@@ -537,7 +561,8 @@ def print_digest(d):
             if r.get("via_theme_cluster"):
                 tags.append(f"🌾題材群聚: {r['hit_count']}個關鍵字同時命中")
             _stg = _stage_tag(d, r["code"])
-            print(f"  {r['code']}{r.get('name','')}  [{' | '.join(tags)}]{ferm}{_stg}  {themes}")
+            _pos = _pos_tag(d, r["code"])
+            print(f"  {r['code']}{r.get('name','')}  [{' | '.join(tags)}]{ferm}{_stg}{_pos}  {themes}")
     else:
         print("  (今日無多源共振)")
 
