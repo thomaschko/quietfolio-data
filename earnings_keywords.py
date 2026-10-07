@@ -97,6 +97,20 @@ KEYWORDS = {
     "記憶體": [
         "HBM", "HBM4", "HBM4E", "DRAM", "LPDDR", "NAND", "custom HBM",
         "base die", "memory", "high bandwidth memory",
+        # 2026-10-07新增:CXL(使用者提議查證,查證確認三星/SK海力士2026年底
+        # CXL系統大規模量產、中國長鑫存儲也在開發CXL DRAM模組,國際面是真實
+        # 且活躍的記憶體擴充敘事。但目前查無任何台灣供應鏈廠商有對應敘事
+        # (查到的瀾起科技MXC晶片是中國A股掛牌,非台股),所以只加在這裡
+        # (國際法說端),不加進themes_watchlist.txt(台股端),避免放一個
+        # 在台股新聞永遠不會觸發的死關鍵字)
+        "CXL",
+        # 2026-10-07新增:enterprise SSD(企業級SSD,使用者提議查證,查證
+        # 確認慧榮科技(SIMOS)企業級SSD控制晶片2026Q2營收創歷史新高,對應
+        # 「記憶體市場企業級強、消費級弱」雙軌格局的真實市場敘事。惟現有
+        # COMPANIES清單裡沒有NAND控制晶片廠(慧榮本身也不在清單上),這個
+        # 詞比較可能是在AMAT等設備廠、NVDA等資料中心客戶的capex討論裡
+        # 間接提到,信心不如上面幾個對應明確公司的詞高,先加著觀察)
+        "enterprise SSD",
     ],
     "AI電源/散熱": [
         "800V", "HVDC", "power shelf", "sidecar", "liquid cooling",
@@ -122,7 +136,14 @@ KEYWORDS = {
     ],
     "光通訊/CPO": [
         "optical", "photonics", "laser", "transceiver", "EML", "DFB",
-        "800G", "1.6T", "linear drive", "LPO", "optical engine", "coherent",
+        "800G", "1.6T", "linear drive", "LPO", "optical engine",
+        # 2026-10-07修正:原本的裸詞「coherent」會誤判成COHR(Coherent Inc.)
+        # 公司名本身被提及(例如「COHR coherent」這類跟技術詞完全無關的
+        # 命中,10/06真實資料裡已確認發生),不是「相干光學」技術詞本身被
+        # 討論。改用「coherent optics」「coherent detection」兩個複合詞
+        # (800G-ZR等長距光模組的真實技術名詞),跟下面DSP同一行註解裡
+        # 「不用裸詞避免誤判」的既有慣例一致,不再複用裸詞coherent。
+        "coherent optics", "coherent detection",
         "datacom", "InP", "indium phosphide",
         "DSP",  # 2026-09-23新增:野村專家會議指出1.6T DSP缺口延續到2027下半年,
                 # 供應緊張推升單價,DSP雙寡頭正是已追蹤的MRVL/AVGO,補上關鍵詞
