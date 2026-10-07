@@ -332,6 +332,10 @@ def build_digest():
         "transceiver": "光通訊", "EML": "光通訊", "InP": "磷化銦",
         "indium phosphide": "磷化銦", "800G": "光通訊", "1.6T": "光通訊",
         "LPO": "CPO", "optical engine": "CPO",
+        # 2026-10-07新增(item三查證):coherent optics/coherent detection
+        # 取代原本容易誤判成COHR公司名的裸詞coherent(見earnings_keywords.py
+        # 同一處修正說明)
+        "coherent optics": "光通訊", "coherent detection": "光通訊",
         # AI語意版(Gemini)新發現題材對應 2026-09-09
         "High-NA": "High-NA EUV", "EUV": "High-NA EUV", "lithography": "微影設備",
         "passive component": "被動元件", "MLCC": "MLCC", "glass fiber": "玻纖布",
@@ -340,6 +344,10 @@ def build_digest():
         "drone": "無人機", "counter-drone": "反無人機",
         "smart glasses": "智慧眼鏡", "AR": "AR光學", "waveguide": "波導技術",
         "agentic": "代理式AI", "edge computing": "邊緣運算", "on-device": "端側模型",
+        # 2026-10-07新增(item三查證):TPU/CXL/enterprise SSD
+        # TPU沿用既有「客製化晶片」題材(Google TPU是客製化ASIC的具體案例,
+        # 不用新建題材);CXL/enterprise SSD沿用既有「記憶體」/NAND家族。
+        "TPU": "客製化晶片", "CXL": "記憶體", "enterprise SSD": "NAND",
     }
 
     # 2026-10-06新增:證據等級(見build_theme_evidence)。放在B/D區已經建好

@@ -40,12 +40,24 @@ ALIAS_GROUPS = {
         "HBM", "HBM4", "HBM4E", "DDR5", "LPDDR", "利基型記憶體",
         "南亞科", "華邦電",
     ],
-    "NAND": ["NAND", "SLC NAND", "eMMC", "UFS", "群聯", "旺宏"],
+    # 2026-10-07新增(item三查證):企業級SSD/企業級SSD控制晶片併入NAND
+    # 家族(慧榮科技MonTitan平台對應的真實市場敘事,是NAND這條供應鏈故事
+    # 的延伸,見themes_watchlist.txt同日新增的說明)。
+    "NAND": [
+        "NAND", "SLC NAND", "eMMC", "UFS", "群聯", "旺宏",
+        "企業級SSD", "企業級SSD控制晶片",
+    ],
     "先進封裝": [
         "先進封裝", "CoWoS", "CoPoS", "SoIC", "FOPLP",
         "面板級封裝", "2.5D封裝", "3D封裝", "矽中介層",
     ],
-    "CPO": ["CPO", "共同封裝光學", "矽光子與CPO"],
+    # 2026-10-07新增(item三查證):近封裝光學(NPO)併入CPO家族——兩者是
+    # 同一個「AI運算光互連」大敘事下的競爭/替代方案,任一邊發酵都該讓
+    # 這個大敘事的tw_active成立。
+    "CPO": ["CPO", "共同封裝光學", "矽光子與CPO", "近封裝光學"],
+    # 2026-10-07新增(item三查證):Google TPU併入客製化晶片家族——TPU是
+    # Google自研客製化ASIC的具體案例,跟XPU/客製化晶片是同一敘事。
+    "客製化晶片": ["客製化晶片", "XPU", "Google TPU"],
     "磷化銦": ["磷化銦", "InP", "indium phosphide"],
     "NVIDIA平台": [
         "Vera Rubin", "Rubin", "Rubin Ultra", "Blackwell", "Blackwell Ultra",
