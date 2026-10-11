@@ -38,6 +38,24 @@ def load_json(path):
         return {}
 
 
+POS_TEXT = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}
+
+
+def pos_stage_text(item):
+    """位置與階段一起顯示,例:'🟢底部 | 潛伏'。
+    price_pos(近約40個交易日區間位置)與 stage(近期漲幅/量能)是兩個獨立欄位;
+    price_pos 為 None(區間不足20日等)時只顯示階段並註明位置資料不足。"""
+    pos = POS_TEXT.get(item.get("price_pos"))
+    stage = item.get("stage")
+    if pos and stage:
+        return f"{pos} | {stage}"
+    if pos:
+        return pos
+    if stage:
+        return f"{stage}(位置資料不足)"
+    return ""
+
+
 def format_digest_for_prompt(digest, tracker):
     """把digest+tracker轉成清楚的中文文字區塊,分三大類組織
     (題材雷達/發酵雷達/候選題材),比直接丟原始JSON更省token、
@@ -72,7 +90,7 @@ def format_digest_for_prompt(digest, tracker):
     lines.append("\n【A區 多源共振個股】")
     if reso:
         for r in reso[:10]:
-            pos = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}.get(r.get("price_pos"), "")
+            pos = pos_stage_text(r)
             name = r.get("name", "")
             lines.append(f"- {r['code']}{name} [{r.get('source_count')}源:{'/'.join(r.get('sources', []))}] "
                         f"{pos} 相關題材:{'/'.join(r.get('themes', [])[:3])}")
@@ -93,7 +111,7 @@ def format_digest_for_prompt(digest, tracker):
     if chips:
         for c in chips[:8]:
             name = c.get("name", "")
-            pos = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}.get(c.get("price_pos"), "")
+            pos = pos_stage_text(c)
             lines.append(f"- {c['code']}{name} {pos}: 法人合計{c.get('inst_total', 0)}, "
                         f"主力{c.get('mainforce_broker', '無')}")
     else:
@@ -177,15 +195,20 @@ SYSTEM_PROMPT = """你是台股題材研究員,根據結構化資料撰寫每日
 3. 交易哲學要貫穿全文:股價位置🟢底部的標的要優先展開、明確標出來是關注重點;
    🔴高檔的標的即使訊號很強,也要明確提醒「已大幅反映,不建議此時追價」,
    不能因為訊號強就淡化追高風險提醒。
-4. E2區的「近期關注」要明確跟E區/D區區分語氣——這是「還在觀察階段」的訊號,
+4. 位置與階段的解讀界線:price_pos(🟢底部/🟡中段/🔴高檔)是近約40個交易日
+   區間的位置,資料不足20日者沒有標籤(顯示「位置資料不足」);stage
+   (潛伏/啟動/過熱)只代表近期漲幅與量能,不代表估值或安全邊際。
+   不得根據這些標籤寫出「安全邊際」「位階安全」之類的結論,
+   只能描述價格在區間的位置與近期漲幅。
+5. E2區的「近期關注」要明確跟E區/D區區分語氣——這是「還在觀察階段」的訊號,
    暴增比還沒過門檻,用「值得留意但尚未確認」這種謹慎語氣,不要講得像已經是題材。
-5. 「今日首見」的新題材要註明是初步發現、需要時間驗證;「連續追蹤中」天數
+6. 「今日首見」的新題材要註明是初步發現、需要時間驗證;「連續追蹤中」天數
    越長的題材可信度越高,可以講得更肯定。
-6. 不要重複列出所有原始資料,要做「解讀」——例如指出某題材同時出現在G區和
+7. 不要重複列出所有原始資料,要做「解讀」——例如指出某題材同時出現在G區和
    D區,代表台股熱度和國際法說互相印證,這種跨區塊關聯才是報告的價值所在。
-7. 篇幅約700-1000字(比純題材雷達的版本略長,因為現在要涵蓋三大類),
+8. 篇幅約700-1000字(比純題材雷達的版本略長,因為現在要涵蓋三大類),
    結尾用一句話點出「今天最值得留意的訊號」。
-8. 不涉及任何個人持股、帳戶、部位資訊——只分析市場公開資料本身。"""
+9. 不涉及任何個人持股、帳戶、部位資訊——只分析市場公開資料本身。"""
 
 
 def call_gemini(digest_text, date_str):

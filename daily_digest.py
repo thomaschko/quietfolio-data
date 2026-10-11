@@ -288,9 +288,10 @@ def build_digest():
     }
 
     # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
-    # 讓每檔股票帶「潛伏/啟動/過熱」。同時填入A區的price_pos(low/mid/high),
-    # daily_report.py本來就會讀這個欄位(🟢底部/🟡中段/🔴高檔),但先前沒有
-    # 任何程式產生它,等於一直是空的。
+    # 讓每檔股票帶「潛伏/啟動/過熱」(stage)與價格位置(price_pos/range_pos)。
+    # 2026-10-11:兩者已拆成獨立欄位——stage 只看近期漲幅與量能;price_pos 是
+    # 近約40個交易日收盤價區間的位置(low/mid/high,daily_report 顯示🟢底部/
+    # 🟡中段/🔴高檔),資料不足20日時為 None,下游要容忍。
     try:
         from price_stage import stage_for_codes
         codes = set()
@@ -306,8 +307,9 @@ def build_digest():
         for r in resonance:
             info = stage_map.get(r["code"])
             if info:
-                r["stage"] = info["stage"]
-                r["price_pos"] = info["price_pos"]
+                r["stage"] = info.get("stage")
+                r["price_pos"] = info.get("price_pos")    # 可能是 None(區間不足20日或價格持平)
+                r["range_pos"] = info.get("range_pos")
                 r["chg20"] = info.get("chg20")
                 r["chg5"] = info.get("chg5")
     except Exception as e:
