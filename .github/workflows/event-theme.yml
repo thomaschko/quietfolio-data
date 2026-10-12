@@ -73,6 +73,13 @@ jobs:
         continue-on-error: true
         run: python price_stage.py
 
+      # 國際大廠 Investor Day/技術大會(2026-10-12新增):公告日期排進行事曆,
+      # 活動日起5天內收集報導+Substack recap,只存標題與關鍵詞次數。
+      # 放在digest之前,digest的F2區與G區國際背書會讀它。不需要API key。
+      - name: Track investor days and tech events
+        continue-on-error: true
+        run: python investor_events.py
+
       - name: Build daily digest
         continue-on-error: true
         run: python daily_digest.py
@@ -114,6 +121,8 @@ jobs:
           git add theme_history/ 2>/dev/null || true
           git add price_history/ 2>/dev/null || true
           [ -f price_stage.json ] && git add price_stage.json || true
+          [ -f investor_day_signals.json ] && git add investor_day_signals.json || true
+          [ -f investor_calendar.json ] && git add investor_calendar.json || true
           git add company_history/ 2>/dev/null || true
           [ -f theme_promotions.json ] && git add theme_promotions.json || true
           [ -f themes_watchlist.txt ] && git add themes_watchlist.txt || true

@@ -143,6 +143,20 @@ def format_digest_for_prompt(digest, tracker):
     else:
         lines.append("- 無(本週非法說更新日)")
 
+    inv = digest.get("F2_investor_events", [])
+    lines.append("\n【F2區 國際大廠 Investor Day/技術大會(活動日起5天內,關鍵詞來自報導與分析師recap)】")
+    if inv:
+        for e in inv[:8]:
+            top = "/".join(f"{k}×{v['count']}" for k, v in list(e.get("keywords", {}).items())[:8])
+            when = f"{e['event_date']}(活動後第{e['day_offset']}天)" if e.get("event_date") else "近期"
+            head = e['name'] if e.get('type') == 'conference' else f"{e['symbol']} {e['name']} {e['event']}"
+            lines.append(f"- {head} {when}: {top or '尚無關鍵詞'}")
+    else:
+        lines.append("- 無進行中的活動")
+    upcoming = digest.get("F2_upcoming", [])
+    if upcoming:
+        lines.append("- 即將舉行:" + "、".join(f"{u['date']} {u['symbol']} {u['event']}" for u in upcoming[:5]))
+
     # ════════════════════════════════════════
     # 第三部分:候選題材(需人工判斷,新舊皆有)
     # ════════════════════════════════════════
@@ -183,7 +197,9 @@ SYSTEM_PROMPT = """你是台股題材研究員,根據結構化資料撰寫每日
 資料分三大類,報告要完整涵蓋這三塊,不能只挑一部分寫:
 1. 發酵雷達(G/A/B/C區):核心買點邏輯,判斷「台股訊號×國際法說」雙邊確認、
    多源共振個股、籌碼動向——這是最高優先,要優先展開分析。
-2. 題材雷達(D/F區):新聞熱度暴增題材、國際大廠法說關鍵詞升溫——次要展開。
+2. 題材雷達(D/F/F2區):新聞熱度暴增題材、國際大廠法說關鍵詞升溫、
+   國際大廠 Investor Day/技術大會提到的關鍵詞(F2,非季度法說,常是新題材的
+   第一手來源)——次要展開;F2 有進行中活動時要點名公司與關鍵詞。
 3. 候選題材(E/E2區):還沒有把握、需要人工判斷的早期訊號,包含src4發現的
    全新詞(E區)跟既有追蹤詞裡開始有動能但還沒正式觸發的(E2區)——這塊要明確
    標註「初步觀察、非確定訊號」,不要講得太篤定,但仍要點名值得留意的幾個。
