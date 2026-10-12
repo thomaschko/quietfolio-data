@@ -12,7 +12,7 @@ Original archives are never modified, moved or deleted.
 
 usage: broker_unzip.py WORKDIR [--dry-run]
 """
-import json, os, re, shutil, subprocess, sys, unicodedata, zipfile, hashlib, datetime
+import json, os, re, shutil, subprocess, sys, unicodedata, zipfile, hashlib, datetime, fcntl
 
 SRC = '11tcvmCveM7ObkGamyKadtWl5UX15IR4M'   # 壓縮檔
 DST = '1q20TWa-htrEacFLOrkeA-JxeQ_i8V0nL'   # 券商報告
@@ -159,6 +159,11 @@ def md5(p):
 # ---------- main ----------
 def main():
     os.makedirs(W, exist_ok=True)
+    lock = open(os.path.join(W, '.lock'), 'w')
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        sys.exit('另一個 broker_unzip.py 正在執行，這次不啟動（避免重複上傳）')
     src = json.loads(rc('lsjson', '--no-modtime', '--no-mimetype', remote(SRC)))
     dirs = {x['Name'] for x in src if x['IsDir']}
     sets = {}
@@ -204,8 +209,9 @@ def main():
                 if not chk or chk[0]['Hashes'].get('md5') != h: raise SystemExit(f'上傳核對失敗: {name}')
                 known.add(h); top.add(name); moved.append(name)
         # leftovers + processed marker (created last)
-        rc('mkdir', remote(SRC) + stem)
+        # a single call creates the folder: mkdir followed by copy can race on Drive and make two
         if any(os.scandir(rest)): rc('copy', rest, remote(SRC) + stem)
+        else: rc('mkdir', remote(SRC) + stem)
         log(**base, status='ok', to_reports=moved, duplicates=dup, non_report=other, notes=notes)
         shutil.rmtree(jd)
 
