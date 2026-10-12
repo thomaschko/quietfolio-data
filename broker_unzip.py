@@ -180,6 +180,11 @@ def main():
     for stem, vols in sorted(todo.items()):
         firsts = [f for f, first in vols if first]
         base = dict(archive=stem, volumes=[f['Name'] for f, _ in vols])
+        # another run (e.g. a manual one overlapping the schedule) may have handled it meanwhile
+        if stem in {x['Name'] for x in json.loads(rc('lsjson', '--dirs-only', '--no-modtime', '--no-mimetype', remote(SRC)))}:
+            log(**base, status='skipped', reason='已由另一次執行處理'); continue
+        for x in json.loads(rc('lsjson', '--files-only', '--hash', '--no-modtime', '--no-mimetype', remote(DST))):
+            top.add(x['Name']); known.add((x.get('Hashes') or {}).get('md5'))
         if len(firsts) != 1:
             log(**base, status='failed', reason='分卷不完整或找不到第一卷'); continue
         jd = os.path.join(W, 'job_' + hashlib.md5(stem.encode()).hexdigest()[:10])
