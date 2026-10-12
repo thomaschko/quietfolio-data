@@ -40,6 +40,17 @@ import requests
 
 from earnings_keywords import COMPANIES  # 單一清單來源,不重複維護
 
+# 2026-10-12:Item 7.01/8.01 讀附件全文做關鍵詞計數(investor day 簡報、技術發表常以
+# EX-99 附件申報)。計數規則、investor day 用語、額外追蹤公司都沿用 investor_events.py,
+# 只存「詞×次數」,不存全文。
+try:
+    from investor_events import count_all, EVENT_RE, SEARCH_NAMES
+except Exception:
+    count_all, EVENT_RE, SEARCH_NAMES = None, None, {}
+TEXT_ITEMS = ("7.01", "8.01")   # 讀全文的 Item(2.02 財報稿已有 earnings_keywords 涵蓋)
+MAX_EXHIBITS = 3
+MAX_DOC_CHARS = 1_500_000
+
 # SEC強制要求User-Agent帶識別資訊+聯絡方式,沒帶會403
 UA = {"User-Agent": "Quietfolio-research thomaschko-quietfolio@example.com"}
 
@@ -129,6 +140,41 @@ def fetch_recent_8k(cik, since_date):
         return []
 
 
+def _strip_html(raw):
+    raw = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", raw)
+    raw = re.sub(r"<[^>]+>", " ", raw)
+    raw = re.sub(r"&nbsp;|&#160;", " ", raw)
+    raw = re.sub(r"&amp;", "&", raw)
+    return re.sub(r"\s+", " ", raw)
+
+
+def read_filing_text(cik, url):
+    """8-K 本文 + 最多 MAX_EXHIBITS 個 EX-99 附件(htm/txt;PDF/圖片略過)的純文字。
+    回傳 (text, 讀到的文件數)。失敗回 ("", 0)。"""
+    if not url:
+        return "", 0
+    base = url.rsplit("/", 1)[0]
+    docs = [url]
+    try:
+        r = requests.get(base + "/index.json", headers=UA, timeout=20)
+        r.raise_for_status()
+        names = [it.get("name", "") for it in r.json().get("directory", {}).get("item", [])]
+        ex = [n for n in names if re.search(r"ex[-_]?99", n, re.I) and re.search(r"\.(htm|html|txt)$", n, re.I)]
+        docs += [f"{base}/{n}" for n in sorted(ex)[:MAX_EXHIBITS]]
+    except Exception as e:
+        print(f"      ⚠ 附件清單讀取失敗: {e}")
+    texts = []
+    for d in docs:
+        try:
+            r = requests.get(d, headers=UA, timeout=30)
+            r.raise_for_status()
+            texts.append(_strip_html(r.text[:MAX_DOC_CHARS]))
+        except Exception as e:
+            print(f"      ⚠ 讀取 {d.rsplit('/', 1)[-1]} 失敗: {e}")
+        time.sleep(0.15)
+    return " ".join(texts), len(texts)
+
+
 def translate_items(item_str):
     """把逗號分隔的Item代碼轉成中文分類清單,查無對照的代碼原樣保留。"""
     if not item_str:
@@ -151,7 +197,11 @@ def main():
         return
 
     all_events = []
-    for ticker, role in COMPANIES.items():
+    # 追蹤清單 = AV法說清單(COMPANIES)+ investor_events 額外追蹤的大廠
+    tracked = dict(COMPANIES)
+    for t in SEARCH_NAMES:
+        tracked.setdefault(t, f"investor day追蹤-{SEARCH_NAMES[t]}")
+    for ticker, role in tracked.items():
         cik = ticker_to_cik.get(ticker)
         if not cik:
             print(f"■ {ticker} ({role}) — ⚠ 查無CIK,跳過")
@@ -165,11 +215,23 @@ def main():
                 labels = translate_items(f["items"])
                 label_str = "、".join(labels) if labels else "(無Item代碼)"
                 print(f"    {f['filing_date']} {f['form']}: {label_str}")
-                all_events.append({
+                ev = {
                     "code": ticker, "role": role, "form": f["form"],
                     "filing_date": f["filing_date"], "items": f["items"],
                     "item_labels": labels, "url": f["url"],
-                })
+                }
+                codes = [c.strip() for c in f["items"].split(",")]
+                if count_all and any(c in TEXT_ITEMS for c in codes):
+                    text, n_docs = read_filing_text(cik, f["url"])
+                    if text:
+                        kw = count_all(text)
+                        top = sorted(kw.items(), key=lambda x: -x[1]["count"])[:20]
+                        ev["exhibits_read"] = n_docs
+                        ev["event_terms"] = sorted({m.group(0).lower() for m in EVENT_RE.finditer(text)})
+                        ev["exhibit_keywords"] = {k: v for k, v in top}
+                        top_str = ", ".join(k + "×" + str(v["count"]) for k, v in top[:6])
+                        print(f"      全文 {n_docs} 份,活動用語={ev['event_terms'] or '無'},關鍵詞 {top_str}")
+                all_events.append(ev)
         time.sleep(0.15)  # 保守起見,速率限制內留緩衝(SEC上限10次/秒)
 
     print(f"\n輸出 us_8k_events.json: {len(all_events)} 筆8-K重訊")

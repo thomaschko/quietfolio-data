@@ -44,6 +44,7 @@ def build_digest():
     newtheme = load_json("new_theme_candidates.json") or {}
     broker = load_json("broker_coverage.json") or {}
     earnings = load_json("earnings_keywords.json") or {}  # src6
+    investor = load_json("investor_day_signals.json") or {}  # 2026-10-12:investor day/技術大會
     tracker = load_json("theme_tracker.json") or {}  # 題材追蹤(AI語意+jieba整合,含首見/追蹤中)
 
     # 以個股為中心聚合:code -> {sources:set, detail:{}}
@@ -223,6 +224,11 @@ def build_digest():
         "drone": "無人機", "counter-drone": "反無人機",
         "smart glasses": "智慧眼鏡", "AR": "AR光學", "waveguide": "波導技術",
         "agentic": "代理式AI", "edge computing": "邊緣運算", "on-device": "端側模型",
+        # 2026-10-12:investor day 常見詞(investor_events.py EXTRA_KEYWORDS),只對到 watchlist 既有題材
+        "custom XPU": "XPU", "custom accelerator": "客製化晶片", "custom compute": "客製化晶片",
+        "optical interconnect": "光通訊", "electro-optics": "光通訊",
+        "DSP": "DSP", "SerDes": "SerDes", "Ethernet switch": "交換器晶片", "switch ASIC": "交換器晶片",
+        "Tomahawk": "Tomahawk",
     }
     # 統計每個「台股題材」被幾家國際大廠法說提及升溫
     theme_earnings_backing = defaultdict(lambda: {"companies": set(), "keywords": set()})
@@ -236,6 +242,15 @@ def build_digest():
         theme = KW_TO_THEME.get(h["keyword"])
         if theme:
             theme_earnings_backing[theme]["companies"].add("國際新聞")
+            theme_earnings_backing[theme]["keywords"].add(h["keyword"])
+
+    # F2. Investor day / 技術大會(investor_events.py):進行中活動的關鍵詞也算國際背書,
+    # 公司標成「代號(活動名)」,跟法說來源區分;技術大會沒有單一公司時用大會名稱。
+    investor_events = investor.get("events", [])
+    for h in investor.get("keyword_hits", []):
+        theme = KW_TO_THEME.get(h["keyword"])
+        if theme:
+            theme_earnings_backing[theme]["companies"].add(h.get("label") or f"{h['symbol']}({h['event']})")
             theme_earnings_backing[theme]["keywords"].add(h["keyword"])
 
     # G. 交叉:哪些題材「同時有台股訊號 + 國際法說背書」(最高價值)
@@ -271,6 +286,7 @@ def build_digest():
             "surge_themes": len(surge_themes),
             "new_candidates": len(new_candidates),
             "earnings_rising": len(earnings_rising),
+            "investor_events": len(investor_events),
             "cross_confirmed": len([c for c in cross_confirmed if c["dual_confirmed"]]),
         },
         "intl_news_heat": intl_news_heat,
@@ -284,13 +300,17 @@ def build_digest():
         # 用同一套防小基數雜訊機制(enough_base),不會混入eMMC那種統計假訊號。
         "E2_near_miss": event.get("near_miss_themes", []),
         "F_earnings_rising": earnings_rising,
+        # 2026-10-12:F2 = 國際大廠 investor day / 技術大會(進行中)+ 即將舉行的行事曆
+        "F2_investor_events": investor_events,
+        "F2_upcoming": investor.get("upcoming", [])[:10],
         "G_cross_confirmed": cross_confirmed,
     }
 
     # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
-    # 讓每檔股票帶「潛伏/啟動/過熱」。同時填入A區的price_pos(low/mid/high),
-    # daily_report.py本來就會讀這個欄位(🟢底部/🟡中段/🔴高檔),但先前沒有
-    # 任何程式產生它,等於一直是空的。
+    # 讓每檔股票帶「潛伏/啟動/過熱」(stage)與價格位置(price_pos/range_pos)。
+    # 2026-10-11:兩者已拆成獨立欄位——stage 只看近期漲幅與量能;price_pos 是
+    # 近約40個交易日收盤價區間的位置(low/mid/high,daily_report 顯示🟢底部/
+    # 🟡中段/🔴高檔),資料不足20日時為 None,下游要容忍。
     try:
         from price_stage import stage_for_codes
         codes = set()
@@ -306,8 +326,9 @@ def build_digest():
         for r in resonance:
             info = stage_map.get(r["code"])
             if info:
-                r["stage"] = info["stage"]
-                r["price_pos"] = info["price_pos"]
+                r["stage"] = info.get("stage")
+                r["price_pos"] = info.get("price_pos")    # 可能是 None(區間不足20日或價格持平)
+                r["range_pos"] = info.get("range_pos")
                 r["chg20"] = info.get("chg20")
                 r["chg5"] = info.get("chg5")
     except Exception as e:
@@ -409,6 +430,21 @@ def print_digest(d):
             print(f"  {r['symbol']:5s} {r['keyword']:18s} [{r['category']}] {flag}")
     else:
         print("  (無 src6 資料,或非財報季)")
+
+    print("\n▍F2. 國際大廠 Investor Day / 技術大會(活動日起5天內)")
+    ev = d.get("F2_investor_events", [])
+    if ev:
+        for e in ev[:10]:
+            top = " ".join(f"{k}×{v['count']}" for k, v in list(e.get("keywords", {}).items())[:6])
+            when = f"{e['event_date']}(D+{e['day_offset']})" if e.get("event_date") else "近期"
+            head = e['name'] if e.get('type') == 'conference' else f"{e['symbol']} {e['name']} {e['event']}"
+            print(f"  {head} {when} "
+                  f"報導{e.get('news_count', 0)} recap{e.get('recap_count', 0)}  {top}")
+    else:
+        print("  (目前沒有進行中的活動)")
+    up = d.get("F2_upcoming", [])
+    if up:
+        print("  即將舉行:" + "、".join(f"{u['date']} {u['symbol']} {u['event']}" for u in up[:6]))
 
 
 def main():

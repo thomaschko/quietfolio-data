@@ -59,8 +59,10 @@ CNYES_BASE = "https://api.cnyes.com/media/api/v1"
 OUT_FILE = "event_theme_raw.json"
 WATCHLIST_FILE = "themes_watchlist.txt"
 
-RECENT_DAYS = 3
-BASELINE_DAYS = 20
+RECENT_DAYS = 3            # 近期 = 最近 3 個「交易日」(含其後的週末/假日),見 recent_window_start()
+BASELINE_DAYS = 20         # 前段基線 = 近期起點往前 BASELINE_DAYS-RECENT_DAYS(17)個日曆天,維持原校準
+TPE = dt.timezone(dt.timedelta(hours=8))
+TWSE_HOLIDAY_URL = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
 SURGE_RATIO = 1.5          # 放寬:近期日均 >= 基線日均的1.5倍即算暴增
 MIN_RECENT_COUNT = 3       # 且近3日至少要有這麼多則,避免小基數假訊號
 NEAR_MISS_LOW = 0.8        # 2026-09-15新增:近期關注區下限,暴增比落在[0.8,1.5)算「有動能但未過門檻」
@@ -304,9 +306,73 @@ def cnyes_search(keyword, start_ts, max_pages=10):
 
 
 # ============================================================
+# 交易日窗口(2026-10-12新增)
+# ============================================================
+# 原本「近3日」是滾動72小時:週六、週日、週一、週二執行時,近期窗口
+# 含週末(幾乎沒新聞)被稀釋——實測10/9(五)CPO暴增比1.65,10/10(六)
+# 掉到0.98、10/11(日)掉到0.8以下;週日暴增題材歸零,9/21、9/28兩個
+# 週一也只剩1~2個。改成「近期 = 從第3個最近交易日的00:00(台北)到現在」,
+# 分母固定3個交易日;週末/假日的新聞照樣計入分子(週末若有新消息會加分)。
+# 前段基線(17個日曆天)與門檻 SURGE_RATIO/NEAR_MISS_LOW 都不動:
+# 週三~週五執行時近期窗口與舊版幾乎相同,原本的校準結果不變。
+def load_tw_holidays():
+    """TWSE 休市日(date set)。抓不到就回空集合,只靠排除週末(不影響其他流程)。"""
+    try:
+        rows = _get_retry(TWSE_HOLIDAY_URL, headers=UA, timeout=20).json()
+    except Exception as e:
+        print(f"  ⚠ 休市日表抓取失敗,只排除週末: {e}")
+        return set()
+    out = set()
+    for r in rows or []:
+        text = f"{r.get('Name', '')}{r.get('Description', '')}"
+        if "開始交易" in text or "最後交易" in text:   # 這類是交易日的註記,不是休市
+            continue
+        raw = re.sub(r"\D", "", str(r.get("Date", "")))
+        if len(raw) == 7:
+            y, md = int(raw[:3]) + 1911, raw[3:]
+        elif len(raw) == 8:
+            y, md = int(raw[:4]), raw[4:]
+        else:
+            continue
+        try:
+            out.add(dt.date(y, int(md[:2]), int(md[2:])))
+        except ValueError:
+            pass
+    return out
+
+
+def is_trading_day(d, holidays):
+    return d.weekday() < 5 and d not in holidays
+
+
+def recent_window_start(today, holidays, n=RECENT_DAYS):
+    """從 today(台北日期)往回數 n 個交易日(today 是交易日就算第1個),回傳第 n 個的日期。"""
+    d, cnt = today, 0
+    for _ in range(60):
+        if is_trading_day(d, holidays):
+            cnt += 1
+            if cnt == n:
+                return d
+        d -= dt.timedelta(days=1)
+    return today - dt.timedelta(days=n - 1)
+
+
+def window_bounds(now_ts, holidays):
+    """回傳 (recent_start_ts, base_start_ts, 說明dict)。"""
+    today = dt.datetime.fromtimestamp(now_ts, TPE).date()
+    rs = recent_window_start(today, holidays)
+    recent_start = int(dt.datetime(rs.year, rs.month, rs.day, tzinfo=TPE).timestamp())
+    base_start = recent_start - (BASELINE_DAYS - RECENT_DAYS) * 86400
+    info = {"today": today.isoformat(), "trading_day": is_trading_day(today, holidays),
+            "recent_start": rs.isoformat(), "recent_trading_days": RECENT_DAYS,
+            "recent_calendar_days": (today - rs).days + 1, "holidays_loaded": len(holidays)}
+    return recent_start, base_start, info
+
+
+# ============================================================
 # 偵測源 1: 固定關鍵字熱度暴增
 # ============================================================
-def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None):
+def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None, holidays=None):
     print("[偵測源1] 固定關鍵字熱度追蹤")
     try:
         with open(WATCHLIST_FILE, "r", encoding="utf-8") as f:
@@ -324,8 +390,10 @@ def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None):
         print(f"  找不到 {WATCHLIST_FILE}")
         return []
 
-    recent_start = now_ts - RECENT_DAYS * 86400
-    base_start = now_ts - BASELINE_DAYS * 86400
+    recent_start, base_start, win = window_bounds(now_ts, holidays or set())
+    WINDOW_INFO.update(win)
+    print(f"  近期窗口: {win['recent_start']} 起 {win['recent_calendar_days']} 個日曆天"
+          f" = {RECENT_DAYS} 個交易日(今天{'是' if win['trading_day'] else '不是'}交易日)")
     results = []
     near_miss_themes = []
 
@@ -345,10 +413,9 @@ def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None):
         supp_hits = [t for t in supplement_titles if kw in t]
         if supp_hits:
             recent = recent + [{"title": t, "summary": "", "publishAt": now_ts} for t in supp_hits]
-        base = news   # 20日內全部(含近3日)
+        # 近期日均 = 近期則數 / 3個交易日(週末、假日的新聞計入分子,不計入分母)
         recent_daily = len(recent) / RECENT_DAYS
-        base_daily = len(base) / BASELINE_DAYS if base else 0.01
-        # 用「近期 vs 前段(20日扣掉近3日)」比,基期較純
+        # 用「近期 vs 前段(近期起點往前17個日曆天)」比,基期較純
         earlier = [n for n in news if n["publishAt"] < recent_start]
         earlier_daily = len(earlier) / (BASELINE_DAYS - RECENT_DAYS) if earlier else 0.01
         ratio = round(recent_daily / earlier_daily, 2) if earlier_daily else 999
@@ -367,7 +434,7 @@ def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None):
         flag = "🔥暴增" if surge else ("👀關注中" if near_miss else
                                       ("(基數過小略過)" if ratio >= SURGE_RATIO
                                        and len(recent) >= MIN_RECENT_COUNT else ""))
-        print(f"  {kw}: 近{RECENT_DAYS}日={len(recent)} 前段日均={round(earlier_daily,2)} "
+        print(f"  {kw}: 近{RECENT_DAYS}交易日={len(recent)} 前段日均={round(earlier_daily,2)} "
               f"暴增比={ratio} {flag}")
 
         if near_miss:
@@ -431,6 +498,9 @@ def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None):
 
 # ============================================================
 # 偵測源 2: MOPS 重訊(改用 OpenAPI keyless JSON)
+# ============================================================
+WINDOW_INFO = {}   # 偵測源1實際使用的交易日窗口,寫進輸出供除錯
+# ============================================================
 # ============================================================
 def _mops_index(fields_sample):
     """依欄位名動態定位 代號/名稱/主旨 欄。
@@ -579,7 +649,8 @@ def main():
         except Exception as e:
             print(f"  ⚠ 23源標題池抓取失敗,股號抽取退回只用cnyes: {e}")
 
-    src1, src1_near_miss = detect_fixed_keywords(name2code, code2name, now_ts, src4_titles)
+    holidays = load_tw_holidays()
+    src1, src1_near_miss = detect_fixed_keywords(name2code, code2name, now_ts, src4_titles, holidays)
     src2 = detect_mops_events(name2code, code2name, now)
 
     # 偵測源3:維基題材關注度(發酵前緣)。獨立檔,抓不到不影響前兩源。
@@ -611,6 +682,7 @@ def main():
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
         "date": now.strftime("%Y%m%d"),
+        "window": WINDOW_INFO,
         "mops_stats": MOPS_STATS,
         "overheat": MOPS_OVERHEAT,
         "themes": all_themes,

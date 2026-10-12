@@ -22,8 +22,14 @@ price_stage.py — 價量階段標籤(潛伏 / 啟動 / 過熱)
   潛伏:以上皆非,且有足夠歷史可判斷
   未知:歷史不足(<6個交易日),只有單日漲跌可看
 
-對應 daily_report.py 既有的 price_pos 欄位:
-  潛伏→low(🟢底部)  啟動→mid(🟡中段)  過熱→high(🔴高檔)
+「位置」與「階段」是兩個獨立欄位(2026-10-11 拆開):
+  stage(潛伏/啟動/過熱):只反映近期漲幅與量能,不代表價格在區間的高低。
+  price_pos(low/mid/high → daily_report 顯示🟢底部/🟡中段/🔴高檔):
+    最近最多 40 個交易日(含今天)收盤價區間的位置
+    range_pos = (今日收盤 - 區間最低) / (區間最高 - 區間最低),最高=最低時為 None;
+    range_days >= 20 才給標籤:<=0.33 low、<=0.66 mid、其餘 high;不足 20 日為 None。
+  舊版曾把 stage 直接映射成 price_pos(潛伏→底部),會把「近20日沒大漲」誤說成
+  「位於底部」,已移除。
 ============================================================
 """
 
@@ -54,7 +60,16 @@ LIMIT_UP_PCT = 9.5
 OVERHEAT_LIMIT_UP_DAYS = 2
 MIN_HISTORY_DAYS = 6
 
-STAGE_TO_POS = {"潛伏": "low", "啟動": "mid", "過熱": "high"}
+# ── 價格位置(區間位置,與 stage 無關)──
+RANGE_WINDOW = 40          # 取最近最多幾個交易日收盤價(含今天)
+RANGE_MIN_DAYS = 20        # 區間至少要有幾日才給 price_pos 標籤
+POS_LOW_MAX = 0.33
+POS_MID_MAX = 0.66
+POS_LABEL = {"low": "底部", "mid": "中段", "high": "高檔"}
+
+# TPEx 個股補抓(st43_result.php)連續失敗幾次就放棄本輪
+TPEX_DEAD_STREAK = 6
+FAIL_LOG_LIMIT = 3
 
 
 # ============================================================
@@ -233,6 +248,13 @@ def backfill(codes, market, current_month_only=False, force=False):
     ok = fail = 0
     empty = 0
     shown = 0
+    tpex_skipped = 0
+    # 2026-10-11:TPEx 個股端點(st43_result.php)實跑每次都回空內容
+    # (JSONDecodeError),一輪白打約 80 次請求、log 洗版。連續失敗
+    # TPEX_DEAD_STREAK 次就判定本輪失效,之後的上櫃股直接略過不再發請求;
+    # main() 同一輪會呼叫 backfill() 兩次,失效狀態跨兩次呼叫沿用。
+    tpex_streak = 0
+    tpex_dead = getattr(backfill, "tpex_dead", False)
     for code in list(codes)[:MAX_BACKFILL_CODES]:
         if not force and len(store.get(code, {})) >= 21:
             continue
@@ -240,13 +262,27 @@ def backfill(codes, market, current_month_only=False, force=False):
         order = [known] if known else ["TWSE", "TPEx"]
         got, used = {}, None
         for mk in order:
+            if mk == "TPEx" and tpex_dead:
+                tpex_skipped += 1
+                continue
             fn = _backfill_tpex if mk == "TPEx" else _backfill_twse
             for ym in months:
+                if mk == "TPEx" and tpex_dead:
+                    break
                 try:
                     got.update(fn(code, ym))
+                    if mk == "TPEx":
+                        tpex_streak = 0
                 except Exception as e:
                     fail += 1
-                    print(f"    ⚠ 補抓 {code}({mk}) {ym} 失敗: {str(e)[:60]}")
+                    if fail <= FAIL_LOG_LIMIT:
+                        print(f"    ⚠ 補抓 {code}({mk}) {ym} 失敗: {str(e)[:60]}")
+                    if mk == "TPEx":
+                        tpex_streak += 1
+                        if tpex_streak >= TPEX_DEAD_STREAK:
+                            tpex_dead = backfill.tpex_dead = True
+                            print(f"    TPEx個股端點連續失敗{TPEX_DEAD_STREAK}次,本輪放棄"
+                                  "(上櫃股歷史改靠每日全市場快照累積)")
                 time.sleep(1.0)
             if got:
                 used = mk
@@ -268,7 +304,10 @@ def backfill(codes, market, current_month_only=False, force=False):
         json.dump(store, f, ensure_ascii=False, separators=(",", ":"))
     with open(MARKET_FILE, "w", encoding="utf-8") as f:
         json.dump(learned, f, ensure_ascii=False, separators=(",", ":"))
-    print(f"  個股補抓: 成功 {ok} 檔 / 失敗請求 {fail} 次 / 無資料 {empty} 檔")
+    if fail > FAIL_LOG_LIMIT:
+        print(f"    …其餘 {fail - FAIL_LOG_LIMIT} 筆失敗訊息省略")
+    print(f"  個股補抓: 成功 {ok} 檔 / 失敗請求 {fail} 次 / 無資料 {empty} 檔"
+          + (f" / TPEx失效略過 {tpex_skipped} 檔" if tpex_skipped else ""))
 
 
 # ============================================================
@@ -290,6 +329,7 @@ def _classify(series, overheat_flag):
     closes = [s[1] for s in series]
     vols = [s[2] for s in series]
     res = {"history_days": n, "stage": "未知", "price_pos": None,
+           "range_pos": None, "range_days": 0,
            "chg1": None, "chg5": None, "chg20": None, "vol_ratio": None,
            "limit_up_10d": 0, "overheat_notice": bool(overheat_flag)}
     if n >= 2 and closes[-2] > 0:
@@ -322,7 +362,17 @@ def _classify(series, overheat_flag):
     else:
         stage = "潛伏"
     res["stage"] = stage
-    res["price_pos"] = STAGE_TO_POS.get(stage)
+
+    # ── 價格位置:最近最多 RANGE_WINDOW 日收盤價區間,與 stage 完全獨立 ──
+    window = [c for c in closes[-RANGE_WINDOW:] if c]
+    res["range_days"] = len(window)
+    if window:
+        hi, lo = max(window), min(window)
+        if hi > lo:
+            res["range_pos"] = round((closes[-1] - lo) / (hi - lo), 3)
+    rp = res["range_pos"]
+    if res["range_days"] >= RANGE_MIN_DAYS and rp is not None:
+        res["price_pos"] = "low" if rp <= POS_LOW_MAX else "mid" if rp <= POS_MID_MAX else "high"
     return res
 
 
@@ -345,7 +395,8 @@ def stage_for_codes(codes, overheat=None):
 
 
 def tag(info):
-    """顯示用短標籤,例:'🔴過熱+35.2%' / '🟢潛伏' / '⚪未知'。"""
+    """顯示用短標籤,例:'🔴過熱+35% 位置高檔' / '🟢潛伏 位置中段' / '⚪未知'。
+    位置(price_pos)沒有資料就不顯示位置。"""
     if not info:
         return ""
     icon = {"潛伏": "🟢", "啟動": "🟡", "過熱": "🔴"}.get(info["stage"], "⚪")
@@ -356,6 +407,9 @@ def tag(info):
         s += f"(日{info['chg1']:+.1f}%)"
     if info.get("overheat_notice"):
         s += "⚠注意交易"
+    pos = POS_LABEL.get(info.get("price_pos"))
+    if pos:
+        s += f" 位置{pos}"
     return s
 
 

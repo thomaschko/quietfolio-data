@@ -38,6 +38,24 @@ def load_json(path):
         return {}
 
 
+POS_TEXT = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}
+
+
+def pos_stage_text(item):
+    """位置與階段一起顯示,例:'🟢底部 | 潛伏'。
+    price_pos(近約40個交易日區間位置)與 stage(近期漲幅/量能)是兩個獨立欄位;
+    price_pos 為 None(區間不足20日等)時只顯示階段並註明位置資料不足。"""
+    pos = POS_TEXT.get(item.get("price_pos"))
+    stage = item.get("stage")
+    if pos and stage:
+        return f"{pos} | {stage}"
+    if pos:
+        return pos
+    if stage:
+        return f"{stage}(位置資料不足)"
+    return ""
+
+
 def format_digest_for_prompt(digest, tracker):
     """把digest+tracker轉成清楚的中文文字區塊,分三大類組織
     (題材雷達/發酵雷達/候選題材),比直接丟原始JSON更省token、
@@ -72,7 +90,7 @@ def format_digest_for_prompt(digest, tracker):
     lines.append("\n【A區 多源共振個股】")
     if reso:
         for r in reso[:10]:
-            pos = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}.get(r.get("price_pos"), "")
+            pos = pos_stage_text(r)
             name = r.get("name", "")
             lines.append(f"- {r['code']}{name} [{r.get('source_count')}源:{'/'.join(r.get('sources', []))}] "
                         f"{pos} 相關題材:{'/'.join(r.get('themes', [])[:3])}")
@@ -93,7 +111,7 @@ def format_digest_for_prompt(digest, tracker):
     if chips:
         for c in chips[:8]:
             name = c.get("name", "")
-            pos = {"low": "🟢底部", "mid": "🟡中段", "high": "🔴高檔"}.get(c.get("price_pos"), "")
+            pos = pos_stage_text(c)
             lines.append(f"- {c['code']}{name} {pos}: 法人合計{c.get('inst_total', 0)}, "
                         f"主力{c.get('mainforce_broker', '無')}")
     else:
@@ -124,6 +142,20 @@ def format_digest_for_prompt(digest, tracker):
             lines.append(f"- {e.get('symbol')} {e.get('keyword')} [{e.get('category')}] {flag}")
     else:
         lines.append("- 無(本週非法說更新日)")
+
+    inv = digest.get("F2_investor_events", [])
+    lines.append("\n【F2區 國際大廠 Investor Day/技術大會(活動日起5天內,關鍵詞來自報導與分析師recap)】")
+    if inv:
+        for e in inv[:8]:
+            top = "/".join(f"{k}×{v['count']}" for k, v in list(e.get("keywords", {}).items())[:8])
+            when = f"{e['event_date']}(活動後第{e['day_offset']}天)" if e.get("event_date") else "近期"
+            head = e['name'] if e.get('type') == 'conference' else f"{e['symbol']} {e['name']} {e['event']}"
+            lines.append(f"- {head} {when}: {top or '尚無關鍵詞'}")
+    else:
+        lines.append("- 無進行中的活動")
+    upcoming = digest.get("F2_upcoming", [])
+    if upcoming:
+        lines.append("- 即將舉行:" + "、".join(f"{u['date']} {u['symbol']} {u['event']}" for u in upcoming[:5]))
 
     # ════════════════════════════════════════
     # 第三部分:候選題材(需人工判斷,新舊皆有)
@@ -165,7 +197,9 @@ SYSTEM_PROMPT = """你是台股題材研究員,根據結構化資料撰寫每日
 資料分三大類,報告要完整涵蓋這三塊,不能只挑一部分寫:
 1. 發酵雷達(G/A/B/C區):核心買點邏輯,判斷「台股訊號×國際法說」雙邊確認、
    多源共振個股、籌碼動向——這是最高優先,要優先展開分析。
-2. 題材雷達(D/F區):新聞熱度暴增題材、國際大廠法說關鍵詞升溫——次要展開。
+2. 題材雷達(D/F/F2區):新聞熱度暴增題材、國際大廠法說關鍵詞升溫、
+   國際大廠 Investor Day/技術大會提到的關鍵詞(F2,非季度法說,常是新題材的
+   第一手來源)——次要展開;F2 有進行中活動時要點名公司與關鍵詞。
 3. 候選題材(E/E2區):還沒有把握、需要人工判斷的早期訊號,包含src4發現的
    全新詞(E區)跟既有追蹤詞裡開始有動能但還沒正式觸發的(E2區)——這塊要明確
    標註「初步觀察、非確定訊號」,不要講得太篤定,但仍要點名值得留意的幾個。
@@ -177,15 +211,20 @@ SYSTEM_PROMPT = """你是台股題材研究員,根據結構化資料撰寫每日
 3. 交易哲學要貫穿全文:股價位置🟢底部的標的要優先展開、明確標出來是關注重點;
    🔴高檔的標的即使訊號很強,也要明確提醒「已大幅反映,不建議此時追價」,
    不能因為訊號強就淡化追高風險提醒。
-4. E2區的「近期關注」要明確跟E區/D區區分語氣——這是「還在觀察階段」的訊號,
+4. 位置與階段的解讀界線:price_pos(🟢底部/🟡中段/🔴高檔)是近約40個交易日
+   區間的位置,資料不足20日者沒有標籤(顯示「位置資料不足」);stage
+   (潛伏/啟動/過熱)只代表近期漲幅與量能,不代表估值或安全邊際。
+   不得根據這些標籤寫出「安全邊際」「位階安全」之類的結論,
+   只能描述價格在區間的位置與近期漲幅。
+5. E2區的「近期關注」要明確跟E區/D區區分語氣——這是「還在觀察階段」的訊號,
    暴增比還沒過門檻,用「值得留意但尚未確認」這種謹慎語氣,不要講得像已經是題材。
-5. 「今日首見」的新題材要註明是初步發現、需要時間驗證;「連續追蹤中」天數
+6. 「今日首見」的新題材要註明是初步發現、需要時間驗證;「連續追蹤中」天數
    越長的題材可信度越高,可以講得更肯定。
-6. 不要重複列出所有原始資料,要做「解讀」——例如指出某題材同時出現在G區和
+7. 不要重複列出所有原始資料,要做「解讀」——例如指出某題材同時出現在G區和
    D區,代表台股熱度和國際法說互相印證,這種跨區塊關聯才是報告的價值所在。
-7. 篇幅約700-1000字(比純題材雷達的版本略長,因為現在要涵蓋三大類),
+8. 篇幅約700-1000字(比純題材雷達的版本略長,因為現在要涵蓋三大類),
    結尾用一句話點出「今天最值得留意的訊號」。
-8. 不涉及任何個人持股、帳戶、部位資訊——只分析市場公開資料本身。"""
+9. 不涉及任何個人持股、帳戶、部位資訊——只分析市場公開資料本身。"""
 
 
 def call_gemini(digest_text, date_str):
