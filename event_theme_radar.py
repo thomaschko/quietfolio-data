@@ -357,9 +357,18 @@ def recent_window_start(today, holidays, n=RECENT_DAYS):
     return today - dt.timedelta(days=n - 1)
 
 
+ANCHOR_PREV_DAY_BEFORE_HOUR = 8   # 台北 08:00 前執行(排程延誤過午夜)時,以前一天當「今天」
+
+
 def window_bounds(now_ts, holidays):
     """回傳 (recent_start_ts, base_start_ts, 說明dict)。"""
-    today = dt.datetime.fromtimestamp(now_ts, TPE).date()
+    now_tpe = dt.datetime.fromtimestamp(now_ts, TPE)
+    today = now_tpe.date()
+    # 2026-10-13:10/12 的排程延誤到台北 01:12 才跑,當天(10/13)幾乎還沒有新聞卻被算成
+    # 1 個交易日,近期日均被稀釋約1/3。08:00 前執行一律以前一天為基準;
+    # 午夜後到現在的新聞仍計入分子(近期窗口一路算到 now_ts)。
+    if now_tpe.hour < ANCHOR_PREV_DAY_BEFORE_HOUR:
+        today -= dt.timedelta(days=1)
     rs = recent_window_start(today, holidays)
     recent_start = int(dt.datetime(rs.year, rs.month, rs.day, tzinfo=TPE).timestamp())
     base_start = recent_start - (BASELINE_DAYS - RECENT_DAYS) * 86400

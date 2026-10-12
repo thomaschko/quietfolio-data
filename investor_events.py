@@ -295,24 +295,34 @@ def run(now=None, fetch_company=None, fetch_conf=None, fetch_feed=None):
             "keywords": dict(sorted(kw.items(), key=lambda x: -x[1]["count"])),
         })
 
-    # 沒排進行事曆、但近期 recap 直接寫到某公司 investor day 的(公告漏抓的保險)
+    # 沒排進行事曆、但近期已有活動報導或 recap 的(事前公告漏抓的保險)。
+    # 2026-10-13:原本只看 recap 電子報;10/12 實跑 semiconalpha 對 GitHub 回 403,
+    # 行事曆又沒有 Marvell 的事前公告,活動當天的新聞(「…at investor day」)就整個漏掉。
+    # 現在公司新聞(非公告)5天內有「公司名+活動用語」也直接建立事件,
+    # 活動日取最早一則報導/recap 的日期(標 date_inferred)。
     listed = {e["symbol"] for e in events}
     for sym in SEARCH_NAMES:
         if sym in listed:
             continue
+        news = [it for it in per_symbol_items.get(sym, [])
+                if it["pub"] and (now - it["pub"]).days <= ACTIVE_AFTER_DAYS
+                and not ANNOUNCE_RE.search(it["title"])]
         recaps = [it for it in feed_items
                   if it["pub"] and (now - it["pub"]).days <= ACTIVE_AFTER_DAYS
                   and name_hit(sym, it["title"]) and EVENT_RE.search(it["title"])]
-        if recaps:
+        if news or recaps:
             kw = {}
-            for it in recaps:
+            for it in news + recaps:
                 merge_counts(kw, count_all(it["text"]))
+            first = min(it["pub"] for it in news + recaps).astimezone(TPE).date()
             events.append({
                 "type": "investor_day", "symbol": sym, "name": SEARCH_NAMES[sym],
-                "event": event_label(recaps[0]["title"]), "event_date": None, "day_offset": None,
-                "news_count": 0, "recap_count": len(recaps),
+                "event": event_label(" ".join(it["title"] for it in news + recaps)),
+                "event_date": first.isoformat(), "day_offset": (today - first).days,
+                "date_inferred": True,
+                "news_count": len(news), "recap_count": len(recaps),
                 "recap_sources": sorted({it["feed"] for it in recaps}),
-                "titles": [it["title"][:160] for it in recaps][:6],
+                "titles": [it["title"][:160] for it in (recaps + news)][:6],
                 "keywords": dict(sorted(kw.items(), key=lambda x: -x[1]["count"])),
             })
 
@@ -350,11 +360,20 @@ def run(now=None, fetch_company=None, fetch_conf=None, fetch_feed=None):
     # ── 4. 技術大會 ──
     for conf, sym in CONFERENCES.items():
         key_word = conf.replace(" conference", "")
-        items = [it for it in fetch_conf(conf) if key_word.lower() in it["text"].lower()]
+        # 「Computex 2027」這類明年場次的預告不算本屆報導(10/12 實跑的 Computex 雜訊就是這種)
+        other_year = re.compile(re.escape(key_word) + r"\s*'?(20\d{2})", re.I)
+        items = [it for it in fetch_conf(conf)
+                 if key_word.lower() in it["text"].lower()
+                 and all(int(m.group(1)) == today.year for m in other_year.finditer(it["text"]))]
         if len(items) >= MIN_CONF_ITEMS:
             kw = {}
             for it in items:
                 merge_counts(kw, count_all(it["text"]))
+            # 2026-10-13:至少命中1個關鍵詞才列入(10/12 實跑 Computex 只是新聞提到
+            # 「Computex 2027」、SEMICON West 是參展預告,兩者都0個關鍵詞,屬雜訊)
+            if not kw:
+                time.sleep(REQ_SLEEP)
+                continue
             events.append({
                 "type": "conference", "symbol": sym, "name": conf, "event": conf,
                 "event_date": None, "day_offset": None, "news_count": len(items), "recap_count": 0,
