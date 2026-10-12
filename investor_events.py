@@ -46,6 +46,7 @@ UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.3
                     "(KHTML, like Gecko) Chrome/120 Safari/537.36"}
 TPE = dt.timezone(dt.timedelta(hours=8))
 OUT_FILE = "investor_day_signals.json"
+K8_FILE = "us_8k_events.json"
 CALENDAR_FILE = "investor_calendar.json"
 
 GNEWS_US = "https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en"
@@ -314,6 +315,37 @@ def run(now=None, fetch_company=None, fetch_conf=None, fetch_feed=None):
                 "titles": [it["title"][:160] for it in recaps][:6],
                 "keywords": dict(sorted(kw.items(), key=lambda x: -x[1]["count"])),
             })
+
+    # ── 3b. 8-K(us_8k_events.py):7.01/8.01 附件全文提到 investor day 的申報 ──
+    # 併入同公司進行中的活動;沒有排進行事曆的,以申報日當活動日新增一筆。
+    try:
+        with open(K8_FILE, encoding="utf-8") as f:
+            k8 = json.load(f).get("events", [])
+    except Exception:
+        k8 = []
+    by_sym = {e["symbol"]: e for e in events if e["type"] == "investor_day"}
+    for f8 in k8:
+        if not f8.get("event_terms") or not f8.get("exhibit_keywords"):
+            continue
+        try:
+            fd = dt.date.fromisoformat(f8["filing_date"])
+        except Exception:
+            continue
+        if not 0 <= (today - fd).days <= ACTIVE_AFTER_DAYS:
+            continue
+        sym = f8["code"]
+        e = by_sym.get(sym)
+        if e is None:
+            e = {"type": "investor_day", "symbol": sym, "name": SEARCH_NAMES.get(sym, sym),
+                 "event": event_label(" ".join(f8["event_terms"])), "event_date": fd.isoformat(),
+                 "day_offset": (today - fd).days, "news_count": 0, "recap_count": 0,
+                 "recap_sources": [], "titles": [], "keywords": {}}
+            events.append(e)
+            by_sym[sym] = e
+        merge_counts(e["keywords"], f8["exhibit_keywords"])
+        e["keywords"] = dict(sorted(e["keywords"].items(), key=lambda x: -x[1]["count"]))
+        e["recap_sources"] = sorted(set(e["recap_sources"]) | {"8-K"})
+        e["sec_filing"] = f"{f8['filing_date']} 8-K Item {f8.get('items', '')}"
 
     # ── 4. 技術大會 ──
     for conf, sym in CONFERENCES.items():

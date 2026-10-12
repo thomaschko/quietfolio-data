@@ -73,6 +73,16 @@ jobs:
         continue-on-error: true
         run: python price_stage.py
 
+      # 美股8-K重訊(2026-09-22新增):對照MOPS重訊(src2)的美股版,用
+      # SEC EDGAR官方免費API(不需key),對現有23家追蹤公司抓最近7天
+      # 內的8-K申報,即時性比季度才跑一次的earnings_keywords.py高——
+      # 事件觸發、4個工作天內必須申報,不用等法說會才知道。
+      # 2026-10-12:移到 investor_events.py 之前——7.01/8.01 附件全文的關鍵詞
+      # 會被當天的 investor_events/digest 讀進 F2 區。
+      - name: Track US 8-K material events
+        continue-on-error: true
+        run: python us_8k_events.py
+
       # 國際大廠 Investor Day/技術大會(2026-10-12新增):公告日期排進行事曆,
       # 活動日起5天內收集報導+Substack recap,只存標題與關鍵詞次數。
       # 放在digest之前,digest的F2區與G區國際背書會讀它。不需要API key。
@@ -101,13 +111,6 @@ jobs:
         continue-on-error: true
         run: python verification_ledger.py
 
-      # 美股8-K重訊(2026-09-22新增):對照MOPS重訊(src2)的美股版,用
-      # SEC EDGAR官方免費API(不需key),對現有23家追蹤公司抓最近7天
-      # 內的8-K申報,即時性比季度才跑一次的earnings_keywords.py高——
-      # 事件觸發、4個工作天內必須申報,不用等法說會才知道。
-      - name: Track US 8-K material events
-        continue-on-error: true
-        run: python us_8k_events.py
 
       - name: Commit and push
         run: |
