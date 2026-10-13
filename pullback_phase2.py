@@ -87,7 +87,7 @@ def market_lists():
     return out
 
 
-def download(code_suffix, start, end, chunk=100):
+def download(code_suffix, start, end, chunk=100, min_rows=250):
     """yfinance 批次下載。回傳 ({code: df[Open High Low Close Volume Turnover]}, 失敗清單)。
     OHLC 以 Adj Close/Close 比例還原(與 Phase 1 auto_adjust 同口徑);
     Turnover = 未還原收盤 × 成交量(成交值,排名用)。"""
@@ -108,7 +108,7 @@ def download(code_suffix, start, end, chunk=100):
             try:
                 h = raw[c + s] if isinstance(raw.columns, pd.MultiIndex) else raw
                 h = h.dropna(subset=["Open", "High", "Low", "Close", "Adj Close"])
-                if len(h) < 250:
+                if len(h) < min_rows:
                     failed.append(c)
                     continue
                 f = h["Adj Close"] / h["Close"]
