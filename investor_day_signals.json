@@ -1,24 +1,79 @@
 {
- "generated_at": "2026-10-13 02:13:23",
- "date": "20261013",
+ "generated_at": "2026-10-14 00:24:22",
+ "date": "20261014",
  "events": [
   {
-   "type": "conference",
-   "symbol": "",
-   "name": "Computex",
-   "event": "Computex",
-   "event_date": null,
-   "day_offset": null,
-   "news_count": 4,
+   "type": "investor_day",
+   "symbol": "AMD",
+   "name": "AMD",
+   "event": "Analyst Day",
+   "event_date": "2026-10-10",
+   "day_offset": 4,
+   "date_inferred": true,
+   "news_count": 1,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "AMD RDNA 5 graphics cards unlikely to be revealed before Computex 2027, leaker claims - VideoCardz.com",
-    "AMD RDNA 5 reveal tipped for after Computex 2027 - tbreak.com",
-    "QCOM Stock Slides Premarket: Qualcomm's Dragonfly AI Push Gets Overshadowed By Nvidia's Computex Blitz - Stocktwits",
-    "ASUS unveils ROG Phone, TUF gaming peripherals at Computex 2018 - Digit"
+    "Jefferies Semiconductor Weekly: Recap of Marvell Analyst Day, Preview of OCP Summit, and Updates on AMD’s Investment in Taiwan - 富途牛牛"
    ],
-   "keywords": {}
+   "keywords": {
+    "Taiwan": {
+     "count": 2,
+     "category": "台廠點名"
+    }
+   }
+  },
+  {
+   "type": "investor_day",
+   "symbol": "MRVL",
+   "name": "Marvell",
+   "event": "Investor Day",
+   "event_date": "2026-10-08",
+   "day_offset": 6,
+   "date_inferred": true,
+   "news_count": 16,
+   "recap_count": 0,
+   "recap_sources": [],
+   "titles": [
+    "Marvell: Investor Day Resets The AI Growth Story (NASDAQ:MRVL) - Seeking Alpha",
+    "Marvell Investor Day 2026 Targets $80B FY 2031 Revenue With Custom Silicon and Optics - The Futurum Group",
+    "Marvell Investor Day: Connectivity Lifts Outlook to $20 Billion - ETF Database",
+    "Bank of America tweaks Marvell stock target after key Analyst Day - TheStreet",
+    "Marvell's Investor Day: $70-90B FY 2031 Sales Feels Like A Different Company - Seeking Alpha",
+    "Marvell Shows Bullish Tone at Investor Day, Oppenheimer Says - Yahoo Finance"
+   ],
+   "keywords": {
+    "custom silicon": {
+     "count": 2,
+     "category": "客戶capex/需求"
+    },
+    "Taiwan": {
+     "count": 2,
+     "category": "台廠點名"
+    }
+   }
+  },
+  {
+   "type": "investor_day",
+   "symbol": "SNPS",
+   "name": "Synopsys",
+   "event": "Investor Day",
+   "event_date": "2026-10-12",
+   "day_offset": 2,
+   "date_inferred": true,
+   "news_count": 2,
+   "recap_count": 0,
+   "recap_sources": [],
+   "titles": [
+    "Needham raises Synopsys stock price target on investor day outlook By Investing.com - Investing.com",
+    "Synopsys in spotlight as Needham ups price target after investor day (SNPS:NASDAQ) - Seeking Alpha"
+   ],
+   "keywords": {
+    "UPS": {
+     "count": 2,
+     "category": "資料中心電源"
+    }
+   }
   },
   {
    "type": "conference",
@@ -27,61 +82,91 @@
    "event": "OCP Global Summit",
    "event_date": null,
    "day_offset": null,
-   "news_count": 16,
+   "news_count": 27,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
+    "OCP Global Summit 2026: MSI Brings Nvidia MGX Rack-Scale AI Infrastructure - StorageNewsletter",
     "Wistron Showcases at 2026 OCP Global Summit - PR Newswire",
-    "QCT Showcases Future Ready Intel-based Data Center Solutions at the 2026 OCP Global Summit - Knoxville News Sentinel",
-    "Vuzix to Showcase Vuzix Causeway™ Optical Interconnect Evaluation Platform at OCP Global Summit and PECC Summit - Morningstar",
-    "MiTAC Computing Showcases Full-Stack Innovation to Scale Open AI Infrastructure at OCP Global Summit 2026 - TradingView",
-    "QCT Accelerates AI Factory and Distributed AI Deployments with Co-designed Infrastructure at the 2026 OCP Global Summit - Cincinnati Enquirer",
+    "Wiwynn Brings Vera Rubin NVL72, AMD Helios Racks to OCP Global Summit - Unite.AI",
+    "Samsung Unveils AI Infrastructure Memory Strategy at OCP Global Summit - GuruFocus",
+    "Wiwynn Showcases Next-Gen AI Platforms, Thermal Engineering, and Optical Interconnect Technologies at 2026 OCP Global Summit - Morningstar",
     "Broadcom (AVGO) To Launch AI Networking Platform At OCP Global Summit 2026 - Yahoo Finance"
    ],
    "keywords": {
     "AI infrastructure": {
-     "count": 8,
+     "count": 14,
      "category": "客戶capex/需求"
+    },
+    "optical": {
+     "count": 8,
+     "category": "光通訊/CPO"
+    },
+    "optical interconnect": {
+     "count": 6,
+     "category": "互連/網通"
+    },
+    "PCIe": {
+     "count": 4,
+     "category": "互連/網通"
+    },
+    "Vera Rubin": {
+     "count": 2,
+     "category": "平台/網通/供應鏈"
+    },
+    "Rubin": {
+     "count": 2,
+     "category": "平台/網通/供應鏈"
+    },
+    "memory": {
+     "count": 2,
+     "category": "記憶體"
     },
     "data center": {
      "count": 2,
      "category": "客戶capex/需求"
-    },
-    "optical": {
-     "count": 2,
-     "category": "光通訊/CPO"
-    },
-    "optical interconnect": {
-     "count": 2,
-     "category": "互連/網通"
-    },
-    "PCIe": {
-     "count": 2,
-     "category": "互連/網通"
     }
    }
-  },
-  {
-   "type": "conference",
-   "symbol": "",
-   "name": "SEMICON West",
-   "event": "SEMICON West",
-   "event_date": null,
-   "day_offset": null,
-   "news_count": 4,
-   "recap_count": 0,
-   "recap_sources": [],
-   "titles": [
-    "Best of West Award Finalists Announced for SEMICON West 2026 - IndexBox",
-    "Allient to Showcase Advanced Precision Motion Technologies at SEMICON West 2026 - Unmanned Systems Technology",
-    "Korean Semiconductor Suppliers to Attend SEMICON West 2026 - THE ELEC, Korea Electronics Industry Media",
-    "Accelovant Announces Integrated Sensing and Control Demonstration on Azbil USA Controller at SEMICON West 2026 - EIN Presswire"
-   ],
-   "keywords": {}
   }
  ],
  "upcoming": [],
  "keyword_hits": [
+  {
+   "symbol": "AMD",
+   "label": "AMD(Analyst Day)",
+   "event": "Analyst Day",
+   "type": "investor_day",
+   "keyword": "Taiwan",
+   "category": "台廠點名",
+   "count": 2
+  },
+  {
+   "symbol": "MRVL",
+   "label": "MRVL(Investor Day)",
+   "event": "Investor Day",
+   "type": "investor_day",
+   "keyword": "custom silicon",
+   "category": "客戶capex/需求",
+   "count": 2
+  },
+  {
+   "symbol": "MRVL",
+   "label": "MRVL(Investor Day)",
+   "event": "Investor Day",
+   "type": "investor_day",
+   "keyword": "Taiwan",
+   "category": "台廠點名",
+   "count": 2
+  },
+  {
+   "symbol": "SNPS",
+   "label": "SNPS(Investor Day)",
+   "event": "Investor Day",
+   "type": "investor_day",
+   "keyword": "UPS",
+   "category": "資料中心電源",
+   "count": 2
+  },
   {
    "symbol": "OCP Global Summit",
    "label": "OCP Global Summit",
@@ -89,16 +174,7 @@
    "type": "conference",
    "keyword": "AI infrastructure",
    "category": "客戶capex/需求",
-   "count": 8
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "data center",
-   "category": "客戶capex/需求",
-   "count": 2
+   "count": 14
   },
   {
    "symbol": "OCP Global Summit",
@@ -107,7 +183,7 @@
    "type": "conference",
    "keyword": "optical",
    "category": "光通訊/CPO",
-   "count": 2
+   "count": 8
   },
   {
    "symbol": "OCP Global Summit",
@@ -116,7 +192,7 @@
    "type": "conference",
    "keyword": "optical interconnect",
    "category": "互連/網通",
-   "count": 2
+   "count": 6
   },
   {
    "symbol": "OCP Global Summit",
@@ -125,6 +201,42 @@
    "type": "conference",
    "keyword": "PCIe",
    "category": "互連/網通",
+   "count": 4
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "Vera Rubin",
+   "category": "平台/網通/供應鏈",
+   "count": 2
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "Rubin",
+   "category": "平台/網通/供應鏈",
+   "count": 2
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "memory",
+   "category": "記憶體",
+   "count": 2
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "data center",
+   "category": "客戶capex/需求",
    "count": 2
   }
  ],
