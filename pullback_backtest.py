@@ -54,6 +54,29 @@ DEFAULTS = dict(
 # ============================================================
 # 核心引擎(純函式,方便用合成資料測試)
 # ============================================================
+def signal_frame(df, **kw):
+    """進場條件的逐日指標(2026-10-13 從 run_backtest 抽出,供每日掃描 pullback_scan.py 共用,
+    確保網頁上的訊號與回測同一套定義)。只用當日(含)以前的資料。
+    回傳 (d, s):d = 清理後的價量;s = 各指標欄位(含 trig_confirm / trig_noconfirm)。"""
+    p = {**DEFAULTS, **kw}
+    d = df.copy().dropna(subset=["Open", "High", "Low", "Close"])
+    d["Volume"] = d["Volume"].fillna(0)
+
+    s = pd.DataFrame(index=d.index)
+    s["hi20"] = d["Close"].rolling(20).max()
+    s["dd"] = 1 - d["Close"] / s["hi20"]
+    s["dd_trough3"] = s["dd"].rolling(3).max()             # 近3日最深回落
+    s["vol_ma"] = d["Volume"].rolling(20).mean().shift(1)  # 前20日均量(不含當日)
+    s["vol_mult"] = d["Volume"] / s["vol_ma"]
+    s["cap_day"] = (d["Volume"] >= p["VOL_MULT"] * s["vol_ma"]) & (d["Close"] < d["Close"].shift(1))
+    s["cap_recent"] = s["cap_day"].rolling(3).max() > 0
+    s["reversal"] = d["Close"] > d["High"].shift(1)
+    s["in_band"] = (s["dd_trough3"] >= p["DD_MIN"]) & (s["dd_trough3"] <= p["DD_MAX"])
+    s["trig_confirm"] = s["in_band"] & s["cap_recent"] & s["reversal"]
+    s["trig_noconfirm"] = s["in_band"] & s["cap_day"]       # 不等反轉,爆量收黑當天就觸發
+    return d, s
+
+
 def run_backtest(df, bench=None, eligible=None, **kw):
     """df: index=日期, 欄位 Open High Low Close Volume(已還原)。
     bench: 加權指數 Close 的 Series(index=日期),可為 None。
@@ -61,22 +84,10 @@ def run_backtest(df, bench=None, eligible=None, **kw):
               股票池內;只有 True 的日子可以成為訊號日。None = 不限制(與原行為相同)。
     回傳 (trades_df, baseline_dict)。"""
     p = {**DEFAULTS, **kw}
-    d = df.copy().dropna(subset=["Open", "High", "Low", "Close"])
-    d["Volume"] = d["Volume"].fillna(0)
-
-    hi20 = d["Close"].rolling(20).max()
-    dd = 1 - d["Close"] / hi20
-    dd_trough3 = dd.rolling(3).max()                       # 近3日最深回落
-    vol_ma = d["Volume"].rolling(20).mean().shift(1)       # 前20日均量(不含當日)
-    cap_day = (d["Volume"] >= p["VOL_MULT"] * vol_ma) & (d["Close"] < d["Close"].shift(1))
-    cap_recent = cap_day.rolling(3).max() > 0
-    reversal = d["Close"] > d["High"].shift(1)
-    in_band = (dd_trough3 >= p["DD_MIN"]) & (dd_trough3 <= p["DD_MAX"])
-
-    if p["CONFIRM"]:
-        trig = in_band & cap_recent & reversal
-    else:
-        trig = in_band & cap_day                            # 不等反轉,爆量收黑當天就觸發
+    d, s = signal_frame(df, **kw)
+    hi20 = s["hi20"]
+    dd_trough3 = s["dd_trough3"]
+    trig = s["trig_confirm"] if p["CONFIRM"] else s["trig_noconfirm"]
     if eligible is not None:                                # 股票池限制:只在當日池內才可觸發
         trig = trig & eligible.reindex(d.index).fillna(False).astype(bool)
 

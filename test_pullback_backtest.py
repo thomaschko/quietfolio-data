@@ -98,6 +98,17 @@ def test_eligible_mask():
     assert len(tr2) == 0 or tr2.iloc[0]["signal_date"] != df.index[32].date()
 
 
+def test_signal_frame_matches_backtest():
+    """抽出的 signal_frame 與 run_backtest 用的觸發日一致(每日掃描與回測同一套定義)。"""
+    from pullback_backtest import signal_frame
+    df = scenario([88, 90, 95, 96] + [96] * 30)
+    _, s = signal_frame(df)
+    tr, _ = run_backtest(df)
+    assert set(s.index[s["trig_confirm"]].date) >= set(tr["signal_date"])
+    assert bool(s["trig_confirm"].iloc[32]) and bool(s["trig_noconfirm"].iloc[30])
+    assert abs(s["vol_mult"].iloc[30] - 3.0) < 1e-9
+
+
 def test_no_lookahead():
     """訊號日之後的資料全部亂改,第一筆交易的訊號日與參考值不得改變。"""
     rng = np.random.default_rng(7)
