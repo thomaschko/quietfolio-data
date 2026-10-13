@@ -1,0 +1,51 @@
+name: Pullback Backtest (手動觸發)
+
+# 策略A「非資訊性急跌反轉」價量回測。純手動:Actions → Pullback Backtest → Run workflow
+# 結果寫進 repo 的 backtest_out/,可直接從 raw.githubusercontent.com 讀取。
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: '股票代號(逗號分隔)'
+        default: '3081,3665,2454,3026,6488'
+      start:
+        description: '起始日'
+        default: '2019-01-01'
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install yfinance pandas numpy
+
+      # 同時跑「有反轉日確認」與「不等反轉(接刀)」兩版做對照
+      - name: Run backtest (confirm)
+        run: python pullback_backtest.py --tickers "${{ github.event.inputs.tickers }}" --start "${{ github.event.inputs.start }}"
+
+      - name: Run backtest (no confirm)
+        run: python pullback_backtest.py --tickers "${{ github.event.inputs.tickers }}" --start "${{ github.event.inputs.start }}" --no-confirm
+
+      - name: Commit results
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add backtest_out/ || true
+          if git diff --staged --quiet; then
+            echo "無結果變更"
+          else
+            git commit -m "Pullback backtest $(date -u +%Y-%m-%d)"
+            git pull --rebase origin main || true
+            git push
+          fi
