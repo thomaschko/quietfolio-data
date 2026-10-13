@@ -11,6 +11,14 @@ on:
       start:
         description: '起始日'
         default: '2019-01-01'
+      # 2026-10-13:workflow_dispatch 只能觸發 main 上已存在的 workflow 檔,
+      # Phase 2 併進這支(在分支上觸發時會用分支版本),不另開 workflow 檔
+      phase:
+        description: 'Phase(1=五檔冒煙測試+資料驗證;2=不事後挑選股票池;3=樣本內外+參數敏感度)'
+        default: '1'
+      top:
+        description: 'Phase 2 股票池大小(逗號分隔);Phase 3 取第一個值'
+        default: '100,200'
 
 permissions:
   contents: write
@@ -18,6 +26,7 @@ permissions:
 jobs:
   backtest:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,14 +37,40 @@ jobs:
           python-version: '3.12'
 
       - name: Install deps
-        run: pip install yfinance pandas numpy
+        run: pip install yfinance pandas numpy requests matplotlib
+
+      # 2026-10-13:引擎單元測試(合成價格路徑,不需網路),失敗就不往下跑
+      - name: Engine unit tests
+        run: |
+          python test_pullback_backtest.py
+          python test_pullback_phase2.py
+          python test_pullback_phase3.py
+
+      # Phase 1 資料驗證:後綴、範圍筆數、yfinance 未還原價 vs FinMind 逐日對帳 → backtest_out/data_check.json
+      - name: Data check
+        if: ${{ github.event.inputs.phase == '1' }}
+        run: python pullback_data_check.py --tickers "${{ github.event.inputs.tickers }}" --start "${{ github.event.inputs.start }}"
 
       # 同時跑「有反轉日確認」與「不等反轉(接刀)」兩版做對照
       - name: Run backtest (confirm)
+        if: ${{ github.event.inputs.phase == '1' }}
         run: python pullback_backtest.py --tickers "${{ github.event.inputs.tickers }}" --start "${{ github.event.inputs.start }}"
 
       - name: Run backtest (no confirm)
+        if: ${{ github.event.inputs.phase == '1' }}
         run: python pullback_backtest.py --tickers "${{ github.event.inputs.tickers }}" --start "${{ github.event.inputs.start }}" --no-confirm
+
+      # Phase 2:前60日平均成交值前N名股票池、固定參數,與 Phase 1 五檔並列
+      - name: Run Phase 2
+        if: ${{ github.event.inputs.phase == '2' }}
+        run: python pullback_phase2.py --start "${{ github.event.inputs.start }}" --top "${{ github.event.inputs.top }}"
+
+      # Phase 3:樣本內(訊號日<=2022)參數敏感度→事前登錄規則選參→樣本外(2023~)只跑一次
+      - name: Run Phase 3
+        if: ${{ github.event.inputs.phase == '3' }}
+        run: |
+          TOP=$(echo "${{ github.event.inputs.top }}" | cut -d, -f1)
+          python pullback_phase3.py --start "${{ github.event.inputs.start }}" --top "$TOP"
 
       - name: Commit results
         run: |
@@ -45,7 +80,15 @@ jobs:
           if git diff --staged --quiet; then
             echo "無結果變更"
           else
-            git commit -m "Pullback backtest $(date -u +%Y-%m-%d)"
-            git pull --rebase origin main || true
-            git push
+            git commit -m "Pullback backtest phase${{ github.event.inputs.phase }} $(date -u +%Y-%m-%d)"
+            # 2026-10-13:原本固定 pull --rebase origin main 再 push,在分支上觸發時會跟
+            # main 的每日資料 commit 衝突(錯誤被 || true 吞掉),停在 rebase 中途,
+            # push 以 exit 128 失敗、結果沒存到。改成只跟「觸發的那個分支」同步再推回去。
+            BR="${GITHUB_REF_NAME}"
+            for i in 1 2 3; do
+              git pull --rebase origin "$BR" && git push origin "HEAD:$BR" && exit 0
+              git rebase --abort 2>/dev/null || true
+              sleep 5
+            done
+            echo "推送失敗(重試3次)"; exit 1
           fi

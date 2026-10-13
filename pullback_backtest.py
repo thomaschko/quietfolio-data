@@ -54,9 +54,11 @@ DEFAULTS = dict(
 # ============================================================
 # 核心引擎(純函式,方便用合成資料測試)
 # ============================================================
-def run_backtest(df, bench=None, **kw):
+def run_backtest(df, bench=None, eligible=None, **kw):
     """df: index=日期, 欄位 Open High Low Close Volume(已還原)。
     bench: 加權指數 Close 的 Series(index=日期),可為 None。
+    eligible: (2026-10-13 Phase 2 新增,可省略)bool Series(index=日期),該日是否在
+              股票池內;只有 True 的日子可以成為訊號日。None = 不限制(與原行為相同)。
     回傳 (trades_df, baseline_dict)。"""
     p = {**DEFAULTS, **kw}
     d = df.copy().dropna(subset=["Open", "High", "Low", "Close"])
@@ -75,6 +77,8 @@ def run_backtest(df, bench=None, **kw):
         trig = in_band & cap_recent & reversal
     else:
         trig = in_band & cap_day                            # 不等反轉,爆量收黑當天就觸發
+    if eligible is not None:                                # 股票池限制:只在當日池內才可觸發
+        trig = trig & eligible.reindex(d.index).fillna(False).astype(bool)
 
     if bench is not None and len(bench):
         b = bench.reindex(d.index).ffill()
