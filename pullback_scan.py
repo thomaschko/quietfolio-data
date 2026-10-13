@@ -21,7 +21,6 @@ pullback_scan.py — 急跌反轉(策略A)每日掃描(2026-10-13)
   輸出中的 backtest_note 會顯示在網頁上。
 ============================================================
 """
-import os
 import re
 import json
 import time
@@ -33,7 +32,8 @@ import requests
 import urllib3
 
 from pullback_backtest import signal_frame, load_bench, DEFAULTS
-from pullback_phase2 import download, universe_membership, MIN_TWSE_STOCKS, MIN_TPEX_STOCKS
+from pullback_phase2 import (download, universe_membership, MIN_TWSE_STOCKS, MIN_TPEX_STOCKS,
+                             MIN_TURNOVER_DAYS)
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -84,8 +84,11 @@ def _get_json(url, verify=True, tries=4):
 
 
 def fetch_official():
-    """交易所官方當日收盤資料。回傳 (lists{code:.TW/.TWO}, names{code:name}, bars{code:{date,O,H,L,C,V}})。"""
-    lists, names, bars = {}, {}, {}
+    """交易所官方最新收盤資料。回傳 (lists{code:.TW/.TWO}, names{code:name},
+    bars{suffix:{code:{date,O,H,L,C,V}}}, market_dates{suffix:最多股票的資料日})。
+    2026-10-14:首次實跑發現上市/上櫃官方資料日不同(上市 STOCK_DAY_ALL 落後),
+    原本取全體眾數會把另一個市場整個排除,改成各市場各自的資料日。"""
+    lists, names, bars = {}, {}, {".TW": {}, ".TWO": {}}
     for url, suf, verify, k in (
             (TWSE_URL, ".TW", True, dict(code="Code", name="Name", o="OpeningPrice", h="HighestPrice",
                                           l="LowestPrice", c="ClosingPrice", v="TradeVolume")),
@@ -100,12 +103,48 @@ def fetch_official():
             o, h, l, c, v = (_num(row.get(k[x])) for x in ("o", "h", "l", "c", "v"))
             d = _roc_date(row.get("Date"))
             if d is not None and c and o and h and l and v is not None:
-                bars[code] = {"date": d, "Open": o, "High": h, "Low": l, "Close": c, "Volume": v}
+                bars[suf][code] = {"date": d, "Open": o, "High": h, "Low": l, "Close": c, "Volume": v}
     n_tw = sum(s == ".TW" for s in lists.values())
     n_two = len(lists) - n_tw
     if n_tw < MIN_TWSE_STOCKS or n_two < MIN_TPEX_STOCKS:
         raise RuntimeError(f"官方清單數量異常:上市 {n_tw}、上櫃 {n_two},中止")
-    return lists, names, bars
+    market_dates = {}
+    for suf, bs in bars.items():
+        vc = pd.Series([b["date"] for b in bs.values()]).value_counts()
+        market_dates[suf] = vc.index[0] if len(vc) else None
+        bars[suf] = {c: b for c, b in bs.items() if b["date"] == market_dates[suf]}
+    return lists, names, bars, market_dates
+
+
+def fetch_twse_by_date(date):
+    """證交所指定日期全市場收盤(MI_INDEX ALLBUT0999),STOCK_DAY_ALL 落後時用。
+    回傳 {code: bar};抓不到或格式不符回 {}(不補值)。"""
+    ds = date.strftime("%Y%m%d")
+    for url in (f"https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX?date={ds}&type=ALLBUT0999&response=json",
+                f"https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date={ds}&type=ALLBUT0999"):
+        try:
+            j = _get_json(url, tries=2)
+        except Exception as e:
+            print(f"  ⚠ MI_INDEX {ds}: {str(e)[:80]}")
+            continue
+        cands = [(t.get("fields"), t.get("data")) for t in (j.get("tables") or []) if isinstance(t, dict)]
+        cands += [(j.get(f"fields{i}"), j.get(f"data{i}")) for i in range(1, 10)]
+        for fields, data in cands:
+            if not fields or not data or "證券代號" not in fields or "收盤價" not in fields:
+                continue
+            ix = {f: i for i, f in enumerate(fields)}
+            out = {}
+            for row in data:
+                code = re.sub(r"<[^>]+>", "", str(row[ix["證券代號"]])).strip()
+                if not CODE_RE.fullmatch(code):
+                    continue
+                o, h, l, c = (_num(row[ix[f]]) for f in ("開盤價", "最高價", "最低價", "收盤價"))
+                v = _num(row[ix["成交股數"]])
+                if c and o and h and l and v is not None:
+                    out[code] = {"date": date, "Open": o, "High": h, "Low": l, "Close": c, "Volume": v}
+            if len(out) >= MIN_TWSE_STOCKS * 0.8:
+                return out
+    return {}
 
 
 def merge_official(df, bar):
@@ -121,6 +160,9 @@ def merge_official(df, bar):
         return df, "replaced"
     if not len(df) or df.index[-1] < d:
         return pd.concat([df, row]), "appended"
+    if d > df.index[0] and d not in df.index and (df.index > d).sum() <= 5:
+        # Yahoo 近幾日中間缺一天(例:2026-10-12 全市場缺)→ 用官方補上
+        return pd.concat([df, row]).sort_index(), "inserted"
     return df, "older"
 
 
@@ -163,31 +205,53 @@ def main():
     start = (now - dt.timedelta(days=HISTORY_DAYS)).date().isoformat()
     end = (now + dt.timedelta(days=1)).date().isoformat()
 
-    print("[1] 官方當日收盤(股票清單+名稱+最新一日價量)")
-    lists, names, bars = fetch_official()
-    official_dates = pd.Series([b["date"] for b in bars.values()]).value_counts()
-    official_date = official_dates.index[0] if len(official_dates) else None
-    print(f"  上市 {sum(v == '.TW' for v in lists.values())} / 上櫃 {sum(v == '.TWO' for v in lists.values())},"
-          f"官方資料日 {official_date.date() if official_date is not None else '無'}")
+    print("[1] 官方收盤(股票清單+名稱+最新一日價量)")
+    lists, names, bars, market_dates = fetch_official()
+    for suf, d in market_dates.items():
+        print(f"  {suf} 官方資料日 {d.date() if d is not None else '無'}:{len(bars[suf])} 檔")
 
     print("[2] yfinance 近期價量")
     data, failed = download(lists, start, end, min_rows=MIN_ROWS)
+    yahoo_last = pd.Series({c: df.index[-1] for c, df in data.items()})
+    target = max([d for d in market_dates.values() if d is not None] + [yahoo_last.max()])
+    sources = {suf: "官方最新" for suf in market_dates}
+    layers = {suf: [bars[suf]] for suf in bars}             # 依日期先後套用(舊的先補,新的後蓋)
+    # 上市官方(STOCK_DAY_ALL)落後於目標日 → 另抓證交所指定日期全市場收盤;落後那天仍拿來補缺口
+    if market_dates.get(".TW") is None or market_dates[".TW"] < target:
+        tw = fetch_twse_by_date(target)
+        if tw:
+            layers[".TW"].append(tw)
+            market_dates[".TW"], sources[".TW"] = target, "證交所MI_INDEX(指定日期)"
+        print(f"  上市官方落後,MI_INDEX {target.date()}:{len(tw)} 檔")
     actions = {}
     for c in list(data):
-        b = bars.get(c)
-        if b is not None and official_date is not None and b["date"] != official_date:
-            b = None                                        # 只用當天的官方資料
-        data[c], actions[c] = merge_official(data[c], b)
-    data_date = max(df.index[-1] for df in data.values())
-    print(f"  可用 {len(data)} 檔;官方覆蓋 {sum(a == 'replaced' for a in actions.values())}、"
-          f"補上 {sum(a == 'appended' for a in actions.values())};資料日 {data_date.date()}")
+        acts = []
+        for layer in layers.get(lists[c], []):
+            data[c], a = merge_official(data[c], layer.get(c))
+            acts.append(a)
+        actions[c] = next((a for a in ("appended", "replaced", "inserted") if a in acts), acts[-1] if acts else "none")
+    print(f"  可用 {len(data)} 檔;官方覆蓋/補上/插入:"
+          f"{sum(a == 'replaced' for a in actions.values())}/{sum(a == 'appended' for a in actions.values())}/"
+          f"{sum(a == 'inserted' for a in actions.values())}")
 
     cal = pd.DatetimeIndex(sorted(set().union(*[set(df.index) for df in data.values()])))
     turnover = pd.DataFrame({c: df["Turnover"] for c, df in data.items()}).reindex(cal)
     member = universe_membership(turnover, TOP)
-    today_members = [c for c in member.columns if bool(member.loc[data_date, c])]
-    avg60 = turnover.rolling(60, min_periods=60).mean().shift(1).loc[data_date]
-    rank = avg60.rank(ascending=False, method="first")
+    # 各市場的掃描日 = 該市場股票最新資料日的眾數(通常 = 目標日;若某市場資料尚未更新,就用它自己的最新日)
+    last = pd.Series({c: df.index[-1] for c, df in data.items()})
+    scan_date = {}
+    for suf in (".TW", ".TWO"):
+        lm = last[[c for c in last.index if lists.get(c) == suf]]
+        scan_date[suf] = lm.value_counts().index[0] if len(lm) else None
+    data_date = max(d for d in scan_date.values() if d is not None)
+    today_members = {suf: [c for c in member.columns if lists.get(c) == suf and d is not None
+                           and bool(member.loc[d, c])] for suf, d in scan_date.items()}
+    rank = {}
+    avg60 = turnover.rolling(60, min_periods=MIN_TURNOVER_DAYS).mean().shift(1)
+    for suf, d in scan_date.items():
+        if d is not None:
+            r = avg60.loc[d].rank(ascending=False, method="first")
+            rank.update({c: int(r[c]) for c in today_members[suf] if pd.notna(r.get(c))})
 
     bench = load_bench(start)
     stress = None
@@ -197,30 +261,46 @@ def main():
         stress = {"index_date": str(b.index[-1].date()), "drawdown_from_20d_high": round(float(b_dd), 4),
                   "market_stress": bool(b_dd >= DEFAULTS["MKT_STRESS"])}
 
-    print(f"[3] 掃描今日股票池 {len(today_members)} 檔")
     out = {"confirm": [], "noconfirm": [], "watch": []}
-    for c in today_members:
-        df = data[c]
-        if df.index[-1] != data_date:
-            continue                                        # 今天沒有資料(停牌等)
-        kind, info = classify_today(df)
-        if kind:
-            out[kind].append({"code": c, "name": names.get(c, ""), "market": "上市" if lists[c] == ".TW" else "上櫃",
-                              "turnover_rank": int(rank.get(c, 0)), **info})
+    coverage = {}
+    for suf, members in today_members.items():
+        d = scan_date[suf]
+        scanned = 0
+        for c in members:
+            df = data[c]
+            if df.index[-1] != d:
+                continue                                    # 該日沒有資料(停牌等)
+            scanned += 1
+            kind, info = classify_today(df)
+            if kind:
+                out[kind].append({"code": c, "name": names.get(c, ""), "market": "上市" if suf == ".TW" else "上櫃",
+                                  "signal_date": str(d.date()), "turnover_rank": rank.get(c, 0), **info})
+        coverage[suf] = {"scan_date": str(d.date()) if d is not None else None,
+                         "members": len(members), "scanned": scanned}
+        print(f"[3] {suf} 掃描日 {coverage[suf]['scan_date']}:池內 {len(members)} 檔,實際掃描 {scanned} 檔")
     for k in out:
         out[k].sort(key=lambda x: -x["drawdown_3d_max"])
 
     result = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
         "data_date": str(data_date.date()),
-        "official_date": str(official_date.date()) if official_date is not None else None,
-        "universe": f"前{TOP}大(前60日平均成交值)", "universe_size": len(today_members),
+        "universe": f"前{TOP}大(前60日平均成交值)",
+        "universe_size": sum(len(v) for v in today_members.values()),
+        "market_scan": {("上市" if k == ".TW" else "上櫃"): v for k, v in coverage.items()},
         "params": DEFAULTS, "market": stress, "backtest_note": BACKTEST_NOTE,
         "counts": {k: len(v) for k, v in out.items()},
         **out,
         "data_quality": {"usable": len(data), "failed": len(failed),
+                         "official_dates": {("上市" if k == ".TW" else "上櫃"): (str(v.date()) if v is not None else None)
+                                            for k, v in market_dates.items()},
+                         "official_source": {("上市" if k == ".TW" else "上櫃"): v for k, v in sources.items()},
+                         "yahoo_last_dates": {("上市" if suf == ".TW" else "上櫃"):
+                                              {str(k.date()): int(v) for k, v in
+                                               yahoo_last[[c for c in yahoo_last.index if lists.get(c) == suf]]
+                                               .value_counts().head(3).items()} for suf in (".TW", ".TWO")},
                          "official_replaced": sum(a == "replaced" for a in actions.values()),
-                         "official_appended": sum(a == "appended" for a in actions.values())},
+                         "official_appended": sum(a == "appended" for a in actions.values()),
+                         "official_inserted": sum(a == "inserted" for a in actions.values())},
     }
     with open(OUT_FILE, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=1)
