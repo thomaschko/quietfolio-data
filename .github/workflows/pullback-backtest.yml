@@ -54,6 +54,14 @@ jobs:
             echo "無結果變更"
           else
             git commit -m "Pullback backtest $(date -u +%Y-%m-%d)"
-            git pull --rebase origin main || true
-            git push
+            # 2026-10-13:原本固定 pull --rebase origin main 再 push,在分支上觸發時會跟
+            # main 的每日資料 commit 衝突(錯誤被 || true 吞掉),停在 rebase 中途,
+            # push 以 exit 128 失敗、結果沒存到。改成只跟「觸發的那個分支」同步再推回去。
+            BR="${GITHUB_REF_NAME}"
+            for i in 1 2 3; do
+              git pull --rebase origin "$BR" && git push origin "HEAD:$BR" && exit 0
+              git rebase --abort 2>/dev/null || true
+              sleep 5
+            done
+            echo "推送失敗(重試3次)"; exit 1
           fi
