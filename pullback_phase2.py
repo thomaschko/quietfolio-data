@@ -201,7 +201,8 @@ def attach_excess(tr, code, fwd, member):
     return tr
 
 
-def run_set(data, bench, fwd, member, codes, confirm):
+def run_set(data, bench, fwd, member, codes, confirm, **params):
+    """params:傳給 run_backtest 的參數覆寫(Phase 3 敏感度用;Phase 2 不傳=DEFAULTS)。"""
     out = []
     for c in codes:
         df = data[c]
@@ -209,7 +210,7 @@ def run_set(data, bench, fwd, member, codes, confirm):
         if elig is not None and not elig.any():
             continue
         tr, _ = run_backtest(df[["Open", "High", "Low", "Close", "Volume"]], bench,
-                             eligible=elig, CONFIRM=confirm)
+                             eligible=elig, CONFIRM=confirm, **params)
         if len(tr):
             tr.insert(0, "code", c)
             out.append(attach_excess(tr, c, fwd, member))

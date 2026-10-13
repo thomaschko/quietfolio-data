@@ -14,10 +14,10 @@ on:
       # 2026-10-13:workflow_dispatch 只能觸發 main 上已存在的 workflow 檔,
       # Phase 2 併進這支(在分支上觸發時會用分支版本),不另開 workflow 檔
       phase:
-        description: 'Phase(1=五檔冒煙測試+資料驗證;2=不事後挑選股票池)'
+        description: 'Phase(1=五檔冒煙測試+資料驗證;2=不事後挑選股票池;3=樣本內外+參數敏感度)'
         default: '1'
       top:
-        description: 'Phase 2 股票池大小(逗號分隔)'
+        description: 'Phase 2 股票池大小(逗號分隔);Phase 3 取第一個值'
         default: '100,200'
 
 permissions:
@@ -37,32 +37,40 @@ jobs:
           python-version: '3.12'
 
       - name: Install deps
-        run: pip install yfinance pandas numpy requests
+        run: pip install yfinance pandas numpy requests matplotlib
 
       # 2026-10-13:引擎單元測試(合成價格路徑,不需網路),失敗就不往下跑
       - name: Engine unit tests
         run: |
           python test_pullback_backtest.py
           python test_pullback_phase2.py
+          python test_pullback_phase3.py
 
       # Phase 1 資料驗證:後綴、範圍筆數、yfinance 未還原價 vs FinMind 逐日對帳 → backtest_out/data_check.json
       - name: Data check
-        if: ${{ github.event.inputs.phase != '2' }}
+        if: ${{ github.event.inputs.phase == '1' }}
         run: python pullback_data_check.py --tickers "${{ github.event.inputs.tickers }}" --start "${{ github.event.inputs.start }}"
 
       # 同時跑「有反轉日確認」與「不等反轉(接刀)」兩版做對照
       - name: Run backtest (confirm)
-        if: ${{ github.event.inputs.phase != '2' }}
+        if: ${{ github.event.inputs.phase == '1' }}
         run: python pullback_backtest.py --tickers "${{ github.event.inputs.tickers }}" --start "${{ github.event.inputs.start }}"
 
       - name: Run backtest (no confirm)
-        if: ${{ github.event.inputs.phase != '2' }}
+        if: ${{ github.event.inputs.phase == '1' }}
         run: python pullback_backtest.py --tickers "${{ github.event.inputs.tickers }}" --start "${{ github.event.inputs.start }}" --no-confirm
 
       # Phase 2:前60日平均成交值前N名股票池、固定參數,與 Phase 1 五檔並列
       - name: Run Phase 2
         if: ${{ github.event.inputs.phase == '2' }}
         run: python pullback_phase2.py --start "${{ github.event.inputs.start }}" --top "${{ github.event.inputs.top }}"
+
+      # Phase 3:樣本內(訊號日<=2022)參數敏感度→事前登錄規則選參→樣本外(2023~)只跑一次
+      - name: Run Phase 3
+        if: ${{ github.event.inputs.phase == '3' }}
+        run: |
+          TOP=$(echo "${{ github.event.inputs.top }}" | cut -d, -f1)
+          python pullback_phase3.py --start "${{ github.event.inputs.start }}" --top "$TOP"
 
       - name: Commit results
         run: |
