@@ -1,0 +1,419 @@
+{
+ "generated_at": "2026-10-13 05:32:45",
+ "start": "2019-01-01",
+ "close_tolerance": 0.005,
+ "stocks": [
+  {
+   "code": "3081",
+   "suffix_rows": {
+    ".TW": 0,
+    ".TWO": 1884
+   },
+   "suffix_used": ".TWO",
+   "suffix_expected": ".TWO",
+   "suffix_ok": true,
+   "adjusted_span": [
+    "2019-01-02",
+    "2026-10-13"
+   ],
+   "adjusted_rows": 1884,
+   "zero_volume_days": 8,
+   "missing_in_yfinance": [
+    "2019-09-09",
+    "2021-04-06",
+    "2025-08-01",
+    "2026-10-12"
+   ],
+   "missing_in_yfinance_n": 4,
+   "extra_in_yfinance_n": 1,
+   "extra_in_yfinance": [
+    "2026-10-13"
+   ],
+   "common_days": 1883,
+   "close_mismatch_n": 1823,
+   "close_mismatch_pct": 96.81,
+   "close_mismatch_examples": [
+    {
+     "date": "2019-01-02",
+     "yfinance": 224.09,
+     "finmind": 246.5
+    },
+    {
+     "date": "2019-01-03",
+     "yfinance": 227.27,
+     "finmind": 250.0
+    },
+    {
+     "date": "2019-01-04",
+     "yfinance": 219.09,
+     "finmind": 241.0
+    },
+    {
+     "date": "2019-01-07",
+     "yfinance": 240.91,
+     "finmind": 265.0
+    },
+    {
+     "date": "2019-01-08",
+     "yfinance": 237.73,
+     "finmind": 261.5
+    }
+   ],
+   "volume_ratio_median": 1.0905,
+   "volume_unit": "股",
+   "spot_checks": [
+    {
+     "date": "2020-12-10",
+     "yf_close": 264.55,
+     "finmind_close": 291.0,
+     "yf_volume": 1867800,
+     "finmind_volume": 1710707,
+     "yf_adjusted_close": 241.82
+    },
+    {
+     "date": "2022-11-15",
+     "yf_close": 94.09,
+     "finmind_close": 103.5,
+     "yf_volume": 4821300,
+     "finmind_volume": 4408100,
+     "yf_adjusted_close": 90.42
+    },
+    {
+     "date": "2026-10-08",
+     "yf_close": 2960.0,
+     "finmind_close": 2960.0,
+     "yf_volume": 2770226,
+     "finmind_volume": 3049921,
+     "yf_adjusted_close": 2960.0
+    }
+   ]
+  },
+  {
+   "code": "3665",
+   "suffix_rows": {
+    ".TW": 1884,
+    ".TWO": 0
+   },
+   "suffix_used": ".TW",
+   "suffix_expected": ".TW",
+   "suffix_ok": true,
+   "adjusted_span": [
+    "2019-01-02",
+    "2026-10-13"
+   ],
+   "adjusted_rows": 1884,
+   "zero_volume_days": 2,
+   "missing_in_yfinance": [
+    "2019-09-09",
+    "2021-04-06",
+    "2025-08-01",
+    "2026-10-12"
+   ],
+   "missing_in_yfinance_n": 4,
+   "extra_in_yfinance_n": 1,
+   "extra_in_yfinance": [
+    "2026-10-13"
+   ],
+   "common_days": 1883,
+   "close_mismatch_n": 1585,
+   "close_mismatch_pct": 84.17,
+   "close_mismatch_examples": [
+    {
+     "date": "2019-01-02",
+     "yfinance": 214.42,
+     "finmind": 219.5
+    },
+    {
+     "date": "2019-01-03",
+     "yfinance": 201.72,
+     "finmind": 206.5
+    },
+    {
+     "date": "2019-01-04",
+     "yfinance": 190.0,
+     "finmind": 194.5
+    },
+    {
+     "date": "2019-01-07",
+     "yfinance": 190.49,
+     "finmind": 195.0
+    },
+    {
+     "date": "2019-01-08",
+     "yfinance": 192.93,
+     "finmind": 197.5
+    }
+   ],
+   "volume_ratio_median": 1.0102,
+   "volume_unit": "股",
+   "spot_checks": [
+    {
+     "date": "2020-12-10",
+     "yf_close": 238.36,
+     "finmind_close": 244.0,
+     "yf_volume": 1606201,
+     "finmind_volume": 1571596,
+     "yf_adjusted_close": 207.58
+    },
+    {
+     "date": "2022-11-15",
+     "yf_close": 248.12,
+     "finmind_close": 254.0,
+     "yf_volume": 2853879,
+     "finmind_volume": 2803588,
+     "yf_adjusted_close": 229.66
+    },
+    {
+     "date": "2026-10-08",
+     "yf_close": 2360.0,
+     "finmind_close": 2360.0,
+     "yf_volume": 3516661,
+     "finmind_volume": 3678479,
+     "yf_adjusted_close": 2360.0
+    }
+   ]
+  },
+  {
+   "code": "2454",
+   "suffix_rows": {
+    ".TW": 1884,
+    ".TWO": 0
+   },
+   "suffix_used": ".TW",
+   "suffix_expected": ".TW",
+   "suffix_ok": true,
+   "adjusted_span": [
+    "2019-01-02",
+    "2026-10-13"
+   ],
+   "adjusted_rows": 1884,
+   "zero_volume_days": 1,
+   "missing_in_yfinance": [
+    "2019-09-09",
+    "2021-04-06",
+    "2025-08-01",
+    "2026-10-12"
+   ],
+   "missing_in_yfinance_n": 4,
+   "extra_in_yfinance_n": 1,
+   "extra_in_yfinance": [
+    "2026-10-13"
+   ],
+   "common_days": 1883,
+   "close_mismatch_n": 3,
+   "close_mismatch_pct": 0.16,
+   "close_mismatch_examples": [
+    {
+     "date": "2021-08-17",
+     "yfinance": 901.0,
+     "finmind": 880.0
+    },
+    {
+     "date": "2022-08-22",
+     "yfinance": 677.0,
+     "finmind": 672.0
+    },
+    {
+     "date": "2024-03-29",
+     "yfinance": 1185.0,
+     "finmind": 1195.0
+    }
+   ],
+   "volume_ratio_median": 0.9638,
+   "volume_unit": "股",
+   "spot_checks": [
+    {
+     "date": "2020-12-10",
+     "yf_close": 709.0,
+     "finmind_close": 709.0,
+     "yf_volume": 7733557,
+     "finmind_volume": 7890093,
+     "yf_adjusted_close": 499.89
+    },
+    {
+     "date": "2022-11-15",
+     "yf_close": 722.0,
+     "finmind_close": 722.0,
+     "yf_volume": 13610403,
+     "finmind_volume": 13979872,
+     "yf_adjusted_close": 582.19
+    },
+    {
+     "date": "2026-10-08",
+     "yf_close": 4690.0,
+     "finmind_close": 4690.0,
+     "yf_volume": 6416655,
+     "finmind_volume": 8868204,
+     "yf_adjusted_close": 4690.0
+    }
+   ]
+  },
+  {
+   "code": "3026",
+   "suffix_rows": {
+    ".TW": 1884,
+    ".TWO": 0
+   },
+   "suffix_used": ".TW",
+   "suffix_expected": ".TW",
+   "suffix_ok": true,
+   "adjusted_span": [
+    "2019-01-02",
+    "2026-10-13"
+   ],
+   "adjusted_rows": 1884,
+   "zero_volume_days": 1,
+   "missing_in_yfinance": [
+    "2019-09-09",
+    "2021-04-06",
+    "2025-08-01",
+    "2026-10-12"
+   ],
+   "missing_in_yfinance_n": 4,
+   "extra_in_yfinance_n": 1,
+   "extra_in_yfinance": [
+    "2026-10-13"
+   ],
+   "common_days": 1883,
+   "close_mismatch_n": 1101,
+   "close_mismatch_pct": 58.47,
+   "close_mismatch_examples": [
+    {
+     "date": "2019-01-02",
+     "yfinance": 100.48,
+     "finmind": 105.5
+    },
+    {
+     "date": "2019-01-03",
+     "yfinance": 97.14,
+     "finmind": 102.0
+    },
+    {
+     "date": "2019-01-04",
+     "yfinance": 97.14,
+     "finmind": 102.0
+    },
+    {
+     "date": "2019-01-07",
+     "yfinance": 99.05,
+     "finmind": 104.0
+    },
+    {
+     "date": "2019-01-08",
+     "yfinance": 100.95,
+     "finmind": 106.0
+    }
+   ],
+   "volume_ratio_median": 1.0372,
+   "volume_unit": "股",
+   "spot_checks": [
+    {
+     "date": "2020-12-10",
+     "yf_close": 112.86,
+     "finmind_close": 118.5,
+     "yf_volume": 4214705,
+     "finmind_volume": 4019273,
+     "yf_adjusted_close": 81.23
+    },
+    {
+     "date": "2022-11-15",
+     "yf_close": 85.71,
+     "finmind_close": 90.0,
+     "yf_volume": 189000,
+     "finmind_volume": 181651,
+     "yf_adjusted_close": 71.85
+    },
+    {
+     "date": "2026-10-08",
+     "yf_close": 877.0,
+     "finmind_close": 877.0,
+     "yf_volume": 15303021,
+     "finmind_volume": 15755457,
+     "yf_adjusted_close": 877.0
+    }
+   ]
+  },
+  {
+   "code": "6488",
+   "suffix_rows": {
+    ".TW": 0,
+    ".TWO": 1884
+   },
+   "suffix_used": ".TWO",
+   "suffix_expected": ".TWO",
+   "suffix_ok": true,
+   "adjusted_span": [
+    "2019-01-02",
+    "2026-10-13"
+   ],
+   "adjusted_rows": 1884,
+   "zero_volume_days": 2,
+   "missing_in_yfinance": [
+    "2019-09-09",
+    "2021-04-06",
+    "2025-08-01",
+    "2026-10-12"
+   ],
+   "missing_in_yfinance_n": 4,
+   "extra_in_yfinance_n": 1,
+   "extra_in_yfinance": [
+    "2026-10-13"
+   ],
+   "common_days": 1883,
+   "close_mismatch_n": 3,
+   "close_mismatch_pct": 0.16,
+   "close_mismatch_examples": [
+    {
+     "date": "2022-08-22",
+     "yfinance": 504.0,
+     "finmind": 497.0
+    },
+    {
+     "date": "2024-03-25",
+     "yfinance": 592.0,
+     "finmind": 582.0
+    },
+    {
+     "date": "2024-03-29",
+     "yfinance": 560.0,
+     "finmind": 580.0
+    }
+   ],
+   "volume_ratio_median": 0.983,
+   "volume_unit": "股",
+   "spot_checks": [
+    {
+     "date": "2020-12-10",
+     "yf_close": 630.0,
+     "finmind_close": 630.0,
+     "yf_volume": 2772000,
+     "finmind_volume": 2801423,
+     "yf_adjusted_close": 537.65
+    },
+    {
+     "date": "2022-11-15",
+     "yf_close": 499.0,
+     "finmind_close": 499.0,
+     "yf_volume": 8129000,
+     "finmind_volume": 8252471,
+     "yf_adjusted_close": 448.12
+    },
+    {
+     "date": "2026-10-08",
+     "yf_close": 1130.0,
+     "finmind_close": 1130.0,
+     "yf_volume": 19470973,
+     "finmind_volume": 20608056,
+     "yf_adjusted_close": 1130.0
+    }
+   ]
+  }
+ ],
+ "bench_TWII": {
+  "rows": 1886,
+  "span": [
+   "2019-01-02",
+   "2026-10-13"
+  ]
+ }
+}
