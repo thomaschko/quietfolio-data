@@ -50,28 +50,40 @@ TPE = dt.timezone(dt.timedelta(hours=8))
 # ============================================================
 # 股票清單與資料
 # ============================================================
+MIN_TWSE_STOCKS = 800      # 清單少於此數視為抓取失敗(正常約 1,000+ 檔)
+MIN_TPEX_STOCKS = 600      # 正常約 800+ 檔
+
+
+def _fetch_list(url, code_field, verify=True, tries=4):
+    """抓上市/上櫃清單,失敗重試(TPEx openapi 常間歇性失敗)。回傳 4 碼普通股代號 set。"""
+    last = None
+    for i in range(tries):
+        try:
+            h = {"User-Agent": "Mozilla/5.0"}
+            if i >= 1:
+                h["Accept-Encoding"] = "identity"
+            r = requests.get(url, timeout=40, verify=verify, headers=h)
+            r.raise_for_status()
+            codes = {str(row.get(code_field, "")).strip() for row in r.json()}
+            return {c for c in codes if re.fullmatch(r"[1-9]\d{3}", c)}
+        except Exception as e:
+            last = e
+            time.sleep(5 * (i + 1))
+    raise RuntimeError(f"{url} 抓取失敗({tries}次): {last}")
+
+
 def market_lists():
-    """今天仍上市(.TW)/上櫃(.TWO)的 4 碼普通股(排除 0 開頭 ETF 與 6 碼權證/ETF)。"""
-    out = {}
-    try:
-        r = requests.get("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL", timeout=30)
-        r.raise_for_status()
-        for row in r.json():
-            c = str(row.get("Code", "")).strip()
-            if re.fullmatch(r"[1-9]\d{3}", c):
-                out[c] = ".TW"
-    except Exception as e:
-        print(f"  ⚠ TWSE 清單失敗: {e}")
-    try:
-        r = requests.get("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes",
-                         timeout=30, verify=False)
-        r.raise_for_status()
-        for row in r.json():
-            c = str(row.get("SecuritiesCompanyCode", "")).strip()
-            if re.fullmatch(r"[1-9]\d{3}", c):
-                out.setdefault(c, ".TWO")
-    except Exception as e:
-        print(f"  ⚠ TPEx 清單失敗: {e}")
+    """今天仍上市(.TW)/上櫃(.TWO)的 4 碼普通股(排除 0 開頭 ETF 與 6 碼權證/ETF)。
+    2026-10-13:Phase 3 首跑時 TPEx 清單抓取失敗,原本只印警告、用「只有上市股」的
+    股票池繼續跑。改成重試,且任一邊數量異常就直接中止,不再靜默跑出半個市場的結果。"""
+    twse = _fetch_list("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL", "Code")
+    tpex = _fetch_list("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes",
+                       "SecuritiesCompanyCode", verify=False)
+    if len(twse) < MIN_TWSE_STOCKS or len(tpex) < MIN_TPEX_STOCKS:
+        raise RuntimeError(f"股票清單數量異常:上市 {len(twse)}、上櫃 {len(tpex)},中止以免股票池不完整")
+    out = {c: ".TW" for c in twse}
+    for c in tpex:
+        out.setdefault(c, ".TWO")
     return out
 
 

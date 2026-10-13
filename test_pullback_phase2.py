@@ -67,6 +67,32 @@ def test_forward_panel_matches_engine_definition():
     assert abs(f.iloc[t] - (df["Close"].iloc[t + 5] / df["Open"].iloc[t + 1] - 1)) < 1e-12
 
 
+def test_market_lists_aborts_on_partial_list():
+    """任一邊清單抓取失敗或數量異常 → 直接中止,不可只用上市股繼續跑。"""
+    import types
+    import pullback_phase2 as P
+    calls = {"n": 0}
+
+    def fake_get(url, **kw):
+        calls["n"] += 1
+        if "tpex" in url:
+            raise ConnectionError("TPEx down")
+        return types.SimpleNamespace(raise_for_status=lambda: None,
+                                     json=lambda: [{"Code": str(1000 + i)} for i in range(1000)])
+    old_get, old_sleep = P.requests.get, P.time.sleep
+    P.requests.get, P.time.sleep = fake_get, (lambda s: None)
+    try:
+        try:
+            P.market_lists()
+            raised = False
+        except RuntimeError:
+            raised = True
+        assert raised
+        assert calls["n"] == 1 + 4                         # TPEx 重試 4 次
+    finally:
+        P.requests.get, P.time.sleep = old_get, old_sleep
+
+
 if __name__ == "__main__":
     import sys
     fails = 0
