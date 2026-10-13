@@ -86,6 +86,18 @@ def test_entry_after_signal_and_noconfirm():
     assert t["entry_date"] > t["signal_date"]
 
 
+def test_eligible_mask():
+    """Phase 2 股票池限制:eligible=None 與原本相同;訊號日不在池內就不觸發。"""
+    df = scenario([88, 90, 95, 96] + [96] * 30)
+    tr0, _ = run_backtest(df)
+    tr1, _ = run_backtest(df, eligible=pd.Series(True, index=df.index))
+    assert tr0.equals(tr1)
+    mask = pd.Series(True, index=df.index)
+    mask.iloc[32] = False                                   # 訊號日(第32日)不在池內
+    tr2, _ = run_backtest(df, eligible=mask)
+    assert len(tr2) == 0 or tr2.iloc[0]["signal_date"] != df.index[32].date()
+
+
 def test_no_lookahead():
     """訊號日之後的資料全部亂改,第一筆交易的訊號日與參考值不得改變。"""
     rng = np.random.default_rng(7)
