@@ -35,12 +35,19 @@ import xml.etree.ElementTree as ET
 import requests
 
 try:
-    from earnings_keywords import COMPANIES, count_keywords
+    from earnings_keywords import COMPANIES, count_keywords, keyword_regex
 except Exception:  # 單獨測試時也能跑
     COMPANIES = {}
 
     def count_keywords(text):
         return {}
+
+    def keyword_regex(kw):
+        if re.fullmatch(r"[A-Za-z\s\-]+", kw):
+            pattern = r"\b" + re.escape(kw) + r"\b"
+        else:
+            pattern = re.escape(kw)
+        return re.compile(pattern, 0 if re.fullmatch(r"[A-Z]{2,6}", kw) else re.I)
 
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                     "(KHTML, like Gecko) Chrome/120 Safari/537.36"}
@@ -189,14 +196,10 @@ def parse_event_date(text, pub):
 
 
 def count_all(text):
-    """earnings_keywords 詞表 + EXTRA_KEYWORDS,同一套單字邊界規則。"""
+    """earnings_keywords 詞表 + EXTRA_KEYWORDS,同一套比對規則(keyword_regex)。"""
     counts = {kw: v for kw, v in count_keywords(text).items()}
     for cat, kw in FLAT_EXTRA:
-        if re.fullmatch(r"[A-Za-z\s\-]+", kw):
-            pattern = r"\b" + re.escape(kw) + r"\b"
-        else:
-            pattern = re.escape(kw)
-        n = len(re.findall(pattern, text, re.I))
+        n = len(keyword_regex(kw).findall(text))
         if n:
             counts[kw] = {"count": counts.get(kw, {}).get("count", 0) + n, "category": cat}
     return counts
@@ -211,6 +214,37 @@ def merge_counts(acc, counts):
 def name_hit(sym, text):
     name = SEARCH_NAMES.get(sym, sym)
     return re.search(r"\b" + re.escape(name) + r"\b", text, re.I) is not None
+
+
+# 活動用語歸屬:往前找最近的追蹤公司名(相隔 <= OWNER_MAX_GAP 個字);
+# 前面沒有公司名時,才看緊接在後面的(如「Investor Day: Marvell …」)。
+OWNER_MAX_GAP = 10
+OWNER_AFTER_GAP = 3
+_NAME_RE = {sym: re.compile(r"\b" + re.escape(n) + r"\b", re.I) for sym, n in SEARCH_NAMES.items()}
+
+
+def _words_between(text, a, b):
+    return len(re.findall(r"\S+", text[a:b]))
+
+
+def event_owner_hit(sym, text):
+    """text 裡是否有「屬於 sym 的」活動用語。
+    2026-10-14:原本只要同一則同時出現公司名與活動用語就算(name_hit + EVENT_RE),
+    10/13 Jefferies 週報「Recap of Marvell Analyst Day, …, and Updates on AMD's Investment
+    in Taiwan」被當成 AMD 的 Analyst Day。改成每個活動用語只歸給最近的那家公司。"""
+    names = [(m.start(), m.end(), s) for s, rx in _NAME_RE.items() for m in rx.finditer(text)]
+    for ev in EVENT_RE.finditer(text):
+        before = [(ev.start() - e, s, e) for st, e, s in names if e <= ev.start()
+                  and _words_between(text, e, ev.start()) <= OWNER_MAX_GAP]
+        if before:
+            owner = min(before)[1]
+        else:
+            after = [(st - ev.end(), s, st) for st, e, s in names if st >= ev.end()
+                     and _words_between(text, ev.end(), st) <= OWNER_AFTER_GAP]
+            owner = min(after)[1] if after else None
+        if owner == sym:
+            return True
+    return False
 
 
 def event_label(text):
@@ -244,8 +278,7 @@ def run(now=None, fetch_company=None, fetch_conf=None, fetch_feed=None):
 
     # ── 1. 公司查詢:公告(→行事曆)+ 報導 ──
     for sym, name in SEARCH_NAMES.items():
-        items = [it for it in fetch_company(sym, name)
-                 if EVENT_RE.search(it["text"]) and name_hit(sym, it["text"])]
+        items = [it for it in fetch_company(sym, name) if event_owner_hit(sym, it["text"])]
         per_symbol_items[sym] = items
         for it in items:
             if not ANNOUNCE_RE.search(it["title"]):
@@ -309,7 +342,7 @@ def run(now=None, fetch_company=None, fetch_conf=None, fetch_feed=None):
                 and not ANNOUNCE_RE.search(it["title"])]
         recaps = [it for it in feed_items
                   if it["pub"] and (now - it["pub"]).days <= ACTIVE_AFTER_DAYS
-                  and name_hit(sym, it["title"]) and EVENT_RE.search(it["title"])]
+                  and event_owner_hit(sym, it["title"])]
         if news or recaps:
             kw = {}
             for it in news + recaps:
