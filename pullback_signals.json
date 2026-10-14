@@ -1,9 +1,20 @@
 {
- "generated_at": "2026-10-14 00:49:35",
- "data_date": "2026-10-13",
- "official_date": "2026-10-12",
+ "generated_at": "2026-10-14 13:45:15",
+ "data_date": "2026-10-14",
  "universe": "前200大(前60日平均成交值)",
  "universe_size": 200,
+ "market_scan": {
+  "上市": {
+   "scan_date": "2026-10-14",
+   "members": 148,
+   "scanned": 148
+  },
+  "上櫃": {
+   "scan_date": "2026-10-14",
+   "members": 52,
+   "scanned": 52
+  }
+ },
  "params": {
   "DD_MIN": 0.12,
   "DD_MAX": 0.3,
@@ -17,23 +28,138 @@
   "COOLDOWN": 5
  },
  "market": {
-  "index_date": "2026-10-12",
-  "drawdown_from_20d_high": 0.0104,
+  "index_date": "2026-10-14",
+  "drawdown_from_20d_high": 0.0209,
   "market_stress": false
  },
  "backtest_note": "回測(2019–2026,前200大成交值股票池):扣成本後平均報酬為正,但與同一天在池內隨機買股、持有相同天數相比沒有顯著差異(樣本外 −0.42%,95% 信賴區間 −1.48%~+0.74%),報酬主要來自大盤急殺後的反彈。",
  "counts": {
   "confirm": 0,
   "noconfirm": 0,
-  "watch": 0
+  "watch": 5
  },
  "confirm": [],
  "noconfirm": [],
- "watch": [],
+ "watch": [
+  {
+   "code": "2059",
+   "name": "川湖",
+   "market": "上市",
+   "signal_date": "2026-10-14",
+   "turnover_rank": 44,
+   "close": 9970.0,
+   "chg_today": -0.0089,
+   "drawdown_3d_max": 0.2535,
+   "drawdown_today": 0.2535,
+   "vol_mult_max_3d": 2.05,
+   "cap_dates": [
+    "2026-10-12"
+   ],
+   "ref_high": 13355.0,
+   "trough_3d": 9970.0,
+   "target": 12001.0,
+   "stop": 9348.5
+  },
+  {
+   "code": "3363",
+   "name": "上詮",
+   "market": "上櫃",
+   "signal_date": "2026-10-14",
+   "turnover_rank": 92,
+   "close": 559.0,
+   "chg_today": 0.0219,
+   "drawdown_3d_max": 0.2003,
+   "drawdown_today": 0.1827,
+   "vol_mult_max_3d": 2.14,
+   "cap_dates": [
+    "2026-10-12"
+   ],
+   "ref_high": 684.0,
+   "trough_3d": 547.0,
+   "target": 629.2,
+   "stop": 478.8
+  },
+  {
+   "code": "5536",
+   "name": "聖暉*",
+   "market": "上櫃",
+   "signal_date": "2026-10-14",
+   "turnover_rank": 159,
+   "close": 909.0,
+   "chg_today": 0.0156,
+   "drawdown_3d_max": 0.1435,
+   "drawdown_today": 0.1301,
+   "vol_mult_max_3d": 2.09,
+   "cap_dates": [
+    "2026-10-12"
+   ],
+   "ref_high": 1045.0,
+   "trough_3d": 895.0,
+   "target": 985.0,
+   "stop": 731.5
+  },
+  {
+   "code": "2337",
+   "name": "旺宏",
+   "market": "上市",
+   "signal_date": "2026-10-14",
+   "turnover_rank": 43,
+   "close": 110.0,
+   "chg_today": 0.0329,
+   "drawdown_3d_max": 0.1306,
+   "drawdown_today": 0.102,
+   "vol_mult_max_3d": 2.28,
+   "cap_dates": [
+    "2026-10-13"
+   ],
+   "ref_high": 122.5,
+   "trough_3d": 106.5,
+   "target": 116.1,
+   "stop": 85.75
+  },
+  {
+   "code": "6531",
+   "name": "愛普*",
+   "market": "上市",
+   "signal_date": "2026-10-14",
+   "turnover_rank": 76,
+   "close": 928.0,
+   "chg_today": 0.0022,
+   "drawdown_3d_max": 0.1223,
+   "drawdown_today": 0.1204,
+   "vol_mult_max_3d": 2.43,
+   "cap_dates": [
+    "2026-10-13"
+   ],
+   "ref_high": 1055.0,
+   "trough_3d": 926.0,
+   "target": 1003.4,
+   "stop": 738.5
+  }
+ ],
  "data_quality": {
   "usable": 1969,
   "failed": 5,
-  "official_replaced": 0,
-  "official_appended": 1082
+  "official_dates": {
+   "上市": "2026-10-13",
+   "上櫃": "2026-10-13"
+  },
+  "official_source": {
+   "上市": "官方最新",
+   "上櫃": "官方最新"
+  },
+  "yahoo_last_dates": {
+   "上市": {
+    "2026-10-14": 1081,
+    "2026-10-13": 4
+   },
+   "上櫃": {
+    "2026-10-14": 864,
+    "2026-10-13": 20
+   }
+  },
+  "official_replaced": 15,
+  "official_appended": 0,
+  "official_inserted": 0
  }
 }
