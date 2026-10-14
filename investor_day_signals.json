@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-14 00:24:22",
+ "generated_at": "2026-10-14 22:04:10",
  "date": "20261014",
  "events": [
   {
@@ -31,25 +31,52 @@
    "event_date": "2026-10-08",
    "day_offset": 6,
    "date_inferred": true,
-   "news_count": 16,
+   "news_count": 8,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "Marvell: Investor Day Resets The AI Growth Story (NASDAQ:MRVL) - Seeking Alpha",
     "Marvell Investor Day 2026 Targets $80B FY 2031 Revenue With Custom Silicon and Optics - The Futurum Group",
-    "Marvell Investor Day: Connectivity Lifts Outlook to $20 Billion - ETF Database",
     "Bank of America tweaks Marvell stock target after key Analyst Day - TheStreet",
-    "Marvell's Investor Day: $70-90B FY 2031 Sales Feels Like A Different Company - Seeking Alpha",
-    "Marvell Shows Bullish Tone at Investor Day, Oppenheimer Says - Yahoo Finance"
+    "Marvell Investor Day 2026: An $80B Bet on Connectivity, With Scale-Up Optics the Only Variable Starting From Zero - Simple Tech and Trend",
+    "Jefferies Semiconductor Weekly: Recap of Marvell Analyst Day, Preview of OCP Summit, and Updates on AMD’s Investment in Taiwan - 富途牛牛",
+    "Marvell Investor Day 2026. Key Takeaways & Full Transcript - Smartkarma",
+    "Marvell Technology: Investor Day Takeaways (NASDAQ:MRVL) - Seeking Alpha"
    ],
    "keywords": {
     "custom silicon": {
      "count": 2,
      "category": "客戶capex/需求"
     },
+    "scale-up": {
+     "count": 2,
+     "category": "互連/網通"
+    },
     "Taiwan": {
      "count": 2,
      "category": "台廠點名"
+    }
+   }
+  },
+  {
+   "type": "investor_day",
+   "symbol": "AMAT",
+   "name": "Applied Materials",
+   "event": "Investor Day",
+   "event_date": "2026-10-14",
+   "day_offset": 0,
+   "date_inferred": true,
+   "news_count": 3,
+   "recap_count": 0,
+   "recap_sources": [],
+   "titles": [
+    "Applied Materials Stock Could Be Flashing a Sell Signal on This Investor Day Omission - Barron's",
+    "Applied Materials drops during Investor Day as it eyes growing optical inspection market - Seeking Alpha",
+    "Applied Materials (AMAT) Shares Drop 7% Amid Investor Day Despite AI-Driven Semiconductor Demand - GuruFocus"
+   ],
+   "keywords": {
+    "optical": {
+     "count": 2,
+     "category": "光通訊/CPO"
     }
    }
   },
@@ -66,7 +93,7 @@
    "recap_sources": [],
    "titles": [
     "Needham raises Synopsys stock price target on investor day outlook By Investing.com - Investing.com",
-    "Synopsys in spotlight as Needham ups price target after investor day (SNPS:NASDAQ) - Seeking Alpha"
+    "Synopsys in spotlight as Needham ups price target after investor day - TradingView"
    ],
    "keywords": {
     "UPS": {
@@ -82,33 +109,49 @@
    "event": "OCP Global Summit",
    "event_date": null,
    "day_offset": null,
-   "news_count": 27,
+   "news_count": 47,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "OCP Global Summit 2026: MSI Brings Nvidia MGX Rack-Scale AI Infrastructure - StorageNewsletter",
-    "Wistron Showcases at 2026 OCP Global Summit - PR Newswire",
-    "Wiwynn Brings Vera Rubin NVL72, AMD Helios Racks to OCP Global Summit - Unite.AI",
-    "Samsung Unveils AI Infrastructure Memory Strategy at OCP Global Summit - GuruFocus",
-    "Wiwynn Showcases Next-Gen AI Platforms, Thermal Engineering, and Optical Interconnect Technologies at 2026 OCP Global Summit - Morningstar",
-    "Broadcom (AVGO) To Launch AI Networking Platform At OCP Global Summit 2026 - Yahoo Finance"
+    "PEGATRON Brings AI Infrastructure from Design to Deployment at OCP Global Summit 2026 - PR Newswire",
+    "OCP Global Summit 2026: Giga Computing Proves Rack-Scale Architecture is Enabling AI and Cloud Data Flourish - StorageNewsletter",
+    "Pegatron showcases rack-scale AI infrastructure at OCP Global Summit - digitimes",
+    "xFusion Delivers Token Factory Value via \"Computing-Power and Power Synergy\" at 2026 OCP Global Summit - 36Kr",
+    "CyberTAN Unveils Pallas Series Liquid-Cooled 102.4 Tbps Ethernet Switch Platform Blueprint at OCP Global Summit 2026 - Morningstar",
+    "Compal Accelerates Time-to-AI with Next-Generation NVIDIA Platforms at OCP Global Summit 2026 - TradingView"
    ],
    "keywords": {
     "AI infrastructure": {
-     "count": 14,
+     "count": 24,
      "category": "客戶capex/需求"
     },
     "optical": {
-     "count": 8,
+     "count": 12,
      "category": "光通訊/CPO"
     },
     "optical interconnect": {
      "count": 6,
      "category": "互連/網通"
     },
+    "Ethernet switch": {
+     "count": 4,
+     "category": "平台/網通/供應鏈"
+    },
+    "data center": {
+     "count": 4,
+     "category": "客戶capex/需求"
+    },
     "PCIe": {
      "count": 4,
      "category": "互連/網通"
+    },
+    "co-packaged": {
+     "count": 4,
+     "category": "先進封裝/光互連"
+    },
+    "memory": {
+     "count": 4,
+     "category": "記憶體"
     },
     "Vera Rubin": {
      "count": 2,
@@ -118,13 +161,46 @@
      "count": 2,
      "category": "平台/網通/供應鏈"
     },
-    "memory": {
+    "liquid cooling": {
      "count": 2,
+     "category": "資料中心電源"
+    },
+    "1.6T": {
+     "count": 2,
+     "category": "光通訊/CPO"
+    }
+   }
+  },
+  {
+   "type": "conference",
+   "symbol": "",
+   "name": "SEMICON West",
+   "event": "SEMICON West",
+   "event_date": null,
+   "day_offset": null,
+   "news_count": 20,
+   "recap_count": 0,
+   "recap_sources": [],
+   "titles": [
+    "SEMICON West 2026 Opens as Chips Cross $1 Trillion: Energy Now Becomes Industry's Next Wall - Tech Times",
+    "Fujifilm Showcases at SEMICON West 2026 - Ink World Magazine",
+    "SEMICON West 2026 gets underway as semiconductor sector hits $1T milestone - Engineer Live",
+    "SEMICON West 2026 Presentation (NASDAQ:AMAT) 2026-10-13 - Seeking Alpha",
+    "SEMICON West 2026: SEMI Forecasts 300mm Fab Equipment Spending to Reach $227B by 2029 - EE Times Asia",
+    "Hanmi Semiconductor Unveils HBM4 and 2.5D Packaging Equipment at SEMICON West, Accelerating U.S. Market Push - BigGo Finance"
+   ],
+   "keywords": {
+    "2.5D": {
+     "count": 4,
+     "category": "先進封裝/光互連"
+    },
+    "HBM4": {
+     "count": 4,
      "category": "記憶體"
     },
-    "data center": {
+    "foundry": {
      "count": 2,
-     "category": "客戶capex/需求"
+     "category": "平台/網通/供應鏈"
     }
    }
   }
@@ -154,8 +230,26 @@
    "label": "MRVL(Investor Day)",
    "event": "Investor Day",
    "type": "investor_day",
+   "keyword": "scale-up",
+   "category": "互連/網通",
+   "count": 2
+  },
+  {
+   "symbol": "MRVL",
+   "label": "MRVL(Investor Day)",
+   "event": "Investor Day",
+   "type": "investor_day",
    "keyword": "Taiwan",
    "category": "台廠點名",
+   "count": 2
+  },
+  {
+   "symbol": "AMAT",
+   "label": "AMAT(Investor Day)",
+   "event": "Investor Day",
+   "type": "investor_day",
+   "keyword": "optical",
+   "category": "光通訊/CPO",
    "count": 2
   },
   {
@@ -174,7 +268,7 @@
    "type": "conference",
    "keyword": "AI infrastructure",
    "category": "客戶capex/需求",
-   "count": 14
+   "count": 24
   },
   {
    "symbol": "OCP Global Summit",
@@ -183,7 +277,7 @@
    "type": "conference",
    "keyword": "optical",
    "category": "光通訊/CPO",
-   "count": 8
+   "count": 12
   },
   {
    "symbol": "OCP Global Summit",
@@ -199,8 +293,44 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
+   "keyword": "Ethernet switch",
+   "category": "平台/網通/供應鏈",
+   "count": 4
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "data center",
+   "category": "客戶capex/需求",
+   "count": 4
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
    "keyword": "PCIe",
    "category": "互連/網通",
+   "count": 4
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "co-packaged",
+   "category": "先進封裝/光互連",
+   "count": 4
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "memory",
+   "category": "記憶體",
    "count": 4
   },
   {
@@ -226,8 +356,8 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "memory",
-   "category": "記憶體",
+   "keyword": "liquid cooling",
+   "category": "資料中心電源",
    "count": 2
   },
   {
@@ -235,8 +365,35 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "data center",
-   "category": "客戶capex/需求",
+   "keyword": "1.6T",
+   "category": "光通訊/CPO",
+   "count": 2
+  },
+  {
+   "symbol": "SEMICON West",
+   "label": "SEMICON West",
+   "event": "SEMICON West",
+   "type": "conference",
+   "keyword": "2.5D",
+   "category": "先進封裝/光互連",
+   "count": 4
+  },
+  {
+   "symbol": "SEMICON West",
+   "label": "SEMICON West",
+   "event": "SEMICON West",
+   "type": "conference",
+   "keyword": "HBM4",
+   "category": "記憶體",
+   "count": 4
+  },
+  {
+   "symbol": "SEMICON West",
+   "label": "SEMICON West",
+   "event": "SEMICON West",
+   "type": "conference",
+   "keyword": "foundry",
+   "category": "平台/網通/供應鏈",
    "count": 2
   }
  ],
