@@ -52,6 +52,9 @@ def test_merge_official_replace_append_older():
     assert act == "appended" and out.index[-1] == nxt and len(out) == len(df) + 1
     out, act = merge_official(df, {**bar, "date": df.index[0]})
     assert act == "older" and out.equals(df)
+    gap = df.drop(df.index[3])                             # 中間缺一天(如 Yahoo 缺 2026-10-12)
+    out, act = merge_official(gap, {**bar, "date": df.index[3]})
+    assert act == "inserted" and list(out.index) == list(df.index) and out.loc[df.index[3], "Close"] == 11.5
     out, act = merge_official(df, None)
     assert act == "none" and out.equals(df)
 

@@ -41,6 +41,7 @@ from pullback_backtest import run_backtest, load_bench, DEFAULTS
 
 PHASE1_TICKERS = ["3081", "3665", "2454", "3026", "6488"]
 TURNOVER_WINDOW = 60
+MIN_TURNOVER_DAYS = 50     # 60日窗口內至少要有幾日資料才計算平均成交值(容許偶發缺漏日)
 BOOT = 2000
 MIN_N = 30
 HORIZONS = (5, 10, 20)
@@ -129,8 +130,11 @@ def download(code_suffix, start, end, chunk=100, min_rows=250):
 # ============================================================
 def universe_membership(turnover_panel, top_n, window=TURNOVER_WINDOW):
     """turnover_panel: index=日期, columns=代號。每日以「前 window 日(不含當日)平均成交值」
-    排名,前 top_n 為 True。資料不足 window 日者不入池。"""
-    avg = turnover_panel.rolling(window, min_periods=window).mean().shift(1)
+    排名,前 top_n 為 True。window 日內有資料的日子少於 MIN_TURNOVER_DAYS 者不入池。"""
+    # 2026-10-14修正:原本 min_periods=window,只要缺一天(Yahoo 偶有全市場缺漏日,如 2025-08-01、
+    # 2026-10-12)該股之後60個交易日都無法入池 → 回測 2025-08~09 股票池整個是空的。
+    # 改為60日內至少 MIN_TURNOVER_DAYS 日有資料即可。
+    avg = turnover_panel.rolling(window, min_periods=MIN_TURNOVER_DAYS).mean().shift(1)
     rank = avg.rank(axis=1, ascending=False, method="first")
     return (rank <= top_n) & avg.notna()
 

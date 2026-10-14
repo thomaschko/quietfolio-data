@@ -39,10 +39,19 @@ def test_universe_excludes_signal_day():
 
 
 def test_universe_min_history_and_size():
+    from pullback_phase2 import MIN_TURNOVER_DAYS
     p = _panel()
     m = universe_membership(p, 10)
-    assert not m.iloc[:60].any().any()                    # 前60日資料不足 → 不入池
+    assert not m.iloc[:MIN_TURNOVER_DAYS].any().any()     # 資料不足 MIN_TURNOVER_DAYS 日 → 不入池
     assert (m.iloc[61:].sum(axis=1) == 10).all()
+
+
+def test_universe_survives_missing_day():
+    """單日缺漏(Yahoo 全市場缺某天)不可讓股票之後60日都出局(2025-08~09 股票池為空的根因)。"""
+    p = _panel()
+    p.iloc[100, :] = np.nan                                 # 全市場缺一天
+    m = universe_membership(p, 10)
+    assert (m.iloc[102:161].sum(axis=1) == 10).all()
 
 
 def test_boot_ci_clusters_by_date():
