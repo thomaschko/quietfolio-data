@@ -66,6 +66,14 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python theme_tracker.py
 
+      # watchlist 建議(2026-10-15新增):theme_tracker 的首見/追蹤中題材分級
+      # (strong/suggest/watch),strong/suggest 前10個查鉅亨基數(src1 能否觸發)。
+      # 只寫 watchlist_suggestions.json,絕不修改 themes_watchlist.txt(人工升格);
+      # 放在 digest 之前,digest 讀成 I 區。不需要 API key。
+      - name: Suggest watchlist terms
+        continue-on-error: true
+        run: python watchlist_suggester.py
+
       # 每日摘要整合:匯整 src1-6 輸出成 daily_digest.json(A-G區)
       # 價量階段標籤(2026-10-06新增):抓全市場收盤價+成交量存快照,
       # 給每檔雷達股票標「潛伏/啟動/過熱」。放在digest之前,digest會讀它。
@@ -131,6 +139,7 @@ jobs:
           [ -f themes_watchlist.txt ] && git add themes_watchlist.txt || true
           [ -f earnings_keywords.py ] && git add earnings_keywords.py || true
           [ -f us_8k_events.json ] && git add us_8k_events.json || true
+          [ -f watchlist_suggestions.json ] && git add watchlist_suggestions.json || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
           [ -f daily_report.json ] && git add daily_report.json || true
           [ -f verification_ledger.json ] && git add verification_ledger.json || true

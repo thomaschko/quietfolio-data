@@ -20,12 +20,58 @@ daily_digest.py — 每日摘要整合器
   C. 券商覆蓋暴增(src5,機構領先)
   D. 熱度暴增題材(src1)
   E. 新題材候選(src4,參考)
+  I. 建議加入 watchlist(watchlist_suggester.py,人工升格)
 ============================================================
 """
 
 import json
 import datetime as dt
 from collections import defaultdict
+
+
+# method現在可能是 search/ai/jieba 或組合(如"search+ai"),依「有幾個獨立來源背書」評分
+# 2026-10-15:從 build_digest 抽成模組層函式,watchlist_suggester.py 共用同一套判定
+def _method_score(m):
+    m = m or "jieba"
+    n_sources = m.count("+") + 1
+    has_search = "search" in m
+    has_ai = "ai" in m
+    if has_search and has_ai: return (0, -n_sources)  # 主動搜尋+AI萃取都找到,最可信
+    if has_search: return (1, -n_sources)
+    if has_ai: return (2, -n_sources)
+    return (3, -n_sources)  # 純jieba
+
+
+# 法說關鍵詞 → 你的中文題材對應橋(讓國際訊號對到台股題材)
+# 2026-10-15:從 build_digest 抽成模組層常數,watchlist_suggester.py 會 import 檢查英文詞有無對應
+KW_TO_THEME = {
+    "HBM": "HBM", "HBM4": "HBM", "base die": "HBM", "custom HBM": "HBM",
+    "DRAM": "記憶體", "LPDDR": "記憶體", "NAND": "NAND", "memory": "記憶體",
+    "CoWoS": "CoWoS", "SoIC": "先進封裝", "advanced packaging": "先進封裝",
+    "glass substrate": "玻璃基板", "interposer": "先進封裝",
+    "CPO": "CPO", "co-packaged": "CPO", "silicon photonics": "矽光子",
+    "800V": "HVDC", "HVDC": "HVDC", "liquid cooling": "液冷",
+    "immersion": "浸沒式散熱", "power shelf": "HVDC",
+    "Vera Rubin": "CoWoS", "Rubin": "CoWoS",  # Rubin平台帶動先進封裝
+    # 光通訊/CPO(對應 LITE/COHR/AAOI 及你的CPO研究)
+    "optical": "光通訊", "photonics": "矽光子", "laser": "光通訊",
+    "transceiver": "光通訊", "EML": "光通訊", "InP": "磷化銦",
+    "indium phosphide": "磷化銦", "800G": "光通訊", "1.6T": "光通訊",
+    "LPO": "CPO", "optical engine": "CPO",
+    # AI語意版(Gemini)新發現題材對應 2026-09-09
+    "High-NA": "High-NA EUV", "EUV": "High-NA EUV", "lithography": "微影設備",
+    "passive component": "被動元件", "MLCC": "MLCC", "glass fiber": "玻纖布",
+    "XPU": "XPU", "custom silicon": "客製化晶片", "custom ASIC": "客製化晶片",
+    "satellite": "衛星通訊", "LEO": "低軌衛星頻譜",
+    "drone": "無人機", "counter-drone": "反無人機",
+    "smart glasses": "智慧眼鏡", "AR": "AR光學", "waveguide": "波導技術",
+    "agentic": "代理式AI", "edge computing": "邊緣運算", "on-device": "端側模型",
+    # 2026-10-12:investor day 常見詞(investor_events.py EXTRA_KEYWORDS),只對到 watchlist 既有題材
+    "custom XPU": "XPU", "custom accelerator": "客製化晶片", "custom compute": "客製化晶片",
+    "optical interconnect": "光通訊", "electro-optics": "光通訊",
+    "DSP": "DSP", "SerDes": "SerDes", "Ethernet switch": "交換器晶片", "switch ASIC": "交換器晶片",
+    "Tomahawk": "Tomahawk",
+}
 
 
 def load_json(path):
@@ -46,6 +92,7 @@ def build_digest():
     earnings = load_json("earnings_keywords.json") or {}  # src6
     investor = load_json("investor_day_signals.json") or {}  # 2026-10-12:investor day/技術大會
     tracker = load_json("theme_tracker.json") or {}  # 題材追蹤(AI語意+jieba整合,含首見/追蹤中)
+    wl_sugg = load_json("watchlist_suggestions.json") or {}  # 2026-10-15:watchlist_suggester.py,缺檔不報錯
 
     # 以個股為中心聚合:code -> {sources:set, detail:{}}
     stock_signals = defaultdict(lambda: {"sources": set(), "detail": {}})
@@ -165,16 +212,6 @@ def build_digest():
             pool.append({**e, "_bucket": 0})  # 連續追蹤中最優先
         for e in tracker.get("first_seen", []):
             pool.append({**e, "_bucket": 1})
-        # method現在可能是 search/ai/jieba 或組合(如"search+ai"),依「有幾個獨立來源背書」評分
-        def _method_score(m):
-            m = m or "jieba"
-            n_sources = m.count("+") + 1
-            has_search = "search" in m
-            has_ai = "ai" in m
-            if has_search and has_ai: return (0, -n_sources)  # 主動搜尋+AI萃取都找到,最可信
-            if has_search: return (1, -n_sources)
-            if has_ai: return (2, -n_sources)
-            return (3, -n_sources)  # 純jieba
         pool.sort(key=lambda x: (x["_bucket"], _method_score(x.get("method")), -x.get("hits", 0)))
         for e in pool[:15]:
             new_candidates.append({
@@ -201,35 +238,7 @@ def build_digest():
     # F. 國際法說訊號(src6)—— 頻率上升的關鍵詞,依公司整理
     earnings_rising = earnings.get("rising_keywords", [])
     intl_news_heat = earnings.get("intl_news_heat", [])  # 國際新聞每日熱度(CNBC+Yahoo)
-    # 法說關鍵詞 → 你的中文題材對應橋(讓國際訊號對到台股題材)
-    KW_TO_THEME = {
-        "HBM": "HBM", "HBM4": "HBM", "base die": "HBM", "custom HBM": "HBM",
-        "DRAM": "記憶體", "LPDDR": "記憶體", "NAND": "NAND", "memory": "記憶體",
-        "CoWoS": "CoWoS", "SoIC": "先進封裝", "advanced packaging": "先進封裝",
-        "glass substrate": "玻璃基板", "interposer": "先進封裝",
-        "CPO": "CPO", "co-packaged": "CPO", "silicon photonics": "矽光子",
-        "800V": "HVDC", "HVDC": "HVDC", "liquid cooling": "液冷",
-        "immersion": "浸沒式散熱", "power shelf": "HVDC",
-        "Vera Rubin": "CoWoS", "Rubin": "CoWoS",  # Rubin平台帶動先進封裝
-        # 光通訊/CPO(對應 LITE/COHR/AAOI 及你的CPO研究)
-        "optical": "光通訊", "photonics": "矽光子", "laser": "光通訊",
-        "transceiver": "光通訊", "EML": "光通訊", "InP": "磷化銦",
-        "indium phosphide": "磷化銦", "800G": "光通訊", "1.6T": "光通訊",
-        "LPO": "CPO", "optical engine": "CPO",
-        # AI語意版(Gemini)新發現題材對應 2026-09-09
-        "High-NA": "High-NA EUV", "EUV": "High-NA EUV", "lithography": "微影設備",
-        "passive component": "被動元件", "MLCC": "MLCC", "glass fiber": "玻纖布",
-        "XPU": "XPU", "custom silicon": "客製化晶片", "custom ASIC": "客製化晶片",
-        "satellite": "衛星通訊", "LEO": "低軌衛星頻譜",
-        "drone": "無人機", "counter-drone": "反無人機",
-        "smart glasses": "智慧眼鏡", "AR": "AR光學", "waveguide": "波導技術",
-        "agentic": "代理式AI", "edge computing": "邊緣運算", "on-device": "端側模型",
-        # 2026-10-12:investor day 常見詞(investor_events.py EXTRA_KEYWORDS),只對到 watchlist 既有題材
-        "custom XPU": "XPU", "custom accelerator": "客製化晶片", "custom compute": "客製化晶片",
-        "optical interconnect": "光通訊", "electro-optics": "光通訊",
-        "DSP": "DSP", "SerDes": "SerDes", "Ethernet switch": "交換器晶片", "switch ASIC": "交換器晶片",
-        "Tomahawk": "Tomahawk",
-    }
+    # 法說關鍵詞 → 台股題材對應見模組層 KW_TO_THEME
     # 統計每個「台股題材」被幾家國際大廠法說提及升溫
     theme_earnings_backing = defaultdict(lambda: {"companies": set(), "keywords": set()})
     for r in earnings_rising:
@@ -288,6 +297,9 @@ def build_digest():
             "earnings_rising": len(earnings_rising),
             "investor_events": len(investor_events),
             "cross_confirmed": len([c for c in cross_confirmed if c["dual_confirmed"]]),
+            # 2026-10-15:I 區只算 strong + suggest(watch 是首見觀察,不計)
+            "watchlist_suggestions": len([x for x in wl_sugg.get("suggestions", [])
+                                          if x.get("tier") in ("strong", "suggest")]),
         },
         "intl_news_heat": intl_news_heat,
         "A_multi_source_resonance": resonance,
@@ -304,6 +316,9 @@ def build_digest():
         "F2_investor_events": investor_events,
         "F2_upcoming": investor.get("upcoming", [])[:10],
         "G_cross_confirmed": cross_confirmed,
+        # 2026-10-15:I = 建議加入 themes_watchlist.txt 的詞(人工升格,不會自動加入)
+        "I_watchlist_suggestions": wl_sugg.get("suggestions", []),
+        "I_paste_block": wl_sugg.get("paste_block", ""),
     }
 
     # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
@@ -445,6 +460,27 @@ def print_digest(d):
     up = d.get("F2_upcoming", [])
     if up:
         print("  即將舉行:" + "、".join(f"{u['date']} {u['symbol']} {u['event']}" for u in up[:6]))
+
+    print("\n▍I. 建議加入 watchlist(人工升格 — 不會自動寫入 themes_watchlist.txt)")
+    sugg = d.get("I_watchlist_suggestions", [])
+    if sugg:
+        mark = {"strong": "⭐strong", "suggest": "➕suggest", "watch": "👀watch"}
+        for x in sugg:
+            src = "🔤" if _method_score(x.get("method"))[0] == 3 else "🤖"
+            if x.get("cnyes_ratio") is None:
+                cn = "cnyes未查"
+            elif x.get("cnyes_viable") is None:
+                cn = "cnyes可用性未知(查詢全0則)"
+            else:
+                cn = f"cnyes暴增{x.get('cnyes_ratio')} {'✓可用' if x['cnyes_viable'] else '✗基數不足'}"
+            names = x.get("names", {})
+            stk = " ".join(f"{cd}{names.get(cd, '')}" for cd in x.get("stocks", [])[:5])
+            print(f"  {mark.get(x.get('tier'), x.get('tier'))} {src}{x['term']}  連{x.get('streak_days')}天  "
+                  f"{cn}" + (f"  股:{stk}" if stk else ""))
+        print("  ── 可直接貼進 themes_watchlist.txt(strong/suggest 且 cnyes 可用)──")
+        print("\n".join("  " + t for t in (d.get("I_paste_block") or "").splitlines()) or "  (無)")
+    else:
+        print("  (今日無建議,或 watchlist_suggestions.json 不存在)")
 
 
 def main():
