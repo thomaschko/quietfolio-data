@@ -15,7 +15,7 @@ NOW = 1_800_000_000
 RECENT_START = NOW - 3 * 86400
 BASE_START = RECENT_START - 17 * 86400
 WATCHLIST = {w.lower(): w for w in ["HVDC", "CPO", "矽光子", "AI"]}
-NAME2CODE = {"大立光": "3008", "日月光投控": "3711"}
+NAME2CODE = {"大立光": "3008", "日月光投控": "3711"}  # 日月光 → 前綴規則
 STOPWORDS = {"台股", "fed"}
 
 
@@ -194,6 +194,35 @@ def test_recent_consensus_themes_for_reverse_lookup():
               {"term": "CXL", "promoted_date": "20261001", "source": "consensus"},           # 超過7天
               {"term": "光模組", "promoted_date": "20261014", "source": ""}]                 # 非共識
     assert ws.recent_consensus_themes(promos, "20261015") == [{"term": "TPU", "reason": "Google TPU架構"}]
+
+
+def test_paste_block_excludes_pure_jieba():
+    out = run([T("玻璃基板材料", "ai", 3), T("概念股題材", "jieba", 15)],
+              counts={"玻璃基板材料": (4, 6), "概念股題材": (20, 50)})
+    sug, _ = by_term(out)
+    assert sug["概念股題材"]["tier"] == "suggest" and sug["概念股題材"]["cnyes_viable"] is True
+    assert out["paste_block"] == "玻璃基板材料"
+    assert ws.NOTE_JIEBA_NO_PASTE in sug["概念股題材"]["notes"]
+
+
+def test_cnyes_truncated_is_unknown():
+    """抓滿5頁(100則)都還在近期 → 前段被截斷,不可算成「基數不足」或「可用」。"""
+    out = run([T("玻璃基板材料", "ai", 3), T("光纖陣列單元", "ai", 3)],
+              counts={"玻璃基板材料": (100, 0), "光纖陣列單元": (40, 30)})
+    sug, _ = by_term(out)
+    a = sug["玻璃基板材料"]
+    assert a["cnyes_truncated"] is True and a["cnyes_viable"] is None
+    assert ws.NOTE_CNYES_TRUNC in a["notes"] and ws.NOTE_CNYES_LOW not in a["notes"]
+    assert sug["光纖陣列單元"]["cnyes_truncated"] is False and sug["光纖陣列單元"]["cnyes_viable"] is True
+    assert out["paste_block"] == "光纖陣列單元"
+
+
+def test_foreign_and_prefix_company_names():
+    out = run([T("海力士", "jieba", 9), T("Marvell", "jieba", 9), T("格羅方德", "jieba", 8),
+               T("日月光", "jieba", 10), T("探針卡", "jieba", 6)])
+    _, rej = by_term(out)
+    assert all(rej[t] == "is_company_name" for t in ("海力士", "Marvell", "格羅方德", "日月光")), rej
+    assert "探針卡" not in rej                                     # 題材詞不受影響
 
 
 def test_watchlist_file_untouched():
