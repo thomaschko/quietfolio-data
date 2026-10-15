@@ -409,6 +409,63 @@ def _fetch_iek_news():
         return []
 
 
+INVESTOR_LIST_URL = "https://www.investor.com.tw/onlineNews/NewsList2.asp?UnitXsub={sub}&UnitX={unit}"
+# 高科技股 / 傳產股 / 大中華 / 國際財經
+INVESTOR_CATEGORIES = (("005", "01"), ("004", "01"), ("047", "01"), ("002", "01"))
+_INVESTOR_ITEM = re.compile(r'<a[^>]+href="[^"]*NewsContent\.asp\?articleNo=(14(\d{8})\d+)"[^>]*>(.*?)</a>',
+                            re.DOTALL | re.IGNORECASE)
+
+
+def _parse_investor_list(html, keep_dates):
+    """解析財訊快報分類列表頁 → {articleNo: 標題}。
+    articleNo 固定 14+YYYYMMDD+流水號,只留 keep_dates 內的;同一篇有「標題」與
+    「詳全文」兩個連結,取最長的文字;列表標題固定以「...」結尾(非截斷),去掉。"""
+    out = {}
+    for m in _INVESTOR_ITEM.finditer(html):
+        no, day, raw = m.group(1), m.group(2), m.group(3)
+        if day not in keep_dates:
+            continue
+        txt = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', raw)).strip()
+        txt = re.sub(r'(\.{2,}|…+)$', '', txt).strip()
+        if txt == "詳全文" or not re.search(r'[\u4e00-\u9fff]', txt) or NOISE.search(txt):
+            continue
+        if len(txt) > len(out.get(no, "")):
+            out[no] = txt
+    return out
+
+
+def _fetch_investor():
+    """財訊快報(2026-10-15新增,使用者提供 www.investor.com.tw 要求測試)。
+    GHA 實測:無RSS、robots.txt 全開放、Big5(cp950)編碼;首頁標題會被截斷,改抓
+    分類列表頁(免登入、標題完整):高科技股/傳產股/大中華/國際財經,
+    每類約35個連結、一天合計約40~60則。自家撰稿(非轉載),標題常直接點名
+    台股公司(盛群、事欣科、上品、竣邦-KY),股號比對可命中。
+    只取今天與昨天(台北時間)的標題;內文需會員,不抓。"""
+    import datetime as _dt
+    now = _dt.datetime.now(_dt.timezone(_dt.timedelta(hours=8)))
+    keep = {now.strftime("%Y%m%d"), (now - _dt.timedelta(days=1)).strftime("%Y%m%d")}
+    items = {}
+    for sub, unit in INVESTOR_CATEGORIES:
+        url = INVESTOR_LIST_URL.format(sub=sub, unit=unit)
+        try:
+            r = requests.get(url, headers=UA, timeout=20)
+            if r.status_code != 200:
+                print(f"  ⚠ 財訊快報 {sub} HTTP {r.status_code}")
+                continue
+            r.encoding = "cp950"
+            for no, t in _parse_investor_list(r.text, keep).items():
+                if len(t) > len(items.get(no, "")):
+                    items[no] = t
+        except Exception as e:
+            print(f"  ⚠ 財訊快報 {sub} 抓取失敗: {str(e)[:80]}")
+    seen, uniq = set(), []
+    for no in sorted(items, reverse=True):          # 新的在前
+        t = items[no]
+        if t not in seen:
+            seen.add(t); uniq.append(t)
+    return uniq
+
+
 def _fetch_wallstreetcn():
     """華爾街見聞(2026-09-23新增,補上中國大陸財經媒體這塊地理缺口——
     先前查證DSP晶片缺貨漲價這則消息時發現,源頭是中國大陸財經社群/媒體
@@ -859,6 +916,7 @@ def fetch_titles_by_source():
         "etime_cn": _fetch_etime_cn(),
         "cyclesinvest": _fetch_cyclesinvest(),
         "iek_news": _fetch_iek_news(),
+        "investor": _fetch_investor(),
         "wallstreetcn": _fetch_wallstreetcn(),
         "eetimes_jp": _fetch_eetimes_jp(),
         "edn_jp": _fetch_edn_jp(),
