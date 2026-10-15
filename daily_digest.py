@@ -319,6 +319,11 @@ def build_digest():
         # 2026-10-15:I = 建議加入 themes_watchlist.txt 的詞(人工升格,不會自動加入)
         "I_watchlist_suggestions": wl_sugg.get("suggestions", []),
         "I_paste_block": wl_sugg.get("paste_block", ""),
+        # 共識自動加入(AI片語拆詞=jieba詞,近7日>=2天+鉅亨基數夠):今日已寫入 watchlist 的詞、
+        # 尚未達標的共識候選、加入滿30天未在偵測源1出現的(建議移除,不自動刪)
+        "I_auto_added": wl_sugg.get("auto_added", []),
+        "I_consensus": wl_sugg.get("consensus", []),
+        "I_stale_auto_added": wl_sugg.get("stale_auto_added", []),
     }
 
     # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
@@ -461,7 +466,21 @@ def print_digest(d):
     if up:
         print("  即將舉行:" + "、".join(f"{u['date']} {u['symbol']} {u['event']}" for u in up[:6]))
 
-    print("\n▍I. 建議加入 watchlist(人工升格 — 不會自動寫入 themes_watchlist.txt)")
+    print("\n▍I. Watchlist 自動加入與建議")
+    added = d.get("I_auto_added", [])
+    if added:
+        print("  ✅ 今日自動加入 themes_watchlist.txt(題材源共識):")
+        for a in added:
+            names = a.get("names", {})
+            stk = " ".join(f"{cd}{names.get(cd, '')}" for cd in a.get("stocks", [])[:5])
+            print(f"    {a['term']}  共識{a['consensus_days']}天 ← {'、'.join(a['ai_phrases'][:3])}  "
+                  f"cnyes暴增{a.get('cnyes_ratio')}" + (f"  股:{stk}" if stk else ""))
+    pend = [c for c in d.get("I_consensus", []) if c.get("status") != "auto_added"]
+    if pend:
+        print("  ⏳ 共識候選(未加入):" + "、".join(f"{c['term']}({c['status']})" for c in pend[:8]))
+    for x in d.get("I_stale_auto_added", []):
+        print(f"  🗑 建議移除 {x['term']}(自動加入於 {x['promoted_date']},30天未在暴增/近期關注出現)")
+    print("  ── 以下為分級建議,不會自動寫入 ──")
     sugg = d.get("I_watchlist_suggestions", [])
     if sugg:
         mark = {"strong": "⭐strong", "suggest": "➕suggest", "watch": "👀watch"}

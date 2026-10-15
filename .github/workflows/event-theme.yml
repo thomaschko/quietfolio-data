@@ -66,10 +66,10 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python theme_tracker.py
 
-      # watchlist 建議(2026-10-15新增):theme_tracker 的首見/追蹤中題材分級
-      # (strong/suggest/watch),strong/suggest 前10個查鉅亨基數(src1 能否觸發)。
-      # 只寫 watchlist_suggestions.json,絕不修改 themes_watchlist.txt(人工升格);
-      # 放在 digest 之前,digest 讀成 I 區。不需要 API key。
+      # watchlist 建議與共識自動加入(2026-10-15新增):theme_tracker 的首見/追蹤中題材
+      # 分級(strong/suggest/watch,只列出);AI片語拆詞=jieba詞且近7日>=2天、鉅亨基數
+      # 夠的詞自動附加到 themes_watchlist.txt(每天最多3個,記 theme_promotions.json)。
+      # 放在 theme_tracker 之後、digest 之前,digest 讀成 I 區。不需要 API key。
       - name: Suggest watchlist terms
         continue-on-error: true
         run: python watchlist_suggester.py
@@ -140,6 +140,7 @@ jobs:
           [ -f earnings_keywords.py ] && git add earnings_keywords.py || true
           [ -f us_8k_events.json ] && git add us_8k_events.json || true
           [ -f watchlist_suggestions.json ] && git add watchlist_suggestions.json || true
+          [ -f watchlist_auto_state.json ] && git add watchlist_auto_state.json || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
           [ -f daily_report.json ] && git add daily_report.json || true
           [ -f verification_ledger.json ] && git add verification_ledger.json || true

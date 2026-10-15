@@ -5,6 +5,8 @@ test_watchlist_suggester.py — watchlist_suggester.py 的單元測試(不需網
 用法:python test_watchlist_suggester.py
 鉅亨搜尋以假函式取代;分級/排除規則依任務說明。
 """
+import json
+
 import watchlist_suggester as ws
 from daily_digest import KW_TO_THEME, _method_score
 
@@ -114,6 +116,77 @@ def test_english_kw_to_theme_note():
     sug, _ = by_term(out)
     assert ws.NOTE_NO_KW_THEME not in sug["glass substrate"]["notes"]   # 已在 KW_TO_THEME
     assert ws.NOTE_NO_KW_THEME in sug["Glass Core"]["notes"]
+
+
+def run_state(terms, state, counts=None, date="20261015", promotions=(), event_raw=None):
+    tracker = {"date": date, "ongoing": terms, "first_seen": []}
+    return ws.build(tracker, WATCHLIST, NAME2CODE, STOPWORDS, _method_score, KW_TO_THEME,
+                    now_ts=NOW, window=(RECENT_START, BASE_START),
+                    search=fake_search(counts or {}), state=state,
+                    promotions=list(promotions), event_raw=event_raw)
+
+
+def test_phrase_tokens_no_fake_consensus():
+    assert ws.phrase_tokens("Google TPU架構") == ["Google", "TPU", "架構"]
+    assert ws.phrase_tokens("AI晶片/自研ASIC") == ["AI", "晶片", "自研", "ASIC"]
+    entries = [T("AI晶片/自研ASIC", "ai"), T("IC", "jieba", 9), T("先進封裝CoWoS", "ai"), T("OS", "jieba", 9),
+               T("機器人/自動化", "ai"), T("自動化", "jieba", 9), T("Google TPU架構", "ai"), T("TPU", "jieba", 3)]
+    cons = ws.consensus_today(entries, _method_score, STOPWORDS)
+    assert list(cons) == ["TPU"] and cons["TPU"]["ai_phrases"] == ["Google TPU架構"]
+
+
+def test_consensus_needs_two_days_and_cnyes():
+    day1 = [T("Google TPU架構", "ai"), T("TPU", "jieba", 3)]
+    state = {}
+    out = run_state(day1, state, counts={"TPU": (5, 6)}, date="20261014")
+    assert out["auto_added"] == [] and out["consensus"][0]["status"].startswith("pending:共識1天")
+    day2 = [T("Google TPU算力生態", "ai"), T("TPU", "jieba", 4)]      # 隔天 AI 措辭不同,拆詞仍相同
+    out = run_state(day2, state, counts={"TPU": (5, 6)}, date="20261015")
+    assert [a["term"] for a in out["auto_added"]] == ["TPU"]
+    assert out["auto_added"][0]["consensus_days"] == 2 and out["auto_added"][0]["source"] == "consensus"
+    assert "TPU" not in [s["term"] for s in out["suggestions"]]
+
+
+def test_consensus_low_base_or_unknown_not_added():
+    hist = {"consensus_history": {"20261014": ["TPU", "CXL"]}}
+    terms = [T("Google TPU架構", "ai"), T("TPU", "jieba", 3), T("CXL記憶體擴充", "ai"), T("CXL", "jieba", 3)]
+    out = run_state(terms, json.loads(json.dumps(hist)), counts={"TPU": (5, 1), "CXL": (5, 6)})
+    st = {c["term"]: c["status"] for c in out["consensus"]}
+    assert st["TPU"] == "rejected:cnyes基數不足" and st["CXL"] == "auto_added"
+    out = run_state(terms, json.loads(json.dumps(hist)), counts={})       # 鉅亨全部0則 → 不加
+    assert out["auto_added"] == [] and all(c["status"].startswith("pending:cnyes") for c in out["consensus"])
+
+
+def test_consensus_daily_cap_and_overlap():
+    names = ["AAA", "BBB", "CCC", "DDD"]
+    terms, hist = [], {"consensus_history": {"20261014": names + ["HVDC800"]}}
+    for n in names + ["HVDC800"]:
+        terms += [T(f"{n}供應鏈題材", "ai"), T(n, "jieba", 3)]
+    out = run_state(terms, hist, counts={n: (5, 6) for n in names + ["HVDC800"]})
+    assert len(out["auto_added"]) == ws.AUTO_ADD_MAX_PER_DAY
+    st = {c["term"]: c["status"] for c in out["consensus"]}
+    assert st["HVDC800"] == "rejected:overlaps:HVDC"
+    assert sum(1 for v in st.values() if "上限" in v) == 1
+
+
+def test_stale_auto_added():
+    promos = [{"term": "TPU", "promoted_date": "20260901", "source": "consensus"},
+              {"term": "CXL", "promoted_date": "20260901", "source": "consensus"},
+              {"term": "光模組", "promoted_date": "20260901", "source": ""}]       # theme_tracker 升格的不管
+    state = {"last_triggered": {"cxl": "20261010"}}
+    out = run_state([], state, promotions=promos, event_raw={"themes": [], "near_miss_themes": []})
+    assert [x["term"] for x in out["stale_auto_added"]] == ["TPU"]
+    run_state([], state, promotions=promos, event_raw={"themes": [{"theme": "TPU", "source": "關鍵字暴增"}]})
+    assert state["last_triggered"]["tpu"] == "20261015"
+
+
+def test_append_to_watchlist(tmp="test_wl_tmp.txt"):
+    import os
+    open(tmp, "w", encoding="utf-8").write("# 註解\nHVDC\n")
+    ws.append_to_watchlist(["TPU", "CXL"], "20261015", path=tmp)
+    lines = open(tmp, encoding="utf-8").read().splitlines()
+    os.remove(tmp)
+    assert lines[:2] == ["# 註解", "HVDC"] and lines[-2:] == ["TPU", "CXL"] and lines[-3].startswith("# ── 共識自動加入")
 
 
 def test_watchlist_file_untouched():

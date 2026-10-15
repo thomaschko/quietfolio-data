@@ -6,8 +6,15 @@ watchlist_suggester.py — 每日題材 → watchlist 建議(2026-10-15 新增)
 從 theme_tracker.json(首見 + 連續追蹤中)產出「建議加入 themes_watchlist.txt」
 的分級清單,寫成 watchlist_suggestions.json,daily_digest.py 讀成 I 區。
 
-系統原則:人工升格。本程式**只讀** themes_watchlist.txt,絕不修改它;
-要加入的詞由使用者看過 I 區後自行貼上(paste_block)。
+分兩部分:
+  (1) 分級建議(strong/suggest/watch + paste_block):只列出,由使用者自行貼上。
+  (2) 共識自動加入(2026-10-15 使用者決定):AI 語意萃取的題材片語拆成詞後,
+      跟 jieba 斷詞抓到的詞「完全相同」,且近7日有 >=2 天如此,再通過排除規則與
+      鉅亨基數檢查,才自動附加到 themes_watchlist.txt(每天最多3個,記
+      theme_promotions.json,source="consensus")。加入滿30天都沒在偵測源1
+      暴增/近期關注出現過的,列為「建議移除」(不自動刪)。
+      為何不用「字串完全相同」:9/16~10/14 實測27天,AI 給「客製化晶片ASIC」這類
+      每天措辭不同的片語、jieba 給「ASIC」這類單詞,兩邊完全相同的次數是0。
 
 執行順序(event-theme.yml):theme_tracker.py → watchlist_suggester.py → daily_digest.py
 
@@ -20,6 +27,7 @@ watchlist_suggester.py — 每日題材 → watchlist 建議(2026-10-15 新增)
      前段日均與暴增比;前段日均 < 0.15 時 src1 的 enough_base 防護會擋掉,
      加入後暫時不會觸發 → cnyes_viable=False(仍保留,加註)
   5. 英文詞若不在 daily_digest.KW_TO_THEME,加註提醒補對應
+  6. 共識自動加入(見上);狀態存 watchlist_auto_state.json
 ============================================================
 """
 import re
@@ -39,6 +47,20 @@ CNYES_SLEEP = 0.3
 MIN_EARLIER_DAILY = 0.15     # = event_theme_radar.detect_fixed_keywords 的 enough_base 門檻
 JIEBA_SUGGEST_STREAK = 5     # 純 jieba 連續幾天才建議
 TIER_ORDER = {"strong": 0, "suggest": 1, "watch": 2}
+
+# ── 共識自動加入 ──
+STATE_FILE = "watchlist_auto_state.json"
+PROMOTE_LOG_FILE = "theme_promotions.json"   # 與 theme_tracker.py 自動升格共用的稽核日誌
+CONSENSUS_WINDOW_DAYS = 7    # 近幾個日曆天內
+CONSENSUS_MIN_DAYS = 2       # 至少幾天出現共識(含今天)
+AUTO_ADD_MAX_PER_DAY = 3
+STALE_DAYS = 30              # 自動加入後幾天沒在偵測源1出現 → 建議移除
+STATE_KEEP_DAYS = 21
+MIN_TOKEN_LEN = 3            # 拆出的詞至少3字元(擋掉 AI/PC/IC/OS 這類會假共識的短詞)
+# 拆詞後太泛、不當題材的詞(實測 9/16~10/14 出現過的假共識:自動化/新能源/伺服器/企業級)
+GENERIC_TOKENS = {"自動化", "新能源", "伺服器", "企業級", "供應鏈", "半導體", "半导体", "概念股",
+                  "下一代", "新一代", "投資人", "生態系", "規格", "供需", "材料", "架構", "升級",
+                  "漲價潮", "算力", "晶片", "產業", "應用", "技術", "市場", "需求"}
 TIER_MARK = {"strong": "⭐strong", "suggest": "➕suggest", "watch": "👀watch"}
 
 NOTE_CNYES_LOW = "cnyes基數不足，加入後src1暫時不會觸發"
@@ -162,16 +184,109 @@ def cnyes_stats(term, now_ts, recent_start, base_start, search):
 
 
 # ============================================================
+# 共識(AI 片語拆詞 = jieba 詞)
+# ============================================================
+def phrase_tokens(phrase):
+    """「Google TPU架構」→ [Google, TPU, 架構];「AI晶片/自研ASIC」→ [AI, 晶片, 自研, ASIC]。"""
+    out = []
+    for part in re.split(r"[/、與及和&+,，\s()（）]+", phrase or ""):
+        out += re.findall(r"[A-Za-z][A-Za-z0-9.\-]*|[0-9.]+[A-Za-z]+[A-Za-z0-9.\-]*|[\u4e00-\u9fff]+", part)
+    return out
+
+
+def consensus_today(entries, method_score, stopwords):
+    """回傳 {token: {"term": jieba 原字, "ai_phrases": [...], "hits", "stocks", "names"}}。"""
+    jieba = {}
+    for e in entries:
+        if "jieba" in (e.get("method") or "jieba"):
+            jieba.setdefault(e["term"].lower(), e)
+    out = {}
+    for e in entries:
+        if not ai_backed(e.get("method"), method_score):
+            continue
+        for tok in phrase_tokens(e["term"]):
+            low = tok.lower()
+            if (len(tok) < MIN_TOKEN_LEN or low in stopwords or tok in GENERIC_TOKENS
+                    or low not in jieba):
+                continue
+            j = jieba[low]
+            c = out.setdefault(j["term"], {"term": j["term"], "ai_phrases": [], "hits": j.get("hits") or 0,
+                                           "stocks": j.get("stocks") or [], "names": j.get("names") or {}})
+            if e["term"] not in c["ai_phrases"]:
+                c["ai_phrases"].append(e["term"])
+    return out
+
+
+def _d(s):
+    return dt.datetime.strptime(s, "%Y%m%d").date()
+
+
+def consensus_days(term, today, history):
+    """近 CONSENSUS_WINDOW_DAYS 個日曆天(含今天)有幾天出現共識。"""
+    t0 = _d(today)
+    return sum(1 for day, terms in history.items()
+               if 0 <= (t0 - _d(day)).days < CONSENSUS_WINDOW_DAYS
+               and term.lower() in {x.lower() for x in terms})
+
+
+def update_last_triggered(state, today, event_raw):
+    """偵測源1 今天暴增或近期關注的詞 → 記錄日期(判斷自動加入的詞有沒有在用)。"""
+    lt = state.setdefault("last_triggered", {})
+    for t in (event_raw or {}).get("themes", []):
+        if t.get("theme") and t.get("source") not in ("wiki", "MOPS"):
+            lt[t["theme"].lower()] = today
+    for t in (event_raw or {}).get("near_miss_themes", []):
+        if t.get("theme"):
+            lt[t["theme"].lower()] = today
+
+
+def stale_auto_added(state, today, promotions):
+    lt = state.get("last_triggered", {})
+    out = []
+    for p in promotions:
+        if p.get("source") != "consensus":
+            continue
+        age = (_d(today) - _d(p["promoted_date"])).days
+        last = lt.get(p["term"].lower())
+        if age >= STALE_DAYS and (last is None or (_d(today) - _d(last)).days >= STALE_DAYS):
+            out.append({"term": p["term"], "promoted_date": p["promoted_date"], "last_triggered": last})
+    return out
+
+
+# ============================================================
 # 主流程
 # ============================================================
 def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
-          now_ts=None, window=None, search=None):
-    """window = (recent_start_ts, base_start_ts);search=None 時不查鉅亨(測試用)。"""
+          now_ts=None, window=None, search=None, state=None, promotions=None, event_raw=None):
+    """window = (recent_start_ts, base_start_ts);search=None 時不查鉅亨(測試用)。
+    state 會被就地更新(共識歷史、偵測源1觸發日);回傳的 auto_added 由 main() 寫入 watchlist。"""
     now_ts = now_ts or int(time.time())
     kw_lower = {k.lower() for k in kw_to_theme}
     suggestions, rejected = [], []
+    state = state if state is not None else {}
+    today = tracker.get("date") or dt.date.today().strftime("%Y%m%d")
+    entries = merge_terms(tracker)
 
-    for e in merge_terms(tracker):
+    # ── 共識:今天的拆詞共識寫進歷史,再算近7日天數 ──
+    cons = consensus_today(entries, method_score, stopwords)
+    hist = state.setdefault("consensus_history", {})
+    hist[today] = sorted(cons)
+    for day in [d for d in hist if (_d(today) - _d(d)).days >= STATE_KEEP_DAYS]:
+        del hist[day]
+    consensus = []
+    for term, c in cons.items():
+        c = {**c, "consensus_days": consensus_days(term, today, hist),
+             "cnyes_recent": None, "cnyes_earlier_daily": None, "cnyes_ratio": None,
+             "cnyes_viable": None, "status": None}
+        why = reject_reason(term, watchlist, name2code, stopwords)
+        if why:
+            c["status"] = f"rejected:{why}"
+        elif c["consensus_days"] < CONSENSUS_MIN_DAYS:
+            c["status"] = f"pending:共識{c['consensus_days']}天(需{CONSENSUS_MIN_DAYS}天)"
+        consensus.append(c)
+    consensus.sort(key=lambda c: (-c["consensus_days"], -c["hits"]))
+
+    for e in entries:
         term = e["term"]
         why = reject_reason(term, watchlist, name2code, stopwords)
         if why:
@@ -195,9 +310,12 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
             s["notes"].append(NOTE_NO_KW_THEME)
         suggestions.append(s)
 
-    # 鉅亨檢查:strong + suggest 依 tier → 連續天數 → 次數 排序後取前 N 個
-    to_check = sorted([s for s in suggestions if s["tier"] in ("strong", "suggest")],
-                      key=lambda s: (TIER_ORDER[s["tier"]], -s["streak_days"], -s["hits"]))
+    # 鉅亨檢查:共識候選優先,再來 strong + suggest(依 tier → 連續天數 → 次數),合計前 N 個
+    cons_check = [c for c in consensus if c["status"] is None]
+    to_check = cons_check + sorted([s for s in suggestions if s["tier"] in ("strong", "suggest")],
+                                   key=lambda s: (TIER_ORDER[s["tier"]], -s["streak_days"], -s["hits"]))
+    for s in to_check:
+        s.setdefault("notes", [])
     checked = empty = 0
     for i, s in enumerate(to_check):
         if search is None or window is None:
@@ -222,6 +340,27 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
                 s["cnyes_viable"] = None
                 s["notes"] = [n for n in s["notes"] if n != NOTE_CNYES_LOW] + ["cnyes查詢全部0則(疑似連線失敗),可用性未知"]
 
+    # ── 共識自動加入:鉅亨基數夠才加;鉅亨疑似連不上的那天一律不加 ──
+    auto_added = []
+    for c in cons_check:
+        if c["cnyes_viable"] is True and len(auto_added) < AUTO_ADD_MAX_PER_DAY:
+            c["status"] = "auto_added"
+            auto_added.append({"term": c["term"], "promoted_date": today, "source": "consensus",
+                               "consensus_days": c["consensus_days"], "ai_phrases": c["ai_phrases"],
+                               "cnyes_earlier_daily": c["cnyes_earlier_daily"], "cnyes_ratio": c["cnyes_ratio"],
+                               "stocks": c["stocks"], "names": c["names"]})
+        elif c["cnyes_viable"] is True:
+            c["status"] = f"pending:超過每日{AUTO_ADD_MAX_PER_DAY}個上限"
+        elif c["cnyes_viable"] is False:
+            c["status"] = "rejected:cnyes基數不足"
+        else:
+            c["status"] = "pending:cnyes未查或可用性未知"
+    added_low = {a["term"].lower() for a in auto_added}
+    suggestions = [s for s in suggestions if s["term"].lower() not in added_low]
+
+    update_last_triggered(state, today, event_raw)
+    stale = stale_auto_added(state, today, list(promotions or []) + auto_added)
+
     viable_rank = {True: 0, None: 1, False: 2}
     suggestions.sort(key=lambda s: (TIER_ORDER[s["tier"]], viable_rank[s["cnyes_viable"]],
                                     -s["streak_days"], -s["hits"]))
@@ -237,7 +376,29 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
         "suggestions": suggestions,
         "rejected": rejected,
         "paste_block": "\n".join(paste),
+        "consensus": consensus,
+        "auto_added": auto_added,
+        "stale_auto_added": stale,
     }
+
+
+def append_to_watchlist(terms, today, path=WATCHLIST_FILE):
+    """附加到 watchlist 末端(不改動既有內容)。"""
+    if not terms:
+        return
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(f"\n# ── 共識自動加入 {today}(AI片語拆詞=jieba詞,近{CONSENSUS_WINDOW_DAYS}日>="
+                f"{CONSENSUS_MIN_DAYS}天;watchlist_suggester.py,見theme_promotions.json)──\n")
+        for t in terms:
+            f.write(f"{t}\n")
+
+
+def _load(path, default):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return default
 
 
 def main():
@@ -271,8 +432,19 @@ def main():
     if not name2code:
         print("  ⚠ 股名對照為空,本次無法排除公司名")
 
+    state = _load(STATE_FILE, {})
+    promotions = _load(PROMOTE_LOG_FILE, [])
+    event_raw = _load("event_theme_raw.json", {})
     out = build(tracker, watchlist, name2code, stopwords, _method_score, KW_TO_THEME,
-                now_ts=now_ts, window=window, search=search)
+                now_ts=now_ts, window=window, search=search,
+                state=state, promotions=promotions, event_raw=event_raw)
+    today = tracker.get("date") or dt.date.today().strftime("%Y%m%d")
+    if out["auto_added"]:
+        append_to_watchlist([a["term"] for a in out["auto_added"]], today)
+        with open(PROMOTE_LOG_FILE, "w", encoding="utf-8") as f:
+            json.dump(promotions + out["auto_added"], f, ensure_ascii=False, indent=2)
+    with open(STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(state, f, ensure_ascii=False, indent=2)
     with open(OUT_FILE, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
 
@@ -285,7 +457,14 @@ def main():
         if s["tier"] != "watch":
             print(f"    {TIER_MARK[s['tier']]} {s['term']} 連{s['streak_days']}天 "
                   f"暴增比{s['cnyes_ratio']} 前段日均{s['cnyes_earlier_daily']} {'、'.join(s['notes'])}")
-    print(f"→ {OUT_FILE} 已寫出(themes_watchlist.txt 未修改)")
+    print(f"  共識候選 {len(out['consensus'])}:")
+    for c in out["consensus"]:
+        print(f"    {c['term']} 共識{c['consensus_days']}天 ← {'、'.join(c['ai_phrases'])}  {c['status']}")
+    if out["auto_added"]:
+        print(f"  ✅ 自動加入 themes_watchlist.txt:{'、'.join(a['term'] for a in out['auto_added'])}")
+    for x in out["stale_auto_added"]:
+        print(f"  🗑 建議移除 {x['term']}(加入於 {x['promoted_date']},{STALE_DAYS}天未在偵測源1出現)")
+    print(f"→ {OUT_FILE}、{STATE_FILE} 已寫出")
 
 
 RECENT_DAYS, BASELINE_DAYS = 3, 20   # 由 main() 改用 event_theme_radar 的值
