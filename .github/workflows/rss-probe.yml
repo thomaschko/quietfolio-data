@@ -21,7 +21,7 @@ jobs:
       - name: Install deps
         run: pip install requests
 
-      - name: Run RSS probe
+      - name: Run MIC news probe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python google_news_us_probe.py
+        run: python mic_news_probe.py
