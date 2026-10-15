@@ -69,6 +69,27 @@ GENERIC_TOKENS = {"自動化", "新能源", "伺服器", "企業級", "供應鏈
 TIER_MARK = {"strong": "⭐strong", "suggest": "➕suggest", "watch": "👀watch"}
 
 NOTE_CNYES_LOW = "cnyes基數不足，加入後src1暫時不會觸發"
+NOTE_CNYES_TRUNC = "cnyes新聞量過大(抓滿頁數仍未到基線期),數字不可信;通常代表詞太泛"
+NOTE_JIEBA_NO_PASTE = "純jieba,不列入可貼上清單"
+CNYES_PAGE_SIZE = 20         # 鉅亨搜尋每頁筆數(10/15 實跑:CEO/投資人 5 頁剛好 100 則)
+
+# 2026-10-15:股名對照(TWSE/TPEx 官方簡稱)以外的公司名。10/15 實跑漏網:日月光(官方簡稱
+# 日月光投控,另以「前綴」規則涵蓋)、海力士/格羅方德(外國公司)、Marvell/Broadcom/ASML。
+# 另會併入 investor_events.SEARCH_NAMES 的美股代號與英文名。
+FOREIGN_COMPANY_NAMES = {
+    "海力士", "sk海力士", "三星", "三星電子", "格羅方德", "英特爾", "輝達", "超微", "博通", "美光",
+    "高通", "蘋果", "微軟", "谷歌", "亞馬遜", "特斯拉", "艾司摩爾", "應材", "應用材料", "科磊",
+    "科林研發", "東京威力", "鎧俠", "長江存儲", "長鑫存儲", "中芯", "中芯國際", "華為", "小米",
+    "邁威爾", "安謀", "甲骨文", "思科", "戴爾", "超微電腦", "美超微", "新思", "益華", "西門子",
+    "索尼", "鴻海精密", "三菱", "日立", "東芝", "瑞薩", "英飛凌", "恩智浦", "意法半導體", "德儀",
+    "nvidia", "amd", "intel", "micron", "qualcomm", "apple", "microsoft", "google", "alphabet",
+    "amazon", "meta", "tesla", "tsmc", "samsung", "sk hynix", "hynix", "globalfoundries",
+    "marvell", "broadcom", "asml", "applied materials", "lam research", "kla", "tokyo electron",
+    "kioxia", "smic", "huawei", "xiaomi", "arm", "oracle", "cisco", "dell", "supermicro",
+    "synopsys", "cadence", "openai", "anthropic", "sony", "infineon", "nxp", "stmicro",
+    "texas instruments", "coherent", "lumentum", "arista", "credo", "astera labs", "ciena", "vertiv",
+}
+MIN_PREFIX_NAME_LEN = 3      # 「日月光」是「日月光投控」的前綴 → 公司名(至少3字才比,避免短詞誤判)
 NOTE_NO_KW_THEME = "G區無對應，加入後建議同步補 KW_TO_THEME"
 
 _CJK = re.compile(r"[㐀-鿿豈-﫿]")
@@ -138,7 +159,10 @@ def reject_reason(term, watchlist, name2code, stopwords):
         for wl_low, wl in watchlist.items():
             if len(wl) >= MIN_OVERLAP_LEN and (wl_low in low or low in wl_low):
                 return f"overlaps:{wl}"
-    if term in name2code or low in name2code:
+    if term in name2code or low in name2code or low in FOREIGN_COMPANY_NAMES:
+        return "is_company_name"
+    if (len(term) >= MIN_PREFIX_NAME_LEN and _CJK.search(term)
+            and any(k.startswith(term) for k in name2code)):
         return "is_company_name"
     if is_noise(term, stopwords):
         return "noise"
@@ -183,9 +207,13 @@ def cnyes_stats(term, now_ts, recent_start, base_start, search):
     earlier = [n for n in news if n["publishAt"] < recent_start]
     earlier_daily = len(earlier) / (BASELINE_DAYS - RECENT_DAYS) if earlier else 0.01
     ratio = round(recent_daily / earlier_daily, 2) if earlier_daily else 999
+    # 抓滿頁數仍沒抓到基線期起點 → 前段被截斷,暴增比與前段日均都不可信,可用性標未知
+    truncated = (len(news) >= CNYES_MAX_PAGES * CNYES_PAGE_SIZE
+                 and min(n["publishAt"] for n in news) > base_start + 86400)
     return {"cnyes_recent": len(recent), "cnyes_earlier_daily": round(earlier_daily, 3),
-            "cnyes_ratio": ratio, "cnyes_viable": earlier_daily >= MIN_EARLIER_DAILY,
-            "_n_news": len(news)}
+            "cnyes_ratio": ratio,
+            "cnyes_viable": None if truncated else earlier_daily >= MIN_EARLIER_DAILY,
+            "cnyes_truncated": truncated, "_n_news": len(news)}
 
 
 # ============================================================
@@ -282,7 +310,7 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
     for term, c in cons.items():
         c = {**c, "consensus_days": consensus_days(term, today, hist),
              "cnyes_recent": None, "cnyes_earlier_daily": None, "cnyes_ratio": None,
-             "cnyes_viable": None, "status": None}
+             "cnyes_viable": None, "cnyes_truncated": None, "status": None}
         why = reject_reason(term, watchlist, name2code, stopwords)
         if why:
             c["status"] = f"rejected:{why}"
@@ -307,7 +335,7 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
             "reason": e.get("reason") or "", "stocks": e.get("stocks") or [],
             "names": e.get("names") or {},
             "cnyes_recent": None, "cnyes_earlier_daily": None, "cnyes_ratio": None,
-            "cnyes_viable": None, "notes": [note] if note else [],
+            "cnyes_viable": None, "cnyes_truncated": None, "notes": [note] if note else [],
         }
         if "confidence" in e:
             s["confidence"] = e["confidence"]
@@ -333,7 +361,9 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
         checked += 1
         empty += st.pop("_n_news") == 0
         s.update(st)
-        if not s["cnyes_viable"]:
+        if s["cnyes_truncated"]:
+            s["notes"].append(NOTE_CNYES_TRUNC)
+        elif not s["cnyes_viable"]:
             s["notes"].append(NOTE_CNYES_LOW)
         time.sleep(CNYES_SLEEP)
 
@@ -369,8 +399,16 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
     viable_rank = {True: 0, None: 1, False: 2}
     suggestions.sort(key=lambda s: (TIER_ORDER[s["tier"]], viable_rank[s["cnyes_viable"]],
                                     -s["streak_days"], -s["hits"]))
-    paste = [s["term"] for s in suggestions
-             if s["tier"] in ("strong", "suggest") and s["cnyes_viable"] is True]
+    # 2026-10-15:純 jieba 的詞不列入可貼上清單(10/15 實跑列出 CEO/概念股/下一代/美債殖 等泛詞,
+    # 這些詞鉅亨新聞量本來就大,基數檢查擋不住);只放 AI/主動搜尋背書的詞
+    paste = []
+    for s in suggestions:
+        if s["tier"] not in ("strong", "suggest") or s["cnyes_viable"] is not True:
+            continue
+        if ai_backed(s["method"], method_score):
+            paste.append(s["term"])
+        else:
+            s["notes"].append(NOTE_JIEBA_NO_PASTE)
     return {
         "generated_at": dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "version": VERSION,
@@ -436,6 +474,11 @@ def main():
         STOPWORDS = set()
     stopwords = {w.lower() for w in STOPWORDS}
 
+    try:
+        from investor_events import SEARCH_NAMES
+        FOREIGN_COMPANY_NAMES.update(x.lower() for kv in SEARCH_NAMES.items() for x in kv)
+    except Exception as e:
+        print(f"  ⚠ 美股公司名單載入失敗(只用內建清單): {e}")
     tracker = load_tracker()
     watchlist = load_watchlist()
     print(f"  theme_tracker {tracker.get('date')}: 追蹤中 {len(tracker.get('ongoing') or [])}"
