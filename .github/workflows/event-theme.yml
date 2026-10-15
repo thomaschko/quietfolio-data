@@ -59,12 +59,23 @@ jobs:
       # 疊加每日其他Gemini呼叫容易撞429),且「新興題材」本來就不需要天天查,改每週一次。
 
       # 題材追蹤:整合三個候選來源(主動搜尋+AI萃取+jieba),分辨今日首見vs連續追蹤中
-      # 含自動升格進watchlist、國際大廠反查自動升格進src6(都需GEMINI_API_KEY)
+      # 2026-10-15:自動升格進watchlist已關閉,改由下一步 watchlist_suggester 共識自動加入
       - name: Track theme history
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python theme_tracker.py
+
+      # watchlist 建議與共識自動加入(2026-10-15新增):theme_tracker 的首見/追蹤中題材
+      # 分級(strong/suggest/watch,只列出);AI片語拆詞=jieba詞且近7日>=2天、鉅亨基數
+      # 夠的詞自動附加到 themes_watchlist.txt(每天最多3個,記 theme_promotions.json)。
+      # 放在 theme_tracker 之後、digest 之前,digest 讀成 I 區。不需要 API key。
+      # 共識自動加入的詞,7天內每天做國際大廠反查(Gemini),連續3天同一家才加進src6
+      - name: Suggest watchlist terms
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python watchlist_suggester.py
 
       # 每日摘要整合:匯整 src1-6 輸出成 daily_digest.json(A-G區)
       # 價量階段標籤(2026-10-06新增):抓全市場收盤價+成交量存快照,
@@ -131,6 +142,8 @@ jobs:
           [ -f themes_watchlist.txt ] && git add themes_watchlist.txt || true
           [ -f earnings_keywords.py ] && git add earnings_keywords.py || true
           [ -f us_8k_events.json ] && git add us_8k_events.json || true
+          [ -f watchlist_suggestions.json ] && git add watchlist_suggestions.json || true
+          [ -f watchlist_auto_state.json ] && git add watchlist_auto_state.json || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
           [ -f daily_report.json ] && git add daily_report.json || true
           [ -f verification_ledger.json ] && git add verification_ledger.json || true
