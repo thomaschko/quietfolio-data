@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-15 18:05:14",
+ "generated_at": "2026-10-15 21:45:15",
  "date": "20261015",
  "events": [
   {
@@ -7,24 +7,19 @@
    "symbol": "MRVL",
    "name": "Marvell",
    "event": "Investor Day",
-   "event_date": "2026-10-09",
-   "day_offset": 6,
+   "event_date": "2026-10-10",
+   "day_offset": 5,
    "date_inferred": true,
-   "news_count": 5,
+   "news_count": 4,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "Marvell Investor Day 2026 Targets $80B FY 2031 Revenue With Custom Silicon and Optics - The Futurum Group",
     "Marvell Investor Day 2026: An $80B Bet on Connectivity, With Scale-Up Optics the Only Variable Starting From Zero - Simple Tech and Trend",
     "Jefferies Semiconductor Weekly: Recap of Marvell Analyst Day, Preview of OCP Summit, and Updates on AMD’s Investment in Taiwan - 富途牛牛",
     "Unpacking Marvell's Analyst Day, OpenAI Revenue Rumors, and the Heterogeneous Rack｜The Circuit - finance.biggo.com",
     "Marvell's Accounting Chief Trims Stake as Investor Day Sets a $90 Billion Horizon - ad-hoc-news.de"
    ],
    "keywords": {
-    "custom silicon": {
-     "count": 2,
-     "category": "客戶capex/需求"
-    },
     "scale-up": {
      "count": 2,
      "category": "互連/網通"
@@ -83,37 +78,45 @@
    "event": "OCP Global Summit",
    "event_date": null,
    "day_offset": null,
-   "news_count": 49,
+   "news_count": 53,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
+    "OCP Global Summit 2026: IDC Raises 2029 Forecast for OCP-Recognized Infrastructure Spending by 2.7x to $800 Billion - StorageNewsletter - StorageNewsletter",
     "MSI Showcases Open Data Center and AI Infrastructure at 2026 OCP Global Summit - Yahoo Finance",
-    "OCP Global Summit 2026: Giga Computing Proves Rack-Scale Architecture is Enabling AI and Cloud Data Flourish - StorageNewsletter",
-    "LITEON Showcases NVIDIA 800 VDC Architecture and Thermal Management Portfolio at OCP Global Summit 2026 - PR Newswire",
-    "Pegatron showcases rack-scale AI infrastructure at OCP Global Summit - digitimes",
-    "Wiwynn Brings Vera Rubin NVL72, AMD Helios Racks to OCP Global Summit - Unite.AI",
-    "CyberTAN Unveils Pallas Series Liquid-Cooled 102.4 Tbps Ethernet Switch Platform Blueprint at OCP Global Summit 2026 - Morningstar"
+    "Wistron Showcases at 2026 OCP Global Summit - PR Newswire",
+    "Supermicro Arm AGI CPU Liquid-Cooled Rack at OCP Global Summit 2026 - YouTube",
+    "OCP Global Summit 2026: Credo Unveils 1.6T ZeroFlap Active Light Cable, Industry's First Row-Scale, Wide-Parallel Optical Interconnect for AI Data Centers - Sto",
+    "Pegatron showcases rack-scale AI infrastructure at OCP Global Summit - digitimes"
    ],
    "keywords": {
     "AI infrastructure": {
-     "count": 26,
+     "count": 22,
      "category": "客戶capex/需求"
     },
     "optical": {
-     "count": 12,
+     "count": 14,
      "category": "光通訊/CPO"
+    },
+    "optical interconnect": {
+     "count": 8,
+     "category": "互連/網通"
+    },
+    "data center": {
+     "count": 6,
+     "category": "客戶capex/需求"
     },
     "Ethernet switch": {
      "count": 6,
      "category": "平台/網通/供應鏈"
     },
-    "optical interconnect": {
-     "count": 6,
-     "category": "互連/網通"
-    },
-    "data center": {
+    "1.6T": {
      "count": 4,
-     "category": "客戶capex/需求"
+     "category": "光通訊/CPO"
+    },
+    "thermal management": {
+     "count": 4,
+     "category": "資料中心電源"
     },
     "PCIe": {
      "count": 4,
@@ -127,10 +130,6 @@
      "count": 4,
      "category": "記憶體"
     },
-    "thermal management": {
-     "count": 2,
-     "category": "資料中心電源"
-    },
     "Vera Rubin": {
      "count": 2,
      "category": "平台/網通/供應鏈"
@@ -142,10 +141,6 @@
     "liquid cooling": {
      "count": 2,
      "category": "資料中心電源"
-    },
-    "1.6T": {
-     "count": 2,
-     "category": "光通訊/CPO"
     }
    }
   },
@@ -156,7 +151,7 @@
    "event": "SEMICON West",
    "event_date": null,
    "day_offset": null,
-   "news_count": 21,
+   "news_count": 20,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
@@ -194,15 +189,6 @@
    "label": "MRVL(Investor Day)",
    "event": "Investor Day",
    "type": "investor_day",
-   "keyword": "custom silicon",
-   "category": "客戶capex/需求",
-   "count": 2
-  },
-  {
-   "symbol": "MRVL",
-   "label": "MRVL(Investor Day)",
-   "event": "Investor Day",
-   "type": "investor_day",
    "keyword": "scale-up",
    "category": "互連/網通",
    "count": 2
@@ -232,7 +218,7 @@
    "type": "conference",
    "keyword": "AI infrastructure",
    "category": "客戶capex/需求",
-   "count": 26
+   "count": 22
   },
   {
    "symbol": "OCP Global Summit",
@@ -241,7 +227,25 @@
    "type": "conference",
    "keyword": "optical",
    "category": "光通訊/CPO",
-   "count": 12
+   "count": 14
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "optical interconnect",
+   "category": "互連/網通",
+   "count": 8
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "data center",
+   "category": "客戶capex/需求",
+   "count": 6
   },
   {
    "symbol": "OCP Global Summit",
@@ -257,17 +261,17 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "optical interconnect",
-   "category": "互連/網通",
-   "count": 6
+   "keyword": "1.6T",
+   "category": "光通訊/CPO",
+   "count": 4
   },
   {
    "symbol": "OCP Global Summit",
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "data center",
-   "category": "客戶capex/需求",
+   "keyword": "thermal management",
+   "category": "資料中心電源",
    "count": 4
   },
   {
@@ -302,15 +306,6 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "thermal management",
-   "category": "資料中心電源",
-   "count": 2
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
    "keyword": "Vera Rubin",
    "category": "平台/網通/供應鏈",
    "count": 2
@@ -331,15 +326,6 @@
    "type": "conference",
    "keyword": "liquid cooling",
    "category": "資料中心電源",
-   "count": 2
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "1.6T",
-   "category": "光通訊/CPO",
    "count": 2
   },
   {
