@@ -189,6 +189,13 @@ def test_append_to_watchlist(tmp="test_wl_tmp.txt"):
     assert lines[:2] == ["# 註解", "HVDC"] and lines[-2:] == ["TPU", "CXL"] and lines[-3].startswith("# ── 共識自動加入")
 
 
+def test_recent_consensus_themes_for_reverse_lookup():
+    promos = [{"term": "TPU", "promoted_date": "20261010", "source": "consensus", "ai_phrases": ["Google TPU架構"]},
+              {"term": "CXL", "promoted_date": "20261001", "source": "consensus"},           # 超過7天
+              {"term": "光模組", "promoted_date": "20261014", "source": ""}]                 # 非共識
+    assert ws.recent_consensus_themes(promos, "20261015") == [{"term": "TPU", "reason": "Google TPU架構"}]
+
+
 def test_watchlist_file_untouched():
     import hashlib
     h = hashlib.md5(open(ws.WATCHLIST_FILE, "rb").read()).hexdigest()

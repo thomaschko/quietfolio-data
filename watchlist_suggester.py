@@ -56,6 +56,11 @@ CONSENSUS_MIN_DAYS = 2       # 至少幾天出現共識(含今天)
 AUTO_ADD_MAX_PER_DAY = 3
 STALE_DAYS = 30              # 自動加入後幾天沒在偵測源1出現 → 建議移除
 STATE_KEEP_DAYS = 21
+# 國際大廠反查(沿用 theme_tracker.reverse_lookup_and_promote_companies):
+# 共識自動加入後的7天內每天反查一次,同一家美股公司連續3天被反查到才加進 src6 COMPANIES。
+# (原本 theme_tracker 只在升格當天反查一次,連續3天的門檻永遠達不到。)
+REVERSE_LOOKUP_DAYS = 7
+REVERSE_LOOKUP_MAX = 5       # 每天最多反查幾個題材(Gemini 額度)
 MIN_TOKEN_LEN = 3            # 拆出的詞至少3字元(擋掉 AI/PC/IC/OS 這類會假共識的短詞)
 # 拆詞後太泛、不當題材的詞(實測 9/16~10/14 出現過的假共識:自動化/新能源/伺服器/企業級)
 GENERIC_TOKENS = {"自動化", "新能源", "伺服器", "企業級", "供應鏈", "半導體", "半导体", "概念股",
@@ -382,6 +387,26 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
     }
 
 
+def recent_consensus_themes(promotions, today):
+    """近 REVERSE_LOOKUP_DAYS 天內共識自動加入的詞(新的在前),給國際大廠反查用。"""
+    rec = [p for p in promotions if p.get("source") == "consensus"
+           and 0 <= (_d(today) - _d(p["promoted_date"])).days < REVERSE_LOOKUP_DAYS]
+    rec.sort(key=lambda p: p["promoted_date"], reverse=True)
+    return [{"term": p["term"], "reason": "、".join(p.get("ai_phrases", []))} for p in rec[:REVERSE_LOOKUP_MAX]]
+
+
+def reverse_lookup_recent(promotions, today):
+    themes = recent_consensus_themes(promotions, today)
+    if not themes:
+        return []
+    try:
+        from theme_tracker import reverse_lookup_and_promote_companies
+        return reverse_lookup_and_promote_companies(themes, today)
+    except Exception as e:
+        print(f"  ⚠ 國際大廠反查略過: {e}")
+        return []
+
+
 def append_to_watchlist(terms, today, path=WATCHLIST_FILE):
     """附加到 watchlist 末端(不改動既有內容)。"""
     if not terms:
@@ -443,6 +468,7 @@ def main():
         append_to_watchlist([a["term"] for a in out["auto_added"]], today)
         with open(PROMOTE_LOG_FILE, "w", encoding="utf-8") as f:
             json.dump(promotions + out["auto_added"], f, ensure_ascii=False, indent=2)
+    out["companies_promoted"] = reverse_lookup_recent(promotions + out["auto_added"], today)
     with open(STATE_FILE, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
     with open(OUT_FILE, "w", encoding="utf-8") as f:
@@ -460,6 +486,8 @@ def main():
     print(f"  共識候選 {len(out['consensus'])}:")
     for c in out["consensus"]:
         print(f"    {c['term']} 共識{c['consensus_days']}天 ← {'、'.join(c['ai_phrases'])}  {c['status']}")
+    if out.get("companies_promoted"):
+        print(f"  🌐 反查新增 src6:{'、'.join(c['ticker'] for c in out['companies_promoted'])}")
     if out["auto_added"]:
         print(f"  ✅ 自動加入 themes_watchlist.txt:{'、'.join(a['term'] for a in out['auto_added'])}")
     for x in out["stale_auto_added"]:

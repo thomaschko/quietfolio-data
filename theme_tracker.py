@@ -38,6 +38,12 @@ STREAK_HIGH_CONFIDENCE = 3   # AI判high信心,連續3天才自動寫入
 STREAK_MEDIUM_CONFIDENCE = 5 # AI判medium信心,連續5天才自動寫入(更保守)
 STREAK_JIEBA_ONLY = 999      # 純jieba版(無AI背書)不自動升格,設極大值等於關閉
 MAX_PROMOTIONS_PER_RUN = 5   # 單次最多自動新增幾個題材,避免異常大量湧入
+# 2026-10-15 關閉(使用者確認):改由 watchlist_suggester.py 的「共識自動加入」當唯一寫入者。
+# 原因(9/16~10/14 實測):① 追蹤結果沒帶 confidence,high信心3天的門檻從未生效,全部要等5天;
+# ② 用 AI 片語全文算連續天數,AI 每天措辭不同,183 個 AI 詞沒有一個連續3天,歷來只升格2次;
+# ③ 不檢查與既有詞重疊、不查鉅亨基數,曾寫入「矽光子與CPO」這種與既有詞重疊的片語。
+# 國際大廠反查改由 watchlist_suggester.py 對「共識自動加入」的詞執行。
+AUTO_PROMOTE_ENABLED = False
 
 # ── 國際大廠反查(2026-09-10新增)──
 # 只對「已自動升格進watchlist」的題材做反查,用同一套連續天數邏輯驗證公司候選
@@ -228,8 +234,11 @@ def auto_promote_to_watchlist(ongoing, today_str):
     自動升格:連續追蹤天數達門檻的AI背書題材,自動寫進 themes_watchlist.txt。
     用「時間持續性」當守門員,而非單日AI信心度——曇花一現的誤判撐不過連續N天。
     純jieba版(無AI驗證過)不自動升格,只有 method 為 'ai' 或 'both' 才考慮。
+    2026-10-15:AUTO_PROMOTE_ENABLED=False 時直接回空(見常數說明)。
     每次新增都記錄稽核日誌(theme_promotions.json),方便事後檢視或手動撤回。
     """
+    if not AUTO_PROMOTE_ENABLED:
+        return []
     existing = load_watchlist_terms_raw()
     promoted = []
     for e in ongoing:
@@ -483,6 +492,8 @@ def main():
             "streak_days": streak,
             "method": info.get("method", "jieba"),
             "reason": info.get("reason", ""),
+            # 2026-10-15:原本漏帶,auto_promote 讀到的永遠是空字串(high信心3天門檻從未生效)
+            "confidence": info.get("confidence", ""),
         }
         if term not in all_history_terms:
             first_seen.append(entry)
@@ -517,6 +528,8 @@ def main():
         print(f"\n✅ 自動升格進 themes_watchlist.txt({len(promoted)}個):")
         for p in promoted:
             print(f"  {p['term']}  連續{p['streak_days']}天  信心度{p['confidence'] or 'jieba'}")
+    elif not AUTO_PROMOTE_ENABLED:
+        print("\n（自動升格已關閉,改由 watchlist_suggester.py 共識自動加入）")
     else:
         print(f"\n（今日無題材達自動升格門檻:high信心需連續{STREAK_HIGH_CONFIDENCE}天,"
               f"medium需連續{STREAK_MEDIUM_CONFIDENCE}天）")
