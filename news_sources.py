@@ -466,6 +466,22 @@ def _fetch_investor():
     return uniq
 
 
+def _fetch_technice():
+    """科技島(2026-10-15新增,使用者從台積電法說會報導來源中挑選)。
+    WordPress 官方RSS(/feed/),GHA 實測每次10則、當天更新;專注科技/半導體/AI
+    (例:台積電證實洽談Terafab合作、Google資料中心電力需求攀升 AEP布局燃料電池)。
+    robots.txt 只擋 /wp-admin/、/members/。只取近2天標題。"""
+    return _fetch_simple_rss("https://www.technice.com.tw/feed/", filter_recent_days=2)
+
+
+def _fetch_newtalk_finance():
+    """新頭殼 財經分類(2026-10-15新增,使用者從台積電法說會報導來源中挑選)。
+    官方RSS /rss/category/3,GHA 實測100則、近2天約50則;有產業新聞
+    (Rapidus搶先進製程、台積電法說)也混有大盤/外資買賣超,靠下游跨源比對過濾。
+    robots.txt 未擋 /rss。只取近2天標題。"""
+    return _fetch_simple_rss("https://newtalk.tw/rss/category/3", filter_recent_days=2)
+
+
 def _fetch_wallstreetcn():
     """華爾街見聞(2026-09-23新增,補上中國大陸財經媒體這塊地理缺口——
     先前查證DSP晶片缺貨漲價這則消息時發現,源頭是中國大陸財經社群/媒體
@@ -917,6 +933,8 @@ def fetch_titles_by_source():
         "cyclesinvest": _fetch_cyclesinvest(),
         "iek_news": _fetch_iek_news(),
         "investor": _fetch_investor(),
+        "technice": _fetch_technice(),
+        "newtalk_finance": _fetch_newtalk_finance(),
         "wallstreetcn": _fetch_wallstreetcn(),
         "eetimes_jp": _fetch_eetimes_jp(),
         "edn_jp": _fetch_edn_jp(),
