@@ -216,19 +216,34 @@ def fetch_transcript(symbol, quarter):
         return None, None
 
 
-def count_keywords(text):
-    """統計每個關鍵詞出現次數(大小寫不敏感)。只回數字,不留原文。
-    2026-09-14修正:純英文字母關鍵字加\\b單字邊界,避免短詞(如ATE)
+_KW_RE = {}
+
+
+def keyword_regex(kw):
+    """關鍵詞的比對規則(法說逐字稿、國際新聞、investor_events、8-K 共用同一套)。
+    2026-09-14:純英文字母關鍵字加\\b單字邊界,避免短詞(如ATE)
     誤命中英文常見詞字尾(operate/generate/estimate/rate等),造成大量假訊號。
-    含數字/符號的關鍵字(如"1.6T""800G")維持原本子字串比對,因為這類不會有此問題。"""
-    counts = {}
-    for cat, kw in FLAT_KEYWORDS:
+    含數字/符號的關鍵字(如"1.6T""800G")維持原本子字串比對,因為這類不會有此問題。
+    2026-10-14:全大寫縮寫(UPS、ATE、COT、TAM…)改為大小寫須一致。
+    10/13 實跑「Needham ups price target」的動詞 ups 被算成 UPS(不斷電系統),
+    法說逐字稿的 follow-ups/start-ups 也會誤中。"""
+    rx = _KW_RE.get(kw)
+    if rx is None:
         if re.fullmatch(r'[A-Za-z\s\-]+', kw):
             # 純英文字母(可含空白/連字號)的關鍵字,加單字邊界避免子字串誤判
             pattern = r'\b' + re.escape(kw) + r'\b'
         else:
             pattern = re.escape(kw)
-        n = len(re.findall(pattern, text, re.IGNORECASE))
+        flags = 0 if re.fullmatch(r'[A-Z]{2,6}', kw) else re.IGNORECASE
+        rx = _KW_RE[kw] = re.compile(pattern, flags)
+    return rx
+
+
+def count_keywords(text):
+    """統計每個關鍵詞出現次數(規則見 keyword_regex)。只回數字,不留原文。"""
+    counts = {}
+    for cat, kw in FLAT_KEYWORDS:
+        n = len(keyword_regex(kw).findall(text))
         if n > 0:
             counts[kw] = {"count": n, "category": cat}
     return counts
@@ -317,7 +332,8 @@ def main():
         print(f"\n[國際新聞] CNBC+Yahoo: {len(intl_titles)} 則標題")
         joined = " ".join(intl_titles)
         for cat, kw in FLAT_KEYWORDS:
-            c = len(re.findall(re.escape(kw), joined, re.IGNORECASE))
+            # 2026-10-14:原本純子字串+不分大小寫,ATE 會命中 rate/operate;改用與法說相同規則
+            c = len(keyword_regex(kw).findall(joined))
             if c > 0:
                 intl_heat.append({"keyword": kw, "category": cat, "count": c})
         intl_heat.sort(key=lambda x: -x["count"])
