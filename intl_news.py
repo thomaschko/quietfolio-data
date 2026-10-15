@@ -9,7 +9,7 @@ intl_news.py — 國際科技新聞來源(CNBC + Yahoo Finance)
 來源(探測驗證可用):
   CNBC-Technology  科技題材密集
   CNBC-Finance     偏宏觀但有料
-  Yahoo-Finance    量大
+  Yahoo-Finance    個股 headline feed(2026-10-15 改,原 rssindex 已 404)
   (CNBC-Markets 剔除:只2則)
 
 版權:只取標題統計詞頻,不儲存全文。
@@ -23,7 +23,11 @@ UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.3
 INTL_FEEDS = [
     "https://www.cnbc.com/id/19854910/device/rss/rss.html",  # CNBC Technology
     "https://www.cnbc.com/id/10000664/device/rss/rss.html",  # CNBC Finance
-    "https://finance.yahoo.com/news/rssindex",               # Yahoo Finance
+    # 2026-10-15:原 Yahoo Finance https://finance.yahoo.com/news/rssindex 已回 404
+    # (GHA 實測,topstories/rss/ 等舊路徑也全部 404);改用仍可用的個股 headline feed,
+    # 每個 feed 約17~18則。兩組:AI晶片/半導體、AI基礎設施(伺服器/網通/光通訊/電源)
+    "https://feeds.finance.yahoo.com/rss/2.0/headline?s=NVDA,TSM,AMD,AVGO,MU,INTC,ASML&region=US&lang=en-US",
+    "https://feeds.finance.yahoo.com/rss/2.0/headline?s=VRT,ANET,SMCI,DELL,CRDO,ALAB,COHR,LITE&region=US&lang=en-US",
 ]
 
 
