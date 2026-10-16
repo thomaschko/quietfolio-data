@@ -22,6 +22,8 @@ daily_digest 讀成 D2 區。
   純股名需出現2次)從命中標題抽股號
 - 門檻(初版,待校準):暴增 = 暴增比>=1.5 且近期>=2則 且前段>=2則;
   新出現 = 前段0則 且近期>=2則;關注 = 暴增比 0.8~1.5 且近期>=2則 且前段>=2則
+- AI 標題引用(2026-10-16 加):非平淡詞最多 10 個交給 term_stock_ai(免費 LLM 只讀
+  命中標題、標註引用編號,程式驗證引用標題真的含公司名才保留),結果在 ai_companies
 ============================================================
 """
 import re
@@ -132,10 +134,11 @@ def window_from_raw(raw):
     return recent_start, recent_start - (BASELINE_DAYS - RECENT_DAYS) * 86400
 
 
-def build(raw, fetcher=fetch, name2code=None, extract=None, sleep=SLEEP):
-    """fetcher(term, loc) 可替換成假資料(測試用)。"""
+def build(raw, fetcher=fetch, name2code=None, extract=None, sleep=SLEEP, enrich=None):
+    """fetcher(term, loc) 可替換成假資料(測試用)。
+    enrich(terms, titles_by_term) → 摘要 dict:可選的 AI 標題引用(term_stock_ai)。"""
     recent_start, base_start = window_from_raw(raw)
-    terms, errors = [], []
+    terms, errors, titles_by_term = [], [], {}
     for term in target_terms(raw):
         items, n_raw, truncated = [], 0, False
         for loc in [LOC_TW] + ([LOC_US] if use_us(term) else []):
@@ -148,6 +151,7 @@ def build(raw, fetcher=fetch, name2code=None, extract=None, sleep=SLEEP):
                 errors.append(f"{term}: {str(e)[:60]}")
             time.sleep(sleep)
         st = count_term(term, items, recent_start, base_start)
+        titles_by_term[term] = st["titles"]
         codes = []
         if name2code and extract and st["titles"]:
             try:
@@ -158,6 +162,12 @@ def build(raw, fetcher=fetch, name2code=None, extract=None, sleep=SLEEP):
                       **{k: v for k, v in st.items() if k != "titles"},
                       "codes": codes[:6], "titles": st["titles"][:3]})
     terms.sort(key=lambda t: (STATUS_ORDER[t["status"]], -t["ratio"], -t["recent"]))
+    ai_lookup = None
+    if enrich:
+        try:
+            ai_lookup = enrich(terms, titles_by_term)
+        except Exception as e:
+            ai_lookup = {"skipped": f"例外: {str(e)[:80]}"}
     return {
         "generated_at": dt.datetime.now(TPE).strftime("%Y-%m-%d %H:%M:%S"),
         "window": {"recent_start": dt.datetime.fromtimestamp(recent_start, TPE).date().isoformat(),
@@ -165,6 +175,7 @@ def build(raw, fetcher=fetch, name2code=None, extract=None, sleep=SLEEP):
         "n_terms": len(terms),
         "counts": {s: sum(1 for t in terms if t["status"] == s) for s in STATUS_ORDER},
         "errors": errors[:20],
+        "ai_lookup": ai_lookup,
         "terms": terms,
     }
 
@@ -186,8 +197,16 @@ def main():
         extract = extract_stock_codes_from_articles
     except Exception as e:
         print(f"  ⚠ 股名對照載入失敗(不抽個股): {e}")
+    enrich = None
+    try:
+        import term_stock_ai
+        from llm_client import LLMChain
+        chain = LLMChain()
+        enrich = lambda terms, tbt: term_stock_ai.enrich(terms, tbt, chain, name2code)
+    except Exception as e:
+        print(f"  ⚠ AI 標題引用模組載入失敗(略過): {e}")
     print(f"產業術語熱度(Google News):{len(target_terms(raw))} 個鉅亨基數不足的詞")
-    out = build(raw, name2code=name2code, extract=extract)
+    out = build(raw, name2code=name2code, extract=extract, enrich=enrich)
     with open(OUT_FILE, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
     c = out["counts"]
@@ -196,6 +215,11 @@ def main():
         if t["status"] == "quiet":
             break
         print(f"    [{t['status']}] {t['term']} 近{t['recent']} 前段{t['earlier']} 暴增比{t['ratio']} 股:{t['codes']}")
+        if t.get("ai_companies") is not None:
+            ai = " ".join(f"{c['code']}{c['name']}({c['role']})" for c in t["ai_companies"]) or "(無)"
+            drop = f"  剔除{len(t['ai_dropped'])}" if t.get("ai_dropped") else ""
+            print(f"        AI[{t['ai_provider']}]:{ai}{drop}")
+    print(f"  AI 標題引用:{json.dumps(out.get('ai_lookup'), ensure_ascii=False)}")
     print(f"→ {OUT_FILE} 已寫出")
 
 

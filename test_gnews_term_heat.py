@@ -78,6 +78,24 @@ def test_fetch_error_does_not_crash():
     assert out["n_terms"] == 4 and all(t["status"] == "quiet" for t in out["terms"]) and out["errors"]
 
 
+def test_enrich_hook_gets_all_titles_and_errors_are_contained():
+    def fake(term, loc):
+        return [it(f"{term} 新聞{i}", 15) for i in range(5)]
+    seen = {}
+
+    def enrich(terms, tbt):
+        seen.update(tbt)
+        return {"ok": 1}
+    out = g.build(RAW, fetcher=fake, sleep=0, enrich=enrich)
+    assert out["ai_lookup"] == {"ok": 1}
+    assert all(len(v) == 5 for v in seen.values()) and all(len(t["titles"]) == 3 for t in out["terms"])
+
+    def boom(terms, tbt):
+        raise ValueError("x")
+    assert g.build(RAW, fetcher=fake, sleep=0, enrich=boom)["ai_lookup"]["skipped"].startswith("例外")
+    assert g.build(RAW, fetcher=fake, sleep=0)["ai_lookup"] is None
+
+
 if __name__ == "__main__":
     import sys
     fails = 0
