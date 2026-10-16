@@ -381,6 +381,24 @@ def window_bounds(now_ts, holidays):
 # ============================================================
 # 偵測源 1: 固定關鍵字熱度暴增
 # ============================================================
+def _norm_text(s):
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", s or "")).strip().lower()
+
+
+def phrase_filter(kw, news):
+    """含空格的關鍵字只保留標題/摘要真的含完整詞的新聞;其他關鍵字原樣回傳。
+    2026-10-16:GHA 實測鉅亨搜尋會把含空格的詞拆開找(回傳結果只標出其中一個字),
+    例:「HBM Base Die」回傳177則、含完整詞0則;「Rubin CPX」69則/0則;
+    「Rubin Ultra」92則/4則;「sidecar power」43則/0則。原本這些詞的暴增比都是假的。"""
+    if " " not in kw.strip():
+        return news
+    k = _norm_text(kw)
+    return [n for n in news if k in _norm_text(n.get("title", "") + " " + n.get("summary", ""))]
+
+
+KEYWORD_STATS = {}   # 偵測源1 每個關鍵字的計數,寫進輸出(gnews_term_heat.py 用來挑出鉅亨基數不足的詞)
+
+
 def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None, holidays=None):
     print("[偵測源1] 固定關鍵字熱度追蹤")
     try:
@@ -416,7 +434,7 @@ def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None, holida
         supplement_titles = []
 
     for kw in keywords:
-        news = cnyes_search(kw, base_start)   # 一次抓20日內全部
+        news = phrase_filter(kw, cnyes_search(kw, base_start))   # 一次抓20日內全部(含空格詞只計完整詞)
         recent = [n for n in news if n["publishAt"] >= recent_start]
         # 補充來源:標題含此關鍵字的,計入近期(視為今日新聞)
         supp_hits = [t for t in supplement_titles if kw in t]
@@ -445,6 +463,9 @@ def detect_fixed_keywords(name2code, code2name, now_ts, src4_titles=None, holida
                                        and len(recent) >= MIN_RECENT_COUNT else ""))
         print(f"  {kw}: 近{RECENT_DAYS}交易日={len(recent)} 前段日均={round(earlier_daily,2)} "
               f"暴增比={ratio} {flag}")
+        KEYWORD_STATS[kw] = {"recent": len(recent), "earlier_daily": round(earlier_daily, 3),
+                             "ratio": ratio, "enough_base": enough_base,
+                             "phrase_filtered": " " in kw.strip()}
 
         if near_miss:
             near_miss_themes.append({
@@ -696,6 +717,7 @@ def main():
         "overheat": MOPS_OVERHEAT,
         "themes": all_themes,
         "near_miss_themes": sorted(src1_near_miss, key=lambda x: -x["ratio"]),
+        "keyword_stats": KEYWORD_STATS,   # 2026-10-16:每個固定關鍵字的近期/前段/暴增比
         "stocks": [
             {
                 "code": cd,

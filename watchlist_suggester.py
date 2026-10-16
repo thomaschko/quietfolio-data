@@ -200,20 +200,30 @@ def is_english(term):
 # ============================================================
 # 鉅亨可用性(與 detect_fixed_keywords 同一套公式)
 # ============================================================
+def _phrase_filter(term, news):
+    """含空格的詞只計完整詞(鉅亨會把含空格的詞拆開搜尋,同 event_theme_radar.phrase_filter)。"""
+    try:
+        from event_theme_radar import phrase_filter
+        return phrase_filter(term, news)
+    except Exception:
+        return news
+
+
 def cnyes_stats(term, now_ts, recent_start, base_start, search):
-    news = search(term, base_start, max_pages=CNYES_MAX_PAGES)
+    raw = search(term, base_start, max_pages=CNYES_MAX_PAGES)
+    news = _phrase_filter(term, raw)
     recent = [n for n in news if n["publishAt"] >= recent_start]
     recent_daily = len(recent) / RECENT_DAYS
     earlier = [n for n in news if n["publishAt"] < recent_start]
     earlier_daily = len(earlier) / (BASELINE_DAYS - RECENT_DAYS) if earlier else 0.01
     ratio = round(recent_daily / earlier_daily, 2) if earlier_daily else 999
     # 抓滿頁數仍沒抓到基線期起點 → 前段被截斷,暴增比與前段日均都不可信,可用性標未知
-    truncated = (len(news) >= CNYES_MAX_PAGES * CNYES_PAGE_SIZE
-                 and min(n["publishAt"] for n in news) > base_start + 86400)
+    truncated = (len(raw) >= CNYES_MAX_PAGES * CNYES_PAGE_SIZE
+                 and min(n["publishAt"] for n in raw) > base_start + 86400)
     return {"cnyes_recent": len(recent), "cnyes_earlier_daily": round(earlier_daily, 3),
             "cnyes_ratio": ratio,
             "cnyes_viable": None if truncated else earlier_daily >= MIN_EARLIER_DAILY,
-            "cnyes_truncated": truncated, "_n_news": len(news)}
+            "cnyes_truncated": truncated, "_n_news": len(raw)}
 
 
 # ============================================================
