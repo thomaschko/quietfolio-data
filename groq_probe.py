@@ -11,8 +11,8 @@ import xml.etree.ElementTree as ET
 import requests
 from event_theme_radar import build_name2code
 
-TERMS = ["高壓直流", "矽電容", "NOR Flash", "3奈米", "氮化鎵", "HBF"]
-MODELS = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "qwen/qwen3-32b", "moonshotai/kimi-k2-instruct"]
+TERMS = ["3奈米", "氮化鎵", "矽電容"]
+MODELS = ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]
 SYSTEM = "你是台股研究助理。只根據使用者提供的新聞標題回答,不得使用標題以外的知識,不確定就不要列。"
 URL = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -73,14 +73,20 @@ def verify(out, titles, n2c):
 
 
 def call(key, model, p, json_mode=True):
-    body = {"model": model, "temperature": 0.1, "max_tokens": 1500,
+    body = {"model": model, "temperature": 0.1, "max_tokens": 4000,
             "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": p}]}
     if json_mode:
         body["response_format"] = {"type": "json_object"}
+    if "gpt-oss" in model:
+        body["reasoning_effort"] = "low"
+    elif "qwen" in model:
+        body["reasoning_effort"] = "none"
     t0 = time.time()
     r = requests.post(URL, headers={"Authorization": f"Bearer {key}"}, json=body, timeout=90)
     rl = {k: v for k, v in r.headers.items() if "ratelimit" in k.lower()}
     txt = r.json()["choices"][0]["message"]["content"] if r.status_code == 200 else r.text[:300]
+    if r.status_code == 200:
+        print(f"      usage: {r.json().get('usage')}")
     return r.status_code, round(time.time() - t0, 1), rl, txt
 
 
@@ -106,7 +112,7 @@ def main():
         for m in MODELS:
             code, sec, rl, txt = call(key, m, p)
             print(f"\n  --- {m} HTTP {code} {sec}s")
-            if rl and term == TERMS[0]:
+            if rl:
                 print(f"      ratelimit: {json.dumps(rl)}")
             if code == 200:
                 out = parse_json(txt)
