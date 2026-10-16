@@ -224,7 +224,8 @@ SYSTEM_PROMPT = """你是台股題材研究員,根據結構化資料撰寫每日
    D區,代表台股熱度和國際法說互相印證,這種跨區塊關聯才是報告的價值所在。
 8. 篇幅約700-1000字(比純題材雷達的版本略長,因為現在要涵蓋三大類),
    結尾用一句話點出「今天最值得留意的訊號」。
-9. 不涉及任何個人持股、帳戶、部位資訊——只分析市場公開資料本身。"""
+9. 不涉及任何個人持股、帳戶、部位資訊——只分析市場公開資料本身。
+10. 若某題材熱度上升發生在相關大會前後兩週內,報告必須註明這可能是大會的事件效應;不得僅憑大會舉辦就判斷題材成立,也不得把大會當作買進理由。"""
 
 
 def call_gemini(digest_text, date_str):
@@ -270,6 +271,13 @@ def main():
         return
 
     digest_text = format_digest_for_prompt(digest, tracker)
+    # 大會背景(2026-10-16新增,events_calendar.py):digest 有 events 才加;失敗整段略過
+    if digest.get("events"):
+        try:
+            from events_calendar import background_text
+            digest_text += background_text(digest["events"])
+        except Exception as e:
+            print(f"  ⚠ 大會背景略過: {e}")
     print(f"  已格式化資料摘要(涵蓋發酵雷達+題材雷達+候選題材),長度 {len(digest_text)} 字元")
 
     report_text, meta = call_gemini(digest_text, date_str)
