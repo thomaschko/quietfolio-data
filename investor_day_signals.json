@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-16 12:03:22",
+ "generated_at": "2026-10-16 21:38:11",
  "date": "20261016",
  "events": [
   {
@@ -44,6 +44,22 @@
   },
   {
    "type": "investor_day",
+   "symbol": "ALAB",
+   "name": "Astera Labs",
+   "event": "Investor Meeting",
+   "event_date": "2026-10-16",
+   "day_offset": 0,
+   "date_inferred": true,
+   "news_count": 1,
+   "recap_count": 0,
+   "recap_sources": [],
+   "titles": [
+    "Astera Labs (ALAB) Reiterated at Buy by Stifel After Investor Meeting - StreetInsider"
+   ],
+   "keywords": {}
+  },
+  {
+   "type": "investor_day",
    "symbol": "SNPS",
    "name": "Synopsys",
    "event": "Investor Day",
@@ -66,16 +82,16 @@
    "event": "OCP Global Summit",
    "event_date": null,
    "day_offset": null,
-   "news_count": 38,
+   "news_count": 37,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "Agentic AI Takes the Stage at OCP Global Summit 2026 - All About Circuits",
+    "Infrastructure Highlights from OCP Global Summit - HPCwire",
+    "“Memory-Centric Server Systems Are the Future”: SK hynix Presents Its Next-Generation AI Infrastructure Vision at OCP Global Summit 2026 - SK hynix",
+    "OCP Global Summit 2026: MiTAC Computing Showcases Full-Stack Innovation to Scale Open AI Infrastructure - StorageNewsletter",
     "Arm at the OCP Global Summit 2026: How Arm AGI CPU is scaling agentic AI infrastructure from CPU to rack - Arm Newsroom",
-    "XCENA Showcases CXL Memory Innovations for AI Inference at OCP Global Summit 2026 - Business Wire",
-    "Delta Highlights Collaboration with NVIDIA in Advancing Energy-efficient 800 VDC Power and Cooling Solutions for AI Data Centers at OCP Global Summit 2026 - PR ",
-    "OCP Global Summit 2026: IDC Raises 2029 Forecast for OCP-Recognized Infrastructure Spending by 2.7x to $800 Billion - StorageNewsletter - StorageNewsletter",
-    "MSI Showcases Open Data Center and AI Infrastructure at 2026 OCP Global Summit - Yahoo Finance"
+    "Breakthrough Cooling Solutions for the AI Computing Surge, Clivet Showcases Next-Gen Magnetic-Bearing Centrifugal Compressor at OCP Global Summit - PR Newswire",
+    "Agentic AI Takes the Stage at OCP Global Summit 2026 - All About Circuits"
    ],
    "keywords": {
     "AI infrastructure": {
@@ -83,48 +99,44 @@
      "category": "客戶capex/需求"
     },
     "memory": {
-     "count": 10,
+     "count": 12,
      "category": "記憶體"
     },
-    "optical": {
-     "count": 10,
-     "category": "光通訊/CPO"
-    },
     "inference": {
-     "count": 6,
+     "count": 8,
      "category": "客戶capex/需求"
     },
-    "Ethernet switch": {
-     "count": 6,
-     "category": "平台/網通/供應鏈"
-    },
     "CXL": {
-     "count": 4,
+     "count": 6,
      "category": "互連/網通"
+    },
+    "optical": {
+     "count": 6,
+     "category": "光通訊/CPO"
+    },
+    "data center": {
+     "count": 4,
+     "category": "客戶capex/需求"
     },
     "1.6T": {
      "count": 4,
      "category": "光通訊/CPO"
     },
-    "optical interconnect": {
-     "count": 4,
-     "category": "互連/網通"
-    },
     "thermal management": {
      "count": 4,
      "category": "資料中心電源"
     },
-    "PCIe": {
+    "Ethernet switch": {
      "count": 4,
-     "category": "互連/網通"
+     "category": "平台/網通/供應鏈"
     },
     "co-packaged": {
      "count": 4,
      "category": "先進封裝/光互連"
     },
-    "data center": {
+    "optical interconnect": {
      "count": 2,
-     "category": "客戶capex/需求"
+     "category": "互連/網通"
     },
     "liquid cooling": {
      "count": 2,
@@ -139,16 +151,16 @@
    "event": "SEMICON West",
    "event_date": null,
    "day_offset": null,
-   "news_count": 19,
+   "news_count": 15,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
     "Semicon West 2026: Teradyne launches edge AI automated test platform - Electronics360",
+    "PROCOMER highlights Costa Rica as a strategic destination for the semiconductor industry at SEMICON West - PR Newswire",
     "Modutek to Showcase AI-Enabled SubFAB Intelligence and Wet Process Equipment at SEMICON West 2026 - IndyStar",
     "Nordson SonoFlex Wins Best of West Award at SEMICON West 2026 - News and Statistics - IndexBox",
-    "PROCOMER highlights Costa Rica as a strategic destination for the semiconductor industry at SEMICON West - AOL.com",
-    "SEMICON West 2026 gets underway as semiconductor sector hits $1T milestone - Engineer Live",
-    "Fujifilm Showcases at SEMICON West 2026 - Ink World Magazine"
+    "Applied Materials at semicon west 2026: ai buildout drives growth - Investing.com",
+    "Applied Materials to host investor breakfast presentation at SEMICON West - scanx.trade"
    ],
    "keywords": {
     "HBM4": {
@@ -197,16 +209,7 @@
    "type": "conference",
    "keyword": "memory",
    "category": "記憶體",
-   "count": 10
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "optical",
-   "category": "光通訊/CPO",
-   "count": 10
+   "count": 12
   },
   {
    "symbol": "OCP Global Summit",
@@ -215,16 +218,7 @@
    "type": "conference",
    "keyword": "inference",
    "category": "客戶capex/需求",
-   "count": 6
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "Ethernet switch",
-   "category": "平台/網通/供應鏈",
-   "count": 6
+   "count": 8
   },
   {
    "symbol": "OCP Global Summit",
@@ -233,6 +227,24 @@
    "type": "conference",
    "keyword": "CXL",
    "category": "互連/網通",
+   "count": 6
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "optical",
+   "category": "光通訊/CPO",
+   "count": 6
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "data center",
+   "category": "客戶capex/需求",
    "count": 4
   },
   {
@@ -249,15 +261,6 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "optical interconnect",
-   "category": "互連/網通",
-   "count": 4
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
    "keyword": "thermal management",
    "category": "資料中心電源",
    "count": 4
@@ -267,8 +270,8 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "PCIe",
-   "category": "互連/網通",
+   "keyword": "Ethernet switch",
+   "category": "平台/網通/供應鏈",
    "count": 4
   },
   {
@@ -285,8 +288,8 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "data center",
-   "category": "客戶capex/需求",
+   "keyword": "optical interconnect",
+   "category": "互連/網通",
    "count": 2
   },
   {
