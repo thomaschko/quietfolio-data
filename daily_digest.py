@@ -324,6 +324,7 @@ def build_digest():
         "I_auto_added": wl_sugg.get("auto_added", []),
         "I_consensus": wl_sugg.get("consensus", []),
         "I_stale_auto_added": wl_sugg.get("stale_auto_added", []),
+        "I_ai_failed": wl_sugg.get("ai_failed", False),
     }
 
     # ── 價量階段標籤(2026-10-06新增,price_stage.py)──
@@ -475,6 +476,8 @@ def print_digest(d):
             stk = " ".join(f"{cd}{names.get(cd, '')}" for cd in a.get("stocks", [])[:5])
             print(f"    {a['term']}  共識{a['consensus_days']}天 ← {'、'.join(a['ai_phrases'][:3])}  "
                   f"cnyes暴增{a.get('cnyes_ratio')}" + (f"  股:{stk}" if stk else ""))
+    if d.get("I_ai_failed"):
+        print("  ⚠ AI 語意萃取今天失敗,共識自動加入暫停一天")
     pend = [c for c in d.get("I_consensus", []) if c.get("status") != "auto_added"]
     if pend:
         print("  ⏳ 共識候選(未加入):" + "、".join(f"{c['term']}({c['status']})" for c in pend[:8]))
@@ -488,6 +491,8 @@ def print_digest(d):
             src = "🔤" if _method_score(x.get("method"))[0] == 3 else "🤖"
             if x.get("cnyes_ratio") is None:
                 cn = "cnyes未查"
+            elif x.get("cnyes_truncated"):
+                cn = "cnyes新聞量過大,數字不可信"
             elif x.get("cnyes_viable") is None:
                 cn = "cnyes可用性未知(查詢全0則)"
             else:

@@ -225,6 +225,18 @@ def test_foreign_and_prefix_company_names():
     assert "探針卡" not in rej                                     # 題材詞不受影響
 
 
+def test_ai_failed_keeps_today_history():
+    """AI 萃取失敗的那次執行,不可把同一天稍早記下的共識蓋掉(10/15 CCL 案例)。"""
+    state = {"consensus_history": {"20261015": ["CCL"]}}
+    out = ws.build({"date": "20261015", "ongoing": [T("CCL", "jieba", 3)], "first_seen": []},
+                   WATCHLIST, NAME2CODE, STOPWORDS, _method_score, KW_TO_THEME, now_ts=NOW,
+                   state=state, ai_failed=True)
+    assert state["consensus_history"]["20261015"] == ["CCL"] and out["ai_failed"] is True
+    ws.build({"date": "20261016", "ongoing": [], "first_seen": []}, WATCHLIST, NAME2CODE, STOPWORDS,
+             _method_score, KW_TO_THEME, now_ts=NOW, state=state, ai_failed=True)
+    assert "20261016" not in state["consensus_history"]              # 失敗日不記空白,不算「沒有共識」
+
+
 def test_watchlist_file_untouched():
     import hashlib
     h = hashlib.md5(open(ws.WATCHLIST_FILE, "rb").read()).hexdigest()

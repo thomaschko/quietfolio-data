@@ -290,7 +290,8 @@ def stale_auto_added(state, today, promotions):
 # 主流程
 # ============================================================
 def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
-          now_ts=None, window=None, search=None, state=None, promotions=None, event_raw=None):
+          now_ts=None, window=None, search=None, state=None, promotions=None, event_raw=None,
+          ai_failed=False):
     """window = (recent_start_ts, base_start_ts);search=None 時不查鉅亨(測試用)。
     state 會被就地更新(共識歷史、偵測源1觸發日);回傳的 auto_added 由 main() 寫入 watchlist。"""
     now_ts = now_ts or int(time.time())
@@ -303,7 +304,10 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
     # ── 共識:今天的拆詞共識寫進歷史,再算近7日天數 ──
     cons = consensus_today(entries, method_score, stopwords)
     hist = state.setdefault("consensus_history", {})
-    hist[today] = sorted(cons)
+    # 2026-10-15:AI 萃取當天失敗(ai_theme_candidates.json 帶 error)時,今天的共識無從判斷,
+    # 不覆寫已有紀錄(10/15 晚間排程 Gemini 503,把下午手動那次記下的 CCL 蓋成空的)
+    if not ai_failed:
+        hist[today] = sorted(cons)
     for day in [d for d in hist if (_d(today) - _d(d)).days >= STATE_KEEP_DAYS]:
         del hist[day]
     consensus = []
@@ -420,6 +424,7 @@ def build(tracker, watchlist, name2code, stopwords, method_score, kw_to_theme,
         "rejected": rejected,
         "paste_block": "\n".join(paste),
         "consensus": consensus,
+        "ai_failed": ai_failed,
         "auto_added": auto_added,
         "stale_auto_added": stale,
     }
@@ -503,9 +508,12 @@ def main():
     state = _load(STATE_FILE, {})
     promotions = _load(PROMOTE_LOG_FILE, [])
     event_raw = _load("event_theme_raw.json", {})
+    ai_failed = bool(_load("ai_theme_candidates.json", {}).get("error"))
+    if ai_failed:
+        print("  ⚠ AI 語意萃取今天失敗,共識暫停一天(不覆寫今天已有的共識紀錄)")
     out = build(tracker, watchlist, name2code, stopwords, _method_score, KW_TO_THEME,
                 now_ts=now_ts, window=window, search=search,
-                state=state, promotions=promotions, event_raw=event_raw)
+                state=state, promotions=promotions, event_raw=event_raw, ai_failed=ai_failed)
     today = tracker.get("date") or dt.date.today().strftime("%Y%m%d")
     if out["auto_added"]:
         append_to_watchlist([a["term"] for a in out["auto_added"]], today)
