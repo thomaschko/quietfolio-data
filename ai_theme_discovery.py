@@ -27,6 +27,7 @@ import re
 import json
 import datetime as dt
 import requests
+import time
 
 # 第三層:題材→個股連結,複用event_theme_radar.py裡已驗證過的安全抽取邏輯
 # (強命中優先、綜述文整篇排除、CUBE消歧義、研華題材專屬排除等機制),
@@ -124,6 +125,10 @@ def collect_titles():
     return list(seen.items())  # [(title, {sources})]
 
 
+GEMINI_RETRY_STATUS = {429, 500, 502, 503, 504}
+GEMINI_RETRY_WAITS = (30, 60)
+
+
 def call_gemini(prompt_text, system_instruction=None):
     """呼叫 Gemini API,回傳解析後的 JSON(dict)或 None。
     2026-09-23新增system_instruction參數(預設None時沿用本檔案的SYSTEM_PROMPT,
@@ -140,13 +145,21 @@ def call_gemini(prompt_text, system_instruction=None):
         "generationConfig": {"response_mime_type": "application/json", "temperature": 0.2},
     }
     try:
-        r = requests.post(
-            GEMINI_URL,
-            headers={"Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY},
-            json=body,
-            timeout=60,
-        )
-        print(f"  Gemini API 狀態: {r.status_code}")
+        # 2026-10-15:10/15 排程遇到 503「high demand」整天沒有 AI 題材(同次稍後的 daily_report
+        # 呼叫就成功)→ 503/429/500/502/504 這類暫時性錯誤間隔 30、60 秒各重試一次
+        r = None
+        for wait in GEMINI_RETRY_WAITS + (None,):
+            r = requests.post(
+                GEMINI_URL,
+                headers={"Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY},
+                json=body,
+                timeout=60,
+            )
+            print(f"  Gemini API 狀態: {r.status_code}")
+            if r.status_code not in GEMINI_RETRY_STATUS or wait is None:
+                break
+            print(f"  暫時性錯誤,{wait} 秒後重試")
+            time.sleep(wait)
         if r.status_code != 200:
             print(f"  回應內容: {r.text[:300]}")
             return None
