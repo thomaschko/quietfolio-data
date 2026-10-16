@@ -101,6 +101,13 @@ jobs:
         continue-on-error: true
         run: python investor_events.py
 
+      # 產業術語熱度(2026-10-16新增):鉅亨基數不足(偵測源1永遠不會觸發)的 watchlist 詞,
+      # 改查 Google News 算暴增比,只計標題含完整詞的新聞;digest 讀成 D2 區(參考用,
+      # 不進 A 區、不改門檻)。讀 event_theme_raw.json 的 keyword_stats,需在雷達之後。
+      - name: Term heat via Google News
+        continue-on-error: true
+        run: python gnews_term_heat.py
+
       - name: Build daily digest
         continue-on-error: true
         run: python daily_digest.py
@@ -144,6 +151,7 @@ jobs:
           [ -f us_8k_events.json ] && git add us_8k_events.json || true
           [ -f watchlist_suggestions.json ] && git add watchlist_suggestions.json || true
           [ -f watchlist_auto_state.json ] && git add watchlist_auto_state.json || true
+          [ -f gnews_term_heat.json ] && git add gnews_term_heat.json || true
           [ -f daily_digest.json ] && git add daily_digest.json || true
           [ -f daily_report.json ] && git add daily_report.json || true
           [ -f verification_ledger.json ] && git add verification_ledger.json || true

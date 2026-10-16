@@ -94,6 +94,7 @@ def build_digest(today=None):
     investor = load_json("investor_day_signals.json") or {}  # 2026-10-12:investor day/技術大會
     tracker = load_json("theme_tracker.json") or {}  # 題材追蹤(AI語意+jieba整合,含首見/追蹤中)
     wl_sugg = load_json("watchlist_suggestions.json") or {}  # 2026-10-15:watchlist_suggester.py,缺檔不報錯
+    term_heat = load_json("gnews_term_heat.json") or {}  # 2026-10-16:gnews_term_heat.py(D2 區),缺檔不報錯
 
     # 以個股為中心聚合:code -> {sources:set, detail:{}}
     stock_signals = defaultdict(lambda: {"sources": set(), "detail": {}})
@@ -357,6 +358,14 @@ def build_digest(today=None):
         print(f"  ⚠ 價量階段標籤略過: {e}")
         digest["price_stage"] = {}
 
+    # ── D2. 產業術語熱度(2026-10-16新增,gnews_term_heat.py)──
+    # 鉅亨基數不足、偵測源1永遠不會觸發的 watchlist 詞,改查 Google News 的暴增/新出現/關注。
+    # 只是參考區塊:不進 A 區、不改任何門檻;沒有資料時不寫欄位(輸出與改動前相同)。
+    d2 = [t for t in term_heat.get("terms", []) if t.get("status") in ("surge", "new", "watch")]
+    if d2:
+        digest["D2_term_heat"] = d2
+        digest["D2_term_heat_meta"] = {k: term_heat.get(k) for k in ("generated_at", "n_terms", "counts")}
+
     # ── 大會日曆(2026-10-16新增,events_calendar.py,v1 僅顯示)──
     # 大會前後兩週題材新聞密度會自然升高(可預期的事件效應)。只加背景與 A 區標記,
     # 不改變任何門檻、A 區的納入與排序;沒有事件時不寫 events 欄位(輸出與改動前相同)。
@@ -456,6 +465,16 @@ def print_digest(d):
         names = t.get("names", {})  # 2026-09-17新增
         stock_str = " ".join(f"{cd}{names.get(cd,'')}{_stage_tag(d, cd)}" for cd in t["codes"][:5])
         print(f"  {t['theme']}  暴增{t['ratio']}  股:{stock_str}")
+
+    if d.get("D2_term_heat"):
+        meta = d.get("D2_term_heat_meta") or {}
+        print(f"\n▍D2. 產業術語熱度(Google News — 鉅亨基數不足的 {meta.get('n_terms', '?')} 個 watchlist 詞,參考用)")
+        mark = {"surge": "🔥暴增", "new": "🆕新出現", "watch": "👀關注"}
+        for t in d["D2_term_heat"][:10]:
+            stk = " ".join(t.get("codes", [])[:5])
+            ratio = f" 暴增{t['ratio']}" if t["status"] != "new" else ""
+            print(f"  {mark.get(t['status'], t['status'])} {t['term']}  近{t['recent']}則 前段{t['earlier']}則{ratio}"
+                  + (f"  股:{stk}" if stk else ""))
 
     print("\n▍E. 新題材候選(參考 — 需人工判斷)")
     for c in d["E_new_candidates"][:8]:
