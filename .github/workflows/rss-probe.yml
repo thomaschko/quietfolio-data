@@ -5,7 +5,6 @@ on:
 
 permissions:
   contents: read
-  models: read
 
 jobs:
   probe:
@@ -25,7 +24,4 @@ jobs:
       - name: Run RSS probe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GITHUB_TOKEN: ${{ github.token }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: python llm_free_probe.py
+        run: python google_news_us_probe.py
