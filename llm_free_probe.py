@@ -129,5 +129,34 @@ def main():
         time.sleep(3)
 
 
+def diag():
+    import socket
+    gh = os.environ.get("GITHUB_TOKEN", "")
+    for host in ["models.github.ai", "models.inference.ai.azure.com"]:
+        try:
+            print(f"DNS {host}: {socket.gethostbyname_ex(host)}")
+        except Exception as e:
+            print(f"DNS {host}: {e}")
+    body = {"model": "openai/gpt-4.1-mini", "max_tokens": 20,
+            "messages": [{"role": "user", "content": "回覆兩個字:你好"}]}
+    for url, model in [("https://models.github.ai/inference/chat/completions", "openai/gpt-4.1-mini"),
+                       ("https://models.github.ai/inference/chat/completions", "openai/gpt-4o-mini"),
+                       ("https://models.inference.ai.azure.com/chat/completions", "gpt-4o-mini"),
+                       ("https://models.github.ai/catalog/models", None)]:
+        h = {"Authorization": f"Bearer {gh}", "Content-Type": "application/json",
+             "Accept": "application/json", "X-GitHub-Api-Version": "2022-11-28"}
+        try:
+            t0 = time.time()
+            if model:
+                r = requests.post(url, headers=h, json={**body, "model": model}, timeout=60, allow_redirects=False)
+            else:
+                r = requests.get(url, headers=h, timeout=60, allow_redirects=False)
+            print(f"\n{url} [{model}] HTTP {r.status_code} {round(time.time()-t0,2)}s")
+            print(f"  headers: {dict(r.headers)}")
+            print(f"  body: {r.text[:600]}")
+        except Exception as e:
+            print(f"{url}: {e}")
+
+
 if __name__ == "__main__":
-    main()
+    diag()
