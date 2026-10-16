@@ -82,7 +82,8 @@ def load_json(path):
         return None
 
 
-def build_digest():
+def build_digest(today=None):
+    """today:大會日曆用的日期(datetime.date);None = 台北時間今天。只影響日曆,不影響其他區塊。"""
     now = dt.datetime.now()
 
     # ── 讀各源 ──
@@ -355,6 +356,23 @@ def build_digest():
     except Exception as e:
         print(f"  ⚠ 價量階段標籤略過: {e}")
         digest["price_stage"] = {}
+
+    # ── 大會日曆(2026-10-16新增,events_calendar.py,v1 僅顯示)──
+    # 大會前後兩週題材新聞密度會自然升高(可預期的事件效應)。只加背景與 A 區標記,
+    # 不改變任何門檻、A 區的納入與排序;沒有事件時不寫 events 欄位(輸出與改動前相同)。
+    # 任何錯誤整段略過,不影響其他區塊。
+    try:
+        from events_calendar import window, tag_for_theme
+        cal_today = today or dt.datetime.now(dt.timezone(dt.timedelta(hours=8))).date()
+        events = window(cal_today)
+        if events:
+            digest["events"] = events
+            for r in resonance:
+                t = tag_for_theme(r.get("themes", []), cal_today, events=events)
+                if t:
+                    r["event_tag"] = t
+    except Exception as e:
+        print(f"  ⚠ 大會日曆略過: {e}")
     return digest
 
 
@@ -378,6 +396,16 @@ def print_digest(d):
     print(f"多源共振{c['resonance']} | 未發酵題材{c['preferment_themes']} | "
           f"券商覆蓋{c['broker_coverage']} | 暴增題材{c['surge_themes']} | "
           f"新候選{c['new_candidates']} | 雙邊確認{c.get('cross_confirmed',0)}")
+
+    # 大會日曆(2026-10-16新增):前後兩週內的大會;沒有事件時不印這一節
+    if d.get("events"):
+        try:
+            from events_calendar import format_line
+            print("\n📅 大會日曆(前後兩週;大會前後題材熱度上升可能是事件效應,非投資訊號)")
+            for e in d["events"]:
+                print(format_line(e))
+        except Exception as e:
+            print(f"  ⚠ 大會日曆顯示略過: {e}")
 
     # G. 最高價值:台股訊號 × 國際法說雙邊確認
     print("\n▍G. 雙邊確認題材(台股訊號 × 國際法說背書 — 最高價值)")
@@ -406,7 +434,8 @@ def print_digest(d):
             if r.get("via_theme_cluster"):
                 tags.append(f"🌾題材群聚: {r['hit_count']}個關鍵字同時命中")
             _stg = _stage_tag(d, r["code"])
-            print(f"  {r['code']}  [{' | '.join(tags)}]{ferm}{_stg}  {themes}")
+            _evt = f"  {r['event_tag']}" if r.get("event_tag") else ""   # 大會標記,只顯示,不影響排序
+            print(f"  {r['code']}  [{' | '.join(tags)}]{ferm}{_stg}  {themes}{_evt}")
     else:
         print("  (今日無多源共振)")
 
@@ -508,7 +537,11 @@ def print_digest(d):
 
 
 def main():
-    d = build_digest()
+    import sys
+    today = None
+    if "--today" in sys.argv:      # 測試用:指定大會日曆的日期(YYYY-MM-DD)
+        today = dt.date.fromisoformat(sys.argv[sys.argv.index("--today") + 1])
+    d = build_digest(today)
     print_digest(d)
     with open("daily_digest.json", "w", encoding="utf-8") as f:
         json.dump(d, f, ensure_ascii=False, indent=2)
