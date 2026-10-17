@@ -51,6 +51,19 @@ def test_verify_accepts_code_in_title_and_bad_shapes():
     assert tsa.verify({"companies": "壞掉"}, TITLES, N2C) == ([], [])
 
 
+def test_lookup_unique_prefix_only():
+    n2c = {"日月光投控": "3711", "南亞": "1303", "南亞科": "2408", "南亞電": "8046"}
+    assert tsa.lookup_code("日月光", n2c) == ("3711", "日月光")
+    assert tsa.lookup_code("南亞", n2c) == ("1303", "南亞")          # 精確命中優先
+    assert tsa.lookup_code("南", n2c) == (None, "南")                # 太短不猜
+    assert tsa.lookup_code("南亞電", n2c)[0] == "8046"
+    assert tsa.lookup_code("亞", {"亞力": "1514", "亞光": "3019"})[0] is None
+    assert tsa.lookup_code("華新", {"華新": "1605", "華新科": "2492"})[0] == "1605"
+    assert tsa.lookup_code("華", {"華新": "1605", "華新科": "2492"})[0] is None
+    kept, _ = tsa.verify({"companies": [{"name": "日月光", "title_ids": [1]}]}, ["日月光火拚3D封裝"], n2c)
+    assert kept[0]["code"] == "3711"
+
+
 def test_parse_json_tolerates_fences():
     assert llm_client.parse_json('```json\n{"a": 1}\n```') == {"a": 1}
     assert llm_client.parse_json('以下是結果:{"a": 2} 謝謝') == {"a": 2}

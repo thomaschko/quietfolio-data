@@ -43,6 +43,12 @@ def lookup_code(name, name2code):
     for v in (n.replace("-KY", ""), n + "-KY", n + "*"):
         if v in name2code:
             return name2code[v], n
+    # 2026-10-17 首次正式執行:「日月光」(官方簡稱「日月光投控」)、「攸泰」被誤判查無股名 →
+    # 標題常用的是官方簡稱的前段;只有「以它開頭的官方名稱全部指向同一檔」才採用,有歧義就放棄
+    if len(n) >= 2:
+        codes = {c for k, c in name2code.items() if k.startswith(n)}
+        if len(codes) == 1:
+            return codes.pop(), n
     return None, n
 
 
