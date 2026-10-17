@@ -104,8 +104,14 @@ jobs:
       # 產業術語熱度(2026-10-16新增):鉅亨基數不足(偵測源1永遠不會觸發)的 watchlist 詞,
       # 改查 Google News 算暴增比,只計標題含完整詞的新聞;digest 讀成 D2 區(參考用,
       # 不進 A 區、不改門檻)。讀 event_theme_raw.json 的 keyword_stats,需在雷達之後。
+      # 同步驟的 AI 標題引用(term_stock_ai):Gemini 優先,GROQ / OPENROUTER 為選用備援,
+      # 沒設這兩個 Secret 時自動略過。
       - name: Term heat via Google News
         continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python gnews_term_heat.py
 
       - name: Build daily digest

@@ -475,6 +475,9 @@ def print_digest(d):
             ratio = f" 暴增{t['ratio']}" if t["status"] != "new" else ""
             print(f"  {mark.get(t['status'], t['status'])} {t['term']}  近{t['recent']}則 前段{t['earlier']}則{ratio}"
                   + (f"  股:{stk}" if stk else ""))
+            if t.get("ai_companies"):   # 2026-10-16:term_stock_ai(AI 讀標題 + 程式驗證引用)
+                ai = " ".join(f"{c['code']}{c['name']}({c['role']})" for c in t["ai_companies"][:5])
+                print(f"      AI標題引用:{ai}")
 
     print("\n▍E. 新題材候選(參考 — 需人工判斷)")
     for c in d["E_new_candidates"][:8]:
