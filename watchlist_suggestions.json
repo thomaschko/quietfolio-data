@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-17 12:27:37",
+  "generated_at": "2026-10-17 12:58:39",
   "version": "watchlist_suggester v2026-10-15",
   "tracker_date": "20261017",
   "counts": {
     "strong": 0,
-    "suggest": 28,
-    "watch": 2
+    "suggest": 27,
+    "watch": 3
   },
   "cnyes_checked": 10,
   "cnyes_all_empty": false,
@@ -15,7 +15,7 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 17,
+      "hits": 15,
       "reason": "",
       "stocks": [
         "2330"
@@ -36,7 +36,7 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 13,
+      "hits": 14,
       "reason": "",
       "stocks": [
         "8044",
@@ -60,7 +60,7 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 7,
+      "hits": 6,
       "reason": "",
       "stocks": [
         "2035"
@@ -516,26 +516,6 @@
       "confidence": ""
     },
     {
-      "term": "yield",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 5,
-      "hits": 3,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
       "term": "silicon photonics",
       "tier": "suggest",
       "method": "jieba",
@@ -574,12 +554,12 @@
       "confidence": ""
     },
     {
-      "term": "半導體設備與WFE",
+      "term": "AI算力與雲端資本支出",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 12,
-      "reason": "AI晶片擴產帶動設備商訂單與廠房建置",
+      "hits": 26,
+      "reason": "CSP資本支出與AI基建融資壓力",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -588,15 +568,15 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [],
-      "confidence": "medium"
+      "confidence": "high"
     },
     {
-      "term": "化合物半導體與寬能隙",
+      "term": "次世代製程與設備",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 6,
-      "reason": "碳化矽與氮化鎵在車用與AI能源應用擴大",
+      "hits": 20,
+      "reason": "EUV、1.4奈米及晶圓廠設備擴產",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -605,13 +585,44 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [],
-      "confidence": "medium"
+      "confidence": "high"
+    },
+    {
+      "term": "高階CCL與PCB材料",
+      "tier": "watch",
+      "method": "ai",
+      "streak_days": 1,
+      "hits": 14,
+      "reason": "AI伺服器帶動CCL、玻纖布與板材需求",
+      "stocks": [
+        "6213",
+        "2383",
+        "6274",
+        "1815"
+      ],
+      "names": {
+        "6213": "聯茂",
+        "2383": "台光電",
+        "6274": "台燿",
+        "1815": "富喬"
+      },
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [],
+      "confidence": "high"
     }
   ],
   "rejected": [
     {
       "term": "wafer",
       "reason": "overlaps:Wafer-on-Wafer"
+    },
+    {
+      "term": "大立光",
+      "reason": "is_company_name"
     },
     {
       "term": "日月光",
@@ -644,6 +655,10 @@
     {
       "term": "RAM",
       "reason": "overlaps:DRAM合約價"
+    },
+    {
+      "term": "Vera",
+      "reason": "overlaps:Vera Rubin"
     },
     {
       "term": "CoreWeave",
@@ -986,12 +1001,20 @@
       "reason": "overlaps:HBM"
     },
     {
+      "term": "先進封裝與CoWoS",
+      "reason": "overlaps:CoWoS"
+    },
+    {
       "term": "低軌衛星與太空通訊",
       "reason": "overlaps:低軌衛星"
     },
     {
-      "term": "人形機器人與自動化",
+      "term": "人形機器人與靈巧手",
       "reason": "overlaps:人形機器人"
+    },
+    {
+      "term": "寬能隙半導體(SiC/GaN)",
+      "reason": "overlaps:SiC"
     },
     {
       "term": "推動算力",
@@ -1008,10 +1031,6 @@
     {
       "term": "彭双浪",
       "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "客製化ASIC晶片",
-      "reason": "overlaps:SiC"
     },
     {
       "term": "高階市場",
@@ -1046,14 +1065,6 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "攜正揚",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "hPL",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
       "term": "吸市場",
       "reason": "jieba_insufficient_streak"
     },
@@ -1079,10 +1090,6 @@
     },
     {
       "term": "CW",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Kimi",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -1146,6 +1153,14 @@
       "reason": "jieba_insufficient_streak"
     },
     {
+      "term": "筆電開",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "數塞進",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
       "term": "兩大風險",
       "reason": "jieba_insufficient_streak"
     },
@@ -1179,7 +1194,26 @@
     }
   ],
   "paste_block": "",
-  "consensus": [],
+  "consensus": [
+    {
+      "term": "PCB",
+      "ai_phrases": [
+        "高階CCL與PCB材料"
+      ],
+      "hits": 11,
+      "stocks": [
+        "4958"
+      ],
+      "names": {},
+      "consensus_days": 1,
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "status": "pending:共識1天(需2天)"
+    }
+  ],
   "ai_failed": false,
   "auto_added": [],
   "stale_auto_added": [],

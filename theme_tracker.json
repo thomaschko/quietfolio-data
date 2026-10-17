@@ -1,95 +1,182 @@
 {
-  "generated_at": "2026-10-17 12:27:05.510023",
+  "generated_at": "2026-10-17 12:58:13.055898",
   "date": "20261017",
   "first_seen": [
     {
       "term": "HBM與記憶體供需",
       "sources": [
         "cnyes",
-        "cnyes_intl",
         "eetimes",
         "google_news",
+        "google_news_us",
+        "technews",
+        "telegram",
+        "trendforce"
+      ],
+      "stocks": [
+        "4923",
+        "3167",
+        "2330",
+        "2408",
+        "3663",
+        "1303"
+      ],
+      "names": {
+        "4923": "力士",
+        "3167": "大量",
+        "2330": "台積電",
+        "2408": "南亞科",
+        "3663": "鑫科",
+        "1303": "南亞"
+      },
+      "hits": 171,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "HBM晶片缺貨、漲價與產能擴張",
+      "confidence": "high"
+    },
+    {
+      "term": "先進封裝與CoWoS",
+      "sources": [
+        "cna",
+        "cnyes",
+        "google_news",
+        "google_news_us",
+        "newtalk_finance",
         "technews",
         "trendforce"
       ],
       "stocks": [
-        "4923"
+        "2330",
+        "2338"
       ],
       "names": {
-        "4923": "力士"
+        "2330": "台積電",
+        "2338": "光罩"
       },
-      "hits": 15,
+      "hits": 27,
       "streak_days": 1,
       "method": "ai",
-      "reason": "HBM世代升級與記憶體漲價供需吃緊",
+      "reason": "台積電法說會與先進封裝產能擴張",
       "confidence": "high"
     },
     {
-      "term": "半導體設備與WFE",
+      "term": "AI算力與雲端資本支出",
+      "sources": [
+        "cna",
+        "cnbc_yahoo",
+        "cnyes",
+        "cnyes_intl",
+        "google_news",
+        "telegram",
+        "the_circuit_podcast"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 26,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "CSP資本支出與AI基建融資壓力",
+      "confidence": "high"
+    },
+    {
+      "term": "次世代製程與設備",
       "sources": [
         "cna",
         "cnyes",
         "cnyes_intl",
-        "trendforce",
-        "wapeople"
+        "eetimes_jp",
+        "google_news",
+        "google_news_us",
+        "tomshardware",
+        "trendforce"
       ],
       "stocks": [],
       "names": {},
-      "hits": 12,
+      "hits": 20,
       "streak_days": 1,
       "method": "ai",
-      "reason": "AI晶片擴產帶動設備商訂單與廠房建置",
-      "confidence": "medium"
+      "reason": "EUV、1.4奈米及晶圓廠設備擴產",
+      "confidence": "high"
+    },
+    {
+      "term": "高階CCL與PCB材料",
+      "sources": [
+        "cnyes",
+        "google_news",
+        "trendforce"
+      ],
+      "stocks": [
+        "6213",
+        "2383",
+        "6274",
+        "1815"
+      ],
+      "names": {
+        "6213": "聯茂",
+        "2383": "台光電",
+        "6274": "台燿",
+        "1815": "富喬"
+      },
+      "hits": 14,
+      "streak_days": 1,
+      "method": "ai",
+      "reason": "AI伺服器帶動CCL、玻纖布與板材需求",
+      "confidence": "high"
     },
     {
       "term": "低軌衛星與太空通訊",
       "sources": [
         "cna",
         "cnyes",
-        "digitaltoday_kr",
+        "cyclesinvest",
         "google_news",
-        "newtalk_finance",
-        "tomshardware"
+        "google_news_us",
+        "newtalk_finance"
       ],
-      "stocks": [],
-      "names": {},
-      "hits": 9,
+      "stocks": [
+        "3491"
+      ],
+      "names": {
+        "3491": "昇達科"
+      },
+      "hits": 8,
       "streak_days": 1,
       "method": "ai",
-      "reason": "星鏈與低軌衛星供應鏈擴產與商機",
+      "reason": "星鏈與低軌衛星供應鏈動態",
       "confidence": "medium"
     },
     {
-      "term": "人形機器人與自動化",
+      "term": "人形機器人與靈巧手",
       "sources": [
-        "cna",
         "cnyes",
-        "google_news_jp",
+        "edn_jp",
+        "google_news",
         "technews"
       ],
       "stocks": [],
       "names": {},
-      "hits": 6,
+      "hits": 7,
       "streak_days": 1,
       "method": "ai",
-      "reason": "機器人靈巧手與本體量產商用化加速",
+      "reason": "機器人靈巧手與本體量產進展",
       "confidence": "medium"
     },
     {
-      "term": "化合物半導體與寬能隙",
+      "term": "寬能隙半導體(SiC/GaN)",
       "sources": [
         "cnyes",
         "edn_jp",
-        "eetimes_jp",
         "google_news",
-        "jov"
+        "google_news_us",
+        "trendforce"
       ],
       "stocks": [],
       "names": {},
       "hits": 6,
       "streak_days": 1,
       "method": "ai",
-      "reason": "碳化矽與氮化鎵在車用與AI能源應用擴大",
+      "reason": "碳化矽與氮化鎵功率元件應用擴大",
       "confidence": "medium"
     },
     {
@@ -155,21 +242,6 @@
       "method": "jieba",
       "reason": "",
       "confidence": ""
-    },
-    {
-      "term": "客製化ASIC晶片",
-      "sources": [
-        "cnyes",
-        "ic975",
-        "techcrunch_semi"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 3,
-      "streak_days": 1,
-      "method": "ai",
-      "reason": "各大雲端巨頭自研ASIC晶片需求強勁",
-      "confidence": "medium"
     },
     {
       "term": "高階市場",
@@ -294,38 +366,6 @@
       "confidence": ""
     },
     {
-      "term": "攜正揚",
-      "sources": [
-        "google_news",
-        "investor"
-      ],
-      "stocks": [
-        "3224"
-      ],
-      "names": {},
-      "hits": 2,
-      "streak_days": 1,
-      "method": "jieba",
-      "reason": "",
-      "confidence": ""
-    },
-    {
-      "term": "hPL",
-      "sources": [
-        "google_news",
-        "investor"
-      ],
-      "stocks": [
-        "3224"
-      ],
-      "names": {},
-      "hits": 2,
-      "streak_days": 1,
-      "method": "jieba",
-      "reason": "",
-      "confidence": ""
-    },
-    {
       "term": "吸市場",
       "sources": [
         "google_news",
@@ -417,20 +457,6 @@
       "sources": [
         "cnyes",
         "cnyes_intl"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 2,
-      "streak_days": 1,
-      "method": "jieba",
-      "reason": "",
-      "confidence": ""
-    },
-    {
-      "term": "Kimi",
-      "sources": [
-        "cnyes",
-        "google_news"
       ],
       "stocks": [],
       "names": {},
@@ -651,6 +677,34 @@
       "confidence": ""
     },
     {
+      "term": "筆電開",
+      "sources": [
+        "cnyes_intl",
+        "google_news"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": "",
+      "confidence": ""
+    },
+    {
+      "term": "數塞進",
+      "sources": [
+        "cnyes_intl",
+        "google_news"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 2,
+      "streak_days": 1,
+      "method": "jieba",
+      "reason": "",
+      "confidence": ""
+    },
+    {
       "term": "兩大風險",
       "sources": [
         "cnyes_intl",
@@ -782,7 +836,7 @@
         "4904"
       ],
       "names": {},
-      "hits": 13,
+      "hits": 14,
       "streak_days": 15,
       "method": "jieba",
       "reason": "",
@@ -800,7 +854,7 @@
         "2330"
       ],
       "names": {},
-      "hits": 17,
+      "hits": 15,
       "streak_days": 15,
       "method": "jieba",
       "reason": "",
@@ -849,7 +903,7 @@
         "2035"
       ],
       "names": {},
-      "hits": 7,
+      "hits": 6,
       "streak_days": 15,
       "method": "jieba",
       "reason": "",
@@ -945,6 +999,23 @@
       "confidence": ""
     },
     {
+      "term": "大立光",
+      "sources": [
+        "cnyes",
+        "simpletechtrend"
+      ],
+      "stocks": [
+        "3008",
+        "4716"
+      ],
+      "names": {},
+      "hits": 2,
+      "streak_days": 14,
+      "method": "jieba",
+      "reason": "",
+      "confidence": ""
+    },
+    {
       "term": "IC",
       "sources": [
         "edn",
@@ -996,14 +1067,15 @@
       "sources": [
         "google_news",
         "ic975",
-        "investor"
+        "investor",
+        "technews"
       ],
       "stocks": [
         "4923",
         "3167"
       ],
       "names": {},
-      "hits": 16,
+      "hits": 17,
       "streak_days": 11,
       "method": "jieba",
       "reason": "",
@@ -1188,23 +1260,6 @@
       "confidence": ""
     },
     {
-      "term": "NVIDIA",
-      "sources": [
-        "cnyes",
-        "eetimes_jp",
-        "google_news",
-        "ic975",
-        "telegram"
-      ],
-      "stocks": [],
-      "names": {},
-      "hits": 9,
-      "streak_days": 6,
-      "method": "jieba",
-      "reason": "",
-      "confidence": ""
-    },
-    {
       "term": "新一代",
       "sources": [
         "ic975",
@@ -1217,6 +1272,22 @@
       ],
       "names": {},
       "hits": 4,
+      "streak_days": 6,
+      "method": "jieba",
+      "reason": "",
+      "confidence": ""
+    },
+    {
+      "term": "NVIDIA",
+      "sources": [
+        "cnyes",
+        "eetimes_jp",
+        "ic975",
+        "telegram"
+      ],
+      "stocks": [],
+      "names": {},
+      "hits": 8,
       "streak_days": 6,
       "method": "jieba",
       "reason": "",
@@ -1346,14 +1417,14 @@
       "confidence": ""
     },
     {
-      "term": "yield",
+      "term": "Vera",
       "sources": [
-        "cnbc_yahoo",
-        "invest_like_the_best"
+        "google_news",
+        "telegram"
       ],
       "stocks": [],
       "names": {},
-      "hits": 3,
+      "hits": 2,
       "streak_days": 5,
       "method": "jieba",
       "reason": "",
@@ -1480,7 +1551,7 @@
       ],
       "stocks": [],
       "names": {},
-      "hits": 6,
+      "hits": 5,
       "streak_days": 4,
       "method": "jieba",
       "reason": "",
@@ -1588,11 +1659,13 @@
       "stocks": [
         "2330",
         "2317",
+        "2308",
         "3224",
-        "2308"
+        "2454",
+        "1459"
       ],
       "names": {},
-      "hits": 86,
+      "hits": 83,
       "streak_days": 3,
       "method": "jieba",
       "reason": "",
@@ -1616,7 +1689,7 @@
         "5347"
       ],
       "names": {},
-      "hits": 14,
+      "hits": 15,
       "streak_days": 3,
       "method": "jieba",
       "reason": "",
@@ -1695,7 +1768,7 @@
       ],
       "stocks": [],
       "names": {},
-      "hits": 7,
+      "hits": 8,
       "streak_days": 3,
       "method": "jieba",
       "reason": "",
@@ -1797,9 +1870,11 @@
         "cnyes",
         "google_news"
       ],
-      "stocks": [],
+      "stocks": [
+        "4958"
+      ],
       "names": {},
-      "hits": 10,
+      "hits": 11,
       "streak_days": 3,
       "method": "jieba",
       "reason": "",
@@ -2010,7 +2085,11 @@
         "technice",
         "wallstreetcn"
       ],
-      "stocks": [],
+      "stocks": [
+        "8044",
+        "2430",
+        "4904"
+      ],
       "names": {},
       "hits": 7,
       "streak_days": 2,
@@ -2155,7 +2234,7 @@
       ],
       "stocks": [],
       "names": {},
-      "hits": 9,
+      "hits": 8,
       "streak_days": 2,
       "method": "jieba",
       "reason": "",
