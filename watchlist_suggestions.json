@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-18 07:10:55",
+  "generated_at": "2026-10-18 08:07:25",
   "version": "watchlist_suggester v2026-10-15",
   "tracker_date": "20261018",
   "counts": {
     "strong": 0,
     "suggest": 36,
-    "watch": 3
+    "watch": 4
   },
   "cnyes_checked": 10,
   "cnyes_all_empty": false,
@@ -36,10 +36,9 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 13,
+      "hits": 12,
       "reason": "",
       "stocks": [
-        "3045",
         "4904"
       ],
       "names": {},
@@ -200,7 +199,7 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 11,
-      "hits": 9,
+      "hits": 8,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -234,11 +233,11 @@
       "confidence": ""
     },
     {
-      "term": "新加坡",
+      "term": "前三季",
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 9,
-      "hits": 3,
+      "hits": 4,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -253,7 +252,7 @@
       "confidence": ""
     },
     {
-      "term": "前三季",
+      "term": "新加坡",
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 9,
@@ -357,9 +356,10 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 7,
-      "hits": 8,
+      "hits": 9,
       "reason": "",
       "stocks": [
+        "2330",
         "3264"
       ],
       "names": {},
@@ -435,7 +435,7 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 6,
-      "hits": 9,
+      "hits": 10,
       "reason": "",
       "stocks": [
         "2357",
@@ -500,7 +500,7 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 6,
-      "hits": 4,
+      "hits": 3,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -738,17 +738,23 @@
       "confidence": ""
     },
     {
-      "term": "半導體設備在地化",
+      "term": "AI伺服器與CCL",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 14,
-      "reason": "台灣與全球設備廠赴美日設廠及本土供應鏈",
+      "hits": 5,
+      "reason": "AI伺服器供應鏈與高階銅箔基板需求",
       "stocks": [
-        "2330"
+        "2383",
+        "6213",
+        "6274",
+        "8358"
       ],
       "names": {
-        "2330": "台積電"
+        "2383": "台光電",
+        "6213": "聯茂",
+        "6274": "台燿",
+        "8358": "金居"
       },
       "cnyes_recent": null,
       "cnyes_earlier_daily": null,
@@ -756,15 +762,15 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [],
-      "confidence": "medium"
+      "confidence": "high"
     },
     {
-      "term": "AI代理技術架構",
+      "term": "SpaceX供應鏈",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 9,
-      "reason": "Agentic AI從模型轉向企業級代理執行系統",
+      "hits": 5,
+      "reason": "低軌衛星與火箭產能擴建商機",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -776,12 +782,29 @@
       "confidence": "medium"
     },
     {
-      "term": "晶片禁令與走私防制",
+      "term": "寬能隙半導體",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 9,
-      "reason": "地緣政治下對中國科技管制與出口審查升級",
+      "hits": 5,
+      "reason": "碳化矽與氮化鎵功率元件供應鏈",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [],
+      "confidence": "medium"
+    },
+    {
+      "term": "晶片出口管制",
+      "tier": "watch",
+      "method": "ai",
+      "streak_days": 1,
+      "hits": 5,
+      "reason": "美中半導體出口禁令與走私防制",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -839,11 +862,11 @@
       "reason": "overlaps:High-NA EUV"
     },
     {
-      "term": "Tesla",
+      "term": "Nvidia",
       "reason": "is_company_name"
     },
     {
-      "term": "Nvidia",
+      "term": "Tesla",
       "reason": "is_company_name"
     },
     {
@@ -871,6 +894,10 @@
       "reason": "jieba_insufficient_streak"
     },
     {
+      "term": "賴清德",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
       "term": "商務部",
       "reason": "jieba_insufficient_streak"
     },
@@ -888,10 +915,6 @@
     },
     {
       "term": "PPI",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "賴清德",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -927,11 +950,11 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "Duo",
+      "term": "基本面",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "基本面",
+      "term": "Duo",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -980,6 +1003,10 @@
     },
     {
       "term": "供應商",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "晶圓產能",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -1035,11 +1062,11 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "VIX",
+      "term": "主動式",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "主動式",
+      "term": "VIX",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -1135,10 +1162,6 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "EV",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
       "term": "TRV",
       "reason": "jieba_insufficient_streak"
     },
@@ -1207,28 +1230,20 @@
       "reason": "jieba_insufficient_streak"
     },
     {
+      "term": "Starlink",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
       "term": "Gmail",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "HBM記憶體規格",
-      "reason": "overlaps:HBM"
-    },
-    {
-      "term": "Terafab晶圓廠合作",
+      "term": "Terafab晶圓廠",
       "reason": "overlaps:Terafab"
     },
     {
       "term": "運動會",
       "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "CXL次世代記憶體",
-      "reason": "overlaps:CXL"
-    },
-    {
-      "term": "PLP",
-      "reason": "overlaps:FOPLP"
     },
     {
       "term": "外銷訂",
@@ -1237,6 +1252,10 @@
     {
       "term": "相關業務",
       "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "PLP",
+      "reason": "overlaps:FOPLP"
     },
     {
       "term": "GTC",
@@ -1263,11 +1282,11 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "LED",
+      "term": "財政部",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "研究所",
+      "term": "00984D",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -1276,7 +1295,24 @@
     }
   ],
   "paste_block": "",
-  "consensus": [],
+  "consensus": [
+    {
+      "term": "晶圓廠",
+      "ai_phrases": [
+        "Terafab晶圓廠"
+      ],
+      "hits": 2,
+      "stocks": [],
+      "names": {},
+      "consensus_days": 1,
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "status": "pending:共識1天(需2天)"
+    }
+  ],
   "ai_failed": false,
   "auto_added": [],
   "stale_auto_added": [],

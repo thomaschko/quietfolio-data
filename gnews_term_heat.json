@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-18 15:17:40",
+  "generated_at": "2026-10-18 16:13:57",
   "window": {
     "recent_start": "2026-10-14",
     "baseline_days": 20,
@@ -25,15 +25,15 @@
     "by_provider": {
       "gemini": 10
     },
-    "kept": 11,
-    "dropped": 2,
+    "kept": 10,
+    "dropped": 0,
     "errors": []
   },
   "terms": [
     {
       "term": "High-NA EUV",
       "us": true,
-      "returned": 70,
+      "returned": 71,
       "truncated": false,
       "recent": 7,
       "earlier": 2,
@@ -52,7 +52,7 @@
         {
           "name": "台積電",
           "code": "2330",
-          "role": "導入High-NA EUV",
+          "role": "晶圓代工廠",
           "title_ids": [
             2,
             3,
@@ -88,15 +88,16 @@
     {
       "term": "衛星通訊",
       "us": false,
-      "returned": 96,
+      "returned": 97,
       "truncated": false,
-      "recent": 10,
-      "earlier": 6,
-      "earlier_daily": 0.353,
-      "ratio": 9.44,
+      "recent": 11,
+      "earlier": 7,
+      "earlier_daily": 0.412,
+      "ratio": 8.9,
       "status": "surge",
       "codes": [
         "3025",
+        "6412",
         "6928"
       ],
       "titles": [
@@ -106,23 +107,23 @@
       ],
       "ai_companies": [
         {
-          "name": "攸泰科技",
+          "name": "攸泰",
           "code": "6928",
-          "role": "深化衛星通訊布局",
+          "role": "衛星通訊營收年增",
           "title_ids": [
-            9,
-            10
+            9
           ],
-          "evidence": "討論牆 | 攸泰科技深化衛星通訊布局，累積中長期成長動能"
+          "evidence": "攸泰衛星通訊營收年增1.75倍 3Q26營運逐步回溫"
         },
         {
           "name": "群電",
           "code": "6412",
-          "role": "衛星通訊電源需求升溫",
+          "role": "衛星通訊電源供應",
           "title_ids": [
-            14
+            15,
+            16
           ],
-          "evidence": "群電衛星通訊電源需求升溫，第四季訂單較上季倍增 | 科技新報"
+          "evidence": "△個股：群電(6412)前9月營收年減11.15%，衛星通訊電源Q4較Q3倍數成長"
         }
       ],
       "ai_dropped": [],
@@ -249,14 +250,15 @@
           "role": "客製化記憶體廠",
           "title_ids": [
             2,
-            3
+            3,
+            7
           ],
           "evidence": "愛普獲利／8月2.61億元、年增14% 矽電容明年放量添動能"
         },
         {
           "name": "矽格",
           "code": "6257",
-          "role": "半導體封測廠",
+          "role": "封測廠",
           "title_ids": [
             6
           ],
@@ -267,64 +269,36 @@
       "ai_provider": "gemini"
     },
     {
-      "term": "後量子密碼",
+      "term": "混合鍵合",
       "us": false,
-      "returned": 49,
+      "returned": 24,
       "truncated": false,
-      "recent": 6,
-      "earlier": 8,
-      "earlier_daily": 0.471,
+      "recent": 3,
+      "earlier": 4,
+      "earlier_daily": 0.235,
       "ratio": 4.25,
       "status": "surge",
       "codes": [
-        "6590",
-        "6163",
-        "1603"
+        "2330"
       ],
       "titles": [
-        "實測 QuTS hero h6.1.0 Public Beta ：AI Service Center 登場，介面煥然一新且支援後量子密碼學",
-        "普鴻的後量子密碼學技術已達何種水準？",
-        "資安國造里程碑 普鴻自研後量子密碼學演算法程式獲 NIST CAVP 認證"
+        "討論牆 | 報導稱 ASML 正研發競爭性混合鍵合產品，Besi 股價下跌",
+        "荷蘭晶片設備商Besi股價下跌，報告指ASML正開發競爭性混合鍵合產品 作者 Investing.com - Investing.com 香港",
+        "3DIC封裝是什麼？核心技術（TSV、混合鍵合）與供應鏈完整解析"
       ],
       "ai_companies": [
         {
-          "name": "普鴻",
-          "code": "6590",
-          "role": "自研後量子密碼演算法",
+          "name": "台積電",
+          "code": "2330",
+          "role": "晶片巨頭參與EPIC中心",
           "title_ids": [
-            2,
-            3,
-            5,
             6,
-            7,
-            8,
-            10,
-            11
+            7
           ],
-          "evidence": "普鴻的後量子密碼學技術已達何種水準？"
-        },
-        {
-          "name": "華電網",
-          "code": "6163",
-          "role": "攻半導體資安與推後量子密碼",
-          "title_ids": [
-            9,
-            13,
-            14
-          ],
-          "evidence": "華電網新公司攻半導體資安，後量子密碼啟動導入"
+          "evidence": "應材與貝思合攻混合鍵合技術 台積電等晶片巨頭參與EPIC中心 - 商傳媒"
         }
       ],
-      "ai_dropped": [
-        {
-          "name": "星展",
-          "reason": "查無上市櫃股名"
-        },
-        {
-          "name": "永豐",
-          "reason": "查無上市櫃股名"
-        }
-      ],
+      "ai_dropped": [],
       "ai_provider": "gemini"
     },
     {
@@ -352,7 +326,7 @@
     {
       "term": "DSP",
       "us": false,
-      "returned": 18,
+      "returned": 19,
       "truncated": false,
       "recent": 2,
       "earlier": 3,
@@ -371,7 +345,7 @@
         {
           "name": "達發",
           "code": "6526",
-          "role": "DSP相關晶片供應",
+          "role": "DSP相關廠商",
           "title_ids": [
             2
           ],
@@ -399,6 +373,27 @@
       ]
     },
     {
+      "term": "後量子密碼",
+      "us": false,
+      "returned": 48,
+      "truncated": false,
+      "recent": 5,
+      "earlier": 8,
+      "earlier_daily": 0.471,
+      "ratio": 3.54,
+      "status": "surge",
+      "codes": [
+        "6590",
+        "6163",
+        "1603"
+      ],
+      "titles": [
+        "實測 QuTS hero h6.1.0 Public Beta ：AI Service Center 登場，介面煥然一新且支援後量子密碼學",
+        "普鴻的後量子密碼學技術已達何種水準？",
+        "資安國造里程碑 普鴻自研後量子密碼學演算法程式獲 NIST CAVP 認證"
+      ]
+    },
+    {
       "term": "反無人機",
       "us": false,
       "returned": 100,
@@ -418,7 +413,7 @@
     {
       "term": "第三代半導體",
       "us": false,
-      "returned": 21,
+      "returned": 20,
       "truncated": false,
       "recent": 3,
       "earlier": 5,
@@ -435,28 +430,9 @@
       ]
     },
     {
-      "term": "混合鍵合",
-      "us": false,
-      "returned": 25,
-      "truncated": false,
-      "recent": 3,
-      "earlier": 5,
-      "earlier_daily": 0.294,
-      "ratio": 3.4,
-      "status": "surge",
-      "codes": [
-        "2330"
-      ],
-      "titles": [
-        "討論牆 | 報導稱 ASML 正研發競爭性混合鍵合產品，Besi 股價下跌",
-        "荷蘭晶片設備商Besi股價下跌，報告指ASML正開發競爭性混合鍵合產品 作者 Investing.com - Investing.com 香港",
-        "3DIC封裝是什麼？核心技術（TSV、混合鍵合）與供應鏈完整解析"
-      ]
-    },
-    {
       "term": "NOR Flash",
       "us": false,
-      "returned": 36,
+      "returned": 38,
       "truncated": false,
       "recent": 3,
       "earlier": 7,
@@ -475,7 +451,7 @@
     {
       "term": "CW雷射",
       "us": false,
-      "returned": 19,
+      "returned": 20,
       "truncated": false,
       "recent": 2,
       "earlier": 5,
@@ -483,8 +459,8 @@
       "ratio": 2.27,
       "status": "surge",
       "codes": [
-        "3081",
-        "8112"
+        "8112",
+        "3081"
       ],
       "titles": [
         "討論牆| AI光通訊需求從光模組延伸至上游晶片，源杰科技第三季淨利估年增逾6倍，CW雷射器成成長主力",
@@ -533,7 +509,7 @@
     {
       "term": "固態變壓器",
       "us": false,
-      "returned": 30,
+      "returned": 31,
       "truncated": false,
       "recent": 5,
       "earlier": 0,
@@ -583,12 +559,12 @@
     {
       "term": "RISC-V",
       "us": true,
-      "returned": 90,
+      "returned": 91,
       "truncated": false,
       "recent": 12,
-      "earlier": 46,
-      "earlier_daily": 2.706,
-      "ratio": 1.48,
+      "earlier": 48,
+      "earlier_daily": 2.824,
+      "ratio": 1.42,
       "status": "watch",
       "codes": [
         "6533"
@@ -602,7 +578,7 @@
     {
       "term": "邊緣運算",
       "us": false,
-      "returned": 40,
+      "returned": 41,
       "truncated": false,
       "recent": 3,
       "earlier": 12,
@@ -632,9 +608,9 @@
         "2330",
         "6770",
         "2303",
-        "3008",
+        "4716",
         "5347",
-        "4716"
+        "3008"
       ],
       "titles": [
         "台積電法說會｜魏哲家坦言先進封裝產能太缺！攜格羅方德支援矽中介層",
@@ -645,7 +621,7 @@
     {
       "term": "矽智財",
       "us": false,
-      "returned": 33,
+      "returned": 32,
       "truncated": false,
       "recent": 2,
       "earlier": 10,
@@ -653,9 +629,9 @@
       "ratio": 1.13,
       "status": "watch",
       "codes": [
-        "3443",
         "3529",
-        "3661"
+        "3661",
+        "3443"
       ],
       "titles": [
         "熱門族群》AI ASIC訂單強勁 矽智財族群蓄勢待發",
@@ -669,14 +645,14 @@
       "returned": 65,
       "truncated": false,
       "recent": 4,
-      "earlier": 21,
-      "earlier_daily": 1.235,
-      "ratio": 1.08,
+      "earlier": 22,
+      "earlier_daily": 1.294,
+      "ratio": 1.03,
       "status": "watch",
       "codes": [
+        "1473",
         "5347",
-        "2455",
-        "1473"
+        "2455"
       ],
       "titles": [
         "WOW!夢想實驗樂園 串聯青年創意 展現青春行動力",
@@ -687,17 +663,16 @@
     {
       "term": "PQC",
       "us": false,
-      "returned": 45,
+      "returned": 44,
       "truncated": false,
       "recent": 4,
-      "earlier": 24,
-      "earlier_daily": 1.412,
-      "ratio": 0.94,
+      "earlier": 23,
+      "earlier_daily": 1.353,
+      "ratio": 0.99,
       "status": "watch",
       "codes": [
-        "1603",
         "6590",
-        "6163",
+        "1603",
         "8054",
         "2204",
         "2412"
@@ -713,10 +688,10 @@
       "us": false,
       "returned": 100,
       "truncated": true,
-      "recent": 44,
+      "recent": 43,
       "earlier": 1,
       "earlier_daily": 0.059,
-      "ratio": 249.33,
+      "ratio": 243.67,
       "status": "quiet",
       "codes": [
         "2330",
@@ -724,8 +699,8 @@
       ],
       "titles": [
         "先進封裝引爆跨界商機！面板廠佈局玻璃基板，台積電3奈米2028年量產-財經焦點情報站",
-        "AI筆電驗證與3奈米擴產同步推進，台灣供應鏈何時看到出貨-柏宇 KD 獲利模式",
-        "AI供應鏈深化在台佈局！高通百項驗證達標，最新台積電3奈米擴廠計畫曝光-財經焦點情報站"
+        "TWA00 加權指數- 友達跨足先進封裝，台積電3奈米新廠落腳台南- 股市爆料同學會",
+        "AI筆電驗證與3奈米擴產同步推進，台灣供應鏈何時看到出貨-柏宇 KD 獲利模式"
       ]
     },
     {
@@ -819,23 +794,6 @@
       ]
     },
     {
-      "term": "特殊氣體",
-      "us": false,
-      "returned": 26,
-      "truncated": false,
-      "recent": 2,
-      "earlier": 1,
-      "earlier_daily": 0.059,
-      "ratio": 11.33,
-      "status": "quiet",
-      "codes": [],
-      "titles": [
-        "英特爾以色列先進晶圓廠驚傳爆炸、疑涉特殊氣體",
-        "英特爾以色列先進晶圓廠驚傳爆炸、疑涉特殊氣體- 新聞",
-        "搶攻半導體特殊氣體+單月營收破紀錄！ 「老石化銅板股」外資狂掃5.3萬張炸噴21.7%"
-      ]
-    },
-    {
       "term": "利基型記憶體",
       "us": false,
       "returned": 11,
@@ -870,6 +828,22 @@
       "titles": [
         "力旺/熵碼科技PUF IP獲Arm採用，進駐新一代AGI CPU平台，打造AI代理硬體信任根",
         "力旺Q3營收增，PUF拓展AI應用 | MoneyDJ理財網"
+      ]
+    },
+    {
+      "term": "特殊氣體",
+      "us": false,
+      "returned": 25,
+      "truncated": false,
+      "recent": 1,
+      "earlier": 1,
+      "earlier_daily": 0.059,
+      "ratio": 5.67,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "英特爾以色列先進晶圓廠驚傳爆炸、疑涉特殊氣體- 新聞",
+        "搶攻半導體特殊氣體+單月營收破紀錄！ 「老石化銅板股」外資狂掃5.3萬張炸噴21.7%"
       ]
     },
     {
@@ -919,23 +893,6 @@
         "力旺/熵碼科技PUF IP獲Arm採用，進駐新一代AGI CPU平台，打造AI代理硬體信任根",
         "PQC金鑰轉型應從信任根著手，傳統信任根恐讓整個金鑰階層面臨量子威脅",
         "第一款國產後量子安全晶片正式上市！三項後量子標準導入通用晶片，自主硬體信任根拓展資安應用"
-      ]
-    },
-    {
-      "term": "Rubin Ultra",
-      "us": false,
-      "returned": 37,
-      "truncated": false,
-      "recent": 1,
-      "earlier": 2,
-      "earlier_daily": 0.118,
-      "ratio": 2.83,
-      "status": "quiet",
-      "codes": [],
-      "titles": [
-        "討論牆 | 輝達Rubin Ultra傳縮減HBM容量！記憶體短缺下晶片廠商如何破局？",
-        "EPS衝124.48元！法人喊旺「這檔高精密軸承龍頭」目標價上看3字頭AI伺服器液冷、Rubin Ultra動能強",
-        "CDU認證落榜、Rubin Ultra規格傳變？法人卻反手上修這家散熱廠業績及目標價- 證券"
       ]
     },
     {
@@ -996,7 +953,7 @@
     {
       "term": "共同封裝光學",
       "us": false,
-      "returned": 39,
+      "returned": 40,
       "truncated": false,
       "recent": 1,
       "earlier": 3,
@@ -1013,7 +970,7 @@
     {
       "term": "電源管理",
       "us": false,
-      "returned": 33,
+      "returned": 34,
       "truncated": false,
       "recent": 1,
       "earlier": 3,
@@ -1028,9 +985,26 @@
       ]
     },
     {
+      "term": "Rubin Ultra",
+      "us": false,
+      "returned": 38,
+      "truncated": false,
+      "recent": 1,
+      "earlier": 3,
+      "earlier_daily": 0.176,
+      "ratio": 1.89,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "討論牆 | 輝達Rubin Ultra傳縮減HBM容量！記憶體短缺下晶片廠商如何破局？",
+        "EPS衝124.48元！法人喊旺「這檔高精密軸承龍頭」目標價上看3字頭AI伺服器液冷、Rubin Ultra動能強",
+        "CDU認證落榜、Rubin Ultra規格傳變？法人卻反手上修這家散熱廠業績及目標價- 證券"
+      ]
+    },
+    {
       "term": "小晶片",
       "us": false,
-      "returned": 25,
+      "returned": 26,
       "truncated": false,
       "recent": 1,
       "earlier": 3,
@@ -1122,7 +1096,7 @@
     {
       "term": "固態電池",
       "us": false,
-      "returned": 64,
+      "returned": 65,
       "truncated": false,
       "recent": 5,
       "earlier": 49,
@@ -1211,7 +1185,7 @@
     {
       "term": "EML雷射",
       "us": false,
-      "returned": 5,
+      "returned": 4,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1410,7 +1384,7 @@
     {
       "term": "NRE",
       "us": false,
-      "returned": 10,
+      "returned": 11,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1477,7 +1451,7 @@
     {
       "term": "諧波減速機",
       "us": false,
-      "returned": 6,
+      "returned": 7,
       "truncated": false,
       "recent": 0,
       "earlier": 3,
@@ -1591,7 +1565,7 @@
     {
       "term": "Grace Hopper",
       "us": false,
-      "returned": 3,
+      "returned": 2,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1619,7 +1593,7 @@
     {
       "term": "Spectrum-X",
       "us": true,
-      "returned": 40,
+      "returned": 39,
       "truncated": false,
       "recent": 0,
       "earlier": 2,
@@ -1690,7 +1664,7 @@
     {
       "term": "eMMC",
       "us": false,
-      "returned": 8,
+      "returned": 9,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1845,7 +1819,7 @@
     {
       "term": "潔淨管件",
       "us": false,
-      "returned": 5,
+      "returned": 6,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1878,16 +1852,16 @@
     {
       "term": "半導體建廠",
       "us": false,
-      "returned": 40,
+      "returned": 32,
       "truncated": false,
       "recent": 0,
-      "earlier": 15,
-      "earlier_daily": 0.882,
+      "earlier": 14,
+      "earlier_daily": 0.824,
       "ratio": 0.0,
       "status": "quiet",
       "codes": [
-        "2030",
         "2221",
+        "2030",
         "2404"
       ],
       "titles": [
@@ -1973,11 +1947,11 @@
     {
       "term": "光交換",
       "us": false,
-      "returned": 17,
+      "returned": 18,
       "truncated": false,
       "recent": 0,
-      "earlier": 7,
-      "earlier_daily": 0.412,
+      "earlier": 6,
+      "earlier_daily": 0.353,
       "ratio": 0.0,
       "status": "quiet",
       "codes": [],
@@ -2018,7 +1992,7 @@
     {
       "term": "Spectrum-6",
       "us": true,
-      "returned": 14,
+      "returned": 13,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -2033,7 +2007,7 @@
     {
       "term": "BlueField-4",
       "us": true,
-      "returned": 47,
+      "returned": 46,
       "truncated": false,
       "recent": 0,
       "earlier": 8,
@@ -2140,8 +2114,8 @@
       "ratio": 0.0,
       "status": "quiet",
       "codes": [
-        "2308",
-        "2317"
+        "2317",
+        "2308"
       ],
       "titles": [
         "Vicor掀垂直供電專利爭議 美國337調查延伸伺服器電源供應鏈",
