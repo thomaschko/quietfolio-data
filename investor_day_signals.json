@@ -1,30 +1,14 @@
 {
- "generated_at": "2026-10-17 20:59:41",
- "date": "20261017",
+ "generated_at": "2026-10-18 15:12:37",
+ "date": "20261018",
  "events": [
-  {
-   "type": "investor_day",
-   "symbol": "MRVL",
-   "name": "Marvell",
-   "event": "Analyst Day",
-   "event_date": "2026-10-14",
-   "day_offset": 3,
-   "date_inferred": true,
-   "news_count": 1,
-   "recap_count": 0,
-   "recap_sources": [],
-   "titles": [
-    "Unpacking Marvell's Analyst Day, OpenAI Revenue Rumors, and the Heterogeneous Rack｜The Circuit - finance.biggo.com"
-   ],
-   "keywords": {}
-  },
   {
    "type": "investor_day",
    "symbol": "AMAT",
    "name": "Applied Materials",
    "event": "Investor Day",
    "event_date": "2026-10-14",
-   "day_offset": 3,
+   "day_offset": 4,
    "date_inferred": true,
    "news_count": 3,
    "recap_count": 0,
@@ -47,7 +31,7 @@
    "name": "Astera Labs",
    "event": "Investor Meeting",
    "event_date": "2026-10-16",
-   "day_offset": 1,
+   "day_offset": 2,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -63,7 +47,7 @@
    "name": "Synopsys",
    "event": "Investor Day",
    "event_date": "2026-10-12",
-   "day_offset": 5,
+   "day_offset": 6,
    "date_inferred": true,
    "news_count": 2,
    "recap_count": 0,
@@ -81,14 +65,14 @@
    "event": "OCP Global Summit",
    "event_date": null,
    "day_offset": null,
-   "news_count": 21,
+   "news_count": 15,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
     "“Memory-Centric Server Systems Are the Future”: SK hynix Presents Its Next-Generation AI Infrastructure Vision at OCP Global Summit 2026 - SK hynix",
     "Infrastructure Highlights from OCP Global Summit - HPCwire",
+    "XCENA Showcases CXL Memory Innovations for AI Inference at OCP Global Summit 2026 - Yahoo Finance",
     "Agentic AI Takes the Stage at OCP Global Summit 2026 - All About Circuits",
-    "Arm at the OCP Global Summit 2026: How Arm AGI CPU is scaling agentic AI infrastructure from CPU to rack - Arm Newsroom",
     "OCP Global Summit 2026: Introducing AMD Helion, Agentic AI Compute at Rack Scale - StorageNewsletter",
     "Breakthrough Cooling Solutions for the AI Computing Surge, Clivet Showcases Next-Gen Magnetic-Bearing Centrifugal Compressor at OCP Global Summit - PR Newswire"
    ],
@@ -97,10 +81,6 @@
      "count": 12,
      "category": "記憶體"
     },
-    "AI infrastructure": {
-     "count": 10,
-     "category": "客戶capex/需求"
-    },
     "inference": {
      "count": 8,
      "category": "客戶capex/需求"
@@ -108,6 +88,10 @@
     "CXL": {
      "count": 8,
      "category": "互連/網通"
+    },
+    "AI infrastructure": {
+     "count": 4,
+     "category": "客戶capex/需求"
     },
     "optical": {
      "count": 2,
@@ -120,10 +104,6 @@
     "optical interconnect": {
      "count": 2,
      "category": "互連/網通"
-    },
-    "thermal management": {
-     "count": 2,
-     "category": "資料中心電源"
     }
    }
   },
@@ -138,18 +118,14 @@
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "SEMICON West 2026: Kuraray America Presents Specialty Solvents and Polyols - Kuraray",
-    "SEMICON West 2026 Displays AI-Era Chipmaking, Workforce Development - EE Times",
     "SEMICON West 2026 highlights AI-era chipmaking, workforce development - electronics.economictimes.indiatimes.com",
+    "SEMICON West 2026: Kuraray America Presents Specialty Solvents and Polyols - Kuraray",
+    "BSL at SEMICON West 2026: Ultra-Clean Processes with Global Partners - FinancialContent",
+    "SEMICON West 2026 Displays AI-Era Chipmaking, Workforce Development - EE Times",
     "Semicon West 2026: Teradyne launches edge AI automated test platform - Electronics360",
-    "PROCOMER highlights Costa Rica as a strategic destination for the semiconductor industry at SEMICON West - PR Newswire",
-    "SEMICON West 2026: NVIDIA Expands GPU Libraries for AI-driven Semiconductor Manufacturing - EE Times Asia"
+    "Applied Materials to host investor breakfast presentation at SEMICON West - scanx.trade"
    ],
    "keywords": {
-    "GPU": {
-     "count": 2,
-     "category": "客戶capex/需求"
-    },
     "HBM4": {
      "count": 2,
      "category": "記憶體"
@@ -182,15 +158,6 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "AI infrastructure",
-   "category": "客戶capex/需求",
-   "count": 10
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
    "keyword": "inference",
    "category": "客戶capex/需求",
    "count": 8
@@ -203,6 +170,15 @@
    "keyword": "CXL",
    "category": "互連/網通",
    "count": 8
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "AI infrastructure",
+   "category": "客戶capex/需求",
+   "count": 4
   },
   {
    "symbol": "OCP Global Summit",
@@ -229,24 +205,6 @@
    "type": "conference",
    "keyword": "optical interconnect",
    "category": "互連/網通",
-   "count": 2
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "thermal management",
-   "category": "資料中心電源",
-   "count": 2
-  },
-  {
-   "symbol": "SEMICON West",
-   "label": "SEMICON West",
-   "event": "SEMICON West",
-   "type": "conference",
-   "keyword": "GPU",
-   "category": "客戶capex/需求",
    "count": 2
   },
   {
