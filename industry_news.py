@@ -3,9 +3,9 @@
 ============================================================
 industry_news.py — 產業新聞日報 / 週報(2026-10-18 新增)
 ============================================================
-用所有題材源整理成一份給人讀的產業新聞日報,每週六再彙整一份週報,輸出 JSON + 靜態 HTML
-頁面到 industry_news/。題材源 = news_sources.fetch_titles_by_source 的 46 源(含 2026-10-18
-新增的產業タイムズ社「電子デバイス産業新聞」)+ 同一次 workflow 稍早產出的偵測源資料:
+用所有題材源整理成一份給人讀的產業新聞日報,每週六再彙整一份週報,輸出 JSON 到 industry_news/,
+由 Quietfolio(GAS:IndustryNewsFetch.js → 網頁「市場 → 產業新聞」)讀 industry_news/latest.json 顯示。
+題材源 = news_sources.fetch_titles_by_source 的 46 源(含 2026-10-18 新增的產業タイムズ社「電子デバイス産業新聞」)+ 同一次 workflow 稍早產出的偵測源資料:
 MOPS 重訊主旨(event_theme_raw)、美股 8-K(us_8k_events)、國際法說/投資人日新聞
 (investor_day_signals)、D2 產業術語熱詞的 Google News 標題(gnews_term_heat)。
 
@@ -32,7 +32,6 @@ import os
 import re
 import sys
 import json
-import html
 import glob
 import datetime as dt
 
@@ -214,10 +213,23 @@ def _verified_companies(names, titles, name2code, code2name):
     if not name2code or not isinstance(names, list):
         return []
     from term_stock_ai import lookup_code
+    try:
+        from watchlist_suggester import FOREIGN_COMPANY_NAMES
+    except Exception:
+        FOREIGN_COMPANY_NAMES = {"海力士", "sk海力士"}
+    # 10/18 第二次實跑:AI 仍把「SK海力士」標成 4923 力士(「力士」確實出現在標題裡)→
+    # 比對前先把外國公司名(海力士、三星…)從標題挖掉,再看台灣公司名是否還在
+    foreign = sorted((f for f in FOREIGN_COMPANY_NAMES if re.search(r"[一-鿿]", f)), key=len, reverse=True)
+
+    def strip_foreign(t):
+        for f in foreign:
+            t = t.replace(f, "　")
+        return t
+    clean = [strip_foreign(t) for t in titles]
     out, seen = [], set()
     for n in names[:8]:
         code, name = lookup_code(n, name2code)
-        if not code or code in seen or not any(name in t or code in t for t in titles):
+        if not code or code in seen or not any(name in t or code in t for t in clean):
             continue
         seen.add(code)
         out.append({"code": code, "name": (code2name or {}).get(code, name)})
@@ -423,131 +435,14 @@ def build_weekly(today, daily_docs, chain, sangyo=None):
 
 
 # ============================================================
-# HTML
+# 給 Quietfolio(GAS)讀的彙整檔
 # ============================================================
-CSS = """
-:root{--bg:#fbfaf8;--fg:#1f2328;--muted:#6a6f76;--card:#ffffff;--line:#e4e1dc;--accent:#2f6f9f;--chip:#eef3f7}
-@media (prefers-color-scheme:dark){:root{--bg:#16181b;--fg:#e6e6e3;--muted:#9aa0a6;--card:#1f2226;--line:#30343a;--accent:#7fb3da;--chip:#26303a}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);
-font:15px/1.65 -apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
-main{max-width:860px;margin:0 auto;padding:20px 16px 60px}h1{font-size:22px;margin:0 0 4px}
-h2{font-size:18px;margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
-h3{font-size:15px;margin:18px 0 6px;color:var(--accent)}.meta{color:var(--muted);font-size:13px}
-nav a{margin-right:14px;color:var(--accent);text-decoration:none}.ov{background:var(--card);border:1px solid var(--line);
-border-radius:8px;padding:12px 14px;margin:14px 0}ul{padding-left:18px;margin:6px 0}li{margin:6px 0}
-details{color:var(--muted);font-size:13px}summary{cursor:pointer}.chip{display:inline-block;background:var(--chip);
-border-radius:10px;padding:0 7px;margin:0 4px 0 0;font-size:12px;color:var(--fg)}.warn{color:#b26a00}
-.ja{color:var(--muted);font-size:13px}a{color:var(--accent)}
-table.cov{border-collapse:collapse;margin:8px 0;font-size:13px}table.cov td,table.cov th{border-bottom:1px solid var(--line);
-padding:2px 10px 2px 0;text-align:left}
-"""
-
-
-def _e(s):
-    return html.escape(str(s or ""))
-
-
-def _titles_html(titles):
-    rows = "".join(f"<div>{_e(t['title'])} <span class='meta'>— {_e('、'.join(t.get('sources', [])))}</span></div>"
-                   for t in titles)
-    return f"<details><summary>原始標題 {len(titles)} 則</summary>{rows}</details>"
-
-
-def _codes_html(codes):
-    return "".join(f"<span class='chip'>{_e(c['code'])}{_e(c.get('name', ''))}</span>" for c in codes)
-
-
-def page(title, body, nav=""):
-    return (f"<!doctype html><html lang='zh-Hant'><head><meta charset='utf-8'>"
-            f"<meta name='viewport' content='width=device-width,initial-scale=1'><title>{_e(title)}</title>"
-            f"<style>{CSS}</style></head><body><main>{nav}{body}"
-            "<p class='meta' style='margin-top:40px'>只依各來源公開標題整理;AI 重點僅供閱讀參考,"
-            "請以原始標題與原文為準。不構成投資建議。</p></main></body></html>")
-
-
-def daily_body(doc):
-    head = (f"<h1>產業新聞日報 {_e(doc['date'])}</h1><p class='meta'>{doc['n_sources']}/{doc['n_sources_total']} 個來源有資料"
-            f" · 標題 {doc['n_titles']} 則 · 產業相關 {doc['n_relevant']} 則"
-            + (f" · AI:{_e(doc['provider'])}" if doc.get("provider") else "") + f" · 產生於 {_e(doc['generated_at'])}</p>")
-    if doc.get("fallback"):
-        head += "<p class='warn'>⚠ AI 整理失敗,以下是依 watchlist 詞分組的原始標題,未經整理。</p>"
-    if doc.get("overview"):
-        head += f"<div class='ov'><b>今日重點(AI 依標題摘要)</b><br>{_e(doc['overview'])}</div>"
-    body = ""
-    for sec in doc.get("sections", []):
-        lis = "".join(f"<li>{_e(it['headline'])} <span class='meta'>({it['n_sources']}源)</span> {_codes_html(it['codes'])}"
-                      f"{_titles_html(it['titles'])}</li>" for it in sec["items"])
-        body += f"<h3>{_e(sec['topic'])}</h3><ul>{lis}</ul>"
-    if not doc.get("sections"):
-        body = "<p class='meta'>今天沒有產業相關標題(或全部來源抓取失敗)。</p>"
-    cov = doc.get("coverage") or []
-    if cov:
-        rows = "".join(f"<tr><td>{_e(c['source'])}</td><td>{c['fetched']}</td><td>{c['sent']}</td><td>{c['cited']}</td></tr>"
-                       for c in sorted(cov, key=lambda c: (-c["cited"], -c["sent"], -c["fetched"])))
-        zero = [c["source"] for c in cov if not c["fetched"]]
-        body += ("<details style='margin-top:24px'><summary>來源覆蓋:"
-                 f"{sum(1 for c in cov if c['fetched'])}/{len(cov)} 個來源有標題、"
-                 f"{sum(1 for c in cov if c['cited'])} 個被引用</summary>"
-                 "<table class='cov'><tr><th>來源</th><th>抓到</th><th>送 AI</th><th>被引用</th></tr>"
-                 f"{rows}</table>" + (f"<p>今天沒抓到:{_e('、'.join(zero))}</p>" if zero else "") + "</details>")
-    return head + body
-
-
-def render_daily(doc, nav=""):
-    return page(f"產業新聞日報 {doc['date']}", daily_body(doc), nav)
-
-
-def render_weekly(doc, nav=""):
-    head = (f"<h1>產業新聞週報 {_e(doc['week'])}</h1><p class='meta'>{_e(doc['range'][0])} ~ {_e(doc['range'][1])}"
-            f" · {doc['n_daily']} 份日報 · {doc['n_items']} 則條目" + (f" · AI:{_e(doc['provider'])}" if doc.get("provider") else "")
-            + "</p>")
-    if doc.get("fallback"):
-        head += "<p class='warn'>⚠ AI 彙整失敗,以下只列出本週出現來源數最多的條目。</p>"
-    if doc.get("overview"):
-        head += f"<div class='ov'><b>本週重點(AI 依日報條目摘要)</b><br>{_e(doc['overview'])}</div>"
-    body = ""
-    for th in doc.get("themes", []):
-        lis = "".join(f"<li><span class='meta'>{_e(it['date'][5:])}</span> {_e(it['headline'])}{_titles_html(it['titles'])}</li>"
-                      for it in th["items"])
-        body += (f"<h3>{_e(th['topic'])}</h3>" + (f"<p>{_e(th['summary'])}</p>" if th.get("summary") else "")
-                 + (f"<p>{_codes_html(th['codes'])}</p>" if th.get("codes") else "") + f"<ul>{lis}</ul>")
-    sg = doc.get("sangyo")
-    if sg:
-        body += (f"<h2>日本:電子デバイス産業新聞 {_e(sg['issue_date'])}(第{sg['issue_no']}號)頭條</h2>"
-                 f"<p class='meta'>AI 翻譯 {sg['translated']}/{sg['total']} 則 · <a href='{_e(sg['url'])}'>原頁</a></p>"
-                 f"<p><b>{_e(sg['top']['zh'] or sg['top']['ja'])}</b><br><span class='ja'>{_e(sg['top']['ja'])}</span></p>")
-        for s in sg["sections"]:
-            lis = "".join(f"<li>{_e(r['zh'] or r['ja'])}" + (f"<br><span class='ja'>{_e(r['ja'])}</span>" if r["zh"] else "")
-                          + "</li>" for r in s["items"])
-            body += f"<h3>{_e(s['name'])}</h3><ul>{lis}</ul>"
-    return page(f"產業新聞週報 {doc['week']}", head + body, nav)
+LATEST_DAYS = 7
 
 
 def _archive(out_dir, sub, n=30):
     files = sorted(glob.glob(os.path.join(out_dir, sub, "*.json")), reverse=True)[:n]
     return [os.path.splitext(os.path.basename(p))[0] for p in files]
-
-
-def render_index(out_dir, daily_doc, weekly_doc):
-    nav = "<nav><a href='#daily'>最新日報</a><a href='#weekly'>最新週報</a><a href='#archive'>歷史</a></nav>"
-    body = "<h1>產業新聞</h1><p class='meta'>每天盤後更新日報;每週六更新週報。</p>"
-    if daily_doc:
-        body += "<h2 id='daily'>最新日報</h2>" + daily_body(daily_doc).replace("<h1>", "<h1 style='font-size:18px'>", 1)
-    if weekly_doc:
-        body += (f"<h2 id='weekly'>最新週報 {_e(weekly_doc['week'])}</h2>"
-                 f"<p><a href='weekly/{_e(weekly_doc['week'])}.html'>開啟 {_e(weekly_doc['week'])} 週報 →</a></p>"
-                 + (f"<div class='ov'>{_e(weekly_doc['overview'])}</div>" if weekly_doc.get("overview") else ""))
-    days = _archive(out_dir, "daily")
-    weeks = _archive(out_dir, "weekly", 12)
-    body += ("<h2 id='archive'>歷史</h2><p><b>週報</b>:" + " · ".join(f"<a href='weekly/{w}.html'>{w}</a>" for w in weeks)
-             + "</p><p><b>日報</b>:" + " · ".join(f"<a href='daily/{d}.html'>{d[5:]}</a>" for d in days) + "</p>")
-    return page("產業新聞", body, nav)
-
-
-def _write(path, text):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(text)
 
 
 def _read_json(path):
@@ -556,6 +451,29 @@ def _read_json(path):
             return json.load(f)
     except Exception:
         return None
+
+
+def build_latest(out_dir=OUT_DIR, days=LATEST_DAYS):
+    """industry_news/latest.json:近 7 份日報(新到舊)+ 最新週報 + 週報清單。
+    GAS(IndustryNewsFetch.js)每小時讀這一個檔;只有最新一份日報保留來源覆蓋表(控制大小)。"""
+    dailies = []
+    for i, d in enumerate(_archive(out_dir, "daily", days)):
+        doc = _read_json(os.path.join(out_dir, "daily", f"{d}.json"))
+        if not doc:
+            continue
+        if i > 0:
+            doc = {k: v for k, v in doc.items() if k != "coverage"}
+        dailies.append(doc)
+    weeks = _archive(out_dir, "weekly", 12)
+    weekly = _read_json(os.path.join(out_dir, "weekly", f"{weeks[0]}.json")) if weeks else None
+    return {"generated_at": dt.datetime.now(TPE).strftime("%Y-%m-%d %H:%M:%S"),
+            "dailies": dailies, "weekly": weekly, "weeks": weeks}
+
+
+def _write(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
 
 
 # ============================================================
@@ -579,23 +497,16 @@ def main():
     terms = load_terms()
     daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, code2name)
     _write(os.path.join(OUT_DIR, "daily", f"{daily['date']}.json"), json.dumps(daily, ensure_ascii=False, indent=1))
-    back = "<nav><a href='../index.html'>← 產業新聞首頁</a></nav>"
-    _write(os.path.join(OUT_DIR, "daily", f"{daily['date']}.html"), render_daily(daily, back))
     print(f"  來源 {daily['n_sources']}/{daily['n_sources_total']}、標題 {daily['n_titles']}、相關 {daily['n_relevant']}、"
           f"AI {daily['provider']}、主題 {len(daily['sections'])}、fallback={daily['fallback']} {daily.get('stats')}")
 
-    weekly = None
     if force_weekly or today.weekday() == WEEKLY_WEEKDAY:
         sangyo = fetch_sangyo_headlines()
         weekly = build_weekly(today, load_week(today), chain, sangyo)
         _write(os.path.join(OUT_DIR, "weekly", f"{weekly['week']}.json"), json.dumps(weekly, ensure_ascii=False, indent=1))
-        _write(os.path.join(OUT_DIR, "weekly", f"{weekly['week']}.html"), render_weekly(weekly, back))
         print(f"  週報 {weekly['week']}:日報 {weekly['n_daily']} 份、條目 {weekly['n_items']}、主題 {len(weekly['themes'])}、"
               f"AI {weekly['provider']}、日本頭條 {'有' if weekly['sangyo'] else '無(抓取失敗)'}")
-    else:
-        weeks = _archive(OUT_DIR, "weekly", 1)
-        weekly = _read_json(os.path.join(OUT_DIR, "weekly", f"{weeks[0]}.json")) if weeks else None
-    _write(os.path.join(OUT_DIR, "index.html"), render_index(OUT_DIR, daily, weekly))
+    _write(os.path.join(OUT_DIR, "latest.json"), json.dumps(build_latest(), ensure_ascii=False, separators=(",", ":")))
     if chain.log:
         print(f"  AI 錯誤紀錄:{chain.log[:6]}")
     print(f"→ {OUT_DIR}/ 已寫出")

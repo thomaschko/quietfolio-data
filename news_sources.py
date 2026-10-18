@@ -527,7 +527,14 @@ def fetch_sangyo_headlines(timeout=25):
     (2026-10-18 GHA 實測同一天曾有一次連線逾時,呼叫端必須容錯)。只取第一條<hr>之後到
     下一條<hr>之間的分類頭條(之後是連載/訪談/工場ルポ的欄目名,不是新聞)。"""
     try:
-        r = requests.get(SANGYO_BASE + "scn/headindex.aspx", headers=UA, timeout=timeout)
+        r = None
+        for attempt in (1, 2):   # 10/18 兩次正式執行有一次整個來源 0 則(連線逾時),重試一次
+            try:
+                r = requests.get(SANGYO_BASE + "scn/headindex.aspx", headers=UA, timeout=timeout)
+                break
+            except Exception:
+                if attempt == 2:
+                    raise
         r.encoding = "utf-8"
         if r.status_code != 200:
             return None
