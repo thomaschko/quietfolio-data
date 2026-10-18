@@ -109,6 +109,13 @@ def _items():
     return inn.select_relevant(inn.build_pool(BY_SOURCE), TERMS)
 
 
+def test_companies_inside_foreign_names_are_rejected():
+    n2c = {"力士": "4923", "台積電": "2330"}
+    titles = ["SK海力士展示下一代AI記憶體", "三星將採用台積電為輝達客製化HBM"]
+    assert inn._verified_companies(["力士", "台積電"], titles, n2c, {"2330": "台積電"}) == [{"code": "2330", "name": "台積電"}]
+    assert inn._verified_companies(["力士"], ["力士營收創高"], n2c, {})[0]["code"] == "4923"
+
+
 def test_verify_daily_requires_valid_citations():
     ai = {"overview": "重點", "sections": [
         {"topic": "先進封裝", "items": [{"headline": "台積電擴CoWoS", "title_ids": [1, 1, 99],
@@ -218,19 +225,24 @@ def test_translate_sangyo_maps_ids():
     assert out["sections"][0]["items"][1]["zh"] == "" and out["translated"] == 2 and out["total"] == 3
 
 
-def test_render_escapes_and_index_archive():
-    doc = {"date": "2026-10-18", "generated_at": "x", "n_sources": 3, "n_sources_total": 4, "n_titles": 5,
-           "n_relevant": 3, "provider": "gemini", "fallback": False, "overview": "<b>重點</b>",
-           "sections": [{"topic": "封裝", "items": [{"headline": "A&B", "n_sources": 2, "codes": [{"code": "2330", "name": "台積電"}],
-                                                   "titles": [{"title": "<script>", "sources": ["cna"]}]}]}]}
-    h = inn.render_daily(doc)
-    assert "&lt;script&gt;" in h and "<script>" not in h and "A&amp;B" in h and "2330台積電" in h
+def test_build_latest_for_gas():
     tmp = tempfile.mkdtemp()
     try:
         os.makedirs(os.path.join(tmp, "daily"))
-        open(os.path.join(tmp, "daily", "2026-10-18.json"), "w").write("{}")
-        idx = inn.render_index(tmp, doc, None)
-        assert "daily/2026-10-18.html" in idx and "最新日報" in idx
+        os.makedirs(os.path.join(tmp, "weekly"))
+        for i in range(9):
+            d = f"2026-10-{10 + i:02d}"
+            with open(os.path.join(tmp, "daily", f"{d}.json"), "w", encoding="utf-8") as f:
+                json.dump({"date": d, "sections": [], "coverage": [{"source": "cna"}]}, f)
+        for w in ("2026-W41", "2026-W42"):
+            with open(os.path.join(tmp, "weekly", f"{w}.json"), "w", encoding="utf-8") as f:
+                json.dump({"week": w}, f)
+        out = inn.build_latest(tmp)
+        assert [d["date"] for d in out["dailies"]] == [f"2026-10-{x}" for x in range(18, 11, -1)]   # 近 7 份、新到舊
+        assert "coverage" in out["dailies"][0] and "coverage" not in out["dailies"][1]
+        assert out["weekly"] == {"week": "2026-W42"} and out["weeks"] == ["2026-W42", "2026-W41"]
+        empty = inn.build_latest(os.path.join(tmp, "none"))
+        assert empty["dailies"] == [] and empty["weekly"] is None
     finally:
         shutil.rmtree(tmp)
 
