@@ -128,6 +128,17 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python daily_report.py
 
+      # 產業新聞日報 / 週報(2026-10-18新增):industry_news.py 用全部題材源標題(含新增的
+      # 電子デバイス産業新聞)整理成給人讀的日報(每天)與週報(台北週六那次),輸出
+      # industry_news/(JSON + 靜態 HTML)。只是閱讀頁面,不進雷達、不影響任何門檻。
+      - name: Industry news daily/weekly
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python industry_news.py
+
       # 驗證中心(2026-09-21新增):A區/D區標記的股票自動記claim,
       # 30天後回頭比對真實收盤價,自動判✅印證/❌反駁,累積後可按
       # 偵測類型(題材群聚/跨來源共振/關鍵字暴增)分開統計命中率。
@@ -161,6 +172,7 @@ jobs:
           [ -f daily_digest.json ] && git add daily_digest.json || true
           [ -f daily_report.json ] && git add daily_report.json || true
           [ -f verification_ledger.json ] && git add verification_ledger.json || true
+          git add industry_news/ 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "無變更,不 commit"
           else

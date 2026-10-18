@@ -515,6 +515,74 @@ def _fetch_edn_jp():
     return _fetch_simple_rss("https://rss.itmedia.co.jp/rss/2.0/edn.xml")
 
 
+SANGYO_BASE = "https://www.sangyo-times.jp/"
+SANGYO_RECENT_DAYS = 3   # 週報(週四出刊、週五上網):頭條只在出刊後3天內進每日標題池,避免同一批標題重複灌一週
+
+
+def fetch_sangyo_headlines(timeout=25):
+    """電子デバイス産業新聞(舊半導体産業新聞,產業タイムズ社)當期頭條頁(2026-10-18新增,
+    使用者要求納入)。週報、日文、紙本付費;網站只公開「主なヘッドライン」(每期約40則、
+    分類列出、無連結)與少量訪談/專欄全文,無RSS、robots.txt 不存在。
+    回傳 {"issue_date","issue_no","top","sections":[{"name","items":[...]}]};抓不到回 None
+    (2026-10-18 GHA 實測同一天曾有一次連線逾時,呼叫端必須容錯)。只取第一條<hr>之後到
+    下一條<hr>之間的分類頭條(之後是連載/訪談/工場ルポ的欄目名,不是新聞)。"""
+    try:
+        r = requests.get(SANGYO_BASE + "scn/headindex.aspx", headers=UA, timeout=timeout)
+        r.encoding = "utf-8"
+        if r.status_code != 200:
+            return None
+        h = r.text
+        m = re.search(r"<title>\s*(\d{4})/(\d{1,2})/(\d{1,2})\((\d+)号\)主なヘッドライン｜([^｜<]+)", h)
+        if not m:
+            return None
+        y, mo, d, no, top = m.groups()
+        start = h.find("（以下、本紙")
+        chunks = [c for c in re.split(r"<hr\s*/?>", h[start:] if start >= 0 else h) if "headlineDtlIcon" in c]
+        body = chunks[0] if chunks else ""
+        sections, cur = [], None
+        for tag, txt in re.findall(r"(<strong>|headlineDtlIcon\.gif'\s*/>)([^<]+)", body):
+            txt = txt.strip()
+            if not txt:
+                continue
+            if tag == "<strong>":
+                cur = {"name": txt, "items": []}
+                sections.append(cur)
+            elif cur is not None:
+                cur["items"].append(txt)
+        return {"issue_date": f"{y}-{int(mo):02d}-{int(d):02d}", "issue_no": int(no), "top": top.strip(),
+                "sections": [s for s in sections if s["items"]], "url": SANGYO_BASE + "scn/headindex.aspx"}
+    except Exception:
+        return None
+
+
+def _fetch_sangyo_times():
+    """每日標題池用:當期頭條(出刊後 SANGYO_RECENT_DAYS 天內)+ 首頁近2天的公開文章標題。"""
+    import datetime as _dt
+    today = _dt.datetime.now(_dt.timezone(_dt.timedelta(hours=8))).date()
+    titles = []
+    hl = fetch_sangyo_headlines()
+    if hl and (today - _dt.date.fromisoformat(hl["issue_date"])).days <= SANGYO_RECENT_DAYS:
+        titles.append(hl["top"])
+        titles += [t for s in hl["sections"] for t in s["items"]]
+    try:
+        r = requests.get(SANGYO_BASE + "scn/", headers=UA, timeout=25)
+        r.encoding = "utf-8"
+        if r.status_code == 200:
+            for date_s, title in re.findall(
+                    r"（(\d{4}\.\d{1,2}\.\d{1,2})）</span><br />\s*<a[^>]*class=\"oh4\"[^>]*>([^<]+)</a>", r.text):
+                y, mo, d = (int(x) for x in date_s.split("."))
+                if (today - _dt.date(y, mo, d)).days <= 2:
+                    titles.append(title.strip())
+    except Exception:
+        pass
+    seen, uniq = set(), []
+    for t in titles:
+        if t and t not in seen:
+            seen.add(t)
+            uniq.append(t)
+    return uniq
+
+
 def _fetch_etnews_kr():
     """電子新聞/ETNews(2026-09-29新增,補上韓國這塊地理缺口——F區國際法說
     與E區候選詞裡,三星/SK海力士(海力士)反覆出現,但先前23源完全沒有韓文
@@ -938,6 +1006,7 @@ def fetch_titles_by_source():
         "wallstreetcn": _fetch_wallstreetcn(),
         "eetimes_jp": _fetch_eetimes_jp(),
         "edn_jp": _fetch_edn_jp(),
+        "sangyo_times": _fetch_sangyo_times(),
         "etnews_kr": _fetch_etnews_kr(),
         "the_circuit_podcast": _fetch_the_circuit_podcast(),
         "bg2_pod": _fetch_bg2_pod(),

@@ -123,11 +123,11 @@ class LLMChain:
     def available(self):
         return [p[0] for p in self.providers]
 
-    def _try(self, name, key, build, extract, system, user):
+    def _try(self, name, key, build, extract, system, user, timeout=60):
         url, headers, body = build(key, system, user)
         for attempt in (1, 2):
             try:
-                r = self.post(url, headers=headers, json=body, timeout=60)
+                r = self.post(url, headers=headers, json=body, timeout=timeout)
             except Exception as e:
                 self.log.append(f"{name}: {type(e).__name__}")
                 return None, True
@@ -146,11 +146,14 @@ class LLMChain:
             return None, True
         return None, True
 
-    def ask_json(self, system, user):
+    def ask_json(self, system, user, only=None, timeout=60):
+        """only:只試名稱以這些字串開頭的 provider(例:("gemini",));None = 全部依序。
+        2026-10-18 industry_news 用:長提示只給 Gemini,失敗再用縮短版提示給 Groq
+        (Groq 每分鐘 8,000 tokens,長提示會直接被拒並把 provider 標成掛掉)。"""
         for name, key, build, extract in self.providers:
-            if name in self.down:
+            if name in self.down or (only and not name.startswith(tuple(only))):
                 continue
-            out, provider_failed = self._try(name, key, build, extract, system, user)
+            out, provider_failed = self._try(name, key, build, extract, system, user, timeout)
             if out is not None:
                 return out, name
             if provider_failed:
