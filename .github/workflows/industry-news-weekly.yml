@@ -1,0 +1,46 @@
+name: Industry News Weekly (手動重做週報)
+
+# 2026-10-18 新增:只在需要時手動觸發,不排程(正式週報由 event-theme.yml 每天那次在
+# 台北週六自動產生)。用 repo 裡現有的日報重做本週週報 + 電子デバイス産業新聞頭條翻譯,
+# 不重抓新聞、不重做日報,約 1 分鐘;結果寫 industry_news/weekly/ 與 latest.json,
+# Quietfolio(GAS updateIndustryNews 每小時)下一個整點左右就會顯示。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  weekly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Rebuild weekly report
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python industry_news.py --weekly-only
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add industry_news/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "無變更,不 commit"
+          else
+            git commit -m "Industry news weekly (manual) $(date -u +%Y-%m-%d)"
+            git pull --rebase origin main || true
+            git push
+          fi

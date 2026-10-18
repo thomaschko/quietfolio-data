@@ -225,6 +225,19 @@ def test_translate_sangyo_maps_ids():
     assert out["sections"][0]["items"][1]["zh"] == "" and out["translated"] == 2 and out["total"] == 3
 
 
+def test_sangyo_cache_for_weekly():
+    tmp = tempfile.mkdtemp()
+    try:
+        cache = os.path.join(tmp, "sangyo_latest.json")
+        hl = {"issue_date": "2026-10-15", "issue_no": 2723, "top": "x", "sections": []}
+        assert inn.sangyo_for_weekly(D(2026, 10, 17), hl, cache) == hl          # 現抓成功 → 用並存快取
+        assert inn.sangyo_for_weekly(D(2026, 10, 24), None, cache) == hl        # 週六抓失敗 → 用快取(9 天內)
+        assert inn.sangyo_for_weekly(D(2026, 10, 25), None, cache) is None      # 太舊不用
+        assert inn.sangyo_for_weekly(D(2026, 10, 24), None, os.path.join(tmp, "none.json")) is None
+    finally:
+        shutil.rmtree(tmp)
+
+
 def test_build_latest_for_gas():
     tmp = tempfile.mkdtemp()
     try:

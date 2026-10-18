@@ -379,7 +379,9 @@ def translate_sangyo(hl, chain):
     zh = {}
     if chain is not None and chain.available:
         lines = "\n".join(f"[{i}] {t}" for i, t in enumerate(flat, 1))
-        out, _ = chain.ask_json("你是日翻中譯者。逐條翻成繁體中文,公司名用台灣常用譯名,不增刪內容。",
+        out, _ = chain.ask_json("你是日翻中譯者。逐條翻成繁體中文,不增刪內容。公司名用台灣常用譯名;"
+                                "台灣公司用台股慣用簡稱(例:ヴァンガード→世界先進、ホンハイ/鴻海精密→鴻海、"
+                                "ASE→日月光、南亜プラスチック→南亞)。",
                                 f"{lines}\n\n只輸出 JSON:{{\"items\":[{{\"id\":編號,\"zh\":\"譯文\"}}]}}")
         for it in (out or {}).get("items") or [] if isinstance(out, dict) else []:
             try:
@@ -479,33 +481,56 @@ def _write(path, text):
 # ============================================================
 # main
 # ============================================================
+SANGYO_CACHE = os.path.join(OUT_DIR, "sangyo_latest.json")
+SANGYO_MAX_AGE_DAYS = 9     # 週報最多用 9 天前出刊的那期(週四出刊 → 下週六仍可用)
+
+
+def sangyo_for_weekly(today, fresh, cache_path=SANGYO_CACHE):
+    """週報用的電子デバイス産業新聞頭條:現抓成功就用並更新快取;失敗就用每日執行時存下的快取
+    (10/18 GHA 實測同一天 4 次有 2 次連線逾時,成功時 1~2 秒)。太舊(> 9 天)不用。"""
+    if fresh:
+        _write(cache_path, json.dumps(fresh, ensure_ascii=False))
+        return fresh
+    hl = _read_json(cache_path)
+    try:
+        if hl and (today - dt.date.fromisoformat(hl["issue_date"])).days <= SANGYO_MAX_AGE_DAYS:
+            return hl
+    except Exception:
+        pass
+    return None
+
+
 def main():
+    """預設:日報(週六另產週報)。--weekly:日報 + 強制週報。
+    --weekly-only:不抓新聞、不重做日報,只用 repo 裡現有日報重做週報(手動 workflow 用)。"""
     today = dt.datetime.now(TPE).date()
-    force_weekly = "--weekly" in sys.argv
+    weekly_only = "--weekly-only" in sys.argv
+    force_weekly = weekly_only or "--weekly" in sys.argv
     from news_sources import fetch_titles_by_source, fetch_sangyo_headlines
     from llm_client import LLMChain
     chain = LLMChain()
-    name2code, code2name = {}, {}
-    try:
-        from event_theme_radar import build_name2code
-        name2code, code2name = build_name2code()
-    except Exception as e:
-        print(f"  ⚠ 股名對照載入失敗(不標個股): {e}")
-    print(f"產業新聞日報 {today}:可用 AI {chain.available or '無'}")
-    by_source = fetch_titles_by_source()
-    by_source.update(detector_sources(today.isoformat()))
-    terms = load_terms()
-    daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, code2name)
-    _write(os.path.join(OUT_DIR, "daily", f"{daily['date']}.json"), json.dumps(daily, ensure_ascii=False, indent=1))
-    print(f"  來源 {daily['n_sources']}/{daily['n_sources_total']}、標題 {daily['n_titles']}、相關 {daily['n_relevant']}、"
-          f"AI {daily['provider']}、主題 {len(daily['sections'])}、fallback={daily['fallback']} {daily.get('stats')}")
+    print(f"產業新聞 {today}:可用 AI {chain.available or '無'}" + ("(只重做週報)" if weekly_only else ""))
+    if not weekly_only:
+        name2code, code2name = {}, {}
+        try:
+            from event_theme_radar import build_name2code
+            name2code, code2name = build_name2code()
+        except Exception as e:
+            print(f"  ⚠ 股名對照載入失敗(不標個股): {e}")
+        by_source = fetch_titles_by_source()
+        by_source.update(detector_sources(today.isoformat()))
+        terms = load_terms()
+        daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, code2name)
+        _write(os.path.join(OUT_DIR, "daily", f"{daily['date']}.json"), json.dumps(daily, ensure_ascii=False, indent=1))
+        print(f"  來源 {daily['n_sources']}/{daily['n_sources_total']}、標題 {daily['n_titles']}、相關 {daily['n_relevant']}、"
+              f"AI {daily['provider']}、主題 {len(daily['sections'])}、fallback={daily['fallback']} {daily.get('stats')}")
 
+    sangyo = sangyo_for_weekly(today, fetch_sangyo_headlines())   # 每天都試著更新快取
     if force_weekly or today.weekday() == WEEKLY_WEEKDAY:
-        sangyo = fetch_sangyo_headlines()
         weekly = build_weekly(today, load_week(today), chain, sangyo)
         _write(os.path.join(OUT_DIR, "weekly", f"{weekly['week']}.json"), json.dumps(weekly, ensure_ascii=False, indent=1))
         print(f"  週報 {weekly['week']}:日報 {weekly['n_daily']} 份、條目 {weekly['n_items']}、主題 {len(weekly['themes'])}、"
-              f"AI {weekly['provider']}、日本頭條 {'有' if weekly['sangyo'] else '無(抓取失敗)'}")
+              f"AI {weekly['provider']}、日本頭條 {'有' if weekly['sangyo'] else '無(抓取失敗且無快取)'}")
     _write(os.path.join(OUT_DIR, "latest.json"), json.dumps(build_latest(), ensure_ascii=False, separators=(",", ":")))
     if chain.log:
         print(f"  AI 錯誤紀錄:{chain.log[:6]}")
