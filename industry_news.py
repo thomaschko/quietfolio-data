@@ -16,8 +16,10 @@ MOPS 重訊主旨(event_theme_raw)、美股 8-K(us_8k_events)、國際法說/投
      每個來源先保證前 PER_SOURCE_MIN 則,再依排序補滿 MAX_TITLES 則
   3. 免費 LLM(llm_client;Gemini 讀全部,失敗才用 60 則縮短版給 Groq)
      分主題整理、外文翻成繁中,每則必須標註引用的標題編號
-  4. 程式驗證:沒有有效引用編號的條目丟棄;每則附上原始標題與來源;個股代號由程式
-     從原始標題抽(event_theme_radar.extract_stock_codes_from_articles),不採用 AI 給的公司
+  4. 程式驗證:沒有有效引用編號的條目丟棄;每則附上原始標題與來源;AI 列的台灣公司名
+     必須能在 TWSE/TPEx 股名表查到(term_stock_ai.lookup_code)且出現在被引用的標題裡才標股號
+     (2026-10-18 首次實跑:改用程式子字串抽股號會把「SK海力士」標成 4923 力士、「至上游」
+     標成 8112 至上、「5倍光罩尺寸」標成 2338 光罩)
   5. AI 全部失敗 → 退回「依 watchlist 詞分組的原始標題」,明確標示,不補不猜
 週報(每週六台北時間的那次執行,或 --weekly):讀近 7 天日報條目請 LLM 彙整成本週主題,
   同樣驗證引用;另附電子デバイス産業新聞當期頭條(AI 翻譯,保留日文原文)。
@@ -41,12 +43,14 @@ MAX_TITLES = 400            # 給 Gemini(約 1.5 萬 tokens,flash-lite 可處理
 MAX_TITLES_SMALL = 60       # Gemini 失敗時給 Groq(每分鐘 8,000 tokens)
 PER_SOURCE_MIN = 5          # 每個來源至少保留幾則(避免小來源被多源大新聞擠掉)
 MAX_ITEMS_PER_SECTION = 10
+TARGET_ITEMS = "30~45"      # 10/18 首次實跑只寫 20 則、引用 70/400 則標題,日韓媒體全沒被引用
 # 產業專業來源與偵測源:不含 watchlist 詞也可入選(交給 AI 判斷要不要收)
 INDUSTRY_SOURCES = {
     "wapeople", "technews", "eetimes", "trendforce", "semianalysis", "jov", "iek_news", "technice",
     "eetimes_jp", "edn_jp", "sangyo_times", "etnews_kr", "digitaltoday_kr", "tomshardware",
     "techcrunch_semi", "the_circuit_podcast", "simpletechtrend", "wapeople_pod", "edn",
     "mops", "us_8k", "investor_events", "gnews_d2",
+    "cnbc_yahoo",   # Yahoo Finance 半導體/AI 個股新聞(NVDA/TSM/AMD…),英文標題幾乎不含中文 watchlist 詞
 }
 WEEKLY_WEEKDAY = 5          # 週六(Monday=0)
 WEEK_DAYS = 7
@@ -183,10 +187,13 @@ def daily_prompt(day, items, n_sources):
             f"以及台股重訊、美股 8-K 公告摘要):\n{lines}\n\n"
             "請整理成產業新聞日報,只輸出 JSON:"
             '{"overview":"3句內的今日產業重點","sections":[{"topic":"產業主題","items":'
-            '[{"headline":"繁中一句話重點(40字內)","title_ids":[標題編號]}]}]}。\n'
+            '[{"headline":"繁中一句話重點(40字內)","title_ids":[標題編號],'
+            '"companies":["標題中明確寫出的台灣上市櫃公司名,沒有就空陣列"]}]}]}。\n'
             "規則:主題用 AI伺服器/半導體製程/先進封裝/記憶體/設備材料/光通訊/電源散熱/PCB載板/"
-            "車用功率/消費電子/國際總經政策/其他 這類產業分類;每則 item 必須引用至少一個標題編號;"
+            "車用功率/消費電子/日韓產業/美股與國際/總經政策/其他 這類產業分類;每則 item 必須引用至少一個標題編號;"
             f"同一事件的多則標題合併成一則並列出全部編號;每個主題最多 {MAX_ITEMS_PER_SECTION} 則;"
+            f"總共整理 {TARGET_ITEMS} 則左右,要涵蓋不同來源:日文、韓文、英文產業媒體的重要新聞也要收"
+            "(翻成繁中),不要只收中文;外國公司(SK海力士、三星、美光、輝達等)不要放進 companies;"
             "不重要或與產業無關的標題可以不收;headline 只能寫標題裡有的內容。")
 
 
@@ -202,17 +209,22 @@ def _valid_ids(ids, n):
     return out
 
 
-def _codes_for(titles, name2code, extract, code2name):
-    if not (name2code and extract):
+def _verified_companies(names, titles, name2code, code2name):
+    """AI 列的公司名 → 股號;名稱或股號必須出現在被引用的標題裡。"""
+    if not name2code or not isinstance(names, list):
         return []
-    try:
-        codes, _ = extract("", titles, name2code)
-    except Exception:
-        return []
-    return [{"code": c, "name": (code2name or {}).get(c, "")} for c in codes[:5]]
+    from term_stock_ai import lookup_code
+    out, seen = [], set()
+    for n in names[:8]:
+        code, name = lookup_code(n, name2code)
+        if not code or code in seen or not any(name in t or code in t for t in titles):
+            continue
+        seen.add(code)
+        out.append({"code": code, "name": (code2name or {}).get(code, name)})
+    return out[:5]
 
 
-def verify_daily(ai_out, items, name2code=None, extract=None, code2name=None):
+def verify_daily(ai_out, items, name2code=None, code2name=None):
     """AI 輸出 → 驗證後的 sections。回傳 (sections, stats)。"""
     n = len(items)
     sections, dropped, used = [], 0, set()
@@ -235,7 +247,7 @@ def verify_daily(ai_out, items, name2code=None, extract=None, code2name=None):
             kept.append({"headline": headline,
                          "titles": [{"title": s["title"], "sources": s["sources"]} for s in src],
                          "n_sources": len({x for s in src for x in s["sources"]}),
-                         "codes": _codes_for(titles, name2code, extract, code2name)})
+                         "codes": _verified_companies(it.get("companies"), titles, name2code, code2name)})
             if len(kept) >= MAX_ITEMS_PER_SECTION:
                 break
         if kept:
@@ -257,7 +269,7 @@ def fallback_daily(items, groups=FALLBACK_GROUPS):
             for term, lst in top]
 
 
-def build_daily(day, by_source, terms, chain, name2code=None, extract=None, code2name=None):
+def build_daily(day, by_source, terms, chain, name2code=None, code2name=None):
     pool = build_pool(by_source)
     items = select_relevant(pool, terms)
     doc = {"date": day, "generated_at": dt.datetime.now(TPE).strftime("%Y-%m-%d %H:%M:%S"),
@@ -275,7 +287,7 @@ def build_daily(day, by_source, terms, chain, name2code=None, extract=None, code
             out, provider = chain.ask_json(SYSTEM, daily_prompt(day, small, doc["n_sources"]), timeout=90)
             used_items = small
     if out is not None:
-        sections, stats = verify_daily(out, used_items, name2code, extract, code2name)
+        sections, stats = verify_daily(out, used_items, name2code, code2name)
         if sections:
             doc.update(provider=provider, sections=sections, overview=stats.pop("overview"), stats=stats)
             doc["stats"]["titles_sent"] = len(used_items)
@@ -555,18 +567,17 @@ def main():
     from news_sources import fetch_titles_by_source, fetch_sangyo_headlines
     from llm_client import LLMChain
     chain = LLMChain()
-    name2code, code2name, extract = {}, {}, None
+    name2code, code2name = {}, {}
     try:
-        from event_theme_radar import build_name2code, extract_stock_codes_from_articles
+        from event_theme_radar import build_name2code
         name2code, code2name = build_name2code()
-        extract = extract_stock_codes_from_articles
     except Exception as e:
         print(f"  ⚠ 股名對照載入失敗(不標個股): {e}")
     print(f"產業新聞日報 {today}:可用 AI {chain.available or '無'}")
     by_source = fetch_titles_by_source()
     by_source.update(detector_sources(today.isoformat()))
     terms = load_terms()
-    daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, extract, code2name)
+    daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, code2name)
     _write(os.path.join(OUT_DIR, "daily", f"{daily['date']}.json"), json.dumps(daily, ensure_ascii=False, indent=1))
     back = "<nav><a href='../index.html'>← 產業新聞首頁</a></nav>"
     _write(os.path.join(OUT_DIR, "daily", f"{daily['date']}.html"), render_daily(daily, back))

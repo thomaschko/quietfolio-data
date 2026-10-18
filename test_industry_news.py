@@ -111,16 +111,17 @@ def _items():
 
 def test_verify_daily_requires_valid_citations():
     ai = {"overview": "重點", "sections": [
-        {"topic": "先進封裝", "items": [{"headline": "台積電擴CoWoS", "title_ids": [1, 1, 99]},
+        {"topic": "先進封裝", "items": [{"headline": "台積電擴CoWoS", "title_ids": [1, 1, 99],
+                                     "companies": ["台積電", "力士", "SK海力士", "華邦電"]},
                                     {"headline": "沒引用", "title_ids": []},
                                     {"headline": "", "title_ids": [2]}]},
         {"topic": "空的", "items": [{"headline": "x", "title_ids": ["a"]}]}]}
-    fake_extract = lambda kw, titles, n2c: (["2330"] if any("台積電" in t for t in titles) else [], {})
-    secs, stats = inn.verify_daily(ai, _items(), {"台積電": "2330"}, fake_extract, {"2330": "台積電"})
+    n2c = {"台積電": "2330", "力士": "4923", "華邦電": "2344"}
+    secs, stats = inn.verify_daily(ai, _items(), n2c, {"2330": "台積電"})
     assert [s["topic"] for s in secs] == ["先進封裝"]
     it = secs[0]["items"][0]
     assert it["titles"][0]["sources"] == ["cna", "ctee"] and it["n_sources"] == 2
-    assert it["codes"] == [{"code": "2330", "name": "台積電"}]
+    assert it["codes"] == [{"code": "2330", "name": "台積電"}]     # 力士/華邦電不在引用標題裡、SK海力士查無股名
     assert stats["items_kept"] == 1 and stats["items_dropped"] == 3 and stats["overview"] == "重點"
 
 
