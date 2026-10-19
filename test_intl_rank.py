@@ -151,3 +151,11 @@ def test_us_tags_follow_src6():
     from earnings_keywords import COMPANIES
     assert set(tags["us"]) == set(COMPANIES) and tags["us"]["NVDA"] == "AI晶片"
     assert "MU" not in tags["us"]
+
+
+def test_save_totals_merges_and_trims():
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "t.json")
+        ir.save_totals({"us": {"2026-10-15": 1.0, "2026-10-16": 2.0}}, path=p, keep=2)
+        ir.save_totals({"us": {"2026-10-17": 3.0}, "jp": {"2026-10-17": 9.0}}, path=p, keep=2)
+        assert json.load(open(p)) == {"us": {"2026-10-16": 2.0, "2026-10-17": 3.0}, "jp": {"2026-10-17": 9.0}}
