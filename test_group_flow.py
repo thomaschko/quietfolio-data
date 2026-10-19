@@ -109,3 +109,49 @@ def test_tw_totals_from_price_history():
         with open(os.path.join(d, "20261016.json"), "w") as f:
             json.dump({"2330": [1000.0, 3e7], "0050": [100.0, 1e8], "bad": [None, 5]}, f)
         assert gf.tw_totals(d) == {"2026-10-16": round((1000 * 3e7 + 100 * 1e8) / 1e8, 1)}
+
+
+def test_value_5d_vs_avg():
+    # 前 20 天成交值 1 億、最後 5 天 1.5 億 → +50%
+    close, vol = panel({"A": (lambda i: 100.0, lambda i: 1e6 if i < 20 else 1.5e6)})
+    assert gf.basket_stats(close, vol, ["A"])["value_5d_vs_avg"] == 50.0
+
+
+def test_rotation_weight_vs_universe():
+    # A、B 各 1 億;最後 5 天 A 變 3 億、B 不變 → A 比重 50% → 75%(+50%),B 50% → 25%(−50%)
+    close, vol = panel({"A": (lambda i: 100.0, lambda i: 1e6 if i < 20 else 3e6),
+                        "B": (lambda i: 100.0, lambda i: 1e6)})
+    u = gf.universe_value(close, vol)
+    a = gf.basket_stats(close, vol, ["A"], universe=u)
+    b = gf.basket_stats(close, vol, ["B"], universe=u)
+    assert a["weight"] == 75.0 and a["rot_5d"] == 50.0
+    assert a["rot_vs_avg"] == round((75 / ((16 * 50 + 4 * 75) / 20) - 1) * 100, 1)   # 前 20 日含 4 天 75%
+    assert b["weight"] == 25.0 and b["rot_5d"] == -50.0
+    assert gf.basket_stats(close, vol, ["A"])["weight"] is None          # 沒給分母
+
+
+def rs(r5, vs=0, r=0):
+    return {"value_vs_avg": vs, "ret_1d": r, "rot_5d": r5, "value_5d_vs_avg": vs}
+
+
+def test_rotation_status_and_averages():
+    s = gf.theme_status({"tw": rs(12, 10), "us": rs(15, 20), "jp": rs(30, 30), "kr": rs(-5, -20)})
+    assert s["rot_status"] == "inflow" and s["rot_in"] == ["tw", "us", "jp"] and s["rot_out"] == []
+    assert s["flow_avg"] == 10.0 and s["rot5_avg"] == 13.0
+    assert gf.theme_status({"tw": rs(-20), "us": rs(-11)})["rot_status"] == "outflow"     # 2/2
+    assert gf.theme_status({"tw": rs(20), "us": rs(-20), "jp": rs(0)})["rot_status"] == "mixed"
+    assert gf.theme_status({"tw": rs(20), "us": rs(1), "jp": rs(0)})["rot_status"] == "partial_in"
+    s = gf.theme_status({"tw": rs(None), "us": rs(3)})
+    assert s["rot_status"] == "flat" and s["rot5_avg"] == 3.0
+
+
+def test_build_rotation_uses_union_universe():
+    # 同一檔 X 在兩個題材 → 分母只算一次
+    baskets = {"甲": {"us": ["X", "Y"]}, "乙": {"us": ["X"]}}
+
+    def fetch(m, codes):
+        close, vol = panel({c: (lambda i: 100.0, lambda i: 1e6) for c in codes})
+        return close, vol, []
+    out = gf.build(baskets, fetch=fetch)
+    w = {t["theme"]: t["markets"]["us"]["weight"] for t in out["themes"]}
+    assert w == {"甲": 100.0, "乙": 50.0}
