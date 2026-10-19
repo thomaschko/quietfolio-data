@@ -1,0 +1,304 @@
+{
+  "run_at_utc": "2026-10-19T08:13:32",
+  "checks": {
+    "us_symbol_directory": {
+      "ok": true,
+      "sec": 0.4,
+      "nasdaqlisted_cols": [
+        "Symbol",
+        "Security Name",
+        "Market Category",
+        "Test Issue",
+        "Financial Status",
+        "Round Lot Size",
+        "ETF",
+        "NextShares"
+      ],
+      "otherlisted_cols": [
+        "ACT Symbol",
+        "Security Name",
+        "Exchange",
+        "CQS Symbol",
+        "ETF",
+        "Round Lot Size",
+        "Test Issue",
+        "NASDAQ Symbol"
+      ],
+      "rows_nasdaq": 5629,
+      "rows_other": 7675,
+      "non_etf_symbols": 7103,
+      "sample": [
+        "A",
+        "AA",
+        "AAC",
+        "AAC-U",
+        "AAC-W"
+      ]
+    },
+    "jp_jpx_listed_issues": {
+      "ok": true,
+      "sec": 0.8,
+      "columns": [
+        "日付",
+        "コード",
+        "銘柄名",
+        "市場・商品区分",
+        "33業種コード",
+        "33業種区分",
+        "17業種コード",
+        "17業種区分",
+        "規模コード",
+        "規模区分"
+      ],
+      "rows": 4447,
+      "domestic_stocks": 3702,
+      "segments": {
+        "スタンダード（内国株式）": 1559,
+        "プライム（内国株式）": 1550,
+        "グロース（内国株式）": 593,
+        "ETF・ETN": 485,
+        "PRO Market": 190,
+        "REIT・ベンチャーファンド・カントリーファンド・インフラファンド": 63,
+        "グロース（外国株式）": 2,
+        "スタンダード（外国株式）": 2,
+        "出資証券": 2,
+        "プライム（外国株式）": 1
+      },
+      "sample": [
+        "1301.T",
+        "130A.T",
+        "1332.T",
+        "1333.T",
+        "135A.T"
+      ]
+    },
+    "kr_krx_kind_corplist": {
+      "ok": false,
+      "sec": 1.9,
+      "error": "TypeError: read_html() got an unexpected keyword argument 'dtype'"
+    },
+    "yfinance_daily_samples": {
+      "ok": true,
+      "sec": 0.5,
+      "samples": {
+        "NVDA": {
+          "last_dates": [
+            "2026-10-14",
+            "2026-10-15",
+            "2026-10-16"
+          ],
+          "close": [
+            221.3,
+            217.23,
+            214.13
+          ],
+          "volume": [
+            118730100,
+            127087900,
+            120855100
+          ],
+          "value_last_local_100m": 258.8
+        },
+        "MU": {
+          "last_dates": [
+            "2026-10-14",
+            "2026-10-15",
+            "2026-10-16"
+          ],
+          "close": [
+            914.13,
+            931.24,
+            878.84
+          ],
+          "volume": [
+            27843700,
+            39095100,
+            30293300
+          ],
+          "value_last_local_100m": 266.2
+        },
+        "6857.T": {
+          "last_dates": [
+            "2026-10-15",
+            "2026-10-16",
+            "2026-10-19"
+          ],
+          "close": [
+            34340.0,
+            34530.0,
+            34450.0
+          ],
+          "volume": [
+            26184300,
+            15706300,
+            15104500
+          ],
+          "value_last_local_100m": 5203.5
+        },
+        "285A.T": {
+          "last_dates": [
+            "2026-10-15",
+            "2026-10-16",
+            "2026-10-19"
+          ],
+          "close": [
+            12880.0,
+            13375.0,
+            13600.0
+          ],
+          "volume": [
+            79013300,
+            57744400,
+            56032900
+          ],
+          "value_last_local_100m": 7620.5
+        },
+        "005930.KS": {
+          "last_dates": [
+            "2026-10-15",
+            "2026-10-16",
+            "2026-10-19"
+          ],
+          "close": [
+            210000.0,
+            215500.0,
+            218000.0
+          ],
+          "volume": [
+            34330565,
+            18908560,
+            17220289
+          ],
+          "value_last_local_100m": 37540.2
+        },
+        "000660.KS": {
+          "last_dates": [
+            "2026-10-15",
+            "2026-10-16",
+            "2026-10-19"
+          ],
+          "close": [
+            1262000.0,
+            1272000.0,
+            1277000.0
+          ],
+          "volume": [
+            5898372,
+            4561066,
+            3762992
+          ],
+          "value_last_local_100m": 48053.4
+        },
+        "247540.KQ": {
+          "last_dates": [
+            "2026-10-15",
+            "2026-10-16",
+            "2026-10-19"
+          ],
+          "close": [
+            105900.0,
+            106900.0,
+            115800.0
+          ],
+          "volume": [
+            582145,
+            404815,
+            476526
+          ],
+          "value_last_local_100m": 551.8
+        }
+      }
+    },
+    "fx_rates": {
+      "ok": true,
+      "sec": 0.1,
+      "JPY_per_USD": 158.13,
+      "KRW_per_USD": 1330.3
+    },
+    "session_complete_check": {
+      "ok": true,
+      "sec": 0.3,
+      "US": {
+        "now_local": "2026-10-19 04:13",
+        "last_bar": "2026-10-16",
+        "last_bar_is_today_local": false,
+        "market_should_be_closed": false,
+        "last_volume": 120855100
+      },
+      "JP": {
+        "now_local": "2026-10-19 17:13",
+        "last_bar": "2026-10-19",
+        "last_bar_is_today_local": true,
+        "market_should_be_closed": true,
+        "last_volume": 15104500
+      },
+      "KR": {
+        "now_local": "2026-10-19 17:13",
+        "last_bar": "2026-10-19",
+        "last_bar_is_today_local": true,
+        "market_should_be_closed": true,
+        "last_volume": 17220289
+      }
+    },
+    "bulk_speed_us": {
+      "ok": true,
+      "sec": 11.3,
+      "requested": 300,
+      "with_15plus_days": 264,
+      "fail_rate": 0.12,
+      "est_full_universe_min": 4.5,
+      "universe": 7103
+    },
+    "bulk_speed_jp": {
+      "ok": true,
+      "sec": 12.7,
+      "requested": 300,
+      "with_15plus_days": 299,
+      "fail_rate": 0.003,
+      "est_full_universe_min": 2.6,
+      "universe": 3702
+    },
+    "bulk_speed_kr": {
+      "ok": true,
+      "sec": 0.0,
+      "skipped": "沒有股票清單"
+    },
+    "yfinance_screener_optional": {
+      "ok": true,
+      "sec": 0.1,
+      "rows": 25,
+      "first_keys": [
+        "ask",
+        "askSize",
+        "averageAnalystRating",
+        "averageDailyVolume10Day",
+        "averageDailyVolume3Month",
+        "bid",
+        "bidSize",
+        "bookValue",
+        "corporateActions",
+        "cryptoTradeable",
+        "currency",
+        "customPriceAlertConfidence",
+        "displayName",
+        "dividendDate",
+        "dividendYield",
+        "earningsCallTimestampEnd",
+        "earningsCallTimestampStart",
+        "earningsTimestamp",
+        "earningsTimestampEnd",
+        "earningsTimestampStart",
+        "epsCurrentYear",
+        "epsForward",
+        "epsTrailingTwelveMonths",
+        "esgPopulated",
+        "exchange"
+      ]
+    },
+    "pykrx_without_credentials_optional": {
+      "ok": false,
+      "sec": 3.0,
+      "error": "RuntimeError: 7 天內都取不到(可能需要 KRX_ID/KRX_PW):\"None of [Index(['시가', '고가', '저가', '종가'], dtype='object')] are in the [columns]\""
+    }
+  }
+}
