@@ -1,9 +1,9 @@
 {
-  "run_at_utc": "2026-10-19T08:13:32",
+  "run_at_utc": "2026-10-19T08:19:22",
   "checks": {
     "us_symbol_directory": {
       "ok": true,
-      "sec": 0.4,
+      "sec": 0.7,
       "nasdaqlisted_cols": [
         "Symbol",
         "Security Name",
@@ -73,13 +73,38 @@
       ]
     },
     "kr_krx_kind_corplist": {
-      "ok": false,
-      "sec": 1.9,
-      "error": "TypeError: read_html() got an unexpected keyword argument 'dtype'"
+      "ok": true,
+      "sec": 1.6,
+      "columns": [
+        "회사명",
+        "시장구분",
+        "종목코드",
+        "업종",
+        "주요제품",
+        "상장일",
+        "결산월",
+        "대표자명",
+        "홈페이지",
+        "지역"
+      ],
+      "rows": 2752,
+      "markets": {
+        "코스닥": 1818,
+        "유가": 829,
+        "코넥스": 105
+      },
+      "usable_symbols": 2647,
+      "sample": [
+        "179880.KQ",
+        "250030.KQ",
+        "468670.KQ",
+        "266690.KQ",
+        "486510.KQ"
+      ]
     },
     "yfinance_daily_samples": {
       "ok": true,
-      "sec": 0.5,
+      "sec": 0.4,
       "samples": {
         "NVDA": {
           "last_dates": [
@@ -167,9 +192,9 @@
           "volume": [
             34330565,
             18908560,
-            17220289
+            17320765
           ],
-          "value_last_local_100m": 37540.2
+          "value_last_local_100m": 37759.3
         },
         "000660.KS": {
           "last_dates": [
@@ -185,9 +210,9 @@
           "volume": [
             5898372,
             4561066,
-            3762992
+            3765864
           ],
-          "value_last_local_100m": 48053.4
+          "value_last_local_100m": 48090.1
         },
         "247540.KQ": {
           "last_dates": [
@@ -212,56 +237,60 @@
     "fx_rates": {
       "ok": true,
       "sec": 0.1,
-      "JPY_per_USD": 158.13,
-      "KRW_per_USD": 1330.3
+      "JPY_per_USD": 158.14,
+      "KRW_per_USD": 1329.91
     },
     "session_complete_check": {
       "ok": true,
       "sec": 0.3,
       "US": {
-        "now_local": "2026-10-19 04:13",
+        "now_local": "2026-10-19 04:19",
         "last_bar": "2026-10-16",
         "last_bar_is_today_local": false,
         "market_should_be_closed": false,
         "last_volume": 120855100
       },
       "JP": {
-        "now_local": "2026-10-19 17:13",
+        "now_local": "2026-10-19 17:19",
         "last_bar": "2026-10-19",
         "last_bar_is_today_local": true,
         "market_should_be_closed": true,
         "last_volume": 15104500
       },
       "KR": {
-        "now_local": "2026-10-19 17:13",
+        "now_local": "2026-10-19 17:19",
         "last_bar": "2026-10-19",
         "last_bar_is_today_local": true,
         "market_should_be_closed": true,
-        "last_volume": 17220289
+        "last_volume": 17320765
       }
     },
     "bulk_speed_us": {
       "ok": true,
-      "sec": 11.3,
+      "sec": 10.3,
       "requested": 300,
       "with_15plus_days": 264,
       "fail_rate": 0.12,
-      "est_full_universe_min": 4.5,
+      "est_full_universe_min": 4.1,
       "universe": 7103
     },
     "bulk_speed_jp": {
       "ok": true,
-      "sec": 12.7,
+      "sec": 11.9,
       "requested": 300,
       "with_15plus_days": 299,
       "fail_rate": 0.003,
-      "est_full_universe_min": 2.6,
+      "est_full_universe_min": 2.5,
       "universe": 3702
     },
     "bulk_speed_kr": {
       "ok": true,
-      "sec": 0.0,
-      "skipped": "沒有股票清單"
+      "sec": 10.4,
+      "requested": 300,
+      "with_15plus_days": 297,
+      "fail_rate": 0.01,
+      "est_full_universe_min": 1.5,
+      "universe": 2647
     },
     "yfinance_screener_optional": {
       "ok": true,
@@ -297,7 +326,7 @@
     },
     "pykrx_without_credentials_optional": {
       "ok": false,
-      "sec": 3.0,
+      "sec": 4.0,
       "error": "RuntimeError: 7 天內都取不到(可能需要 KRX_ID/KRX_PW):\"None of [Index(['시가', '고가', '저가', '종가'], dtype='object')] are in the [columns]\""
     }
   }
