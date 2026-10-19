@@ -1,6 +1,7 @@
 name: Intl Rank (美/日/韓成交值排行)
 
 # 2026-10-19 新增。intl_rank.py → intl_rank.json → GAS IntlRankFetch.js → 排行榜頁「美股/日股/韓股」
+# 之後 group_flow.py → group_flow.json(族群金流共識)→ 同一個 GAS 讀取 → 排行榜頁「族群金流」
 # 排程(UTC):
 #   14:00 週一~五 = 台北 22:00 → 只跑日股、韓股(兩地當日已收盤)
 #   23:30 週一~五 = 台北 07:30(週二~週六)→ 只跑美股(美股前一交易日已收盤)
@@ -41,7 +42,7 @@ jobs:
 
       # 單元測試失敗就中止,不產生資料
       - name: Unit tests
-        run: python -m pytest -q test_intl_rank_core.py test_intl_rank.py
+        run: python -m pytest -q test_intl_rank_core.py test_intl_rank.py test_group_flow.py
 
       - name: Build rankings
         env:
@@ -55,11 +56,19 @@ jobs:
           echo "markets=$MK"
           python intl_rank.py --markets "$MK"
 
+      # 族群金流共識(Phase 1.5):intl_theme_baskets.json 的籃子 × 台美日韓,只抓籃子成分股(約 80 檔)。
+      # 失敗不影響排行榜的 commit。
+      - name: Group money-flow consensus
+        continue-on-error: true
+        run: python group_flow.py
+
       - name: Commit and push
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
           git add intl_rank.json
+          [ -f intl_market_totals.json ] && git add intl_market_totals.json || true
+          [ -f group_flow.json ] && git add group_flow.json || true
           if git diff --staged --quiet; then
             echo "無變更,不 commit"
             exit 0

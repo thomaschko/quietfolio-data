@@ -37,6 +37,8 @@ import intl_rank_core as core
 
 UA = {"User-Agent": "quietfolio-intl-rank/1.0 (research; https://github.com/thomaschko)"}
 OUT_FILE = "intl_rank.json"
+TOTALS_FILE = "intl_market_totals.json"   # 各市場全市場每日總成交值(億,當地幣別),給 group_flow.py 算族群占比
+TOTALS_KEEP_DAYS = 60
 WATCH_FILE = "intl_watch.json"
 PERIOD = "45d"
 CHUNK = 350
@@ -277,6 +279,10 @@ def build_market(key, *, universe_fn=fetch_universe, download_fn=download_panel,
         if len(close) < 2:
             raise RuntimeError("可用交易日不足")
         asof = close.index[-1].date()
+        # 全市場每日總成交值(族群占比的分母);掃描不完整時不記,避免分母偏小
+        if not st.get("timed_out") and not st.get("failed_batches"):
+            tot = (close * volume).where(volume.fillna(0) > 0).sum(axis=1) / 1e8
+            info["totals"] = {str(d.date()): round(float(v), 1) for d, v in tot.items() if v > 0}
         fx = fx_on(fx_frame, cfg["fx"], asof) if (cfg["fx"] and fx_frame is not None) else None
         note_parts = []
         if st.get("timed_out"):
@@ -342,6 +348,8 @@ def run(markets, out=OUT_FILE, top_n=50, build=build_market, fx_loader=_yf_fx, b
     if not any(new.values()):
         log("\n✗ 指定的市場全部失敗,不覆寫輸出檔")
         return 1
+    save_totals({i["market"]: i["totals"] for i in infos if i.get("totals")},
+                path=os.path.join(os.path.dirname(out) or ".", TOTALS_FILE))
     payload = core.merge_preserve(old, new, generated)
     payload["last_run"] = {"at": generated, "requested": list(markets),
                            "ok": [m for m in markets if new.get(m)], "failed": [m for m in markets if not new.get(m)]}
@@ -352,6 +360,22 @@ def run(markets, out=OUT_FILE, top_n=50, build=build_market, fx_loader=_yf_fx, b
     log(f"\n→ {out}:{len(text)} 字元、top_n {n}、市場 "
         + "、".join(f"{k}{'(舊)' if v.get('stale') else ''}" for k, v in payload["markets"].items()))
     return 0
+
+
+def save_totals(new_totals, path=TOTALS_FILE, keep=TOTALS_KEEP_DAYS):
+    """{market: {date: total}} 併入既有檔,每市場只留最近 keep 個日期。"""
+    if not new_totals:
+        return
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        data = {}
+    for m, series in new_totals.items():
+        merged = {**data.get(m, {}), **series}
+        data[m] = dict(sorted(merged.items())[-keep:])
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
 
 
 def main(argv=None):
