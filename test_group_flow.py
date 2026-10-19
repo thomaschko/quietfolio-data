@@ -155,3 +155,20 @@ def test_build_rotation_uses_union_universe():
     out = gf.build(baskets, fetch=fetch)
     w = {t["theme"]: t["markets"]["us"]["weight"] for t in out["themes"]}
     assert w == {"甲": 100.0, "乙": 50.0}
+
+
+def test_keep_newer_falls_back_per_market():
+    # 新結果的韓股資料日比舊檔舊(Yahoo 最後一天不完整被丟掉)→ 韓股沿用舊檔、標 stale;其他市場用新的
+    new = {"asof": {"tw": "2026-10-20", "kr": "2026-10-16"},
+           "themes": [{"theme": "甲", "markets": {"tw": rs(12, 40, 1), "kr": rs(0, 5, 1)}},
+                      {"theme": "新題材", "markets": {"kr": rs(0, 5, 1)}}]}
+    old = {"asof": {"tw": "2026-10-19", "kr": "2026-10-19"},
+           "themes": [{"theme": "甲", "markets": {"tw": rs(0), "kr": rs(15, 45, 2)}}]}
+    out = gf.keep_newer(new, old)
+    t = {x["theme"]: x for x in out["themes"]}
+    assert out["asof"] == {"tw": "2026-10-20", "kr": "2026-10-19"} and out["stale"] == ["kr"]
+    assert t["甲"]["markets"]["kr"]["value_vs_avg"] == 45 and t["甲"]["markets"]["kr"]["stale"] is True
+    assert t["甲"]["markets"]["tw"]["value_vs_avg"] == 40
+    assert t["甲"]["status"] == "consensus" and t["甲"]["rot_status"] == "inflow"           # 依合併後重算
+    assert "kr" not in t["新題材"]["markets"]                                              # 舊檔沒有 → 不放倒退的資料
+    assert gf.keep_newer(new, None) is new

@@ -335,6 +335,11 @@ def run(markets, out=OUT_FILE, top_n=50, build=build_market, fx_loader=_yf_fx, b
         log(f"\n== {MARKETS[m]['label']} ==")
         block, info = build(m, fx_frame=fx_frame, tags=tags, top_n=top_n, deadline=deadline)
         infos.append(info)
+        old_asof = ((old or {}).get("markets", {}).get(m) or {}).get("asof")
+        if block and old_asof and block.get("asof") and block["asof"] < old_asof:
+            # 資料日不可倒退(例如 Yahoo 最後一天資料不完整被丟掉):沿用舊的、標失敗
+            info["error"] = f"新資料日 {block['asof']} 比現有的 {old_asof} 舊,不覆寫"
+            block = None
         new[m] = block
         if block:
             log(f"  清單 {info.get('universe')} 檔、取得 {info.get('got')}/{info.get('scanned')}(無資料 {info.get('no_data')})"
