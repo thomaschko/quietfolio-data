@@ -84,7 +84,9 @@ def _():
     url = "https://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13"
     r = get(url)
     html = r.content.decode("euc-kr", errors="replace")
-    df = pd.read_html(io.StringIO(html), header=0, dtype=str)[0]
+    # 2026-10-19:GHA 上的 pandas 3 的 read_html 已不接受 dtype 參數(TypeError),這是探測腳本本身的問題、
+    # 不是 KIND 擋連線;改成不帶 dtype 讀,下面 zfill(6) 會補回被當成數字吃掉的前導 0
+    df = pd.read_html(io.StringIO(html), header=0)[0]
     mk = [c for c in df.columns if "시장" in str(c)][0]
     cd = [c for c in df.columns if "종목코드" in str(c)][0]
     nm = [c for c in df.columns if "회사명" in str(c)][0]
