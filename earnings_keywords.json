@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-12 08:30:40.753243",
+  "generated_at": "2026-10-19 07:15:20.501578",
   "quarters_queried": [
     "2026Q3",
     "2026Q2"
@@ -35,9 +35,28 @@
     },
     "TSM": {
       "role": "上游-晶圓封裝(CoWoS)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.204
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "CoWoS": 3,
+          "advanced packaging": 6,
+          "HBM": 1,
+          "power delivery": 1,
+          "supply chain": 3,
+          "foundry": 1,
+          "capacity": 51,
+          "lead time": 1,
+          "yield": 6,
+          "TSMC": 42,
+          "Taiwan": 4,
+          "laser": 1,
+          "capex": 24,
+          "data center": 4,
+          "accelerator": 6,
+          "cluster": 1
+        }
       }
     },
     "AMD": {
@@ -137,8 +156,7 @@
           "data center": 3,
           "training": 1,
           "inference": 1,
-          "gallium arsenide": 1,
-          "UPS": 1
+          "gallium arsenide": 1
         }
       }
     },
@@ -281,8 +299,7 @@
           "AI infrastructure": 4,
           "accelerator": 1,
           "training": 1,
-          "GPU": 1,
-          "UPS": 1
+          "GPU": 1
         }
       }
     },
@@ -370,8 +387,7 @@
           "training": 2,
           "inference": 7,
           "GPU": 2,
-          "instruction set": 1,
-          "UPS": 2
+          "instruction set": 1
         }
       }
     },
@@ -421,12 +437,32 @@
       "prev_q": ""
     },
     {
+      "symbol": "TSM",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 51,
+      "prev_count": 0,
+      "delta": 51,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "COHR",
       "keyword": "capacity",
       "category": "平台/網通/供應鏈",
       "this_count": 47,
       "prev_count": 0,
       "delta": 47,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "TSMC",
+      "category": "台廠點名",
+      "this_count": 42,
+      "prev_count": 0,
+      "delta": 42,
       "this_q": "2026Q3",
       "prev_q": ""
     },
@@ -487,6 +523,16 @@
       "this_count": 25,
       "prev_count": 0,
       "delta": 25,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "capex",
+      "category": "客戶capex/需求",
+      "this_count": 24,
+      "prev_count": 0,
+      "delta": 24,
       "this_q": "2026Q3",
       "prev_q": ""
     },
@@ -1011,6 +1057,36 @@
       "prev_q": ""
     },
     {
+      "symbol": "TSM",
+      "keyword": "advanced packaging",
+      "category": "先進封裝/光互連",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "yield",
+      "category": "測試設備",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "accelerator",
+      "category": "客戶capex/需求",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AVGO",
       "keyword": "TPU",
       "category": "客戶capex/需求",
@@ -1171,6 +1247,26 @@
       "prev_q": ""
     },
     {
+      "symbol": "TSM",
+      "keyword": "Taiwan",
+      "category": "台廠點名",
+      "this_count": 4,
+      "prev_count": 0,
+      "delta": 4,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
+      "this_count": 4,
+      "prev_count": 0,
+      "delta": 4,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AVGO",
       "keyword": "capex",
       "category": "客戶capex/需求",
@@ -1274,6 +1370,26 @@
       "symbol": "NVDA",
       "keyword": "TSMC",
       "category": "台廠點名",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "CoWoS",
+      "category": "先進封裝/光互連",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSM",
+      "keyword": "supply chain",
+      "category": "平台/網通/供應鏈",
       "this_count": 3,
       "prev_count": 0,
       "delta": 3,
@@ -1771,16 +1887,6 @@
       "prev_q": ""
     },
     {
-      "symbol": "ARM",
-      "keyword": "UPS",
-      "category": "資料中心電源",
-      "this_count": 2,
-      "prev_count": 0,
-      "delta": 2,
-      "this_q": "2026Q3",
-      "prev_q": ""
-    },
-    {
       "symbol": "ADI",
       "keyword": "memory",
       "category": "記憶體",
@@ -1813,23 +1919,28 @@
   ],
   "intl_news_heat": [
     {
-      "keyword": "ATE",
-      "category": "測試設備",
-      "count": 7
+      "keyword": "AI infrastructure",
+      "category": "客戶capex/需求",
+      "count": 3
     },
     {
-      "keyword": "data center",
-      "category": "客戶capex/需求",
+      "keyword": "memory",
+      "category": "記憶體",
+      "count": 2
+    },
+    {
+      "keyword": "TSMC",
+      "category": "台廠點名",
+      "count": 2
+    },
+    {
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
       "count": 1
     },
     {
-      "keyword": "GPU",
-      "category": "客戶capex/需求",
-      "count": 1
-    },
-    {
-      "keyword": "GaN",
-      "category": "功率化合物半導體",
+      "keyword": "Taiwan",
+      "category": "台廠點名",
       "count": 1
     }
   ]
