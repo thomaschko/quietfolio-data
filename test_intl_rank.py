@@ -175,3 +175,17 @@ def test_kr_close_time_waits_for_after_hours():
     early, _ = ir.build_market("kr", universe_fn=lambda m: meta, download_fn=dl, now_utc=at(17, 40), top_n=2)
     late, _ = ir.build_market("kr", universe_fn=lambda m: meta, download_fn=dl, now_utc=at(18, 20), top_n=2)
     assert early["asof"] < str(last.date()) and late["asof"] == str(last.date())
+
+
+def test_run_keeps_old_when_new_asof_is_older():
+    # 2026-10-19:Yahoo 最後一天資料不完整被丟掉 → 新結果的資料日比檔案裡的舊 → 不可倒退,沿用舊的並標失敗
+    with tempfile.TemporaryDirectory() as d:
+        out = os.path.join(d, "intl_rank.json")
+        with open(out, "w") as f:
+            json.dump({"generated": "old", "markets": {"kr": _block("kr", "2026-10-19")}}, f)
+        build = lambda m, **k: (_block(m, "2026-10-16"), {})
+        assert ir.run(["jp", "kr"], out=out, build=build, fx_loader=lambda: None, tags={}) == 0
+        p = json.load(open(out))
+        assert p["markets"]["kr"]["asof"] == "2026-10-19" and p["markets"]["kr"]["stale"] is True
+        assert p["markets"]["jp"]["asof"] == "2026-10-16"                     # 沒有舊資料 → 照常寫入
+        assert p["last_run"]["ok"] == ["jp"] and p["last_run"]["failed"] == ["kr"]

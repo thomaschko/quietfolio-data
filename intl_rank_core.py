@@ -43,7 +43,8 @@ def drop_incomplete(close, volume, now_local, close_time):
     close, volume = close[keep], volume[keep]
     # 覆蓋率保護
     while len(close) >= 6:
-        cnt = (volume.fillna(0) > 0).sum(axis=1)
+        # 有效 = 成交量 > 0 且收盤價有值(2026-10-19:Yahoo 曾回傳 Close 全 NaN、Volume 有值的最後一天)
+        cnt = ((volume.fillna(0) > 0) & close.notna()).sum(axis=1)
         med = float(cnt.iloc[-6:-1].median())
         if med > 0 and cnt.iloc[-1] < med * COVERAGE_MIN_RATIO:
             notes.append(f"覆蓋率不足,丟棄 {close.index[-1].date()}({int(cnt.iloc[-1])}/{int(med)})")

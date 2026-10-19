@@ -26,6 +26,7 @@ group_flow.py — 台/美/日/韓 供應鏈族群金流共識(2026-10-19 新增,
   共識 = 有資料的市場中至少 3 個(只有 2 個市場的題材則 2/2)同向「熱」
   海外先動 = 美日韓至少 2 個市場「熱↑」,但台股 value_vs_avg < +10%
   國際平均 = 有資料市場的等權平均(flow_avg / flow5_avg / rot5_avg)
+  資料日不可倒退:某市場新資料日比上次輸出舊 → 沿用上次的數字並標 stale(keep_newer)
   板塊移動共識 = 有資料的市場中至少 3 個(只有 2 個市場則 2/2)rot_5d ≥ +10%(移入)或 ≤ −10%(移出)
 時差:美股收盤在亞洲之後,所以各市場一律用「自己最新已收盤日」,美股自然是前一個美股交易日。
 只是閱讀用的彙總:不進雷達、不影響排序、A 區或任何門檻;籃子人工挑選,有選股偏差。
@@ -317,6 +318,31 @@ def build(baskets, fetch=fetch_market, totals=None, tw_tot=None):
             "missing": missing, "themes": themes}
 
 
+def keep_newer(new, old):
+    """資料日不可倒退:某市場新結果的 asof 比舊檔舊(例如 Yahoo 最後一天不完整被丟掉)→ 該市場沿用舊檔的數字
+    (標 stale=True;舊檔沒有該題材就不放),再依合併後的市場重算題材狀態。old 為 None → 原樣回傳。"""
+    if not old:
+        return new
+    oa, na = old.get("asof") or {}, new.get("asof") or {}
+    back = [m for m in MARKET_ORDER if oa.get(m) and (not na.get(m) or na[m] < oa[m])]
+    if not back:
+        return new
+    old_t = {t["theme"]: t for t in old.get("themes", [])}
+    themes = []
+    for t in new["themes"]:
+        mk = {m: s for m, s in t["markets"].items() if m not in back}
+        for m in back:
+            s = (old_t.get(t["theme"], {}).get("markets") or {}).get(m)
+            if s:
+                mk[m] = {**s, "stale": True}
+        themes.append({"theme": t["theme"], "markets": {m: mk[m] for m in MARKET_ORDER if m in mk}, **theme_status(mk)})
+    order = {"consensus": 0, "partial": 1, "quiet": 2}
+    themes.sort(key=lambda t: (order[t["status"]], -len(t["hot_up"]) - len(t["hot_down"])))
+    for m in back:
+        log(f"  ⚠ {CFG[m]['label']} 新資料日 {na.get(m)} 比現有的 {oa[m]} 舊 → 沿用舊資料(標 stale)")
+    return {**new, "asof": {**na, **{m: oa[m] for m in back}}, "stale": back, "themes": themes}
+
+
 def main():
     baskets = load_baskets()
     try:
@@ -325,6 +351,13 @@ def main():
     except Exception:
         totals = {}
     out = build(baskets, totals=totals, tw_tot=tw_totals())
+    try:
+        with open(OUT_FILE, encoding="utf-8") as f:
+            out = keep_newer(out, json.load(f))
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        log(f"  ⚠ 舊的 {OUT_FILE} 讀取失敗,不做資料日檢查:{e}")
     if not any(t["markets"] for t in out["themes"]):
         log("✗ 所有題材都沒有資料,不覆寫 group_flow.json")
         return 1

@@ -70,6 +70,14 @@ def test_coverage_guard_drops_sparse_last_day():
     cc, vv, notes = c.drop_incomplete(close, vol, now, dt.time(16, 20))
     assert cc.index[-1] == close.index[-2] and any("覆蓋率" in n for n in notes)
 
+def test_coverage_guard_drops_last_day_with_missing_close():
+    # 2026-10-19 實際狀況:Yahoo 最後一天 Close 全是 NaN、Volume 卻有值 → 也要視為不完整
+    close, vol = frame(12, T, lambda t,i: 10.0, lambda t,i: 1000)
+    close.iloc[-1, 1:] = np.nan
+    now = dt.datetime.combine(close.index[-1].date(), dt.time(23, 0))
+    cc, vv, notes = c.drop_incomplete(close, vol, now, dt.time(16, 20))
+    assert cc.index[-1] == close.index[-2] and any("覆蓋率" in n for n in notes)
+
 def test_zero_volume_excluded():
     close, vol = frame(30, T[:3], lambda t,i: 10.0, lambda t,i: 0 if t=="S0" else 1000)
     b = c.build_market_block(close, vol, {t:{"code":t,"name":t} for t in T[:3]}, label="x", currency="USD",
