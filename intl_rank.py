@@ -53,7 +53,9 @@ MARKETS = {
     "jp": {"label": "日股", "currency": "JPY", "unit_short": "日圓", "price_dec": 0,
            "tz": "Asia/Tokyo", "close": dt.time(15, 40), "fx": "JPY=X"},
     "kr": {"label": "韓股", "currency": "KRW", "unit_short": "韓元", "price_dec": 0,
-           "tz": "Asia/Seoul", "close": dt.time(15, 40), "fx": "KRW=X"},
+           "tz": "Asia/Seoul", "close": dt.time(18, 10), "fx": "KRW=X"},
+    # 韓股收盤判定 18:10(2026-10-19 改,原 15:40):16:00~18:00 盤後單一價交易(시간외 단일가)的量
+    # 也算進當日日線;10/19 首爾 17:40 跑的成交值比 18:20 少約 1.8%(SK 海力士 48,849 → 49,710)
 }
 
 US_BASE = "https://www.nasdaqtrader.com/dynamic/SymDir/"

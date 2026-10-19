@@ -50,7 +50,8 @@ CFG = {
     "tw": {"label": "台股", "tz": "Asia/Taipei", "close": dt.time(14, 40), "suffixes": (".TW", ".TWO")},
     "us": {"label": "美股", "tz": "America/New_York", "close": dt.time(16, 20), "suffixes": ("",)},
     "jp": {"label": "日股", "tz": "Asia/Tokyo", "close": dt.time(15, 40), "suffixes": (".T",)},
-    "kr": {"label": "韓股", "tz": "Asia/Seoul", "close": dt.time(15, 40), "suffixes": (".KS", ".KQ")},
+    # 韓股 18:10:盤後單一價交易(16:00~18:00)的量也算進當日日線,同 intl_rank.py
+    "kr": {"label": "韓股", "tz": "Asia/Seoul", "close": dt.time(18, 10), "suffixes": (".KS", ".KQ")},
 }
 
 
