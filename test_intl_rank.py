@@ -159,3 +159,19 @@ def test_save_totals_merges_and_trims():
         ir.save_totals({"us": {"2026-10-15": 1.0, "2026-10-16": 2.0}}, path=p, keep=2)
         ir.save_totals({"us": {"2026-10-17": 3.0}, "jp": {"2026-10-17": 9.0}}, path=p, keep=2)
         assert json.load(open(p)) == {"us": {"2026-10-16": 2.0, "2026-10-17": 3.0}, "jp": {"2026-10-17": 9.0}}
+
+
+def test_kr_close_time_waits_for_after_hours():
+    """韓股 16:00~18:00 盤後單一價交易的量算進日線 → 首爾 17:40 不能把當天當成已收盤。"""
+    from zoneinfo import ZoneInfo
+    import group_flow as gf
+    assert ir.MARKETS["kr"]["close"] == gf.CFG["kr"]["close"] == dt.time(18, 10)
+    idx = pd.bdate_range("2026-09-01", periods=30)
+    meta = {"A": {"code": "A", "name": "A"}, "B": {"code": "B", "name": "B"}}
+    dl = lambda t, deadline=None: (pd.DataFrame({"A": 1.0, "B": 1.0}, index=idx), pd.DataFrame({"A": 1e8, "B": 1e8}, index=idx),
+                                   {"requested": 2, "scanned": 2, "got": 2, "no_data": 0, "batches": 1, "failed_batches": 0, "timed_out": False})
+    last = idx[-1]
+    at = lambda h, m: dt.datetime(last.year, last.month, last.day, h, m, tzinfo=ZoneInfo("Asia/Seoul")).astimezone(dt.timezone.utc)
+    early, _ = ir.build_market("kr", universe_fn=lambda m: meta, download_fn=dl, now_utc=at(17, 40), top_n=2)
+    late, _ = ir.build_market("kr", universe_fn=lambda m: meta, download_fn=dl, now_utc=at(18, 20), top_n=2)
+    assert early["asof"] < str(last.date()) and late["asof"] == str(last.date())
