@@ -3,7 +3,7 @@
 ============================================================
 group_flow.py — 台/美/日/韓 供應鏈族群金流共識(2026-10-19 新增,Phase 1.5)
 ============================================================
-題材籃子:intl_theme_baskets.json(人工維護;2026-10-19 審核 10 個,同日晚擴充為 28 個產業族群)
+題材籃子:intl_theme_baskets.json(人工維護;2026-10-19 審核 10 個,同日晚擴充為 29 個產業族群)
 資料:籃子成分股的 yfinance 日線(台股 .TW/.TWO、韓股 .KS/.KQ 兩種後綴都試,取有資料的那個),
       auto_adjust=False;全市場總成交值(占比的分母):美日韓取 intl_rank.py 寫的
       intl_market_totals.json,台股取 price_history/YYYYMMDD.json(price_stage.py)
