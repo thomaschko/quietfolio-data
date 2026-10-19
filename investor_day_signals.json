@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-18 20:53:00",
- "date": "20261018",
+ "generated_at": "2026-10-20 00:00:38",
+ "date": "20261020",
  "events": [
   {
    "type": "investor_day",
@@ -8,7 +8,7 @@
    "name": "Marvell",
    "event": "Analyst Day",
    "event_date": "2026-10-14",
-   "day_offset": 4,
+   "day_offset": 6,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -24,7 +24,7 @@
    "name": "Applied Materials",
    "event": "Investor Day",
    "event_date": "2026-10-14",
-   "day_offset": 4,
+   "day_offset": 6,
    "date_inferred": true,
    "news_count": 3,
    "recap_count": 0,
@@ -47,7 +47,7 @@
    "name": "Astera Labs",
    "event": "Investor Meeting",
    "event_date": "2026-10-16",
-   "day_offset": 2,
+   "day_offset": 4,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -58,20 +58,29 @@
    "keywords": {}
   },
   {
-   "type": "investor_day",
-   "symbol": "SNPS",
-   "name": "Synopsys",
-   "event": "Investor Day",
-   "event_date": "2026-10-13",
-   "day_offset": 5,
-   "date_inferred": true,
-   "news_count": 1,
+   "type": "conference",
+   "symbol": "NVDA",
+   "name": "Nvidia GTC",
+   "event": "Nvidia GTC",
+   "event_date": null,
+   "day_offset": null,
+   "news_count": 9,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "Synopsys in spotlight as Needham ups price target after investor day (SNPS:NASDAQ) - Seeking Alpha"
+    "LIVE: Deirdre Bosa sits down with Jensen Huang at Nvidia GTC Berlin - Yahoo Finance",
+    "Nvidia GTC Preview: Can AI Answer Wall Street's Doubts? - Moomoo",
+    "Nvidia GTC Berlin Preview: Rubin Platform, AI Agents and European Sovereign Compute Take Center Stage - TradingKey",
+    "NVIDIA GTC Berlin Opens With Workshops Before Oct. 21 Keynote - TOKENPOST",
+    "Macro Outlook: NVIDIA GTC Begins, Fed Enters Pre-FOMC Silence, Earnings from Meta and Tesla in Focus - KuCoin",
+    "US Stock Futures Rebound, Oil Retreats From $110 as 70-Plus Earnings Reports and Nvidia GTC Become the Battleground - BigGo Finance"
    ],
-   "keywords": {}
+   "keywords": {
+    "Rubin": {
+     "count": 2,
+     "category": "平台/網通/供應鏈"
+    }
+   }
   },
   {
    "type": "conference",
@@ -80,32 +89,25 @@
    "event": "OCP Global Summit",
    "event_date": null,
    "day_offset": null,
-   "news_count": 12,
+   "news_count": 3,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "“Memory-Centric Server Systems Are the Future”: SK hynix Presents Its Next-Generation AI Infrastructure Vision at OCP Global Summit 2026 - SK hynix",
-    "Infrastructure Highlights from OCP Global Summit - HPCwire",
-    "XCENA Showcases CXL Memory Innovations for AI Inference at OCP Global Summit 2026 - Yahoo Finance",
-    "Agentic AI Takes the Stage at OCP Global Summit 2026 - All About Circuits",
-    "OCP Global Summit 2026: Introducing AMD Helion, Agentic AI Compute at Rack Scale - StorageNewsletter",
-    "Breakthrough Cooling Solutions for the AI Computing Surge, Clivet Showcases Next-Gen Magnetic-Bearing Centrifugal Compressor at OCP Global Summit - PR Newswire"
+    "OCP Global Summit 2026: Advanced Energy Adds Single-Whip AC Input Option to 33 kW ORv3 HPR Power Shelf - StorageNewsletter",
+    "US Semiconductors: Key Takeaways from SEMICON West 2026 and the OCP Global Summit - 富途牛牛",
+    "eMemory/PUFsecurity Showcases OCP S.A.F.E.-Approved PUFrt at OCP Global Summit, Strengthening AI Data Center Security with Caliptra - The Manila Times"
    ],
    "keywords": {
-    "memory": {
-     "count": 12,
-     "category": "記憶體"
+    "power shelf": {
+     "count": 2,
+     "category": "資料中心電源"
     },
-    "inference": {
-     "count": 8,
-     "category": "客戶capex/需求"
+    "eMemory": {
+     "count": 2,
+     "category": "台廠點名"
     },
-    "CXL": {
-     "count": 8,
-     "category": "互連/網通"
-    },
-    "AI infrastructure": {
-     "count": 4,
+    "data center": {
+     "count": 2,
      "category": "客戶capex/需求"
     }
    }
@@ -123,40 +125,40 @@
    "count": 2
   },
   {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
+   "symbol": "NVDA",
+   "label": "Nvidia GTC",
+   "event": "Nvidia GTC",
    "type": "conference",
-   "keyword": "memory",
-   "category": "記憶體",
-   "count": 12
+   "keyword": "Rubin",
+   "category": "平台/網通/供應鏈",
+   "count": 2
   },
   {
    "symbol": "OCP Global Summit",
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "inference",
+   "keyword": "power shelf",
+   "category": "資料中心電源",
+   "count": 2
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "eMemory",
+   "category": "台廠點名",
+   "count": 2
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "data center",
    "category": "客戶capex/需求",
-   "count": 8
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "CXL",
-   "category": "互連/網通",
-   "count": 8
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "AI infrastructure",
-   "category": "客戶capex/需求",
-   "count": 4
+   "count": 2
   }
  ],
  "sources_status": {

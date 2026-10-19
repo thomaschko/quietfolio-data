@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-10-18 12:51:50",
+  "generated_at": "2026-10-19 15:59:08",
   "version": "watchlist_suggester v2026-10-15",
-  "tracker_date": "20261018",
+  "tracker_date": "20261019",
   "counts": {
     "strong": 0,
-    "suggest": 35,
+    "suggest": 39,
     "watch": 3
   },
   "cnyes_checked": 10,
@@ -15,38 +15,18 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 17,
+      "hits": 12,
       "reason": "",
       "stocks": [
         "2330"
       ],
       "names": {},
-      "cnyes_recent": 33,
-      "cnyes_earlier_daily": 3.176,
-      "cnyes_ratio": 3.46,
+      "cnyes_recent": 28,
+      "cnyes_earlier_daily": 3.588,
+      "cnyes_ratio": 2.6,
       "cnyes_viable": true,
       "cnyes_truncated": false,
       "notes": [
-        "純jieba,不列入可貼上清單"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "iPhone",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 15,
-      "hits": 13,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": 31,
-      "cnyes_earlier_daily": 4.0,
-      "cnyes_ratio": 2.58,
-      "cnyes_viable": true,
-      "cnyes_truncated": false,
-      "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
         "純jieba,不列入可貼上清單"
       ],
       "confidence": ""
@@ -56,13 +36,13 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 6,
+      "hits": 8,
       "reason": "",
       "stocks": [],
       "names": {},
-      "cnyes_recent": 2,
-      "cnyes_earlier_daily": 1.059,
-      "cnyes_ratio": 0.63,
+      "cnyes_recent": 1,
+      "cnyes_earlier_daily": 1.176,
+      "cnyes_ratio": 0.28,
       "cnyes_viable": true,
       "cnyes_truncated": false,
       "notes": [
@@ -80,9 +60,9 @@
       "reason": "",
       "stocks": [],
       "names": {},
-      "cnyes_recent": 8,
-      "cnyes_earlier_daily": 3.824,
-      "cnyes_ratio": 0.7,
+      "cnyes_recent": 7,
+      "cnyes_earlier_daily": 3.706,
+      "cnyes_ratio": 0.63,
       "cnyes_viable": true,
       "cnyes_truncated": false,
       "notes": [
@@ -99,9 +79,9 @@
       "reason": "",
       "stocks": [],
       "names": {},
-      "cnyes_recent": 2,
+      "cnyes_recent": 0,
       "cnyes_earlier_daily": 0.765,
-      "cnyes_ratio": 0.87,
+      "cnyes_ratio": 0.0,
       "cnyes_viable": true,
       "cnyes_truncated": false,
       "notes": [
@@ -115,10 +95,9 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 7,
+      "hits": 16,
       "reason": "",
       "stocks": [
-        "4923",
         "2330"
       ],
       "names": {},
@@ -133,11 +112,33 @@
       "confidence": ""
     },
     {
+      "term": "iPhone",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 15,
+      "hits": 7,
+      "reason": "",
+      "stocks": [
+        "8454"
+      ],
+      "names": {},
+      "cnyes_recent": 34,
+      "cnyes_earlier_daily": 3.882,
+      "cnyes_ratio": 2.92,
+      "cnyes_viable": null,
+      "cnyes_truncated": true,
+      "notes": [
+        "G區無對應，加入後建議同步補 KW_TO_THEME",
+        "cnyes新聞量過大(抓滿頁數仍未到基線期),數字不可信;通常代表詞太泛"
+      ],
+      "confidence": ""
+    },
+    {
       "term": "投資人",
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 4,
+      "hits": 3,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -160,9 +161,9 @@
       "reason": "",
       "stocks": [],
       "names": {},
-      "cnyes_recent": 38,
-      "cnyes_earlier_daily": 3.647,
-      "cnyes_ratio": 3.47,
+      "cnyes_recent": 35,
+      "cnyes_earlier_daily": 3.824,
+      "cnyes_ratio": 3.05,
       "cnyes_viable": null,
       "cnyes_truncated": true,
       "notes": [
@@ -175,8 +176,8 @@
       "term": "IC",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 13,
-      "hits": 7,
+      "streak_days": 14,
+      "hits": 9,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -195,8 +196,8 @@
       "term": "半導体",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 11,
-      "hits": 9,
+      "streak_days": 12,
+      "hits": 7,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -214,8 +215,8 @@
       "term": "晶圓廠",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 11,
-      "hits": 2,
+      "streak_days": 12,
+      "hits": 3,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -233,8 +234,29 @@
       "term": "前三季",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 9,
-      "hits": 4,
+      "streak_days": 10,
+      "hits": 5,
+      "reason": "",
+      "stocks": [
+        "6669"
+      ],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "現金流",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 10,
+      "hits": 3,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -252,27 +274,8 @@
       "term": "新加坡",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 9,
-      "hits": 3,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "現金流",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 9,
-      "hits": 3,
+      "streak_days": 10,
+      "hits": 2,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -290,7 +293,7 @@
       "term": "scale",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 9,
+      "streak_days": 10,
       "hits": 2,
       "reason": "",
       "stocks": [],
@@ -310,7 +313,7 @@
       "term": "up",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 9,
+      "streak_days": 10,
       "hits": 2,
       "reason": "",
       "stocks": [],
@@ -330,12 +333,10 @@
       "term": "IMF",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 8,
-      "hits": 7,
+      "streak_days": 9,
+      "hits": 3,
       "reason": "",
-      "stocks": [
-        "2330"
-      ],
+      "stocks": [],
       "names": {},
       "cnyes_recent": null,
       "cnyes_earlier_daily": null,
@@ -352,11 +353,14 @@
       "term": "毛利率",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 7,
-      "hits": 9,
+      "streak_days": 8,
+      "hits": 8,
       "reason": "",
       "stocks": [
-        "3264"
+        "1303",
+        "2367",
+        "3008",
+        "2330"
       ],
       "names": {},
       "cnyes_recent": null,
@@ -373,8 +377,8 @@
       "term": "烏克蘭",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 7,
-      "hits": 4,
+      "streak_days": 8,
+      "hits": 5,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -392,8 +396,8 @@
       "term": "新一代",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 7,
-      "hits": 2,
+      "streak_days": 8,
+      "hits": 3,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -403,49 +407,6 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "大小事",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 7,
-      "hits": 2,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "OCP",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 6,
-      "hits": 9,
-      "reason": "",
-      "stocks": [
-        "2376",
-        "2377",
-        "2357"
-      ],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
         "未檢查cnyes(超過每日10個上限)"
       ],
       "confidence": ""
@@ -454,12 +415,10 @@
       "term": "SSD",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 6,
-      "hits": 8,
+      "streak_days": 7,
+      "hits": 6,
       "reason": "",
-      "stocks": [
-        "2330"
-      ],
+      "stocks": [],
       "names": {},
       "cnyes_recent": null,
       "cnyes_earlier_daily": null,
@@ -473,11 +432,11 @@
       "confidence": ""
     },
     {
-      "term": "次世代",
+      "term": "OCP",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 6,
-      "hits": 4,
+      "streak_days": 7,
+      "hits": 5,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -487,6 +446,7 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [
+        "G區無對應，加入後建議同步補 KW_TO_THEME",
         "未檢查cnyes(超過每日10個上限)"
       ],
       "confidence": ""
@@ -495,8 +455,8 @@
       "term": "工研院",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 6,
-      "hits": 4,
+      "streak_days": 7,
+      "hits": 3,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -511,37 +471,13 @@
       "confidence": ""
     },
     {
-      "term": "CoreWeave",
+      "term": "AIDC",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
-      "hits": 21,
+      "streak_days": 6,
+      "hits": 4,
       "reason": "",
-      "stocks": [
-        "2330"
-      ],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "ADR",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 5,
-      "hits": 5,
-      "reason": "",
-      "stocks": [
-        "2330"
-      ],
+      "stocks": [],
       "names": {},
       "cnyes_recent": null,
       "cnyes_earlier_daily": null,
@@ -558,7 +494,7 @@
       "term": "成分股",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
+      "streak_days": 6,
       "hits": 4,
       "reason": "",
       "stocks": [],
@@ -574,53 +510,11 @@
       "confidence": ""
     },
     {
-      "term": "GF",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 5,
-      "hits": 3,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "MARS",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 5,
-      "hits": 2,
-      "reason": "",
-      "stocks": [
-        "4923"
-      ],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
       "term": "金融股",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
-      "hits": 2,
+      "streak_days": 6,
+      "hits": 3,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -638,7 +532,7 @@
       "term": "API",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
+      "streak_days": 6,
       "hits": 2,
       "reason": "",
       "stocks": [],
@@ -655,7 +549,185 @@
       "confidence": ""
     },
     {
-      "term": "AIDC",
+      "term": "魏哲家",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 8,
+      "reason": "",
+      "stocks": [
+        "2330",
+        "1473",
+        "6435",
+        "5347"
+      ],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "Roadster",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 6,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "G區無對應，加入後建議同步補 KW_TO_THEME",
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "加拿大",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 5,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "龔明鑫",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 4,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "商務部",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 3,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "4F",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 3,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "G區無對應，加入後建議同步補 KW_TO_THEME",
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "外資狂",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 3,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "出貨量",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 3,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "可能性",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 3,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "保衛戰",
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 5,
@@ -669,7 +741,6 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
         "未檢查cnyes(超過每日10個上限)"
       ],
       "confidence": ""
@@ -679,9 +750,11 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 10,
+      "hits": 9,
       "reason": "",
-      "stocks": [],
+      "stocks": [
+        "2035"
+      ],
       "names": {},
       "cnyes_recent": 0,
       "cnyes_earlier_daily": 0.059,
@@ -698,7 +771,7 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 4,
+      "hits": 3,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -713,12 +786,41 @@
       "confidence": ""
     },
     {
-      "term": "自動化與機器人",
+      "term": "高階銅箔基板(CCL)",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 4,
-      "reason": "人型機器人與智慧製造供應鏈",
+      "hits": 14,
+      "reason": "AI推升Low Dk/Df與HVLP材料需求",
+      "stocks": [
+        "2383",
+        "6213",
+        "6274",
+        "8358",
+        "2368"
+      ],
+      "names": {
+        "2383": "台光電",
+        "6213": "聯茂",
+        "6274": "台燿",
+        "8358": "金居",
+        "2368": "金像電"
+      },
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [],
+      "confidence": "high"
+    },
+    {
+      "term": "人型機器人與自動化",
+      "tier": "watch",
+      "method": "ai",
+      "streak_days": 1,
+      "hits": 10,
+      "reason": "機器人零組件與商業化進展",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -727,36 +829,15 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [],
-      "confidence": "medium"
+      "confidence": "high"
     },
     {
-      "term": "固態與新能源電池",
-      "tier": "watch",
-      "method": "ai",
-      "streak_days": 1,
-      "hits": 4,
-      "reason": "次世代電池材料與儲能系統布局",
-      "stocks": [
-        "1301"
-      ],
-      "names": {
-        "1301": "台塑"
-      },
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [],
-      "confidence": "medium"
-    },
-    {
-      "term": "微發光二極體Micro LED",
+      "term": "量子安全與量子電腦",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
       "hits": 2,
-      "reason": "新型顯示與光學應用進展",
+      "reason": "後量子資安晶片與量子技術",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -770,16 +851,12 @@
   ],
   "rejected": [
     {
-      "term": "wafer",
-      "reason": "overlaps:Wafer-on-Wafer"
-    },
-    {
       "term": "大立光",
       "reason": "is_company_name"
     },
     {
-      "term": "日月光",
-      "reason": "is_company_name"
+      "term": "wafer",
+      "reason": "overlaps:Wafer-on-Wafer"
     },
     {
       "term": "Marvell",
@@ -794,16 +871,12 @@
       "reason": "is_company_name"
     },
     {
-      "term": "ASML",
-      "reason": "is_company_name"
-    },
-    {
       "term": "交換器",
       "reason": "overlaps:交換器晶片"
     },
     {
-      "term": "Vera",
-      "reason": "overlaps:Vera Rubin"
+      "term": "Tesla",
+      "reason": "is_company_name"
     },
     {
       "term": "Nvidia",
@@ -814,75 +887,11 @@
       "reason": "overlaps:High-NA EUV"
     },
     {
-      "term": "Tesla",
-      "reason": "is_company_name"
-    },
-    {
-      "term": "Roadster",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "魏哲家",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "國發會",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "龔明鑫",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "加拿大",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "商務部",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
       "term": "CPU",
       "reason": "overlaps:Vera CPU"
     },
     {
-      "term": "外資狂",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "PPI",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "賴清德",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "甲骨文",
-      "reason": "is_company_name"
-    },
-    {
-      "term": "保衛戰",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "出貨量",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "4F",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "可能性",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
       "term": "基本面",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Mac",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -890,43 +899,15 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "Duo",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
       "term": "Micron",
       "reason": "is_company_name"
     },
     {
-      "term": "Muse",
+      "term": "大部分",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "國家隊",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "費半連",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Nike",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "日本央行",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Adobe",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Photoshop",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "利潤率",
+      "term": "Duo",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -934,7 +915,11 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "Agentic",
+      "term": "費半連",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "Mac",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -942,67 +927,7 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "Mini",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "肯德基",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "上市公司",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "AWS",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "大部分",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
       "term": "伺服器",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "彭双浪",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "RTX",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "營收降",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Spark",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "主動式",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "VIX",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "iPad",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "史學界",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Dell",
-      "reason": "is_company_name"
-    },
-    {
-      "term": "美債殖",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -1010,31 +935,15 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "合約價",
-      "reason": "overlaps:DRAM合約價"
-    },
-    {
-      "term": "推動算力",
+      "term": "RTX",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "網路列",
+      "term": "主動式",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "高階市場",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "熱門股",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "半导体",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Agent",
+      "term": "Spark",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -1046,19 +955,7 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "AGNC",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "中國擬",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Hartnett",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "拿破崙",
+      "term": "半导体",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -1066,115 +963,19 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "Citadel",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "EV",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "CXMT",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "TRV",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "ING",
-      "reason": "overlaps:Hybrid Bonding"
-    },
-    {
-      "term": "CW",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "通膨和",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "紅利脫",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "低收入",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "進口國",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "HPE",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "MRVL",
+      "term": "Dell",
       "reason": "is_company_name"
     },
     {
-      "term": "BB",
+      "term": "iPad",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "vs",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "諾貝爾獎",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "金卡藏",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "交易日",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "富士通",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "高階CCL與玻纖布",
-      "reason": "overlaps:玻纖布"
-    },
-    {
-      "term": "運動會",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "CXL與新記憶體架構",
-      "reason": "overlaps:CXL"
-    },
-    {
-      "term": "碳化矽與寬能隙",
-      "reason": "overlaps:碳化矽"
-    },
-    {
-      "term": "LED",
-      "reason": "jieba_insufficient_streak"
+      "term": "HVDC與液冷散熱",
+      "reason": "overlaps:HVDC"
     },
     {
       "term": "GTC",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "PLP",
-      "reason": "overlaps:FOPLP"
-    },
-    {
-      "term": "面板級封裝PLP",
-      "reason": "overlaps:面板級封裝"
-    },
-    {
-      "term": "相關業務",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "Micro",
       "reason": "jieba_insufficient_streak"
     },
     {
@@ -1182,123 +983,300 @@
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "AirPods",
+      "term": "Switch",
       "reason": "jieba_insufficient_streak"
     },
     {
-      "term": "歷史性",
-      "reason": "jieba_insufficient_streak"
+      "term": "變壓器",
+      "reason": "overlaps:固態變壓器"
     },
     {
-      "term": "川普力",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "APEC",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "破譯潮",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "數小時",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "破崙寫",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "荷姆茲海峽",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "股殺聲",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "00984D",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "高中生",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "前女友",
-      "reason": "jieba_insufficient_streak"
-    },
-    {
-      "term": "研究所",
+      "term": "消費者",
       "reason": "jieba_insufficient_streak"
     },
     {
       "term": "mm",
       "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "需求增",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "HBM與記憶體荒",
+      "reason": "overlaps:HBM"
+    },
+    {
+      "term": "Terafab與美墨晶圓代工",
+      "reason": "overlaps:Terafab"
+    },
+    {
+      "term": "碳化矽與化合物半導體",
+      "reason": "overlaps:碳化矽"
+    },
+    {
+      "term": "NVHBM",
+      "reason": "overlaps:HBM"
+    },
+    {
+      "term": "被動元件擴產與漲價",
+      "reason": "overlaps:被動元件"
+    },
+    {
+      "term": "破天荒",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "AI晶片與ASIC自研",
+      "reason": "overlaps:SiC"
+    },
+    {
+      "term": "MCU",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "投資大師",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "彭金隆",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "亞馬遜",
+      "reason": "is_company_name"
+    },
+    {
+      "term": "缺貨潮",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "玻璃基板與TGV",
+      "reason": "overlaps:玻璃基板"
+    },
+    {
+      "term": "Tenstorrent",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "平頭哥",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "拚算力",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "財委會",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "光互連",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "投資長",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "三季度",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "固態電池與新能源材料",
+      "reason": "overlaps:固態電池"
+    },
+    {
+      "term": "VIVE",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "G2C",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "西門子",
+      "reason": "is_company_name"
+    },
+    {
+      "term": "FADU",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "B300",
+      "reason": "overlaps:GB300"
+    },
+    {
+      "term": "M6",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "M7",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "TSM",
+      "reason": "is_company_name"
+    },
+    {
+      "term": "RRC",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "FORM",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "AOS",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "AMP",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "CMC",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "TFC",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "CDE",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "OXY",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "EVRG",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "WPM",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "IR",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "LVS",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "印尼盾",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "月光族",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "掀賣壓",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "未達標",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "響業者",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "Wolfspeed",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "生態系",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "iOS",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "開放式",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "下功夫",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "投資新",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "運算費",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "決美國",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "TPCA",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "連九賣",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "頻譜給",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "毀滅性",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "澤倫斯基",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "Qorvo",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "FPGA",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "航空器",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "一站式",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "人氣王",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "00412A",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "3nm",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "PS6",
+      "reason": "jieba_insufficient_streak"
+    },
+    {
+      "term": "DL",
+      "reason": "jieba_insufficient_streak"
     }
   ],
   "paste_block": "",
-  "consensus": [
-    {
-      "term": "PLP",
-      "ai_phrases": [
-        "面板級封裝PLP"
-      ],
-      "hits": 3,
-      "stocks": [
-        "3711"
-      ],
-      "names": {},
-      "consensus_days": 1,
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "status": "rejected:overlaps:FOPLP"
-    },
-    {
-      "term": "LED",
-      "ai_phrases": [
-        "微發光二極體Micro LED"
-      ],
-      "hits": 3,
-      "stocks": [
-        "4716",
-        "3008",
-        "2409"
-      ],
-      "names": {},
-      "consensus_days": 1,
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "status": "pending:共識1天(需2天)"
-    },
-    {
-      "term": "Micro",
-      "ai_phrases": [
-        "微發光二極體Micro LED"
-      ],
-      "hits": 2,
-      "stocks": [
-        "4716",
-        "3008",
-        "2409"
-      ],
-      "names": {},
-      "consensus_days": 1,
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "status": "pending:共識1天(需2天)"
-    }
-  ],
+  "consensus": [],
   "ai_failed": false,
   "auto_added": [],
   "stale_auto_added": [],
