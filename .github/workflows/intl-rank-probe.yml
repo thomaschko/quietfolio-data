@@ -1,0 +1,39 @@
+name: Intl Rank Probe (一次性驗證)
+
+# 純手動觸發:Actions 分頁 → Run workflow
+# 驗證美/日/韓成交值排行榜所需的資料源,結果存成 intl_rank_probe_result.json
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install yfinance pandas openpyxl lxml requests pykrx
+
+      - name: Run probe
+        run: python intl_rank_probe.py
+
+      - name: Commit result
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add intl_rank_probe_result.json || true
+          if git diff --staged --quiet; then
+            echo "無結果檔變更"
+          else
+            git commit -m "Intl rank probe result $(date -u +%Y-%m-%d)"
+            git pull --rebase || true
+            git push
+          fi
