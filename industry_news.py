@@ -8,7 +8,8 @@ industry_news.py — 產業新聞日報 / 週報(2026-10-18 新增)
 題材源 = news_sources.fetch_titles_by_source 的 46 源(含 2026-10-18 新增的產業タイムズ社「電子デバイス産業新聞」)+ 同一次 workflow 稍早產出的偵測源資料:
 MOPS 重訊主旨(event_theme_raw)、美股 8-K(us_8k_events)、國際法說/投資人日新聞
 (investor_day_signals)、D2 產業術語熱詞的 Google News 標題(gnews_term_heat)。
-2026-10-20 另加「只進產業新聞、不進雷達」的來源:未來半導體 fsemi.tech(fsemi_news.py,簡體標題轉台灣用語)。
+2026-10-20 另加「只進產業新聞、不進雷達」的來源:未來半導體 fsemi.tech(fsemi_news.py,簡體標題轉台灣用語)、
+電子產品世界 m.eccn.com「芯闻」(eccn_news.py;內容較雜,不列入 INDUSTRY_SOURCES,只收命中 watchlist 詞的標題)。
 
 流程(日報):
   1. 抓全部來源標題 → 同標題跨源合併(記錄來源)
@@ -530,6 +531,14 @@ def main():
         except Exception as e:
             print(f"  ⚠ fsemi 來源失敗(略過): {e}")
             extra["fsemi"] = {"status": "failed", "n": 0}
+        try:
+            import eccn_news
+            ec_items, ec_status = eccn_news.fetch()
+            by_source["eccn"] = eccn_news.titles_for_pool(ec_items)
+            extra["eccn"] = {"status": ec_status, "n": len(ec_items)}
+        except Exception as e:
+            print(f"  ⚠ eccn 來源失敗(略過): {e}")
+            extra["eccn"] = {"status": "failed", "n": 0}
         terms = load_terms()
         daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, code2name)
         daily["extra_sources"] = extra
