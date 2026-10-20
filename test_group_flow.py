@@ -85,7 +85,7 @@ def test_fetch_market_picks_suffix_with_data():
                 df[(t, "Volume")] = 1000.0
         return df
     now = dt.datetime(IDX[-1].year, IDX[-1].month, IDX[-1].day, 12, 0, tzinfo=dt.timezone.utc)   # 台北 20:00
-    close, vol, miss = gf.fetch_market("tw", ["2330", "8299", "9999"], download=dl, now_utc=now)
+    close, vol, miss = gf.fetch_market("tw", ["2330", "8299", "9999"], download=dl, now_utc=now, sleep=lambda s: None)
     assert sorted(close.columns) == ["2330", "8299"] and miss == ["9999"] and close.index[-1] == IDX[-1]
 
 
@@ -172,3 +172,44 @@ def test_keep_newer_falls_back_per_market():
     assert t["甲"]["status"] == "consensus" and t["甲"]["rot_status"] == "inflow"           # 依合併後重算
     assert "kr" not in t["新題材"]["markets"]                                              # 舊檔沒有 → 不放倒退的資料
     assert gf.keep_newer(new, None) is new
+
+
+def _dl_factory(ok_after):
+    """ok_after:{ticker: 第幾次呼叫起才有資料}(模擬 Yahoo 限流後恢復)。"""
+    calls = []
+
+    def dl(tickers):
+        calls.append(list(tickers))
+        cols = pd.MultiIndex.from_product([tickers, ["Close", "Volume"]])
+        df = pd.DataFrame(np.nan, index=IDX, columns=cols)
+        for t in tickers:
+            if t in ok_after and len(calls) >= ok_after[t]:
+                df[(t, "Close")] = 10.0
+                df[(t, "Volume")] = 1000.0
+        return df
+    return dl, calls
+
+
+def test_fetch_market_retries_missing_only():
+    dl, calls = _dl_factory({"6758.T": 1, "8035.T": 2})                 # 8035 第 2 次才抓到
+    waits = []
+    now = dt.datetime(IDX[-1].year, IDX[-1].month, IDX[-1].day, 12, 0, tzinfo=dt.timezone.utc)
+    close, vol, miss = gf.fetch_market("jp", ["6758", "8035"], download=dl, now_utc=now, sleep=waits.append)
+    assert sorted(close.columns) == ["6758", "8035"] and miss == []
+    assert calls == [["6758.T", "8035.T"], ["8035.T"]] and waits == [gf.RETRY_WAIT]
+
+
+def test_build_drops_market_with_low_coverage():
+    # 台股 5 檔只拿到 2 檔(< 80%)→ 這次台股不算;美股照常
+    baskets = {"甲": {"tw": ["1", "2", "3", "4", "5"], "us": ["A"]}}
+
+    def fetch(m, codes):
+        got = codes[:2] if m == "tw" else codes
+        close, vol = panel({c: (lambda i: 100.0, lambda i: 1e6) for c in got})
+        return close, vol, [c for c in codes if c not in got]
+    out = gf.build(baskets, fetch=fetch)
+    assert set(out["themes"][0]["markets"]) == {"us"} and out["asof"]["tw"] is None
+    assert out["missing"]["tw"] == ["3", "4", "5"]
+    old = {"asof": {"tw": "2026-09-01"}, "themes": [{"theme": "甲", "markets": {"tw": rs(5)}}]}
+    kept = gf.keep_newer(out, old)                                          # → 台股沿用上次、標 stale
+    assert kept["stale"] == ["tw"] and kept["themes"][0]["markets"]["tw"]["stale"] is True
