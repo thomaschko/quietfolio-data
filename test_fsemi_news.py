@@ -62,3 +62,21 @@ def test_fetch_blocked_does_not_retry():
         items, status = fn.fetch(TODAY, get=lambda u: calls.append(u) or R(403),
                                  cache_path=os.path.join(d, "c.json"), sleep=lambda s: None)
         assert status == "failed" and items == [] and len(calls) == 1
+
+
+def test_parse_list_date_formats():
+    for d in ("2026年10月20日", "2026/10/20", "2026.10.20", "2026 - 10 - 20"):
+        html = f'<li><a href="/cms/xinwenkuaixun/1.html">半导体设备国产化新闻</a><span>{d}</span></li>'
+        assert fn.parse_list(html)[0]["date"] == "2026-10-20", d
+
+
+def test_fetch_no_date_is_reported():
+    html = '<li><a href="/cms/xinwenkuaixun/1.html">半导体设备国产化新闻</a></li>'
+    with tempfile.TemporaryDirectory() as d:
+        items, status = fn.fetch(TODAY, get=lambda u: R(200, html), cache_path=os.path.join(d, "c.json"))
+        assert status == "no_date" and items == []
+
+
+def test_to_tw_semiconductor_equipment():
+    t = fn.to_tw("屹唐股份北京工厂第1000台机台发车 设备量产能力迈上新台阶；美国半导体制造；半导体设备企业")
+    assert "設備量產" in t and "半導體製造" in t and "半導體設備企業" in t
