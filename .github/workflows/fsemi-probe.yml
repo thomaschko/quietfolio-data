@@ -1,0 +1,36 @@
+name: FSEMI Probe (一次性探測)
+
+# 2026-10-20 一次性:fsemi.tech「新聞快訊」能否當產業新聞觀察源。只手動執行、不 commit,
+# 結果 fsemi_probe_result.json 以 artifact 上傳並印在 log。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests beautifulsoup4
+
+      - name: Run probe
+        run: python fsemi_probe.py
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fsemi_probe_result
+          path: fsemi_probe_result.json
+          if-no-files-found: warn
