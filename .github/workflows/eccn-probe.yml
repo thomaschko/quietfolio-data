@@ -9,7 +9,7 @@ on:
       script:
         description: '探測腳本'
         type: choice
-        options: [eccn_probe.py, eccn_list_probe.py]
+        options: [eccn_probe.py, eccn_list_probe.py, eccn_page_probe.py]
         default: eccn_probe.py
 
 permissions:
@@ -42,4 +42,5 @@ jobs:
           path: |
             eccn_probe_result.json
             eccn_list_probe_result.json
+            eccn_page_probe_result.json
           if-no-files-found: warn
