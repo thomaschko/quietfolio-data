@@ -8,6 +8,7 @@ industry_news.py — 產業新聞日報 / 週報(2026-10-18 新增)
 題材源 = news_sources.fetch_titles_by_source 的 46 源(含 2026-10-18 新增的產業タイムズ社「電子デバイス産業新聞」)+ 同一次 workflow 稍早產出的偵測源資料:
 MOPS 重訊主旨(event_theme_raw)、美股 8-K(us_8k_events)、國際法說/投資人日新聞
 (investor_day_signals)、D2 產業術語熱詞的 Google News 標題(gnews_term_heat)。
+2026-10-20 另加「只進產業新聞、不進雷達」的來源:未來半導體 fsemi.tech(fsemi_news.py,簡體標題轉台灣用語)。
 
 流程(日報):
   1. 抓全部來源標題 → 同標題跨源合併(記錄來源)
@@ -50,6 +51,7 @@ INDUSTRY_SOURCES = {
     "techcrunch_semi", "the_circuit_podcast", "simpletechtrend", "wapeople_pod", "edn",
     "mops", "us_8k", "investor_events", "gnews_d2",
     "cnbc_yahoo",   # Yahoo Finance 半導體/AI 個股新聞(NVDA/TSM/AMD…),英文標題幾乎不含中文 watchlist 詞
+    "fsemi",        # 2026-10-20 未來半導體(中國半導體產業快訊,只進產業新聞;fsemi_news.py)
 }
 WEEKLY_WEEKDAY = 5          # 週六(Monday=0)
 WEEK_DAYS = 7
@@ -519,8 +521,18 @@ def main():
             print(f"  ⚠ 股名對照載入失敗(不標個股): {e}")
         by_source = fetch_titles_by_source()
         by_source.update(detector_sources(today.isoformat()))
+        extra = {}
+        try:                                          # 只進產業新聞的來源(不在雷達的 fetch_titles_by_source 裡)
+            import fsemi_news
+            fs_items, fs_status = fsemi_news.fetch(today)
+            by_source["fsemi"] = fsemi_news.titles_for_pool(fs_items)
+            extra["fsemi"] = {"status": fs_status, "n": len(fs_items)}
+        except Exception as e:
+            print(f"  ⚠ fsemi 來源失敗(略過): {e}")
+            extra["fsemi"] = {"status": "failed", "n": 0}
         terms = load_terms()
         daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, code2name)
+        daily["extra_sources"] = extra
         _write(os.path.join(OUT_DIR, "daily", f"{daily['date']}.json"), json.dumps(daily, ensure_ascii=False, indent=1))
         print(f"  來源 {daily['n_sources']}/{daily['n_sources_total']}、標題 {daily['n_titles']}、相關 {daily['n_relevant']}、"
               f"AI {daily['provider']}、主題 {len(daily['sections'])}、fallback={daily['fallback']} {daily.get('stats')}")
