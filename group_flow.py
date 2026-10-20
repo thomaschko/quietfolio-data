@@ -26,7 +26,7 @@ group_flow.py — 台/美/日/韓 供應鏈族群金流共識(2026-10-19 新增,
   共識 = 有資料的市場中至少 3 個(只有 2 個市場的題材則 2/2)同向「熱」
   海外先動 = 美日韓至少 2 個市場「熱↑」,但台股 value_vs_avg < +10%
   國際平均 = 有資料市場的等權平均(flow_avg / flow5_avg / rot5_avg)
-  資料日不可倒退:某市場新資料日比上次輸出舊 → 沿用上次的數字並標 stale(keep_newer)
+  資料日不可倒退:某市場新資料日比上次輸出舊、或這次取得成分股 < 80% → 沿用上次的數字並標 stale(keep_newer)
   板塊移動共識 = 有資料的市場中至少 3 個(只有 2 個市場則 2/2)rot_5d ≥ +10%(移入)或 ≤ −10%(移出)
 時差:美股收盤在亞洲之後,所以各市場一律用「自己最新已收盤日」,美股自然是前一個美股交易日。
 只是閱讀用的彙總:不進雷達、不影響排序、A 區或任何門檻;籃子人工挑選,有選股偏差。
@@ -37,6 +37,7 @@ import re
 import sys
 import glob
 import json
+import time
 import datetime as dt
 from zoneinfo import ZoneInfo
 
@@ -57,6 +58,11 @@ HOT_VS_AVG = 30
 TW_QUIET_VS_AVG = 10
 ROT_TH = 10
 RECENT = 5
+# 2026-10-20:排行榜先抓了幾千檔後,Yahoo 對族群籃子回 Too Many Requests,台股 103 檔只拿到 25 檔
+# → 取不到的代碼等一下再重抓;重抓後某市場仍取不到 > 20% → 整個市場這次不算(沿用上次,標 stale)
+RETRIES = 2
+RETRY_WAIT = 90
+MIN_MARKET_COVERAGE = 0.8
 MARKET_ORDER = ("tw", "us", "jp", "kr")
 CFG = {
     "tw": {"label": "台股", "tz": "Asia/Taipei", "close": dt.time(14, 40), "suffixes": (".TW", ".TWO")},
@@ -253,13 +259,12 @@ def _yf_download(tickers):
                        threads=True, progress=False)
 
 
-def fetch_market(market, codes, download=_yf_download, now_utc=None):
-    """→ (close, volume)(columns=原始代碼)與 log 資訊。兩種後綴都試,取有效日數多的那個。"""
-    want = {t: c for c in codes for t in tickers_for(market, c)}
-    df = download(sorted(want))
+def _collect(df, tickers, want, best):
+    if df is None or not len(df):
+        return
     multi = isinstance(df.columns, pd.MultiIndex)
-    best = {}
-    for t, code in want.items():
+    for t in tickers:
+        code = want[t]
         try:
             sub = df[t] if multi else df
             cl, vo = sub["Close"], sub["Volume"]
@@ -268,7 +273,27 @@ def fetch_market(market, codes, download=_yf_download, now_utc=None):
         n = int((cl.notna() & vo.notna()).sum())
         if n >= MIN_VALID_DAYS and n > best.get(code, (0,))[0]:
             best[code] = (n, cl, vo)
-    missing = [c for c in codes if c not in best]
+
+
+def fetch_market(market, codes, download=_yf_download, now_utc=None, sleep=time.sleep, retries=RETRIES):
+    """→ (close, volume)(columns=原始代碼)與取不到的代碼。兩種後綴都試,取有效日數多的那個;
+    取不到的代碼最多再重抓 retries 次(每次多等 RETRY_WAIT 秒,應付 Yahoo 限流)。"""
+    want = {t: c for c in codes for t in tickers_for(market, c)}
+    best, pending = {}, sorted(want)
+    for attempt in range(retries + 1):
+        if attempt:
+            log(f"  … {CFG[market]['label']} 有 {len(missing)} 檔取不到,{RETRY_WAIT * attempt} 秒後重抓(第 {attempt} 次)")
+            sleep(RETRY_WAIT * attempt)
+        try:
+            df = download(pending)
+        except Exception as e:
+            log(f"  ⚠ {CFG[market]['label']} 下載錯誤:{e}")
+            df = None
+        _collect(df, pending, want, best)
+        missing = [c for c in codes if c not in best]
+        if not missing:
+            break
+        pending = sorted(t for t, c in want.items() if c in missing)
     if not best:
         return None, None, missing
     close = pd.DataFrame({c: b[1] for c, b in best.items()}).sort_index()
@@ -293,10 +318,14 @@ def build(baskets, fetch=fetch_market, totals=None, tw_tot=None):
         except Exception as e:
             log(f"  ✗ {CFG[m]['label']} 下載失敗:{e}")
             close, volume, miss = None, None, codes
-        panels[m] = (close, volume)
         if miss:
             missing[m] = miss
             log(f"  ⚠ {CFG[m]['label']} 取不到(不計入):{miss}")
+        if close is not None and (len(codes) - len(miss)) < len(codes) * MIN_MARKET_COVERAGE:
+            # 缺太多會讓籃子只剩 1~2 檔、比重分母也變小,數字失真 → 這次整個市場不算
+            log(f"  ✗ {CFG[m]['label']} 只取得 {len(codes) - len(miss)}/{len(codes)} 檔(< {int(MIN_MARKET_COVERAGE * 100)}%),這次不計入")
+            close, volume = None, None
+        panels[m] = (close, volume)
     univ = {m: universe_value(*p) for m, p in panels.items()}
     themes = []
     for name, mk in baskets.items():

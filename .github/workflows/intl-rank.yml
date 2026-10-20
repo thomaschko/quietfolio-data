@@ -44,6 +44,13 @@ jobs:
       - name: Unit tests
         run: python -m pytest -q test_intl_rank_core.py test_intl_rank.py test_group_flow.py
 
+      # 族群金流共識(Phase 1.5):intl_theme_baskets.json 的籃子 × 台美日韓,只抓籃子成分股(約 280 檔)。
+      # 2026-10-20 移到排行榜之前:排行榜一次抓幾千檔後 Yahoo 會限流(Too Many Requests),族群籃子會缺一大半。
+      # 失敗不影響排行榜的 commit。
+      - name: Group money-flow consensus
+        continue-on-error: true
+        run: python group_flow.py
+
       - name: Build rankings
         env:
           INTL_BUDGET_MIN: '25'
@@ -55,12 +62,6 @@ jobs:
           fi
           echo "markets=$MK"
           python intl_rank.py --markets "$MK"
-
-      # 族群金流共識(Phase 1.5):intl_theme_baskets.json 的籃子 × 台美日韓,只抓籃子成分股(約 80 檔)。
-      # 失敗不影響排行榜的 commit。
-      - name: Group money-flow consensus
-        continue-on-error: true
-        run: python group_flow.py
 
       - name: Commit and push
         run: |
