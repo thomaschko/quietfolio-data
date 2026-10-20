@@ -2,8 +2,15 @@ name: ECCN Probe (一次性探測)
 
 # 2026-10-20 一次性:m.eccn.com「芯闻」能否當產業新聞觀察源。只手動執行、不 commit,
 # 結果 eccn_probe_result.json 以 artifact 上傳並印在 log。
+# 2026-10-20:加 eccn_list_probe.py(列表頁 /consultation/news.html 與分頁的補探測),用 input 選。
 on:
   workflow_dispatch:
+    inputs:
+      script:
+        description: '探測腳本'
+        type: choice
+        options: [eccn_probe.py, eccn_list_probe.py]
+        default: eccn_probe.py
 
 permissions:
   contents: read
@@ -25,12 +32,14 @@ jobs:
         run: pip install requests beautifulsoup4
 
       - name: Run probe
-        run: python eccn_probe.py
+        run: python "${{ github.event.inputs.script || 'eccn_probe.py' }}"
 
       - name: Upload result
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: eccn_probe_result
-          path: eccn_probe_result.json
+          path: |
+            eccn_probe_result.json
+            eccn_list_probe_result.json
           if-no-files-found: warn
