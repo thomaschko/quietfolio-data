@@ -29,7 +29,7 @@ jobs:
 
       - name: Install deps
         run: |
-          pip install requests jieba
+          pip install requests jieba beautifulsoup4 opencc-python-reimplemented  # 2026-10-20 bs4+opencc:fsemi_news.py(產業新聞)
           pip install --upgrade certifi  # 2026-09-14:修TPEx SSL憑證驗證失敗
           # (unable to get local issuer certificate),通常是runner的CA憑證包過期
 
