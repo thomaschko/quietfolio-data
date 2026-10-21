@@ -25,9 +25,14 @@ RECENT_DAYS = 3
 CACHE = os.path.join("industry_news", "fsemi_latest.json")
 TPE = dt.timezone(dt.timedelta(hours=8))
 ART_RE = re.compile(r"/cms/xinwenkuaixun/(\d+)\.html")
-DATE_RE = re.compile(r"(20\d{2})-(\d{1,2})-(\d{1,2})")
+# 2026-10-20 首次實跑:列表日期不是「-」分隔(探測時程式已正規化成 YYYY-MM-DD,看不出原格式)→ 全部解析成 None、
+# 0 則進日報。改成和 fsemi_probe.py 一樣接受 - / . 年月日
+DATE_RE = re.compile(r"(20\d{2})\s*[-/.年]\s*(\d{1,2})\s*[-/.月]\s*(\d{1,2})")
 # OpenCC s2twp 之後的台灣慣用寫法(只放確定的)
-TW_FIX = (("臺", "台"), ("英偉達", "輝達"))
+# s2twp 會把「设备」(連繁體「設備」)都轉成「裝置」,半導體語境要「設備」;「制造」有時沒轉成「製造」
+TW_FIX = (("臺", "台"), ("英偉達", "輝達"), ("制造", "製造"), ("半導體裝置", "半導體設備"),
+          ("裝置量產", "設備量產"), ("裝置廠", "設備廠"), ("裝置商", "設備商"), ("裝置企業", "設備企業"),
+          ("裝置材料", "設備材料"), ("裝置國產", "設備國產"))
 
 _cc = None
 
@@ -120,6 +125,9 @@ def fetch(today=None, get=None, cache_path=CACHE, sleep=time.sleep):
                           f, ensure_ascii=False, indent=1)
         except Exception as e:
             print(f"  ⚠ fsemi 快取寫入失敗:{e}")
+        if not any(x.get("date") for x in items):
+            print(f"  ⚠ fsemi 列表有 {len(items)} 則但日期全部解析不到(版面可能改了),這次不收")
+            return [], "no_date"
         return _recent(items, today), "ok"
     print(f"  ⚠ fsemi 抓取失敗:{err}")
     cached = _read_cache(cache_path)
