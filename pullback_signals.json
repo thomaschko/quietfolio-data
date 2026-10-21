@@ -1,18 +1,18 @@
 {
- "generated_at": "2026-10-20 20:41:17",
- "data_date": "2026-10-20",
+ "generated_at": "2026-10-21 20:53:23",
+ "data_date": "2026-10-21",
  "universe": "前200大(前60日平均成交值)",
  "universe_size": 200,
  "market_scan": {
   "上市": {
-   "scan_date": "2026-10-20",
-   "members": 147,
-   "scanned": 147
+   "scan_date": "2026-10-21",
+   "members": 148,
+   "scanned": 148
   },
   "上櫃": {
-   "scan_date": "2026-10-20",
-   "members": 53,
-   "scanned": 53
+   "scan_date": "2026-10-21",
+   "members": 52,
+   "scanned": 52
   }
  },
  "params": {
@@ -28,123 +28,84 @@
   "COOLDOWN": 5
  },
  "market": {
-  "index_date": "2026-10-20",
-  "drawdown_from_20d_high": 0.0708,
+  "index_date": "2026-10-21",
+  "drawdown_from_20d_high": 0.0589,
   "market_stress": true
  },
  "backtest_note": "回測(2019–2026,前200大成交值股票池):扣成本後平均報酬為正,但與同一天在池內隨機買股、持有相同天數相比沒有顯著差異(樣本外 −0.42%,95% 信賴區間 −1.48%~+0.74%),報酬主要來自大盤急殺後的反彈。",
  "counts": {
-  "confirm": 1,
+  "confirm": 0,
   "noconfirm": 1,
-  "watch": 3
+  "watch": 2
  },
- "confirm": [
-  {
-   "code": "6669",
-   "name": "緯穎",
-   "market": "上市",
-   "signal_date": "2026-10-20",
-   "turnover_rank": 27,
-   "close": 1925.0,
-   "chg_today": 0.0212,
-   "drawdown_3d_max": 0.1943,
-   "drawdown_today": 0.1594,
-   "vol_mult_max_3d": 3.51,
-   "cap_dates": [
-    "2026-10-16"
-   ],
-   "ref_high": 2290.0,
-   "trough_3d": 1845.0,
-   "target": 2112.0,
-   "stop": 1603.0
-  }
- ],
+ "confirm": [],
  "noconfirm": [
   {
-   "code": "6173",
-   "name": "信昌電",
+   "code": "6274",
+   "name": "台燿",
    "market": "上櫃",
-   "signal_date": "2026-10-20",
-   "turnover_rank": 71,
-   "close": 259.0,
-   "chg_today": -0.046,
-   "drawdown_3d_max": 0.2231,
-   "drawdown_today": 0.2231,
-   "vol_mult_max_3d": 2.43,
+   "signal_date": "2026-10-21",
+   "turnover_rank": 24,
+   "close": 1500.0,
+   "chg_today": -0.0323,
+   "drawdown_3d_max": 0.1573,
+   "drawdown_today": 0.1573,
+   "vol_mult_max_3d": 2.2,
    "cap_dates": [
-    "2026-10-20"
+    "2026-10-21"
    ],
-   "ref_high": 333.38,
-   "trough_3d": 259.0,
-   "target": 303.63,
-   "stop": 233.37
+   "ref_high": 1780.0,
+   "trough_3d": 1500.0,
+   "target": 1668.0,
+   "stop": 1246.0
   }
  ],
  "watch": [
   {
-   "code": "6217",
-   "name": "中探針",
+   "code": "6173",
+   "name": "信昌電",
    "market": "上櫃",
-   "signal_date": "2026-10-20",
-   "turnover_rank": 185,
-   "close": 171.5,
-   "chg_today": -0.0311,
-   "drawdown_3d_max": 0.2079,
-   "drawdown_today": 0.2079,
-   "vol_mult_max_3d": 2.86,
+   "signal_date": "2026-10-21",
+   "turnover_rank": 68,
+   "close": 284.5,
+   "chg_today": 0.0985,
+   "drawdown_3d_max": 0.2231,
+   "drawdown_today": 0.13,
+   "vol_mult_max_3d": 2.37,
    "cap_dates": [
-    "2026-10-16"
+    "2026-10-20"
    ],
-   "ref_high": 216.5,
-   "trough_3d": 171.5,
-   "target": 198.5,
-   "stop": 151.55
-  },
-  {
-   "code": "2478",
-   "name": "大毅",
-   "market": "上市",
-   "signal_date": "2026-10-20",
-   "turnover_rank": 188,
-   "close": 120.0,
-   "chg_today": -0.0164,
-   "drawdown_3d_max": 0.1549,
-   "drawdown_today": 0.1549,
-   "vol_mult_max_3d": 4.91,
-   "cap_dates": [
-    "2026-10-16"
-   ],
-   "ref_high": 142.0,
-   "trough_3d": 120.0,
-   "target": 133.2,
-   "stop": 99.4
+   "ref_high": 327.01,
+   "trough_3d": 259.0,
+   "target": 299.81,
+   "stop": 228.91
   },
   {
    "code": "3260",
    "name": "威剛",
    "market": "上櫃",
-   "signal_date": "2026-10-20",
-   "turnover_rank": 66,
-   "close": 335.5,
-   "chg_today": 0.0015,
-   "drawdown_3d_max": 0.1388,
-   "drawdown_today": 0.1375,
+   "signal_date": "2026-10-21",
+   "turnover_rank": 67,
+   "close": 332.5,
+   "chg_today": -0.0089,
+   "drawdown_3d_max": 0.1452,
+   "drawdown_today": 0.1452,
    "vol_mult_max_3d": 2.5,
    "cap_dates": [
     "2026-10-19"
    ],
    "ref_high": 389.0,
-   "trough_3d": 335.0,
-   "target": 367.4,
+   "trough_3d": 332.5,
+   "target": 366.4,
    "stop": 272.3
   }
  ],
  "data_quality": {
-  "usable": 1973,
-  "failed": 5,
+  "usable": 1972,
+  "failed": 7,
   "official_dates": {
-   "上市": "2026-10-20",
-   "上櫃": "2026-10-20"
+   "上市": "2026-10-21",
+   "上櫃": "2026-10-21"
   },
   "official_source": {
    "上市": "證交所MI_INDEX(指定日期)",
@@ -152,15 +113,15 @@
   },
   "yahoo_last_dates": {
    "上市": {
-    "2026-10-20": 1082,
-    "2026-10-19": 3
+    "2026-10-21": 1083,
+    "2026-10-20": 1
    },
    "上櫃": {
-    "2026-10-20": 866,
-    "2026-10-19": 22
+    "2026-10-21": 866,
+    "2026-10-20": 22
    }
   },
-  "official_replaced": 1950,
+  "official_replaced": 1949,
   "official_appended": 0,
   "official_inserted": 0
  }
