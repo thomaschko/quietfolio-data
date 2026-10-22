@@ -385,14 +385,48 @@ def save_totals(new_totals, path=TOTALS_FILE, keep=TOTALS_KEEP_DAYS):
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
 
 
+def expected_asof(market, now_utc=None):
+    """該市場「最近一個應已收盤的平日」(不認得國定假日:假日那天會多補跑一次,結果資料日不變)。"""
+    cfg = MARKETS[market]
+    now = (now_utc or dt.datetime.now(dt.timezone.utc)).astimezone(ZoneInfo(cfg["tz"])).replace(tzinfo=None)
+    d = now.date() if now.time() >= cfg["close"] else now.date() - dt.timedelta(days=1)
+    while d.weekday() >= 5:
+        d -= dt.timedelta(days=1)
+    return d.isoformat()
+
+
+def stale_markets(candidates, out=OUT_FILE, now_utc=None):
+    """candidates 中「檔案裡的資料日早於應有資料日」的市場(檔案讀不到 → 全部算落後)。
+    2026-10-22:10/21 晚上 22:00 的日韓排程被延到台北 02:20 才跑,Yahoo 這時段前一日收盤價是空的,
+    10/21 被覆蓋率保護丟掉、日韓停在 10/20 → 早上美股那次順便補跑落後的市場。"""
+    try:
+        with open(out, encoding="utf-8") as f:
+            have = {k: (v or {}).get("asof") for k, v in json.load(f).get("markets", {}).items()}
+    except Exception:
+        have = {}
+    out_m = []
+    for m in candidates:
+        exp = expected_asof(m, now_utc)
+        if not have.get(m) or have[m] < exp:
+            log(f"  補跑 {MARKETS[m]['label']}:檔案資料日 {have.get(m)} < 應有 {exp}")
+            out_m.append(m)
+        else:
+            log(f"  {MARKETS[m]['label']} 資料日 {have[m]} 已是最新,不補跑")
+    return out_m
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--markets", default="us,jp,kr")
+    ap.add_argument("--catchup", default="", help="資料日落後才加跑的市場(逗號分隔),例:jp,kr")
     ap.add_argument("--top-n", type=int, default=50)
     ap.add_argument("--out", default=OUT_FILE)
     a = ap.parse_args(argv)
     markets = [m.strip() for m in a.markets.split(",") if m.strip()]
-    bad = [m for m in markets if m not in MARKETS]
+    catch = [m.strip() for m in a.catchup.split(",") if m.strip() and m.strip() not in markets]
+    bad = [m for m in markets + catch if m not in MARKETS]
+    if not bad and catch:
+        markets += stale_markets(catch, out=a.out)
     if bad or not markets:
         log(f"未知市場:{bad}")
         return 2
