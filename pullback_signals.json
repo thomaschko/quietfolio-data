@@ -1,16 +1,16 @@
 {
- "generated_at": "2026-10-21 20:53:23",
- "data_date": "2026-10-21",
+ "generated_at": "2026-10-22 20:55:56",
+ "data_date": "2026-10-22",
  "universe": "前200大(前60日平均成交值)",
  "universe_size": 200,
  "market_scan": {
   "上市": {
-   "scan_date": "2026-10-21",
+   "scan_date": "2026-10-22",
    "members": 148,
    "scanned": 148
   },
   "上櫃": {
-   "scan_date": "2026-10-21",
+   "scan_date": "2026-10-22",
    "members": 52,
    "scanned": 52
   }
@@ -28,84 +28,200 @@
   "COOLDOWN": 5
  },
  "market": {
-  "index_date": "2026-10-21",
-  "drawdown_from_20d_high": 0.0589,
+  "index_date": "2026-10-22",
+  "drawdown_from_20d_high": 0.0759,
   "market_stress": true
  },
  "backtest_note": "回測(2019–2026,前200大成交值股票池):扣成本後平均報酬為正,但與同一天在池內隨機買股、持有相同天數相比沒有顯著差異(樣本外 −0.42%,95% 信賴區間 −1.48%~+0.74%),報酬主要來自大盤急殺後的反彈。",
  "counts": {
-  "confirm": 0,
-  "noconfirm": 1,
-  "watch": 2
+  "confirm": 1,
+  "noconfirm": 4,
+  "watch": 4
  },
- "confirm": [],
- "noconfirm": [
-  {
-   "code": "6274",
-   "name": "台燿",
-   "market": "上櫃",
-   "signal_date": "2026-10-21",
-   "turnover_rank": 24,
-   "close": 1500.0,
-   "chg_today": -0.0323,
-   "drawdown_3d_max": 0.1573,
-   "drawdown_today": 0.1573,
-   "vol_mult_max_3d": 2.2,
-   "cap_dates": [
-    "2026-10-21"
-   ],
-   "ref_high": 1780.0,
-   "trough_3d": 1500.0,
-   "target": 1668.0,
-   "stop": 1246.0
-  }
- ],
- "watch": [
+ "confirm": [
   {
    "code": "6173",
    "name": "信昌電",
    "market": "上櫃",
-   "signal_date": "2026-10-21",
-   "turnover_rank": 68,
-   "close": 284.5,
-   "chg_today": 0.0985,
+   "signal_date": "2026-10-22",
+   "turnover_rank": 67,
+   "close": 293.5,
+   "chg_today": 0.0316,
    "drawdown_3d_max": 0.2231,
-   "drawdown_today": 0.13,
-   "vol_mult_max_3d": 2.37,
+   "drawdown_today": 0.0981,
+   "vol_mult_max_3d": 2.94,
    "cap_dates": [
     "2026-10-20"
    ],
-   "ref_high": 327.01,
+   "ref_high": 325.42,
    "trough_3d": 259.0,
-   "target": 299.81,
-   "stop": 228.91
+   "target": 298.85,
+   "stop": 227.79
+  }
+ ],
+ "noconfirm": [
+  {
+   "code": "8042",
+   "name": "金山電",
+   "market": "上櫃",
+   "signal_date": "2026-10-22",
+   "turnover_rank": 164,
+   "close": 135.5,
+   "chg_today": -0.0875,
+   "drawdown_3d_max": 0.1456,
+   "drawdown_today": 0.1424,
+   "vol_mult_max_3d": 2.11,
+   "cap_dates": [
+    "2026-10-22"
+   ],
+   "ref_high": 158.0,
+   "trough_3d": 135.0,
+   "target": 148.8,
+   "stop": 110.6
   },
   {
-   "code": "3260",
-   "name": "威剛",
+   "code": "3374",
+   "name": "精材",
    "market": "上櫃",
-   "signal_date": "2026-10-21",
-   "turnover_rank": 67,
-   "close": 332.5,
-   "chg_today": -0.0089,
-   "drawdown_3d_max": 0.1452,
-   "drawdown_today": 0.1452,
-   "vol_mult_max_3d": 2.5,
+   "signal_date": "2026-10-22",
+   "turnover_rank": 53,
+   "close": 463.5,
+   "chg_today": -0.0149,
+   "drawdown_3d_max": 0.1423,
+   "drawdown_today": 0.0711,
+   "vol_mult_max_3d": 2.11,
    "cap_dates": [
-    "2026-10-19"
+    "2026-10-22"
    ],
-   "ref_high": 389.0,
-   "trough_3d": 332.5,
-   "target": 366.4,
-   "stop": 272.3
+   "ref_high": 499.0,
+   "trough_3d": 428.0,
+   "target": 470.6,
+   "stop": 349.3
+  },
+  {
+   "code": "5475",
+   "name": "德宏",
+   "market": "上櫃",
+   "signal_date": "2026-10-22",
+   "turnover_rank": 144,
+   "close": 196.0,
+   "chg_today": -0.0841,
+   "drawdown_3d_max": 0.1422,
+   "drawdown_today": 0.1422,
+   "vol_mult_max_3d": 5.62,
+   "cap_dates": [
+    "2026-10-21",
+    "2026-10-22"
+   ],
+   "ref_high": 228.5,
+   "trough_3d": 196.0,
+   "target": 215.5,
+   "stop": 159.95
+  },
+  {
+   "code": "6213",
+   "name": "聯茂",
+   "market": "上市",
+   "signal_date": "2026-10-22",
+   "turnover_rank": 32,
+   "close": 777.0,
+   "chg_today": -0.0559,
+   "drawdown_3d_max": 0.125,
+   "drawdown_today": 0.0923,
+   "vol_mult_max_3d": 2.79,
+   "cap_dates": [
+    "2026-10-22"
+   ],
+   "ref_high": 856.0,
+   "trough_3d": 749.0,
+   "target": 813.2,
+   "stop": 599.2
+  }
+ ],
+ "watch": [
+  {
+   "code": "6274",
+   "name": "台燿",
+   "market": "上櫃",
+   "signal_date": "2026-10-22",
+   "turnover_rank": 17,
+   "close": 1420.0,
+   "chg_today": -0.0533,
+   "drawdown_3d_max": 0.2022,
+   "drawdown_today": 0.2022,
+   "vol_mult_max_3d": 2.11,
+   "cap_dates": [
+    "2026-10-21"
+   ],
+   "ref_high": 1780.0,
+   "trough_3d": 1420.0,
+   "target": 1636.0,
+   "stop": 1246.0
+  },
+  {
+   "code": "3441",
+   "name": "聯一光",
+   "market": "上櫃",
+   "signal_date": "2026-10-22",
+   "turnover_rank": 99,
+   "close": 217.5,
+   "chg_today": -0.0994,
+   "drawdown_3d_max": 0.1884,
+   "drawdown_today": 0.1884,
+   "vol_mult_max_3d": 5.8,
+   "cap_dates": [
+    "2026-10-21"
+   ],
+   "ref_high": 268.0,
+   "trough_3d": 217.5,
+   "target": 247.8,
+   "stop": 187.6
+  },
+  {
+   "code": "8039",
+   "name": "台虹",
+   "market": "上市",
+   "signal_date": "2026-10-22",
+   "turnover_rank": 30,
+   "close": 266.0,
+   "chg_today": -0.0922,
+   "drawdown_3d_max": 0.1461,
+   "drawdown_today": 0.1461,
+   "vol_mult_max_3d": 2.15,
+   "cap_dates": [
+    "2026-10-20"
+   ],
+   "ref_high": 311.5,
+   "trough_3d": 266.0,
+   "target": 293.3,
+   "stop": 218.05
+  },
+  {
+   "code": "6285",
+   "name": "啟碁",
+   "market": "上市",
+   "signal_date": "2026-10-22",
+   "turnover_rank": 130,
+   "close": 230.0,
+   "chg_today": -0.0669,
+   "drawdown_3d_max": 0.1271,
+   "drawdown_today": 0.1271,
+   "vol_mult_max_3d": 2.38,
+   "cap_dates": [
+    "2026-10-21"
+   ],
+   "ref_high": 263.5,
+   "trough_3d": 230.0,
+   "target": 250.1,
+   "stop": 184.45
   }
  ],
  "data_quality": {
-  "usable": 1972,
-  "failed": 7,
+  "usable": 1975,
+  "failed": 5,
   "official_dates": {
-   "上市": "2026-10-21",
-   "上櫃": "2026-10-21"
+   "上市": "2026-10-22",
+   "上櫃": "2026-10-22"
   },
   "official_source": {
    "上市": "證交所MI_INDEX(指定日期)",
@@ -113,15 +229,15 @@
   },
   "yahoo_last_dates": {
    "上市": {
-    "2026-10-21": 1083,
-    "2026-10-20": 1
+    "2026-10-22": 1079,
+    "2026-10-21": 7
    },
    "上櫃": {
-    "2026-10-21": 866,
-    "2026-10-20": 22
+    "2026-10-22": 865,
+    "2026-10-21": 24
    }
   },
-  "official_replaced": 1949,
+  "official_replaced": 1950,
   "official_appended": 0,
   "official_inserted": 0
  }
