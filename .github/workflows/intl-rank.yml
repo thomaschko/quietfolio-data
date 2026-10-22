@@ -4,7 +4,7 @@ name: Intl Rank (美/日/韓成交值排行)
 # 之後 group_flow.py → group_flow.json(族群金流共識)→ 同一個 GAS 讀取 → 排行榜頁「族群金流」
 # 排程(UTC):
 #   14:00 週一~五 = 台北 22:00 → 只跑日股、韓股(兩地當日已收盤)
-#   23:30 週一~五 = 台北 07:30(週二~週六)→ 只跑美股(美股前一交易日已收盤)
+#   23:30 週一~五 = 台北 07:30(週二~週六)→ 跑美股(美股前一交易日已收盤);日韓資料日落後才補跑(--catchup)
 # 其餘市場沿用舊資料並標 stale(intl_rank_core.merge_preserve)。
 on:
   schedule:
@@ -55,13 +55,15 @@ jobs:
         env:
           INTL_BUDGET_MIN: '25'
         run: |
+          CATCH=""
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            if [ "${{ github.event.schedule }}" = "0 14 * * 1-5" ]; then MK="jp,kr"; else MK="us"; fi
+            # 2026-10-22:早上美股那次順便檢查日韓,資料日落後(晚上那次延到半夜、撞上 Yahoo 前一日收盤價空窗)才補跑
+            if [ "${{ github.event.schedule }}" = "0 14 * * 1-5" ]; then MK="jp,kr"; else MK="us"; CATCH="jp,kr"; fi
           else
             MK="${{ github.event.inputs.markets || 'us,jp,kr' }}"
           fi
-          echo "markets=$MK"
-          python intl_rank.py --markets "$MK"
+          echo "markets=$MK catchup=$CATCH"
+          python intl_rank.py --markets "$MK" --catchup "$CATCH"
 
       - name: Commit and push
         run: |

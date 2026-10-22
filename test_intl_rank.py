@@ -189,3 +189,18 @@ def test_run_keeps_old_when_new_asof_is_older():
         assert p["markets"]["kr"]["asof"] == "2026-10-19" and p["markets"]["kr"]["stale"] is True
         assert p["markets"]["jp"]["asof"] == "2026-10-16"                     # 沒有舊資料 → 照常寫入
         assert p["last_run"]["ok"] == ["jp"] and p["last_run"]["failed"] == ["kr"]
+
+
+def test_expected_asof_and_catchup():
+    # 台北 10/22(四)07:30 = UTC 10/21 23:30:東京/首爾 10/22 08:30 → 應有資料日 10/21(三)
+    now = dt.datetime(2026, 10, 21, 23, 30, tzinfo=dt.timezone.utc)
+    assert ir.expected_asof("jp", now) == "2026-10-21" and ir.expected_asof("kr", now) == "2026-10-21"
+    # 週一早上 → 上週五
+    mon = dt.datetime(2026, 10, 25, 23, 30, tzinfo=dt.timezone.utc)
+    assert ir.expected_asof("jp", mon) == "2026-10-23"
+    with tempfile.TemporaryDirectory() as d:
+        out = os.path.join(d, "intl_rank.json")
+        with open(out, "w") as f:
+            json.dump({"markets": {"jp": _block("jp", "2026-10-20"), "kr": _block("kr", "2026-10-21")}}, f)
+        assert ir.stale_markets(["jp", "kr"], out=out, now_utc=now) == ["jp"]
+        assert ir.stale_markets(["jp"], out=os.path.join(d, "none.json"), now_utc=now) == ["jp"]
