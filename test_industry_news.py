@@ -273,3 +273,48 @@ if __name__ == "__main__":
                 print(f"  ✗ {name}: {e}")
     print("全部通過" if not fails else f"{fails} 項失敗")
     sys.exit(1 if fails else 0)
+
+
+def test_editions_exclude_previous_and_latest_order():
+    tmp = tempfile.mkdtemp()
+    try:
+        os.makedirs(os.path.join(tmp, "daily"))
+        def w(name, titles):
+            doc = {"date": name[:10], "edition": name[11:] or None, "sections": [{"topic": "t", "items": [
+                {"headline": "h", "titles": [{"title": t, "sources": ["cna"]} for t in titles]}]}]}
+            with open(os.path.join(tmp, "daily", f"{name}.json"), "w", encoding="utf-8") as f:
+                json.dump(doc, f, ensure_ascii=False)
+        w("2026-10-22", ["舊版一天一份"])
+        w("2026-10-22-pm", ["台積電 CoWoS 擴產"])
+        w("2026-10-23-am", ["輝達 GB300 出貨"])
+        assert inn.daily_name("2026-10-23", "pm") == "2026-10-23-pm" and inn.daily_name("2026-10-23") == "2026-10-23"
+        # 晚報排除早報已引用的;早報排除前一天晚報的
+        assert inn.previous_cited(tmp, "2026-10-23-pm") == {inn._norm("輝達 GB300 出貨")}
+        assert inn.previous_cited(tmp, "2026-10-23-am") == {inn._norm("台積電 CoWoS 擴產")}
+        assert inn.previous_cited(tmp, "2026-10-22") == set()
+        out = inn.build_latest(tmp, days=2)                                       # 近 2 天、新到舊
+        assert [(d["date"], d["edition"]) for d in out["dailies"]] == \
+            [("2026-10-23", "am"), ("2026-10-22", "pm"), ("2026-10-22", None)]
+        assert [d["date"] for d in inn.load_week(D(2026, 10, 23), out_dir=tmp)] == ["2026-10-22", "2026-10-22", "2026-10-23"]
+    finally:
+        shutil.rmtree(tmp)
+
+
+def test_build_daily_edition_excludes_titles():
+    chain = llm_client.LLMChain(env={}, sleep=lambda s: None)                    # 沒有 AI → fallback
+    pool_titles = [it["title"] for it in inn.build_pool(BY_SOURCE)]
+    doc = inn.build_daily("2026-10-23", BY_SOURCE, TERMS, chain, edition="pm", exclude={inn._norm(pool_titles[0])})
+    assert doc["edition"] == "pm" and doc["label"] == "晚報" and doc["n_excluded"] == 1
+    assert doc["n_titles"] == len(pool_titles) - 1
+
+
+def test_detector_sources_accepts_yesterday_for_editions():
+    tmp = tempfile.mkdtemp()
+    try:
+        with open(os.path.join(tmp, "us_8k_events.json"), "w", encoding="utf-8") as f:
+            json.dump({"generated_at": "2026-10-22 21:50:00", "events": [
+                {"code": "NVDA", "role": "Nvidia", "filing_date": "2026-10-22", "item_labels": ["財報"]}]}, f)
+        assert inn.detector_sources("2026-10-23", base=tmp)["us_8k"] == []
+        assert len(inn.detector_sources("2026-10-23", base=tmp, days=1)["us_8k"]) == 1
+    finally:
+        shutil.rmtree(tmp)

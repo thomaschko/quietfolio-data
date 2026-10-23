@@ -1,0 +1,74 @@
+name: Industry News (早報/晚報)
+
+# 2026-10-23 新增:產業新聞改成一天兩份,早報約台北 07:00、晚報約 18:00。
+# 主要由 GAS(GitHubPush.js 的 triggerIndustryNewsAm / triggerIndustryNewsPm)準時呼叫 workflow_dispatch;
+# GitHub 自己的 schedule 常延遲 5 小時,只當備援:帶 --skip-if-exists,當天那一份已經有了就不重做。
+# industry_news/ 只由這個 workflow 寫(event-theme.yml 裡的 industry_news.py 不帶 --edition,不寫檔)。
+on:
+  workflow_dispatch:
+    inputs:
+      edition:
+        description: '早報 am / 晚報 pm'
+        type: choice
+        options: [am, pm]
+        default: pm
+  schedule:
+    - cron: '0 23 * * *'   # 備援:台北 07:00 早報
+    - cron: '0 10 * * *'   # 備援:台北 18:00 晚報
+
+permissions:
+  contents: write
+
+concurrency:
+  group: industry-news
+  cancel-in-progress: false
+
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: |
+          pip install requests jieba beautifulsoup4 opencc-python-reimplemented pytest
+          pip install --upgrade certifi
+
+      - name: Unit tests
+        run: python -m pytest -q test_industry_news.py test_fsemi_news.py test_eccn_news.py
+
+      - name: Build edition
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "${{ github.event.schedule }}" = "0 23 * * *" ]; then ED=am; else ED=pm; fi
+            python industry_news.py --edition "$ED" --skip-if-exists
+          else
+            python industry_news.py --edition "${{ github.event.inputs.edition }}"
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add industry_news/
+          if git diff --staged --quiet; then
+            echo "無變更,不 commit"
+            exit 0
+          fi
+          git commit -m "Industry news $(TZ=Asia/Taipei date +%Y-%m-%d) ${{ github.event.inputs.edition || 'schedule' }}"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push 失敗,第 $i 次重試"; sleep $((i * 10))
+          done
+          exit 1
