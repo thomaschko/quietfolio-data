@@ -40,11 +40,15 @@ import datetime as dt
 OUT_DIR = "industry_news"
 WATCHLIST_FILE = "themes_watchlist.txt"
 TPE = dt.timezone(dt.timedelta(hours=8))
-MAX_TITLES = 400            # 給 Gemini(約 1.5 萬 tokens,flash-lite 可處理)
+MAX_TITLES = 750            # 給 Gemini(約 3 萬 tokens,flash-lite 可處理);2026-10-23 400 → 750(每天抓約 2,600 則,只用 400 則)
 MAX_TITLES_SMALL = 60       # Gemini 失敗時給 Groq(每分鐘 8,000 tokens)
 PER_SOURCE_MIN = 5          # 每個來源至少保留幾則(避免小來源被多源大新聞擠掉)
-MAX_ITEMS_PER_SECTION = 10
-TARGET_ITEMS = "30~45"      # 10/18 首次實跑只寫 20 則、引用 70/400 則標題,日韓媒體全沒被引用
+MAX_ITEMS_PER_SECTION = 14  # 2026-10-23 10 → 14
+TARGET_ITEMS = "50~70"      # 10/18 首次實跑只寫 20 則 → 30~45;2026-10-23 再加大到 50~70
+GEMINI_TIMEOUT = 180        # 標題變多、輸出變長,120 → 180 秒
+# 2026-10-23:改成一天兩份(早報約台北 07:00、晚報約 18:00),由 industry-news.yml(GAS 準時觸發)產生;
+# event-theme.yml 裡不帶參數的那次呼叫不再寫任何檔(避免兩個 workflow 同時改 latest.json 造成 push 衝突)
+EDITIONS = {"am": "早報", "pm": "晚報"}
 # 產業專業來源與偵測源:不含 watchlist 詞也可入選(交給 AI 判斷要不要收)
 INDUSTRY_SOURCES = {
     "wapeople", "technews", "eetimes", "trendforce", "semianalysis", "jov", "iek_news", "technice",
@@ -143,13 +147,22 @@ def source_coverage(by_source, items, sections=None):
             for s, v in by_source.items()]
 
 
-def _fresh(doc, today):
-    return isinstance(doc, dict) and str(doc.get("generated_at", ""))[:10] == today
+def _fresh(doc, today, days=0):
+    """generated_at 的日期在 today 往前 days 天內(含當天)。"""
+    if not isinstance(doc, dict):
+        return False
+    d = str(doc.get("generated_at", ""))[:10]
+    try:
+        t = dt.date.fromisoformat(today)
+        return any(d == (t - dt.timedelta(days=i)).isoformat() for i in range(days + 1))
+    except ValueError:
+        return d == today
 
 
-def detector_sources(today, base="."):
-    """同一次 workflow 稍早產出的偵測源資料 → {來源: [標題]}。只用今天產出的檔案(上游步驟
-    失敗時檔案會是舊的,不拿舊資料充數)。"""
+def detector_sources(today, base=".", days=0):
+    """event-theme workflow 產出的偵測源資料 → {來源: [標題]}。只用 days 天內產出的檔案(上游步驟
+    失敗時檔案會是舊的,不拿舊資料充數)。早晚報不在同一次 workflow,用 days=1(昨晚的也收;
+    已被上一份早晚報引用過的標題會再被濾掉)。"""
     def rd(name):
         try:
             with open(os.path.join(base, name), encoding="utf-8") as f:
@@ -158,22 +171,22 @@ def detector_sources(today, base="."):
             return None
     out = {"mops": [], "us_8k": [], "investor_events": [], "gnews_d2": []}
     raw = rd("event_theme_raw.json")
-    if _fresh(raw, today):
+    if _fresh(raw, today, days):
         for t in raw.get("themes", []):
             if t.get("source") == "MOPS重訊" and t.get("subject"):
                 who = "、".join(f"{t['names'].get(c, '')}({c})" for c in t.get("codes", [])[:2])
                 out["mops"].append(f"重訊 {who}:{t['subject']}")
     k8 = rd("us_8k_events.json")
-    if _fresh(k8, today):
+    if _fresh(k8, today, days):
         for e in k8.get("events", []):
             out["us_8k"].append(f"美股8-K {e.get('code', '')}({e.get('role', '')}) {e.get('filing_date', '')}:"
                                 + "、".join(e.get("item_labels") or []))
     inv = rd("investor_day_signals.json")
-    if _fresh(inv, today):
+    if _fresh(inv, today, days):
         for e in inv.get("events", []):
             out["investor_events"] += [t for t in e.get("titles", []) if t]
     gh = rd("gnews_term_heat.json")
-    if _fresh(gh, today):
+    if _fresh(gh, today, days):
         for t in gh.get("terms", []):
             if t.get("status") != "quiet":
                 out["gnews_d2"] += t.get("titles", [])
@@ -183,11 +196,11 @@ def detector_sources(today, base="."):
 # ============================================================
 # 日報
 # ============================================================
-def daily_prompt(day, items, n_sources):
+def daily_prompt(day, items, n_sources, label="日報"):
     lines = "\n".join(f"[{i}]({len(it['sources'])}源) {it['title']}" for i, it in enumerate(items, 1))
-    return (f"以下是 {day} 從 {n_sources} 個來源收集的產業新聞標題(編號、出現來源數;含中、英、日、韓文,"
+    return (f"以下是 {day} {label}從 {n_sources} 個來源收集的產業新聞標題(編號、出現來源數;含中、英、日、韓文,"
             f"以及台股重訊、美股 8-K 公告摘要):\n{lines}\n\n"
-            "請整理成產業新聞日報,只輸出 JSON:"
+            f"請整理成產業新聞{label},只輸出 JSON:"
             '{"overview":"3句內的今日產業重點","sections":[{"topic":"產業主題","items":'
             '[{"headline":"繁中一句話重點(40字內)","title_ids":[標題編號],'
             '"companies":["標題中明確寫出的台灣上市櫃公司名,沒有就空陣列"]}]}]}。\n'
@@ -284,10 +297,18 @@ def fallback_daily(items, groups=FALLBACK_GROUPS):
             for term, lst in top]
 
 
-def build_daily(day, by_source, terms, chain, name2code=None, code2name=None):
+def build_daily(day, by_source, terms, chain, name2code=None, code2name=None, edition=None, exclude=None):
+    """edition:am/pm(早報/晚報)或 None(舊版一天一份);exclude:上一份早晚報已引用的標題(_norm 後),
+    這份不再送給 AI,避免早晚報重複。"""
     pool = build_pool(by_source)
+    n_excluded = 0
+    if exclude:
+        keep = [it for it in pool if _norm(it["title"]) not in exclude]
+        n_excluded, pool = len(pool) - len(keep), keep
     items = select_relevant(pool, terms)
-    doc = {"date": day, "generated_at": dt.datetime.now(TPE).strftime("%Y-%m-%d %H:%M:%S"),
+    label = EDITIONS.get(edition, "日報")
+    doc = {"date": day, "edition": edition, "label": label, "n_excluded": n_excluded,
+           "generated_at": dt.datetime.now(TPE).strftime("%Y-%m-%d %H:%M:%S"),
            "n_sources": sum(1 for v in by_source.values() if v), "n_sources_total": len(by_source),
            "n_titles": len(pool), "n_relevant": len(items), "provider": None, "fallback": False,
            "overview": "", "sections": [], "stats": {}}
@@ -295,11 +316,11 @@ def build_daily(day, by_source, terms, chain, name2code=None, code2name=None):
         return doc
     out, provider, used_items = None, None, items
     if chain is not None and chain.available:
-        out, provider = chain.ask_json(SYSTEM, daily_prompt(day, items, doc["n_sources"]),
-                                       only=("gemini",), timeout=120)
+        out, provider = chain.ask_json(SYSTEM, daily_prompt(day, items, doc["n_sources"], label),
+                                       only=("gemini",), timeout=GEMINI_TIMEOUT)
         if out is None:
             small = items[:MAX_TITLES_SMALL]
-            out, provider = chain.ask_json(SYSTEM, daily_prompt(day, small, doc["n_sources"]), timeout=90)
+            out, provider = chain.ask_json(SYSTEM, daily_prompt(day, small, doc["n_sources"], label), timeout=90)
             used_items = small
     if out is not None:
         sections, stats = verify_daily(out, used_items, name2code, code2name)
@@ -317,17 +338,34 @@ def build_daily(day, by_source, terms, chain, name2code=None, code2name=None):
 # ============================================================
 # 週報
 # ============================================================
+def daily_name(day, edition=None):
+    return f"{day}-{edition}" if edition else day
+
+
 def load_week(today, out_dir=OUT_DIR, days=WEEK_DAYS):
+    """近 days 天的日報(含早晚報 YYYY-MM-DD-am/pm 與舊版 YYYY-MM-DD),舊到新。"""
+    lo = (today - dt.timedelta(days=days - 1)).isoformat()
     docs = []
-    for i in range(days - 1, -1, -1):
-        d = (today - dt.timedelta(days=i)).isoformat()
-        p = os.path.join(out_dir, "daily", f"{d}.json")
+    for p in sorted(glob.glob(os.path.join(out_dir, "daily", "*.json"))):
+        name = os.path.splitext(os.path.basename(p))[0]
+        if not (lo <= name[:10] <= today.isoformat()):
+            continue
         try:
             with open(p, encoding="utf-8") as f:
                 docs.append(json.load(f))
         except Exception:
             continue
     return docs
+
+
+def previous_cited(out_dir, current_name):
+    """排在 current_name 之前最近一份日報(早晚報)引用過的標題(_norm 後)。"""
+    names = [n for n in _archive(out_dir, "daily", 10) if n < current_name]
+    if not names:
+        return set()
+    doc = _read_json(os.path.join(out_dir, "daily", f"{names[0]}.json")) or {}
+    return {_norm(t.get("title")) for s in doc.get("sections", []) for it in s.get("items", [])
+            for t in it.get("titles", []) if t.get("title")}
 
 
 def week_items(daily_docs):
@@ -446,8 +484,10 @@ LATEST_DAYS = 7
 
 
 def _archive(out_dir, sub, n=30):
-    files = sorted(glob.glob(os.path.join(out_dir, sub, "*.json")), reverse=True)[:n]
-    return [os.path.splitext(os.path.basename(p))[0] for p in files]
+    # 用去掉副檔名的檔名排序:「2026-10-22.json」整個路徑比會排在「2026-10-22-pm.json」後面('.' > '-')
+    names = sorted((os.path.splitext(os.path.basename(p))[0] for p in glob.glob(os.path.join(out_dir, sub, "*.json"))),
+                   reverse=True)
+    return names[:n]
 
 
 def _read_json(path):
@@ -459,10 +499,14 @@ def _read_json(path):
 
 
 def build_latest(out_dir=OUT_DIR, days=LATEST_DAYS):
-    """industry_news/latest.json:近 7 份日報(新到舊)+ 最新週報 + 週報清單。
+    """industry_news/latest.json:近 days 天的日報(含早晚報,新到舊)+ 最新週報 + 週報清單。
     GAS(IndustryNewsFetch.js)每小時讀這一個檔;只有最新一份日報保留來源覆蓋表(控制大小)。"""
-    dailies = []
-    for i, d in enumerate(_archive(out_dir, "daily", days)):
+    dailies, dates = [], []
+    for i, d in enumerate(_archive(out_dir, "daily", days * 2 + 2)):
+        if d[:10] not in dates:
+            if len(dates) >= days:
+                break
+            dates.append(d[:10])
         doc = _read_json(os.path.join(out_dir, "daily", f"{d}.json"))
         if not doc:
             continue
@@ -503,17 +547,35 @@ def sangyo_for_weekly(today, fresh, cache_path=SANGYO_CACHE):
     return None
 
 
+def _arg(name):
+    if name in sys.argv:
+        i = sys.argv.index(name)
+        return sys.argv[i + 1] if i + 1 < len(sys.argv) else None
+    return None
+
+
 def main():
-    """預設:日報(週六另產週報)。--weekly:日報 + 強制週報。
-    --weekly-only:不抓新聞、不重做日報,只用 repo 裡現有日報重做週報(手動 workflow 用)。"""
+    """--edition am|pm:早報/晚報(industry-news.yml,GAS 約台北 07:00 / 18:00 觸發);晚報那次在週六另產週報。
+    --skip-if-exists:今天這一份已經有了就不重做(GitHub 延遲的 schedule 備援用)。
+    不帶 --edition(event-theme.yml 那次):2026-10-23 起什麼都不做(industry_news/ 只由 industry-news.yml 寫)。
+    --weekly:強制週報。--weekly-only:不抓新聞,只用 repo 裡現有日報重做週報(手動 workflow 用)。"""
     today = dt.datetime.now(TPE).date()
     weekly_only = "--weekly-only" in sys.argv
     force_weekly = weekly_only or "--weekly" in sys.argv
+    edition = _arg("--edition")
+    if edition is not None and edition not in EDITIONS:
+        print(f"未知的 --edition:{edition}(只接受 am / pm)")
+        sys.exit(2)
+    name = daily_name(today.isoformat(), edition)
+    if edition and "--skip-if-exists" in sys.argv and os.path.exists(os.path.join(OUT_DIR, "daily", f"{name}.json")):
+        print(f"產業新聞 {name} 已存在,略過(--skip-if-exists)")
+        return
     from news_sources import fetch_titles_by_source, fetch_sangyo_headlines
     from llm_client import LLMChain
     chain = LLMChain()
-    print(f"產業新聞 {today}:可用 AI {chain.available or '無'}" + ("(只重做週報)" if weekly_only else ""))
-    if not weekly_only:
+    print(f"產業新聞 {today} {EDITIONS.get(edition, '')}:可用 AI {chain.available or '無'}"
+          + ("(只重做週報)" if weekly_only else ""))
+    if edition and not weekly_only:
         name2code, code2name = {}, {}
         try:
             from event_theme_radar import build_name2code
@@ -521,7 +583,7 @@ def main():
         except Exception as e:
             print(f"  ⚠ 股名對照載入失敗(不標個股): {e}")
         by_source = fetch_titles_by_source()
-        by_source.update(detector_sources(today.isoformat()))
+        by_source.update(detector_sources(today.isoformat(), days=1))
         extra = {}
         try:                                          # 只進產業新聞的來源(不在雷達的 fetch_titles_by_source 裡)
             import fsemi_news
@@ -540,14 +602,21 @@ def main():
             print(f"  ⚠ eccn 來源失敗(略過): {e}")
             extra["eccn"] = {"status": "failed", "n": 0}
         terms = load_terms()
-        daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, code2name)
+        exclude = previous_cited(OUT_DIR, name)
+        daily = build_daily(today.isoformat(), by_source, terms, chain, name2code, code2name,
+                            edition=edition, exclude=exclude)
         daily["extra_sources"] = extra
-        _write(os.path.join(OUT_DIR, "daily", f"{daily['date']}.json"), json.dumps(daily, ensure_ascii=False, indent=1))
-        print(f"  來源 {daily['n_sources']}/{daily['n_sources_total']}、標題 {daily['n_titles']}、相關 {daily['n_relevant']}、"
-              f"AI {daily['provider']}、主題 {len(daily['sections'])}、fallback={daily['fallback']} {daily.get('stats')}")
+        _write(os.path.join(OUT_DIR, "daily", f"{name}.json"), json.dumps(daily, ensure_ascii=False, indent=1))
+        print(f"  {name}:來源 {daily['n_sources']}/{daily['n_sources_total']}、標題 {daily['n_titles']}"
+              f"(排除上一份已引用 {daily['n_excluded']})、相關 {daily['n_relevant']}、AI {daily['provider']}、"
+              f"主題 {len(daily['sections'])}、fallback={daily['fallback']} {daily.get('stats')}")
+    elif not weekly_only:
+        # 不寫任何檔:industry_news/ 只由 industry-news.yml 寫,避免和 event-theme 的 commit 在 latest.json 衝突
+        print("  不帶 --edition:日報改由 industry-news.yml(早報/晚報)產生,這次不寫任何檔")
+        return
 
     sangyo = sangyo_for_weekly(today, fetch_sangyo_headlines())   # 每天都試著更新快取
-    if force_weekly or today.weekday() == WEEKLY_WEEKDAY:
+    if force_weekly or (edition == "pm" and today.weekday() == WEEKLY_WEEKDAY):
         weekly = build_weekly(today, load_week(today), chain, sangyo)
         _write(os.path.join(OUT_DIR, "weekly", f"{weekly['week']}.json"), json.dumps(weekly, ensure_ascii=False, indent=1))
         print(f"  週報 {weekly['week']}:日報 {weekly['n_daily']} 份、條目 {weekly['n_items']}、主題 {len(weekly['themes'])}、"
