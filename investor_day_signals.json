@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-23 21:50:28",
- "date": "20261023",
+ "generated_at": "2026-10-24 20:58:32",
+ "date": "20261024",
  "events": [
   {
    "type": "investor_day",
@@ -8,7 +8,7 @@
    "name": "Marvell",
    "event": "Investor Day",
    "event_date": "2026-10-20",
-   "day_offset": 3,
+   "day_offset": 4,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -24,12 +24,13 @@
    "name": "Applied Materials",
    "event": "Investor Day",
    "event_date": "2026-10-22",
-   "day_offset": 1,
+   "day_offset": 2,
    "date_inferred": true,
-   "news_count": 1,
+   "news_count": 2,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
+    "Applied Materials Sinks 17% in a Week After a Forecast-Free Investor Day: “Tremendous Confidence” - Yahoo Finance",
     "Applied Materials falls as investor day fallout continues - StreetInsider"
    ],
    "keywords": {}
@@ -40,18 +41,18 @@
    "name": "Oracle",
    "event": "Investor Day",
    "event_date": "2026-10-22",
-   "day_offset": 1,
+   "day_offset": 2,
    "date_inferred": true,
-   "news_count": 6,
+   "news_count": 8,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
     "Oracle Investor Day to Focus on OCI Capacity Ramp, Applications Growth, RBC Says - Yahoo Finance",
-    "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - Investing News Network",
+    "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - Moomoo",
     "Oracle Investor Day to Focus on OCI Capacity Ramp, Applications Growth, RBC Says - marketscreener.com",
-    "Oracle’s Investor Day Puts Its AI Cloud Margins To The Test - Finimize",
-    "Oracle Corp stock investor day on October 28 ahead of the Xetra open - AD HOC NEWS",
-    "‘Hold Your Horses,’ Says RBC Ahead of Oracle Stock’s Investor Day - TipRanks"
+    "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - PR Newswire",
+    "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - Star Local Media",
+    "Oracle’s Investor Day Puts Its AI Cloud Margins To The Test - Finimize"
    ],
    "keywords": {
     "capacity": {
@@ -67,20 +68,24 @@
    "event": "Nvidia GTC",
    "event_date": null,
    "day_offset": null,
-   "news_count": 38,
+   "news_count": 33,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
     "NVIDIA GTC Berlin: Live Updates on What’s Next in AI - NVIDIA Blog",
-    "Transcript of NVIDIA GTC Berlin 2026: Jensen Huang Full Keynote - The Singju Post",
     "Greenpeace disrupts NVIDIA’s CEO keynote speech at NVIDIA GTC Conference - Greenpeace",
+    "Nvidia GTC Berlin: Faster AI factories, lower power use, more secure agents - Network World",
+    "Transcript of NVIDIA GTC Berlin 2026: Jensen Huang Full Keynote - The Singju Post",
     "Nvidia GTC Berlin 2026: Google Cloud and Nvidia Announce General Availability of Nvidia Vera Rubin Infrastructure - StorageNewsletter",
-    "Nvidia GTC Berlin Keynote: Jensen Huang Puts $50 Billion Price Tag On 1GW AI Factory Amid DSX POD Launch - Yahoo Finance",
-    "VicOne Showcases Physical AI Cybersecurity at NVIDIA GTC Berlin - EIN News"
+    "NVIDIA GTC conference in Berlin - The Daily News | Texas' Oldest Newspaper"
    ],
    "keywords": {
     "data center": {
      "count": 6,
+     "category": "客戶capex/需求"
+    },
+    "GPU": {
+     "count": 4,
      "category": "客戶capex/需求"
     },
     "Vera Rubin": {
@@ -90,10 +95,6 @@
     "Rubin": {
      "count": 2,
      "category": "平台/網通/供應鏈"
-    },
-    "GPU": {
-     "count": 2,
-     "category": "客戶capex/需求"
     }
    }
   },
@@ -108,12 +109,12 @@
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
+    "SolarEdge displays MVAC-to-800 VDC solid-state transformer technology for AI data centers at OCP Global Summit - Energies Media",
+    "OCP Global Summit 2026: Scaling Innovation for the AI Era - Samsung Semiconductor",
     "October 2026 OCP Global Summit Advances Data Center Optics - LightCounting",
-    "OCP Global Summit 2026: Scaling Innovation for the AI Era - samsung.com",
-    "SONiC momentum continues at OCP Global Summit - Network World",
-    "OCP Global Summit 2026 | Credo | LK Bhupathi | Going Wide: Scalable and Reliable Optical Interconnects - Simple Tech and Trend",
-    "OCP Global Summit 2026 | LightCounting | Vlad Kozlov | Market Forecast for CPO and NPO - Simple Tech and Trend",
-    "OCP Global Summit 2026 | NVIDIA | Ajay Kamalvanshi | Every Megawatt Counts: DSX MaxLPS - Simple Tech and Trend"
+    "OCP Global Summit 2026 | Luxshare-Tech | Andrew Kim, Jinhua Chen | Copper Interconnect Innovations for Realizing 400G Electrical - Simple Tech and Trend",
+    "OCP Global Summit 2026 | NVIDIA | Daniel Kuchta | Optics for Spectrum-X Multiplane Networks - Simple Tech and Trend",
+    "OCP Global Summit 2026 | Credo | LK Bhupathi | Going Wide: Scalable and Reliable Optical Interconnects - Simple Tech and Trend"
    ],
    "keywords": {
     "NPO": {
@@ -160,6 +161,15 @@
    "label": "Nvidia GTC",
    "event": "Nvidia GTC",
    "type": "conference",
+   "keyword": "GPU",
+   "category": "客戶capex/需求",
+   "count": 4
+  },
+  {
+   "symbol": "NVDA",
+   "label": "Nvidia GTC",
+   "event": "Nvidia GTC",
+   "type": "conference",
    "keyword": "Vera Rubin",
    "category": "平台/網通/供應鏈",
    "count": 2
@@ -171,15 +181,6 @@
    "type": "conference",
    "keyword": "Rubin",
    "category": "平台/網通/供應鏈",
-   "count": 2
-  },
-  {
-   "symbol": "NVDA",
-   "label": "Nvidia GTC",
-   "event": "Nvidia GTC",
-   "type": "conference",
-   "keyword": "GPU",
-   "category": "客戶capex/需求",
    "count": 2
   },
   {

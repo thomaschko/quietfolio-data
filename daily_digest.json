@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-10-23 13:57:42",
-  "date": "20261023",
+  "generated_at": "2026-10-24 13:03:59",
+  "date": "20261024",
   "summary_counts": {
     "resonance": 4,
     "preferment_themes": 1,
     "broker_coverage": 4,
-    "surge_themes": 9,
+    "surge_themes": 11,
     "new_candidates": 15,
     "earnings_rising": 149,
     "investor_events": 5,
     "cross_confirmed": 1,
-    "watchlist_suggestions": 28
+    "watchlist_suggestions": 25
   },
   "intl_news_heat": [
     {
@@ -41,7 +41,7 @@
   ],
   "A_multi_source_resonance": [
     {
-      "code": "3406",
+      "code": "2317",
       "source_count": 2,
       "sources": [
         "MOPS重訊",
@@ -49,18 +49,19 @@
       ],
       "hit_count": 2,
       "themes": [
-        "光通訊",
-        "重訊:增資/私募"
+        "Vera Rubin",
+        "重訊:取得"
       ],
       "fermentation": null,
       "broker_count": null,
       "via_source_diversity": true,
       "via_theme_cluster": false,
-      "stage": "啟動",
-      "price_pos": "high",
-      "range_pos": 1.0,
-      "chg20": 21.8,
-      "chg5": 4.0
+      "stage": "潛伏",
+      "price_pos": "mid",
+      "range_pos": 0.333,
+      "chg20": -2.0,
+      "chg5": 2.3,
+      "event_tag": "📅GTC DC前2日"
     },
     {
       "code": "2368",
@@ -129,8 +130,8 @@
   "B_preferment_themes": [
     {
       "theme": "衛星通訊",
-      "ratio": 1.91,
-      "baseline": 52.0,
+      "ratio": 1.52,
+      "baseline": 54.5,
       "codes": [
         "2368",
         "3105",
@@ -188,13 +189,13 @@
   "D_surge_themes": [
     {
       "theme": "人形機器人",
-      "ratio": 3.78,
+      "ratio": 4.72,
       "codes": [],
       "names": {}
     },
     {
       "theme": "LPDDR",
-      "ratio": 2.43,
+      "ratio": 4.05,
       "codes": [],
       "names": {}
     },
@@ -211,27 +212,43 @@
       }
     },
     {
-      "theme": "光通訊",
-      "ratio": 2.06,
-      "codes": [
-        "3406",
-        "3176",
-        "6278"
-      ],
-      "names": {
-        "3406": "玉晶光",
-        "3176": "基亞",
-        "6278": "台表科"
-      }
-    },
-    {
       "theme": "Terafab",
-      "ratio": 1.98,
+      "ratio": 2.11,
       "codes": [
         "2330"
       ],
       "names": {
         "2330": "台積電"
+      }
+    },
+    {
+      "theme": "光通訊",
+      "ratio": 2.06,
+      "codes": [
+        "3406",
+        "6278",
+        "3176"
+      ],
+      "names": {
+        "3406": "玉晶光",
+        "6278": "台表科",
+        "3176": "基亞"
+      }
+    },
+    {
+      "theme": "接單",
+      "ratio": 1.92,
+      "codes": [
+        "4526",
+        "2618",
+        "2603",
+        "2645"
+      ],
+      "names": {
+        "4526": "東台",
+        "2618": "長榮航",
+        "2603": "長榮",
+        "2645": "長榮航太"
       }
     },
     {
@@ -241,19 +258,13 @@
       "names": {}
     },
     {
-      "theme": "接單",
+      "theme": "Vera Rubin",
       "ratio": 1.72,
       "codes": [
-        "4526",
-        "2645",
-        "2603",
-        "2618"
+        "2317"
       ],
       "names": {
-        "4526": "東台",
-        "2645": "長榮航太",
-        "2603": "長榮",
-        "2618": "長榮航"
+        "2317": "鴻海"
       }
     },
     {
@@ -267,51 +278,43 @@
       "ratio": 1.59,
       "codes": [],
       "names": {}
+    },
+    {
+      "theme": "併購",
+      "ratio": 1.55,
+      "codes": [
+        "2892"
+      ],
+      "names": {
+        "2892": "第一金"
+      }
     }
   ],
   "E_new_candidates": [
     {
-      "term": "供應鏈",
-      "recent_hits": 94,
+      "term": "矽光子/CPO",
+      "recent_hits": 13,
       "is_brand_new": false,
       "streak_days": 2,
+      "method": "ai",
+      "reason": "光通訊與矽光子量產商機擴大",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "供應鏈",
+      "recent_hits": 76,
+      "is_brand_new": false,
+      "streak_days": 3,
       "method": "jieba",
       "reason": "",
       "stocks": [
         "2330",
-        "3231",
         "2317",
-        "3037",
         "3149",
-        "4923"
-      ],
-      "names": {}
-    },
-    {
-      "term": "目標價",
-      "recent_hits": 46,
-      "is_brand_new": false,
-      "streak_days": 2,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "1301",
-        "6770",
-        "3663",
-        "2303",
-        "5347"
-      ],
-      "names": {}
-    },
-    {
-      "term": "海力士",
-      "recent_hits": 19,
-      "is_brand_new": false,
-      "streak_days": 15,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "4923"
+        "3037",
+        "4923",
+        "3231"
       ],
       "names": {}
     },
@@ -322,33 +325,43 @@
       "streak_days": 15,
       "method": "jieba",
       "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "Google",
+      "recent_hits": 16,
+      "is_brand_new": false,
+      "streak_days": 2,
+      "method": "jieba",
+      "reason": "",
       "stocks": [
-        "8044"
+        "2368",
+        "2382"
       ],
       "names": {}
     },
     {
-      "term": "Duo",
+      "term": "海力士",
       "recent_hits": 15,
       "is_brand_new": false,
-      "streak_days": 8,
+      "streak_days": 15,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "8044"
+        "4923"
       ],
       "names": {}
     },
     {
-      "term": "GTC",
+      "term": "3D",
       "recent_hits": 15,
       "is_brand_new": false,
-      "streak_days": 6,
+      "streak_days": 4,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "3037",
-        "2330"
+        "3149"
       ],
       "names": {}
     },
@@ -363,94 +376,80 @@
       "names": {}
     },
     {
-      "term": "毛利率",
+      "term": "NVIDIA",
       "recent_hits": 14,
       "is_brand_new": false,
-      "streak_days": 12,
+      "streak_days": 5,
       "method": "jieba",
       "reason": "",
       "stocks": [
-        "1303",
         "2330"
       ],
       "names": {}
     },
     {
       "term": "PHP",
-      "recent_hits": 12,
+      "recent_hits": 13,
       "is_brand_new": false,
-      "streak_days": 3,
+      "streak_days": 4,
       "method": "jieba",
       "reason": "",
       "stocks": [],
       "names": {}
     },
     {
-      "term": "概念股",
-      "recent_hits": 11,
-      "is_brand_new": false,
-      "streak_days": 15,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "2383"
-      ],
-      "names": {}
-    },
-    {
-      "term": "NVIDIA",
-      "recent_hits": 11,
-      "is_brand_new": false,
-      "streak_days": 4,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "2330"
-      ],
-      "names": {}
-    },
-    {
-      "term": "力積電",
-      "recent_hits": 11,
-      "is_brand_new": false,
-      "streak_days": 3,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "6770",
-        "2303",
-        "5347"
-      ],
-      "names": {}
-    },
-    {
-      "term": "3D",
-      "recent_hits": 11,
-      "is_brand_new": false,
-      "streak_days": 3,
-      "method": "jieba",
-      "reason": "",
-      "stocks": [
-        "3149"
-      ],
-      "names": {}
-    },
-    {
-      "term": "CPU",
-      "recent_hits": 10,
+      "term": "Duo",
+      "recent_hits": 12,
       "is_brand_new": false,
       "streak_days": 9,
       "method": "jieba",
       "reason": "",
-      "stocks": [
-        "2330",
-        "6462"
-      ],
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "毛利率",
+      "recent_hits": 10,
+      "is_brand_new": false,
+      "streak_days": 13,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "受益人",
+      "recent_hits": 10,
+      "is_brand_new": false,
+      "streak_days": 6,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "AWS",
+      "recent_hits": 10,
+      "is_brand_new": false,
+      "streak_days": 4,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
+      "names": {}
+    },
+    {
+      "term": "亞馬遜",
+      "recent_hits": 9,
+      "is_brand_new": false,
+      "streak_days": 6,
+      "method": "jieba",
+      "reason": "",
+      "stocks": [],
       "names": {}
     },
     {
       "term": "IC",
-      "recent_hits": 7,
+      "recent_hits": 8,
       "is_brand_new": false,
       "streak_days": 15,
       "method": "jieba",
@@ -461,34 +460,29 @@
   ],
   "E2_near_miss": [
     {
-      "theme": "低軌衛星",
-      "ratio": 1.49,
-      "recent_count": 5
-    },
-    {
-      "theme": "Vera Rubin",
-      "ratio": 1.48,
-      "recent_count": 12
-    },
-    {
-      "theme": "併購",
-      "ratio": 1.24,
-      "recent_count": 12
-    },
-    {
-      "theme": "擴產",
-      "ratio": 1.2,
-      "recent_count": 35
-    },
-    {
       "theme": "NAND",
-      "ratio": 1.16,
-      "recent_count": 9
+      "ratio": 1.42,
+      "recent_count": 11
     },
     {
       "theme": "調漲",
-      "ratio": 1.11,
-      "recent_count": 12
+      "ratio": 1.3,
+      "recent_count": 14
+    },
+    {
+      "theme": "擴產",
+      "ratio": 1.29,
+      "recent_count": 37
+    },
+    {
+      "theme": "無人機",
+      "ratio": 1.29,
+      "recent_count": 22
+    },
+    {
+      "theme": "低軌衛星",
+      "ratio": 1.19,
+      "recent_count": 4
     },
     {
       "theme": "800G",
@@ -496,9 +490,24 @@
       "recent_count": 8
     },
     {
-      "theme": "無人機",
+      "theme": "HBM",
+      "ratio": 1.06,
+      "recent_count": 19
+    },
+    {
+      "theme": "DDR5",
+      "ratio": 1.05,
+      "recent_count": 5
+    },
+    {
+      "theme": "DRAM",
       "ratio": 0.99,
-      "recent_count": 17
+      "recent_count": 19
+    },
+    {
+      "theme": "1.6T",
+      "ratio": 0.99,
+      "recent_count": 8
     },
     {
       "theme": "CPO",
@@ -506,24 +515,9 @@
       "recent_count": 15
     },
     {
-      "theme": "HBM",
+      "theme": "Blackwell",
       "ratio": 0.94,
-      "recent_count": 17
-    },
-    {
-      "theme": "1.6T",
-      "ratio": 0.86,
-      "recent_count": 7
-    },
-    {
-      "theme": "DDR5",
-      "ratio": 0.84,
-      "recent_count": 4
-    },
-    {
-      "theme": "DRAM",
-      "ratio": 0.83,
-      "recent_count": 16
+      "recent_count": 6
     }
   ],
   "F_earnings_rising": [
@@ -2025,7 +2019,7 @@
       "name": "Marvell",
       "event": "Investor Day",
       "event_date": "2026-10-20",
-      "day_offset": 3,
+      "day_offset": 4,
       "date_inferred": true,
       "news_count": 1,
       "recap_count": 0,
@@ -2041,12 +2035,13 @@
       "name": "Applied Materials",
       "event": "Investor Day",
       "event_date": "2026-10-22",
-      "day_offset": 1,
+      "day_offset": 2,
       "date_inferred": true,
-      "news_count": 1,
+      "news_count": 2,
       "recap_count": 0,
       "recap_sources": [],
       "titles": [
+        "Applied Materials Sinks 17% in a Week After a Forecast-Free Investor Day: “Tremendous Confidence” - Yahoo Finance",
         "Applied Materials falls as investor day fallout continues - StreetInsider"
       ],
       "keywords": {}
@@ -2057,18 +2052,18 @@
       "name": "Oracle",
       "event": "Investor Day",
       "event_date": "2026-10-22",
-      "day_offset": 1,
+      "day_offset": 2,
       "date_inferred": true,
-      "news_count": 6,
+      "news_count": 8,
       "recap_count": 0,
       "recap_sources": [],
       "titles": [
         "Oracle Investor Day to Focus on OCI Capacity Ramp, Applications Growth, RBC Says - Yahoo Finance",
-        "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - Investing News Network",
+        "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - Moomoo",
         "Oracle Investor Day to Focus on OCI Capacity Ramp, Applications Growth, RBC Says - marketscreener.com",
-        "Oracle’s Investor Day Puts Its AI Cloud Margins To The Test - Finimize",
-        "Oracle Corp stock investor day on October 28 ahead of the Xetra open - AD HOC NEWS",
-        "‘Hold Your Horses,’ Says RBC Ahead of Oracle Stock’s Investor Day - TipRanks"
+        "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - PR Newswire",
+        "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - Star Local Media",
+        "Oracle’s Investor Day Puts Its AI Cloud Margins To The Test - Finimize"
       ],
       "keywords": {
         "capacity": {
@@ -2084,20 +2079,24 @@
       "event": "Nvidia GTC",
       "event_date": null,
       "day_offset": null,
-      "news_count": 38,
+      "news_count": 33,
       "recap_count": 0,
       "recap_sources": [],
       "titles": [
         "NVIDIA GTC Berlin: Live Updates on What’s Next in AI - NVIDIA Blog",
-        "Transcript of NVIDIA GTC Berlin 2026: Jensen Huang Full Keynote - The Singju Post",
         "Greenpeace disrupts NVIDIA’s CEO keynote speech at NVIDIA GTC Conference - Greenpeace",
+        "Nvidia GTC Berlin: Faster AI factories, lower power use, more secure agents - Network World",
+        "Transcript of NVIDIA GTC Berlin 2026: Jensen Huang Full Keynote - The Singju Post",
         "Nvidia GTC Berlin 2026: Google Cloud and Nvidia Announce General Availability of Nvidia Vera Rubin Infrastructure - StorageNewsletter",
-        "Nvidia GTC Berlin Keynote: Jensen Huang Puts $50 Billion Price Tag On 1GW AI Factory Amid DSX POD Launch - Yahoo Finance",
-        "VicOne Showcases Physical AI Cybersecurity at NVIDIA GTC Berlin - EIN News"
+        "NVIDIA GTC conference in Berlin - The Daily News | Texas' Oldest Newspaper"
       ],
       "keywords": {
         "data center": {
           "count": 6,
+          "category": "客戶capex/需求"
+        },
+        "GPU": {
+          "count": 4,
           "category": "客戶capex/需求"
         },
         "Vera Rubin": {
@@ -2107,10 +2106,6 @@
         "Rubin": {
           "count": 2,
           "category": "平台/網通/供應鏈"
-        },
-        "GPU": {
-          "count": 2,
-          "category": "客戶capex/需求"
         }
       }
     },
@@ -2125,12 +2120,12 @@
       "recap_count": 0,
       "recap_sources": [],
       "titles": [
+        "SolarEdge displays MVAC-to-800 VDC solid-state transformer technology for AI data centers at OCP Global Summit - Energies Media",
+        "OCP Global Summit 2026: Scaling Innovation for the AI Era - Samsung Semiconductor",
         "October 2026 OCP Global Summit Advances Data Center Optics - LightCounting",
-        "OCP Global Summit 2026: Scaling Innovation for the AI Era - samsung.com",
-        "SONiC momentum continues at OCP Global Summit - Network World",
-        "OCP Global Summit 2026 | Credo | LK Bhupathi | Going Wide: Scalable and Reliable Optical Interconnects - Simple Tech and Trend",
-        "OCP Global Summit 2026 | LightCounting | Vlad Kozlov | Market Forecast for CPO and NPO - Simple Tech and Trend",
-        "OCP Global Summit 2026 | NVIDIA | Ajay Kamalvanshi | Every Megawatt Counts: DSX MaxLPS - Simple Tech and Trend"
+        "OCP Global Summit 2026 | Luxshare-Tech | Andrew Kim, Jinhua Chen | Copper Interconnect Innovations for Realizing 400G Electrical - Simple Tech and Trend",
+        "OCP Global Summit 2026 | NVIDIA | Daniel Kuchta | Optics for Spectrum-X Multiplane Networks - Simple Tech and Trend",
+        "OCP Global Summit 2026 | Credo | LK Bhupathi | Going Wide: Scalable and Reliable Optical Interconnects - Simple Tech and Trend"
       ],
       "keywords": {
         "NPO": {
@@ -2354,30 +2349,11 @@
       "confidence": ""
     },
     {
-      "term": "失業率",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 15,
-      "hits": 5,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": 7,
-      "cnyes_earlier_daily": 1.529,
-      "cnyes_ratio": 1.53,
-      "cnyes_viable": true,
-      "cnyes_truncated": false,
-      "notes": [
-        "純jieba,不列入可貼上清單"
-      ],
-      "confidence": ""
-    },
-    {
       "term": "晶圓廠",
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 4,
+      "hits": 5,
       "reason": "",
       "stocks": [
         "2330"
@@ -2414,19 +2390,36 @@
       "confidence": ""
     },
     {
+      "term": "失業率",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 15,
+      "hits": 3,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": 10,
+      "cnyes_earlier_daily": 1.529,
+      "cnyes_ratio": 2.18,
+      "cnyes_viable": true,
+      "cnyes_truncated": false,
+      "notes": [
+        "純jieba,不列入可貼上清單"
+      ],
+      "confidence": ""
+    },
+    {
       "term": "iPhone",
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
       "hits": 17,
       "reason": "",
-      "stocks": [
-        "8044"
-      ],
+      "stocks": [],
       "names": {},
-      "cnyes_recent": 16,
-      "cnyes_earlier_daily": 4.941,
-      "cnyes_ratio": 1.08,
+      "cnyes_recent": 23,
+      "cnyes_earlier_daily": 4.529,
+      "cnyes_ratio": 1.69,
       "cnyes_viable": null,
       "cnyes_truncated": true,
       "notes": [
@@ -2436,38 +2429,17 @@
       "confidence": ""
     },
     {
-      "term": "概念股",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 15,
-      "hits": 11,
-      "reason": "",
-      "stocks": [
-        "2383"
-      ],
-      "names": {},
-      "cnyes_recent": 27,
-      "cnyes_earlier_daily": 4.294,
-      "cnyes_ratio": 2.1,
-      "cnyes_viable": null,
-      "cnyes_truncated": true,
-      "notes": [
-        "cnyes新聞量過大(抓滿頁數仍未到基線期),數字不可信;通常代表詞太泛"
-      ],
-      "confidence": ""
-    },
-    {
       "term": "IC",
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 7,
+      "hits": 8,
       "reason": "",
       "stocks": [],
       "names": {},
-      "cnyes_recent": 40,
-      "cnyes_earlier_daily": 3.529,
-      "cnyes_ratio": 3.78,
+      "cnyes_recent": 48,
+      "cnyes_earlier_daily": 3.059,
+      "cnyes_ratio": 5.23,
       "cnyes_viable": null,
       "cnyes_truncated": true,
       "notes": [
@@ -2481,13 +2453,32 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 5,
+      "hits": 8,
       "reason": "",
       "stocks": [],
       "names": {},
-      "cnyes_recent": 28,
-      "cnyes_earlier_daily": 4.235,
-      "cnyes_ratio": 2.2,
+      "cnyes_recent": 33,
+      "cnyes_earlier_daily": 3.941,
+      "cnyes_ratio": 2.79,
+      "cnyes_viable": null,
+      "cnyes_truncated": true,
+      "notes": [
+        "cnyes新聞量過大(抓滿頁數仍未到基線期),數字不可信;通常代表詞太泛"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "概念股",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 15,
+      "hits": 7,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": 37,
+      "cnyes_earlier_daily": 3.706,
+      "cnyes_ratio": 3.33,
       "cnyes_viable": null,
       "cnyes_truncated": true,
       "notes": [
@@ -2499,68 +2490,26 @@
       "term": "前三季",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 14,
-      "hits": 6,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "IMF",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 13,
+      "streak_days": 15,
       "hits": 4,
       "reason": "",
       "stocks": [],
       "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
+      "cnyes_recent": 16,
+      "cnyes_earlier_daily": 4.941,
+      "cnyes_ratio": 1.08,
       "cnyes_viable": null,
-      "cnyes_truncated": null,
+      "cnyes_truncated": true,
       "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
-        "未檢查cnyes(超過每日10個上限)"
+        "cnyes新聞量過大(抓滿頁數仍未到基線期),數字不可信;通常代表詞太泛"
       ],
       "confidence": ""
     },
     {
-      "term": "毛利率",
+      "term": "advanced packaging",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 12,
-      "hits": 14,
-      "reason": "",
-      "stocks": [
-        "1303",
-        "2330"
-      ],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "AIDC",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 10,
+      "streak_days": 15,
       "hits": 2,
       "reason": "",
       "stocks": [],
@@ -2571,7 +2520,25 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "毛利率",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 13,
+      "hits": 10,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
         "未檢查cnyes(超過每日10個上限)"
       ],
       "confidence": ""
@@ -2580,8 +2547,8 @@
       "term": "4F",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 9,
-      "hits": 7,
+      "streak_days": 10,
+      "hits": 8,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -2600,7 +2567,7 @@
       "term": "Roadster",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 9,
+      "streak_days": 10,
       "hits": 3,
       "reason": "",
       "stocks": [],
@@ -2620,12 +2587,10 @@
       "term": "Duo",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 8,
-      "hits": 15,
+      "streak_days": 9,
+      "hits": 12,
       "reason": "",
-      "stocks": [
-        "8044"
-      ],
+      "stocks": [],
       "names": {},
       "cnyes_recent": null,
       "cnyes_earlier_daily": null,
@@ -2639,34 +2604,14 @@
       "confidence": ""
     },
     {
-      "term": "第三季",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 8,
-      "hits": 4,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
       "term": "GTC",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 6,
-      "hits": 15,
+      "streak_days": 7,
+      "hits": 8,
       "reason": "",
       "stocks": [
-        "3037",
-        "2330"
+        "3037"
       ],
       "names": {},
       "cnyes_recent": null,
@@ -2684,8 +2629,8 @@
       "term": "受益人",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
-      "hits": 6,
+      "streak_days": 6,
+      "hits": 10,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -2703,27 +2648,7 @@
       "term": "DeepSeek",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
-      "hits": 4,
-      "reason": "",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "光互連",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 5,
+      "streak_days": 6,
       "hits": 3,
       "reason": "",
       "stocks": [],
@@ -2734,6 +2659,7 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [
+        "G區無對應，加入後建議同步補 KW_TO_THEME",
         "未檢查cnyes(超過每日10個上限)"
       ],
       "confidence": ""
@@ -2742,32 +2668,10 @@
       "term": "Starlink",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
+      "streak_days": 6,
       "hits": 3,
       "reason": "",
       "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
-        "未檢查cnyes(超過每日10個上限)"
-      ],
-      "confidence": ""
-    },
-    {
-      "term": "00981A",
-      "tier": "suggest",
-      "method": "jieba",
-      "streak_days": 5,
-      "hits": 2,
-      "reason": "",
-      "stocks": [
-        "3231"
-      ],
       "names": {},
       "cnyes_recent": null,
       "cnyes_earlier_daily": null,
@@ -2784,7 +2688,7 @@
       "term": "自動化",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
+      "streak_days": 6,
       "hits": 2,
       "reason": "",
       "stocks": [],
@@ -2803,7 +2707,7 @@
       "term": "TPCA",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
+      "streak_days": 6,
       "hits": 2,
       "reason": "",
       "stocks": [],
@@ -2823,7 +2727,7 @@
       "term": "3nm",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 5,
+      "streak_days": 6,
       "hits": 2,
       "reason": "",
       "stocks": [],
@@ -2840,7 +2744,26 @@
       "confidence": ""
     },
     {
-      "term": "Qorvo",
+      "term": "co-packaged",
+      "tier": "suggest",
+      "method": "jieba",
+      "streak_days": 5,
+      "hits": 3,
+      "reason": "",
+      "stocks": [],
+      "names": {},
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
+      "notes": [
+        "未檢查cnyes(超過每日10個上限)"
+      ],
+      "confidence": ""
+    },
+    {
+      "term": "電動車",
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 5,
@@ -2854,27 +2777,26 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [
-        "G區無對應，加入後建議同步補 KW_TO_THEME",
         "未檢查cnyes(超過每日10個上限)"
       ],
       "confidence": ""
     },
     {
-      "term": "advanced packaging",
+      "term": "光通信",
       "tier": "suggest",
       "method": "jieba",
-      "streak_days": 15,
-      "hits": 4,
+      "streak_days": 5,
+      "hits": 2,
       "reason": "",
       "stocks": [],
       "names": {},
-      "cnyes_recent": 0,
-      "cnyes_earlier_daily": 0.01,
-      "cnyes_ratio": 0.0,
-      "cnyes_viable": false,
-      "cnyes_truncated": false,
+      "cnyes_recent": null,
+      "cnyes_earlier_daily": null,
+      "cnyes_ratio": null,
+      "cnyes_viable": null,
+      "cnyes_truncated": null,
       "notes": [
-        "cnyes基數不足，加入後src1暫時不會觸發"
+        "未檢查cnyes(超過每日10個上限)"
       ],
       "confidence": ""
     },
@@ -2883,7 +2805,7 @@
       "tier": "suggest",
       "method": "jieba",
       "streak_days": 15,
-      "hits": 3,
+      "hits": 5,
       "reason": "",
       "stocks": [],
       "names": {},
@@ -2898,35 +2820,12 @@
       "confidence": ""
     },
     {
-      "term": "AI伺服器/CSP自研晶片",
+      "term": "AI資安威脅",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
       "hits": 7,
-      "reason": "雲端大廠持續擴大AI基建與資本支出",
-      "stocks": [
-        "6669",
-        "2317"
-      ],
-      "names": {
-        "6669": "緯穎",
-        "2317": "鴻海"
-      },
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [],
-      "confidence": "high"
-    },
-    {
-      "term": "機器人/自動化零組件",
-      "tier": "watch",
-      "method": "ai",
-      "streak_days": 1,
-      "hits": 7,
-      "reason": "人形機器人與精密的減速機應用備受關注",
+      "reason": "PHP漏洞與AI時代助長網攻危機",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -2938,23 +2837,21 @@
       "confidence": "high"
     },
     {
-      "term": "高階PCB/CCL材料",
+      "term": "PCB材料升級",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 7,
-      "reason": "AI伺服器帶動高階銅箔基板與玻纖布升級",
+      "hits": 5,
+      "reason": "AI推升高階PCB/CCL與玻纖布需求",
       "stocks": [
-        "2383",
-        "6213",
         "6274",
-        "8358"
+        "2383",
+        "6213"
       ],
       "names": {
-        "2383": "台光電",
-        "6213": "聯茂",
         "6274": "台燿",
-        "8358": "金居"
+        "2383": "台光電",
+        "6213": "聯茂"
       },
       "cnyes_recent": null,
       "cnyes_earlier_daily": null,
@@ -2965,12 +2862,12 @@
       "confidence": "high"
     },
     {
-      "term": "資安漏洞/PHP危機",
+      "term": "成熟製程漲價",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 7,
-      "reason": "PHP等重大資安漏洞引發全球網安警示",
+      "hits": 3,
+      "reason": "晶圓廠成熟製程代工價調漲",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -2982,12 +2879,12 @@
       "confidence": "medium"
     },
     {
-      "term": "特斯拉/Tesla供應鏈",
+      "term": "量子運算模擬",
       "tier": "watch",
       "method": "ai",
       "streak_days": 1,
-      "hits": 7,
-      "reason": "特斯拉新款車型與Robotaxi進展",
+      "hits": 2,
+      "reason": "輝達等大廠利用GPU模擬量子計算",
       "stocks": [],
       "names": {},
       "cnyes_recent": null,
@@ -2996,143 +2893,15 @@
       "cnyes_viable": null,
       "cnyes_truncated": null,
       "notes": [],
-      "confidence": "medium"
-    },
-    {
-      "term": "能源轉型/儲能系統",
-      "tier": "watch",
-      "method": "ai",
-      "streak_days": 1,
-      "hits": 7,
-      "reason": "資料中心缺電帶動儲能與發電設備需求",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [],
-      "confidence": "medium"
-    },
-    {
-      "term": "Apple供應鏈/摺疊機",
-      "tier": "watch",
-      "method": "ai",
-      "streak_days": 1,
-      "hits": 7,
-      "reason": "蘋果摺疊手機與新機上市帶動供應鏈",
-      "stocks": [],
-      "names": {},
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [],
-      "confidence": "medium"
-    },
-    {
-      "term": "成熟製程漲價潮",
-      "tier": "watch",
-      "method": "ai",
-      "streak_days": 1,
-      "hits": 6,
-      "reason": "成熟製程代工價醞釀調漲,LTA綁定需求",
-      "stocks": [
-        "6770"
-      ],
-      "names": {
-        "6770": "力積電"
-      },
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "notes": [],
-      "confidence": "medium"
+      "confidence": "low"
     }
   ],
   "I_paste_block": "",
   "I_auto_added": [],
-  "I_consensus": [
-    {
-      "term": "PHP",
-      "ai_phrases": [
-        "資安漏洞/PHP危機"
-      ],
-      "hits": 12,
-      "stocks": [],
-      "names": {},
-      "consensus_days": 1,
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "status": "pending:共識1天(需2天)"
-    },
-    {
-      "term": "Tesla",
-      "ai_phrases": [
-        "特斯拉/Tesla供應鏈"
-      ],
-      "hits": 7,
-      "stocks": [],
-      "names": {},
-      "consensus_days": 1,
-      "cnyes_recent": null,
-      "cnyes_earlier_daily": null,
-      "cnyes_ratio": null,
-      "cnyes_viable": null,
-      "cnyes_truncated": null,
-      "status": "rejected:is_company_name"
-    }
-  ],
+  "I_consensus": [],
   "I_stale_auto_added": [],
   "I_ai_failed": false,
   "price_stage": {
-    "2330": {
-      "history_days": 35,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "range_pos": 0.024,
-      "range_days": 35,
-      "chg1": -0.8,
-      "chg5": -2.3,
-      "chg20": -3.8,
-      "vol_ratio": 1.1,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "4923": {
-      "history_days": 12,
-      "stage": "潛伏",
-      "price_pos": null,
-      "range_pos": 0.0,
-      "range_days": 12,
-      "chg1": -6.2,
-      "chg5": -6.8,
-      "chg20": -27.1,
-      "vol_ratio": 0.6,
-      "limit_up_10d": 0,
-      "overheat_notice": false,
-      "chg20_days": 11
-    },
-    "4526": {
-      "history_days": 35,
-      "stage": "啟動",
-      "price_pos": "high",
-      "range_pos": 1.0,
-      "range_days": 35,
-      "chg1": 18.6,
-      "chg5": 24.8,
-      "chg20": 25.9,
-      "vol_ratio": 17.2,
-      "limit_up_10d": 1,
-      "overheat_notice": false
-    },
     "2317": {
       "history_days": 35,
       "stage": "潛伏",
@@ -3143,46 +2912,6 @@
       "chg5": 2.3,
       "chg20": -2.0,
       "vol_ratio": 0.6,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "2603": {
-      "history_days": 35,
-      "stage": "潛伏",
-      "price_pos": "high",
-      "range_pos": 0.849,
-      "range_days": 35,
-      "chg1": 0.2,
-      "chg5": 1.2,
-      "chg20": 7.4,
-      "vol_ratio": 0.9,
-      "limit_up_10d": 1,
-      "overheat_notice": false
-    },
-    "8044": {
-      "history_days": 12,
-      "stage": "潛伏",
-      "price_pos": null,
-      "range_pos": 0.241,
-      "range_days": 12,
-      "chg1": -2.8,
-      "chg5": -5.4,
-      "chg20": 2.7,
-      "vol_ratio": 0.5,
-      "limit_up_10d": 0,
-      "overheat_notice": false,
-      "chg20_days": 11
-    },
-    "2368": {
-      "history_days": 35,
-      "stage": "潛伏",
-      "price_pos": "mid",
-      "range_pos": 0.493,
-      "range_days": 35,
-      "chg1": -5.9,
-      "chg5": -6.3,
-      "chg20": 6.7,
-      "vol_ratio": 0.8,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
@@ -3200,46 +2929,6 @@
       "overheat_notice": false,
       "chg20_days": 11
     },
-    "3037": {
-      "history_days": 35,
-      "stage": "潛伏",
-      "price_pos": "mid",
-      "range_pos": 0.433,
-      "range_days": 35,
-      "chg1": 2.8,
-      "chg5": 0.9,
-      "chg20": 6.4,
-      "vol_ratio": 1.3,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "6462": {
-      "history_days": 12,
-      "stage": "潛伏",
-      "price_pos": null,
-      "range_pos": 0.225,
-      "range_days": 12,
-      "chg1": 0.3,
-      "chg5": 0.9,
-      "chg20": -6.0,
-      "vol_ratio": 1.3,
-      "limit_up_10d": 0,
-      "overheat_notice": false,
-      "chg20_days": 11
-    },
-    "1303": {
-      "history_days": 35,
-      "stage": "過熱",
-      "price_pos": "mid",
-      "range_pos": 0.625,
-      "range_days": 35,
-      "chg1": 1.7,
-      "chg5": -4.3,
-      "chg20": 25.7,
-      "vol_ratio": 1.1,
-      "limit_up_10d": 1,
-      "overheat_notice": true
-    },
     "6278": {
       "history_days": 35,
       "stage": "過熱",
@@ -3253,84 +2942,19 @@
       "limit_up_10d": 1,
       "overheat_notice": false
     },
-    "1301": {
-      "history_days": 35,
-      "stage": "過熱",
-      "price_pos": "mid",
-      "range_pos": 0.439,
-      "range_days": 35,
-      "chg1": -1.5,
-      "chg5": -9.7,
-      "chg20": 13.2,
-      "vol_ratio": 0.6,
-      "limit_up_10d": 2,
-      "overheat_notice": false
-    },
-    "6770": {
-      "history_days": 35,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "range_pos": 0.185,
-      "range_days": 35,
-      "chg1": 3.6,
-      "chg5": 0.3,
-      "chg20": -8.7,
-      "vol_ratio": 1.1,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "5347": {
+    "6664": {
       "history_days": 12,
       "stage": "潛伏",
       "price_pos": null,
-      "range_pos": 0.032,
+      "range_pos": 0.0,
       "range_days": 12,
-      "chg1": -3.3,
-      "chg5": -0.3,
-      "chg20": -15.7,
-      "vol_ratio": 0.4,
+      "chg1": -5.2,
+      "chg5": -4.3,
+      "chg20": -14.6,
+      "vol_ratio": 1.4,
       "limit_up_10d": 0,
       "overheat_notice": false,
       "chg20_days": 11
-    },
-    "2383": {
-      "history_days": 35,
-      "stage": "潛伏",
-      "price_pos": "low",
-      "range_pos": 0.258,
-      "range_days": 35,
-      "chg1": 2.5,
-      "chg5": -1.0,
-      "chg20": 3.6,
-      "vol_ratio": 2.0,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "2618": {
-      "history_days": 35,
-      "stage": "潛伏",
-      "price_pos": "mid",
-      "range_pos": 0.4,
-      "range_days": 35,
-      "chg1": -0.4,
-      "chg5": -2.9,
-      "chg20": 0.6,
-      "vol_ratio": 0.8,
-      "limit_up_10d": 0,
-      "overheat_notice": false
-    },
-    "3231": {
-      "history_days": 35,
-      "stage": "潛伏",
-      "price_pos": "mid",
-      "range_pos": 0.636,
-      "range_days": 35,
-      "chg1": 0.5,
-      "chg5": 8.0,
-      "chg20": 1.9,
-      "vol_ratio": 0.9,
-      "limit_up_10d": 0,
-      "overheat_notice": false
     },
     "6285": {
       "history_days": 35,
@@ -3345,16 +2969,16 @@
       "limit_up_10d": 0,
       "overheat_notice": false
     },
-    "3149": {
+    "2382": {
       "history_days": 35,
       "stage": "潛伏",
-      "price_pos": "mid",
-      "range_pos": 0.458,
+      "price_pos": "low",
+      "range_pos": 0.227,
       "range_days": 35,
-      "chg1": -4.5,
-      "chg5": -3.7,
-      "chg20": 5.4,
-      "vol_ratio": 0.6,
+      "chg1": 0.5,
+      "chg5": 1.7,
+      "chg20": -6.5,
+      "vol_ratio": 0.7,
       "limit_up_10d": 0,
       "overheat_notice": false
     },
@@ -3385,37 +3009,127 @@
       "overheat_notice": false,
       "chg20_days": 11
     },
-    "3663": {
-      "history_days": 12,
+    "3231": {
+      "history_days": 35,
       "stage": "潛伏",
-      "price_pos": null,
-      "range_pos": 0.263,
-      "range_days": 12,
-      "chg1": -6.1,
-      "chg5": -8.5,
-      "chg20": -0.6,
-      "vol_ratio": 0.6,
-      "limit_up_10d": 1,
-      "overheat_notice": false,
-      "chg20_days": 11
+      "price_pos": "mid",
+      "range_pos": 0.636,
+      "range_days": 35,
+      "chg1": 0.5,
+      "chg5": 8.0,
+      "chg20": 1.9,
+      "vol_ratio": 0.9,
+      "limit_up_10d": 0,
+      "overheat_notice": false
     },
-    "6664": {
+    "2892": {
+      "history_days": 35,
+      "stage": "潛伏",
+      "price_pos": "high",
+      "range_pos": 1.0,
+      "range_days": 35,
+      "chg1": 3.9,
+      "chg5": 1.8,
+      "chg20": 6.5,
+      "vol_ratio": 1.1,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3149": {
+      "history_days": 35,
+      "stage": "潛伏",
+      "price_pos": "mid",
+      "range_pos": 0.458,
+      "range_days": 35,
+      "chg1": -4.5,
+      "chg5": -3.7,
+      "chg20": 5.4,
+      "vol_ratio": 0.6,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4526": {
+      "history_days": 35,
+      "stage": "啟動",
+      "price_pos": "high",
+      "range_pos": 1.0,
+      "range_days": 35,
+      "chg1": 18.6,
+      "chg5": 24.8,
+      "chg20": 25.9,
+      "vol_ratio": 17.2,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "2603": {
+      "history_days": 35,
+      "stage": "潛伏",
+      "price_pos": "high",
+      "range_pos": 0.849,
+      "range_days": 35,
+      "chg1": 0.2,
+      "chg5": 1.2,
+      "chg20": 7.4,
+      "vol_ratio": 0.9,
+      "limit_up_10d": 1,
+      "overheat_notice": false
+    },
+    "2368": {
+      "history_days": 35,
+      "stage": "潛伏",
+      "price_pos": "mid",
+      "range_pos": 0.493,
+      "range_days": 35,
+      "chg1": -5.9,
+      "chg5": -6.3,
+      "chg20": 6.7,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "3037": {
+      "history_days": 35,
+      "stage": "潛伏",
+      "price_pos": "mid",
+      "range_pos": 0.433,
+      "range_days": 35,
+      "chg1": 2.8,
+      "chg5": 0.9,
+      "chg20": 6.4,
+      "vol_ratio": 1.3,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "2618": {
+      "history_days": 35,
+      "stage": "潛伏",
+      "price_pos": "mid",
+      "range_pos": 0.4,
+      "range_days": 35,
+      "chg1": -0.4,
+      "chg5": -2.9,
+      "chg20": 0.6,
+      "vol_ratio": 0.8,
+      "limit_up_10d": 0,
+      "overheat_notice": false
+    },
+    "4923": {
       "history_days": 12,
       "stage": "潛伏",
       "price_pos": null,
       "range_pos": 0.0,
       "range_days": 12,
-      "chg1": -5.2,
-      "chg5": -4.3,
-      "chg20": -14.6,
-      "vol_ratio": 1.4,
+      "chg1": -6.2,
+      "chg5": -6.8,
+      "chg20": -27.1,
+      "vol_ratio": 0.6,
       "limit_up_10d": 0,
       "overheat_notice": false,
       "chg20_days": 11
     },
     "3406": {
       "history_days": 35,
-      "stage": "啟動",
+      "stage": "過熱",
       "price_pos": "high",
       "range_pos": 1.0,
       "range_days": 35,
@@ -3424,64 +3138,32 @@
       "chg20": 21.8,
       "vol_ratio": 1.6,
       "limit_up_10d": 1,
-      "overheat_notice": false
+      "overheat_notice": true
     },
-    "2303": {
+    "2330": {
       "history_days": 35,
       "stage": "潛伏",
       "price_pos": "low",
-      "range_pos": 0.014,
+      "range_pos": 0.024,
       "range_days": 35,
-      "chg1": -1.2,
-      "chg5": -6.0,
-      "chg20": -20.1,
-      "vol_ratio": 0.6,
+      "chg1": -0.8,
+      "chg5": -2.3,
+      "chg20": -3.8,
+      "vol_ratio": 1.1,
       "limit_up_10d": 0,
       "overheat_notice": false
     }
   },
   "D2_term_heat": [
     {
-      "term": "氮化鎵",
-      "us": false,
-      "returned": 43,
-      "truncated": false,
-      "recent": 7,
-      "earlier": 5,
-      "earlier_daily": 0.294,
-      "ratio": 7.93,
-      "status": "surge",
-      "codes": [
-        "9955"
-      ],
-      "titles": [
-        "Atomera與IQE合作開發氮化鎵矽基晶圓 作者 Investing.com - Investing.com 香港",
-        "英飛凌與輝達合作開發800 VDC AI 資料中心的氮化鎵電源轉換系統 | 產業熱點 | 產業",
-        "英飛凌與輝達合作開發800 VDC AI 資料中心的氮化鎵電源轉換系統"
-      ],
-      "ai_companies": [
-        {
-          "name": "漢磊",
-          "code": "3707",
-          "role": "氮化鎵產能塞爆",
-          "title_ids": [
-            12
-          ],
-          "evidence": "漢磊氮化鎵產能塞爆"
-        }
-      ],
-      "ai_dropped": [],
-      "ai_provider": "gemini"
-    },
-    {
       "term": "Trident",
       "us": false,
-      "returned": 9,
+      "returned": 8,
       "truncated": false,
       "recent": 4,
-      "earlier": 3,
-      "earlier_daily": 0.176,
-      "ratio": 7.56,
+      "earlier": 2,
+      "earlier_daily": 0.118,
+      "ratio": 11.33,
       "status": "surge",
       "codes": [],
       "titles": [
@@ -3494,79 +3176,114 @@
       "ai_provider": "gemini"
     },
     {
+      "term": "氮化鎵",
+      "us": false,
+      "returned": 41,
+      "truncated": false,
+      "recent": 8,
+      "earlier": 5,
+      "earlier_daily": 0.294,
+      "ratio": 9.07,
+      "status": "surge",
+      "codes": [
+        "9955"
+      ],
+      "titles": [
+        "Atomera與IQE將共同優化基於MST技術的硅基氮化鎵晶圓",
+        "Atomera與IQE合作開發氮化鎵矽基晶圓 作者 Investing.com - Investing.com 香港",
+        "英飛凌與輝達合作開發800 VDC AI 資料中心的氮化鎵電源轉換系統 | 產業熱點 | 產業"
+      ],
+      "ai_companies": [
+        {
+          "name": "漢磊",
+          "code": "3707",
+          "role": "氮化鎵產能塞爆",
+          "title_ids": [
+            13
+          ],
+          "evidence": "漢磊氮化鎵產能塞爆"
+        }
+      ],
+      "ai_dropped": [],
+      "ai_provider": "gemini"
+    },
+    {
       "term": "矽電容",
       "us": false,
-      "returned": 22,
+      "returned": 24,
       "truncated": false,
-      "recent": 7,
-      "earlier": 7,
-      "earlier_daily": 0.412,
-      "ratio": 5.67,
+      "recent": 9,
+      "earlier": 8,
+      "earlier_daily": 0.471,
+      "ratio": 6.38,
       "status": "surge",
       "codes": [
         "2303",
         "6770",
-        "6531",
-        "4958"
+        "4958",
+        "6531"
       ],
       "titles": [
-        "聯電攜愛普攻 AI 供電 矽電容完成投片與初步驗證",
-        "聯電攜手愛普推進AI供電解方 DTC矽電容Q3完成投片驗證",
-        "聯電攜手愛普攻AI晶片供電 DTC矽電容完成投片驗證、搶進先進封裝整合"
+        "力積電如何平衡矽電容擴產與傳統DRAM供應？",
+        "2303 聯電 - 聯電攜愛普攻 AI 供電 矽電容完成投片與初步驗證 | 產業... - 股市爆料同學會",
+        "聯電攜愛普攻 AI 供電 矽電容完成投片與初步驗證"
       ],
       "ai_companies": [
         {
-          "name": "聯電",
-          "code": "2303",
-          "role": "矽電容投片與驗證",
+          "name": "力積電",
+          "code": "6770",
+          "role": "擴產與搶攻矽電容商機",
           "title_ids": [
             1,
+            8,
+            9,
+            17
+          ],
+          "evidence": "力積電如何平衡矽電容擴產與傳統DRAM供應？"
+        },
+        {
+          "name": "聯電",
+          "code": "2303",
+          "role": "攜手愛普攻AI供電",
+          "title_ids": [
             2,
             3,
-            4
+            4,
+            5,
+            6
           ],
-          "evidence": "聯電攜愛普攻 AI 供電 矽電容完成投片與初步驗證"
+          "evidence": "2303 聯電 - 聯電攜愛普攻 AI 供電 矽電容完成投片與初步驗證 | 產業... - 股市爆料同學會"
         },
         {
           "name": "愛普",
           "code": "6531",
-          "role": "AI供電與矽電容放量",
+          "role": "攜手聯電攻AI供電",
           "title_ids": [
-            1,
             2,
             3,
             4,
-            10,
-            11
-          ],
-          "evidence": "聯電攜愛普攻 AI 供電 矽電容完成投片與初步驗證"
-        },
-        {
-          "name": "力積電",
-          "code": "6770",
-          "role": "矽電容擴產與布局",
-          "title_ids": [
+            5,
             6,
-            7,
+            12,
             14
           ],
-          "evidence": "力積電矽電容大缺貨！ 擬取得月產能 2 到 4 萬片小廠擴產"
+          "evidence": "2303 聯電 - 聯電攜愛普攻 AI 供電 矽電容完成投片與初步驗證 | 產業... - 股市爆料同學會"
         },
         {
           "name": "臻鼎-KY",
           "code": "4958",
-          "role": "內埋矽電容板設計",
+          "role": "內埋矽電容新趨勢",
           "title_ids": [
-            8
+            10
           ],
           "evidence": "臻鼎-KY(4958)直擊NPO光模組板設計！層數從22層朝18層收斂，內埋矽電容成新趨勢"
         },
         {
           "name": "矽格",
           "code": "6257",
-          "role": "受惠矽電容等業務",
+          "role": "矽電容給力營收創新高",
           "title_ids": [
-            13
+            15
           ],
           "evidence": "財訊快報：CPO、矽電容與低軌衛星給力，矽格9月、Q3營收同創單月與單季新高"
         }
@@ -3577,7 +3294,7 @@
     {
       "term": "半導體廠務",
       "us": false,
-      "returned": 29,
+      "returned": 26,
       "truncated": false,
       "recent": 4,
       "earlier": 4,
@@ -3611,6 +3328,16 @@
             6
           ],
           "evidence": "實體AI、半導體廠務需求雙旺 樺漢兩大事業雙位數成長"
+        },
+        {
+          "name": "台積電",
+          "code": "2330",
+          "role": "半導體廠務",
+          "title_ids": [
+            7,
+            8
+          ],
+          "evidence": "半導體廠務新兵2》台積電全球蓋廠掀搶工戰 「找到人才能接單」"
         },
         {
           "name": "漢唐",
@@ -3652,7 +3379,7 @@
         {
           "name": "神盾",
           "code": "6462",
-          "role": "策略合作與助攻",
+          "role": "策略合作搶攻HPC與小晶片商機",
           "title_ids": [
             1,
             2,
@@ -3668,7 +3395,7 @@
     {
       "term": "電源管理",
       "us": false,
-      "returned": 14,
+      "returned": 31,
       "truncated": false,
       "recent": 3,
       "earlier": 3,
@@ -3677,9 +3404,9 @@
       "status": "surge",
       "codes": [],
       "titles": [
-        "碩天科技通過DEKRA德凱獨立評估 取得IEC62443-4-1工控網路安全證書 強化智慧電源管理資安基礎",
-        "就市論勢／電源管理、BBU有潛利",
-        "就市論勢／電源管理、BBU 有潛利"
+        "碩天科技通過DEKRA德凱獨立評估取得IEC62443-4-1工控網路安全證書強化智慧電源管理資安基礎",
+        "就市論勢／電源管理、BBU 有潛利",
+        "就市論勢／電源管理、BBU有潛利"
       ],
       "ai_companies": [],
       "ai_dropped": [
@@ -3691,9 +3418,29 @@
       "ai_provider": "gemini"
     },
     {
+      "term": "微影設備",
+      "us": false,
+      "returned": 33,
+      "truncated": false,
+      "recent": 2,
+      "earlier": 2,
+      "earlier_daily": 0.118,
+      "ratio": 5.67,
+      "status": "surge",
+      "codes": [],
+      "titles": [
+        "需求激增 Canon 微影設備傳擴產 5 成",
+        "需求激增 Canon微影設備傳擴產5成",
+        "ASML訂單積壓突破產能上限 不缺訂單、只缺微影設備"
+      ],
+      "ai_companies": [],
+      "ai_dropped": [],
+      "ai_provider": "gemini"
+    },
+    {
       "term": "BlueField-4",
       "us": true,
-      "returned": 51,
+      "returned": 48,
       "truncated": false,
       "recent": 2,
       "earlier": 2,
@@ -3711,14 +3458,39 @@
       "ai_provider": "gemini"
     },
     {
+      "term": "Vera CPU",
+      "us": false,
+      "returned": 48,
+      "truncated": false,
+      "recent": 6,
+      "earlier": 10,
+      "earlier_daily": 0.588,
+      "ratio": 3.4,
+      "status": "surge",
+      "codes": [],
+      "titles": [
+        "DIGITIMES Today：NVIDIA Vera CPU背後藏大變局？| 機器人泡沫能吹多久？ | 傳李在鎔10月底視察三星RX事業室",
+        "搶攻代理式AI商機 美超微攜輝達推「Vera CPU液冷機櫃」",
+        "Supermicro 推 NVIDIA Vera CPU 機櫃！256 顆 CPU、可跑 2.25 萬個 AI Agent 沙箱"
+      ],
+      "ai_companies": [],
+      "ai_dropped": [
+        {
+          "name": "華碩",
+          "reason": "引用標題不含公司名"
+        }
+      ],
+      "ai_provider": "gemini"
+    },
+    {
       "term": "UEC",
       "us": false,
       "returned": 9,
       "truncated": false,
       "recent": 3,
-      "earlier": 4,
-      "earlier_daily": 0.235,
-      "ratio": 4.25,
+      "earlier": 5,
+      "earlier_daily": 0.294,
+      "ratio": 3.4,
       "status": "surge",
       "codes": [
         "6486"
@@ -3733,73 +3505,30 @@
       "ai_provider": "gemini"
     },
     {
-      "term": "冷板",
+      "term": "邊緣運算",
       "us": false,
-      "returned": 32,
-      "truncated": false,
-      "recent": 2,
-      "earlier": 3,
-      "earlier_daily": 0.176,
-      "ratio": 3.78,
-      "status": "surge",
-      "codes": [],
-      "titles": [
-        "中鼎股份(000887.SZ)積極佈局超算中心熱管理業務，已獲得多個冷板式及浸沒式液冷相關產品訂單",
-        "MHS發表超輕量冷板，冷卻水減量60%仍可壓制1.2kW GPU",
-        "葡足總主席急飛丹麥 調停C朗冷板事件"
-      ],
-      "ai_companies": [
-        {
-          "name": "台積電",
-          "code": "2330",
-          "role": "晶片製造",
-          "title_ids": [
-            4
-          ],
-          "evidence": "2330 台積電 - ⭕️6669緯穎鑽石微流道冷卻技術🍎「超薄雙面液冷板」 - 股市爆料同學會"
-        },
-        {
-          "name": "緯穎",
-          "code": "6669",
-          "role": "液冷技術應用",
-          "title_ids": [
-            4
-          ],
-          "evidence": "2330 台積電 - ⭕️6669緯穎鑽石微流道冷卻技術🍎「超薄雙面液冷板」 - 股市爆料同學會"
-        }
-      ],
-      "ai_dropped": [],
-      "ai_provider": "gemini"
-    },
-    {
-      "term": "Vera CPU",
-      "us": false,
-      "returned": 47,
+      "returned": 53,
       "truncated": false,
       "recent": 5,
       "earlier": 10,
       "earlier_daily": 0.588,
       "ratio": 2.83,
       "status": "surge",
-      "codes": [],
+      "codes": [
+        "2399",
+        "2455",
+        "5269"
+      ],
       "titles": [
-        "Supermicro 推 NVIDIA Vera CPU 機櫃！256 顆 CPU、可跑 2.25 萬個 AI Agent 沙箱",
-        "DIGITIMES Today：NVIDIA Vera CPU背後藏大變局？| 機器人泡沫能吹多久？ | 傳李在鎔10月底視察三星RX事業室",
-        "一筆Modal訂單為何讓英特爾、超微警戒 NVIDIA Vera CPU背後藏AI基建大變局？"
-      ],
-      "ai_companies": [],
-      "ai_dropped": [
-        {
-          "name": "華碩",
-          "reason": "引用標題不含公司名"
-        }
-      ],
-      "ai_provider": "gemini"
+        "焦點股》研華：深化邊緣運算領域 帶量大漲",
+        "祥碩科技 (5269) 深度解析：AI 邊緣運算與高速傳輸霸主，跨界佈局迎向爆發性成長",
+        "控創推出兩款全新KBox F系列工業電腦 提升工業邊緣運算的彈性與擴充性"
+      ]
     },
     {
       "term": "半導體建廠",
       "us": false,
-      "returned": 36,
+      "returned": 32,
       "truncated": false,
       "recent": 4,
       "earlier": 8,
@@ -3814,29 +3543,69 @@
       ]
     },
     {
-      "term": "邊緣運算",
+      "term": "第三代半導體",
       "us": false,
-      "returned": 50,
+      "returned": 16,
+      "truncated": false,
+      "recent": 2,
+      "earlier": 4,
+      "earlier_daily": 0.235,
+      "ratio": 2.83,
+      "status": "surge",
+      "codes": [
+        "2340",
+        "8261"
+      ],
+      "titles": [
+        "台亞半導體 (2340)：從光電老將到第三代半導體新星的華麗轉身",
+        "富鼎先進電子（8261）深度分析：AI伺服器與車用第三代半導體雙引擎",
+        "香港兩條第三代半導體中試線年內投入運作"
+      ]
+    },
+    {
+      "term": "混合鍵合",
+      "us": false,
+      "returned": 22,
       "truncated": false,
       "recent": 4,
       "earlier": 9,
       "earlier_daily": 0.529,
       "ratio": 2.52,
       "status": "surge",
+      "codes": [],
+      "titles": [
+        "ASML混合鍵合專利曝光，旋轉木馬式設計劍指BESI地盤",
+        "Besi業績超出訂單預期，稱ASML並非其混合鍵合領域的競爭對手",
+        "ASML盯上混合鍵合：晶片封裝能否變成下一個“光刻問題”？"
+      ]
+    },
+    {
+      "term": "智慧眼鏡",
+      "us": false,
+      "returned": 100,
+      "truncated": true,
+      "recent": 18,
+      "earlier": 55,
+      "earlier_daily": 3.235,
+      "ratio": 1.85,
+      "status": "surge",
       "codes": [
-        "2399",
-        "2455"
+        "6742",
+        "6281",
+        "9937",
+        "2455",
+        "2498"
       ],
       "titles": [
-        "焦點股》研華：深化邊緣運算領域 帶量大漲",
-        "控創推出兩款全新KBox F系列工業電腦 提升工業邊緣運算的彈性與擴充性",
-        "控創發表兩款KBox F系列新品搶攻邊緣運算與智慧製造商機- 商情"
+        "Ray-Ban Meta Nova智慧眼鏡亮相 時尚外型整合手持體驗",
+        "Ray-Ban Meta Nova智慧眼鏡亮相 時尚外型整合手持體驗 - 商傳媒",
+        "蘋果智慧眼鏡專利曝光，可能只對已有配鏡需求者有吸引力"
       ]
     },
     {
       "term": "DRAM合約價",
       "us": false,
-      "returned": 35,
+      "returned": 34,
       "truncated": false,
       "recent": 3,
       "earlier": 10,
@@ -3851,23 +3620,6 @@
         "集邦諮詢預估2026年四季度DRAM合約價環比漲約20%",
         "機構：預估Q4 DRAM合約價環比漲20%",
         "集邦諮詢預估2026年Q4 DRAM合約價環比漲約20% 漲幅較Q2Q3放緩"
-      ]
-    },
-    {
-      "term": "混合鍵合",
-      "us": false,
-      "returned": 28,
-      "truncated": false,
-      "recent": 3,
-      "earlier": 11,
-      "earlier_daily": 0.647,
-      "ratio": 1.55,
-      "status": "surge",
-      "codes": [],
-      "titles": [
-        "Besi業績超出訂單預期，稱ASML並非其混合鍵合領域的競爭對手",
-        "ASML盯上混合鍵合：晶片封裝能否變成下一個“光刻問題”？",
-        "結合12吋混合鍵合技術 長鑫存儲加速高階記憶體與3D DRAM布局"
       ]
     },
     {
@@ -3892,7 +3644,7 @@
     {
       "term": "玻璃通孔",
       "us": false,
-      "returned": 35,
+      "returned": 19,
       "truncated": false,
       "recent": 2,
       "earlier": 0,
@@ -3906,113 +3658,72 @@
       ]
     },
     {
-      "term": "OCS",
-      "us": false,
-      "returned": 15,
-      "truncated": false,
-      "recent": 2,
-      "earlier": 8,
-      "earlier_daily": 0.471,
-      "ratio": 1.42,
-      "status": "watch",
-      "codes": [
-        "6285"
-      ],
-      "titles": [
-        "Mitie收購案通過英國國家安全審查，OCS交易推進 作者 Investing.com - Investing.com 香港",
-        "Mitie收購案獲歐盟反壟斷批准，OCS交易推進 作者 Investing.com - Investing.com 香港",
-        "外資觀點：啟碁OCP秀OCS、1.6T交換器，美系外資上修獲利，目標價調高至380元"
-      ]
-    },
-    {
       "term": "固態電池",
       "us": false,
-      "returned": 32,
+      "returned": 55,
       "truncated": false,
-      "recent": 5,
-      "earlier": 21,
-      "earlier_daily": 1.235,
-      "ratio": 1.35,
+      "recent": 8,
+      "earlier": 34,
+      "earlier_daily": 2.0,
+      "ratio": 1.33,
       "status": "watch",
       "codes": [],
       "titles": [
-        "億緯鋰能全固態電池、鈉電新品發佈，前沿技術進入產業化新週期",
-        "【技術突破】廣州南沙GWh級全固態電池產線投產電芯穿刺烘烤不起火通過新國標檢測- 焦點新聞- 港人講地",
-        "固態電池產業鏈全解析"
+        "雙磺醯亞胺鋰鹽市場展望2035：固態電池需求推升18–22%年複合成長率 - 新聞與統計",
+        "康飛宇：從天然石墨到固態電池 中國先進電池材料的“代際突破”",
+        "億緯鋰能全固態電池、鈉電新品發佈，前沿技術進入產業化新週期"
       ]
     },
     {
-      "term": "智慧眼鏡",
+      "term": "記憶體模組",
       "us": false,
       "returned": 100,
       "truncated": true,
-      "recent": 13,
-      "earlier": 56,
-      "earlier_daily": 3.294,
-      "ratio": 1.32,
+      "recent": 2,
+      "earlier": 9,
+      "earlier_daily": 0.529,
+      "ratio": 1.26,
       "status": "watch",
       "codes": [
-        "6742",
-        "9937",
-        "6281",
-        "2455",
-        "2498"
+        "5289",
+        "4973"
       ],
       "titles": [
-        "Meta智慧眼鏡駕駛合法性引關注 美國各州法規與事故責任待釐清",
-        "Mark Zuckberg宣告Meta憑藉Muse邁入全新階段，下月正式進駐智慧眼鏡",
-        "佐臻展出不到50克AR智慧眼鏡結合AI協作平台拓展產業應用| 金融理財"
+        "累計EPS達30元！「記憶體模組廠」Q3獲利首破10億元創高 DRAM、NAND齊漲20%加持",
+        "宜鼎（5289）被歸類為記憶體模組廠，估值為何長期偏低？",
+        "【09:02 即時新聞】廣穎(4973) 早盤亮燈漲停，記憶體模組族群續成焦點"
       ]
     },
     {
       "term": "產能滿載",
       "us": false,
-      "returned": 47,
+      "returned": 44,
       "truncated": false,
       "recent": 6,
-      "earlier": 29,
-      "earlier_daily": 1.706,
-      "ratio": 1.17,
+      "earlier": 28,
+      "earlier_daily": 1.647,
+      "ratio": 1.21,
       "status": "watch",
       "codes": [
         "4526",
+        "1802",
         "6770",
-        "4585",
-        "1802"
+        "4585"
       ],
       "titles": [
         "高階MLCC訂單滿手！「被動元件廠」高階產能滿載、全年漲幅估達30% 法人看EPS上看6.5元",
         "CoWoS先進封裝產能滿載！台積電上修資本支出，引爆半導體供應鏈擴產潮-財經焦點情報站",
         "△焦點股：東台(4526)PCB鑽孔機需求增，產能滿載，股價盤中爆量一度攻頂"
       ]
-    },
-    {
-      "term": "RISC-V",
-      "us": true,
-      "returned": 117,
-      "truncated": false,
-      "recent": 13,
-      "earlier": 77,
-      "earlier_daily": 4.529,
-      "ratio": 0.96,
-      "status": "watch",
-      "codes": [
-        "6533"
-      ],
-      "titles": [
-        "Chinese chipmakers roll out new RISC-V server CPUs for AI demand",
-        "ESP Mosaico Uses the ESP32-S31 and a 320 MHz RISC-V Core",
-        "Qualcomm buys RISC-V startup Akeana to push into AI and data-center chips"
-      ]
     }
   ],
   "D2_term_heat_meta": {
-    "generated_at": "2026-10-23 21:57:42",
+    "generated_at": "2026-10-24 21:03:59",
     "n_terms": 121,
     "counts": {
-      "surge": 14,
+      "surge": 16,
       "new": 2,
-      "watch": 5,
+      "watch": 3,
       "quiet": 100
     }
   },
@@ -4035,8 +3746,8 @@
       "post_event_urls": [],
       "note": "",
       "phase": "before",
-      "days_to_start": 3,
-      "days_since_end": -6
+      "days_to_start": 2,
+      "days_since_end": -5
     },
     {
       "id": "a-sscc-2026",
@@ -4057,8 +3768,8 @@
       "post_event_urls": [],
       "note": "台灣主辦,ISSCC 前哨",
       "phase": "before",
-      "days_to_start": 9,
-      "days_since_end": -12
+      "days_to_start": 8,
+      "days_since_end": -11
     },
     {
       "id": "gtc-berlin-2026",
@@ -4080,8 +3791,8 @@
       "post_event_urls": [],
       "note": "",
       "phase": "after",
-      "days_to_start": -3,
-      "days_since_end": 1
+      "days_to_start": -4,
+      "days_since_end": 2
     },
     {
       "id": "oktobertech-2026",
@@ -4098,28 +3809,28 @@
       "post_event_urls": [],
       "note": "",
       "phase": "after",
-      "days_to_start": -1,
-      "days_since_end": 1
+      "days_to_start": -2,
+      "days_since_end": 2
     }
   ],
-  "daily_report": "各位投資朋友好，以下是今日（2026年10月23日）的台股題材與資金流向研究報告。\n\n從今日的發酵雷達來看，「光通訊」題材展現了強勁的雙邊確認訊號（G區），不僅台股盤面有高度關注，國際大廠與重要會議如 ADI、AEHR、AVGO、COHR、KEYS、LITE、MRVL 以及 OCP Global Summit 也同步點名 1.6T、800G、EML 與 laser/optical 等關鍵字，形成跨國共振。在個股表現方面，光通訊相關的 3406 在D區熱度暴增2.06倍，且伴隨重訊增資與私募動作，在A區多源共振中被歸類於 🔴高檔，雖然題材熱度極高，但因短線漲幅已大、處於高檔區間，投資人切忌盲目追價，須嚴控追高風險。此外，國際先行但台股新聞尚未完全跟上的前緣訊號中，包含矽光子、CPO、磷化銦、HBM、CoWoS 與 SerDes 等均被 ADI、AMAT、AVGO、COHR、MRVL、NVDA 及 TSM 等國際巨頭頻繁提及，顯示先進封裝與光互連仍是長線資金的核心主軸，值得持續追蹤其外溢效應。\n\n進一步觀察題材雷達（D區與F/F2區），新聞熱度暴增的亮點除了光通訊外，還包括人形機器人（暴增3.78倍）、LPDDR（2.43倍）、TGV玻璃通訊基板（2.43倍，如4526、6664），以及Terafab（2.30、2330）。值得注意的是，近期適逢多場國際大廠 Investor Day 與技術大會的密集期，例如 AMAT Applied Materials 於昨日剛舉辦 Investor Day，而 ORCL Oracle 則在會後浮現 capacity 需求激增的關鍵字（×4）；同時，Nvidia GTC 近期也釋出 data center、Vera Rubin 與 Rubin 等高溫關鍵字，OCP Global Summit 則聚焦 NPO 與 CPO 相關技術。這類國際大會前後兩週內的熱度升溫，往往帶有強烈的事件效應，但我們不能僅憑大會舉辦就直接判定題材全面成立或作為買進理由，仍需搭配台股實際的訂單與營收驗證。\n\n在候選題材與早期訊號方面（E與E2區），今日首見的新題材（E區）涵蓋了 AI 記憶體供需吃緊（HBM/DDR）、HVDC 與液冷散熱電源、CSP 自研晶片、人形機器人零組件以及低軌衛星等高可信度項目，這些均是盤面常態性的資金潛在停泊點。至於 E2區的近期關注項目，包含低軌衛星（暴增比1.49）、Vera Rubin（1.48）、800G（1.11）以及 CPO（0.94）與 HBM（0.94），目前雖呈現成長動能，但尚未正式跨過 1.5 倍的暴增門檻，屬於「初步觀察、非確定訊號」，請投資人以謹慎態度看待，列為後續追蹤清單即可，不宜過度解讀。\n\n整體而言，今日最值得留意的訊號是**光通訊題材在 G 區展現了台股訊號與國際法說（OCP、COHR、MRVL等）的雙邊強力確認，但高檔標的須嚴防追高風險。**",
-  "daily_report_date": "2026年10月23日",
+  "daily_report": "各位投資朋友好，今日（2026年10月24日）台股在多項國際大廠法說與大型技術會議的密集交錯下，題材面展現出強烈的跨區共振訊號。我們從發酵雷達、題材雷達到底部的候選訊號，為大家梳理今日市場最核心的動向。\n\n首先在核心買點邏輯的「發酵雷達」中，光通訊（1.6T/800G/EML/laser/optical）在G區取得了台股訊號與ADI、AVGO、COHR、LITE、MRVL等國際大廠法說及OCP Global Summit的雙邊確認，顯示光通訊族群具備扎實的基本面支撐。不過需特別留意，目前相關受惠股的價格位置並未出現明顯的底部標的，操作上不宜過度追價。此外，「國際先行、台股未燃」的清單中浮現了記憶體、矽光子、CoWoS、CPO、磷化銦、HBM、先進封裝及SerDes等前緣訊號，國際大廠（如AEHR、AMAT、AVGO、MRVL、NVDA、TSM等）已積極談及這些關鍵字，預期未來幾日國內新聞與資金有望跟進點火。在A區多源共振個股方面，衛星通訊概念股如 6285 表現值得關注，其處於🟢底部且呈現潛伏階段，是盤面上少數兼具低基期與多源訊號的焦點；至於 2317 則受惠於 Vera Rubin 與重訊雙源共振，目前位處🟡中段、潛伏階段，後續動能值得追蹤。\n\n延續這股熱度，我們來看「題材雷達」中的新聞熱度與法說動向。D區熱度暴增題材中，人形機器人（暴增4.72倍）、LPDDR（4.05倍）、TGV（2.43倍，如 4526、6664）、Terafab（2.11倍，如 2330）以及光通訊（2.06倍，如 3406、6278、3176）皆繳出強勁的爆發數據，Vera Rubin（1.72倍，如 2317）也同步增溫。搭配F區國際法說，COHR提及CPO與indium phosphide、AVGO點名Tomahawk、AMAT聚焦DRAM，完美呼應了前述發酵雷達中的前緣關鍵字。值得注意的是，近期正逢多場國際大廠 Investor Day 與技術大會（如 MRVL、AMAT、Oracle Investor Day，以及近期落幕的 Nvidia GTC Berlin 與 OCP Global Summit），這些活動帶動了 data center、CPO、NPO 等關鍵詞升溫，且部分大會（如 NVIDIA GTC DC 將於數日後登場）處於活動前後的密集效應期，相關題材的熱度升溫很可能受到事件效應催化，投資人宜將其視為產業趨勢的驗證，而非盲目追價的唯一理由。\n\n最後在「候選題材」的早期與追蹤訊號中，E區今日首見了多項高可信度的新題材，包含「AI資安威脅」、「HVDC供電（800VDC）」、「碳化矽/氮化鎵」以及「AI伺服器/ASIC」與「PCB材料升級」，這些均為產業界正在發酵的新興焦點。而連續追蹤達15天的 iPhone、晶圓廠、data center、silicon photonics 等詞彙，其可信度相對較高。至於E2區的近期關注項目，如 NAND（暴增比1.42）、擴產（1.29）、無人機（1.29）、800G（1.11）及 HBM（1.06）等，目前暴增比尚未突破1.5倍門檻，屬於「還在觀察階段」的動能訊號，僅代表市場討論度逐漸加溫，尚未形成正式觸發的大型題材，需以謹慎態度看待，切勿過度解讀。\n\n今日最值得留意的訊號，是**光通訊與CPO族群在國際法說與大型全球峰會（OCP）雙邊確認下，正由國際大廠全面預告前緣需求，搭配盤面上如 6285 等低基期標的醞釀，是本周跨區共振最為明確的結構性亮點。**",
+  "daily_report_date": "2026年10月24日",
   "H_verification_summary": {
     "by_detection_type": {
       "keyword_surge": {
-        "confirmed": 3,
-        "refuted": 15,
-        "total_judged": 18,
-        "win_rate_pct": 16.7
+        "confirmed": 4,
+        "refuted": 23,
+        "total_judged": 27,
+        "win_rate_pct": 14.8
       },
       "source_diversity": {
         "confirmed": 0,
-        "refuted": 1,
-        "total_judged": 1,
+        "refuted": 2,
+        "total_judged": 2,
         "win_rate_pct": 0.0
       }
     },
-    "pending_count": 705,
-    "total_claims": 724
+    "pending_count": 697,
+    "total_claims": 726
   }
 }
