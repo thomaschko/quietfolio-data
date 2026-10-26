@@ -1,0 +1,39 @@
+name: TDCC Probe (一次性探測)
+
+# 2026-10-26 Phase 0:集保戶股權分散表開放資料、歷史取得途徑、更新時間、法人資料可重用性。
+# 只手動執行、不 commit,結果 tdcc_probe_result.json 以 artifact 上傳並印在 log。
+# FinMind 只在 GitHub Secrets 有 FINMIND_TOKEN 時才測(沒有就跳過,不會失敗)。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run probe
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python tdcc_probe.py
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tdcc_probe_result
+          path: tdcc_probe_result.json
+          if-no-files-found: warn
