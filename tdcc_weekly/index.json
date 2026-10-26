@@ -1,0 +1,24 @@
+{
+ "weeks": {
+  "2026-10-22": {
+   "fetched_at": "2026-10-27 01:41",
+   "file": "2026-10-22.csv.gz",
+   "bytes_raw": 2387590,
+   "rows": 69700,
+   "stocks": 4100,
+   "trading_day": "ok",
+   "holders_mismatch": [],
+   "shares_mismatch": [],
+   "no_total": []
+  }
+ },
+ "latest": "2026-10-22",
+ "total_bytes": 625145,
+ "size_warning": false,
+ "source": "https://opendata.tdcc.com.tw/getOD.ashx?id=1-5",
+ "notes": [
+  "分級 1–15 為持股級距、16 為差異數調整、17 為合計;原檔不聚合、不修正。",
+  "股數檢查用 Σ1–15 − 第16級 = 第17級;人數檢查用 Σ1–15 = 第17級。不符只標示。",
+  "trading_day=unverified:資料日是平日,但 repo 內沒有那天的開盤資料,無法確認是否為交易日。"
+ ]
+}
