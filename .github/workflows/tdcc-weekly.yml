@@ -1,0 +1,57 @@
+name: TDCC Weekly (集保戶股權分散表)
+
+# 2026-10-26 Phase 1:每週累積集保開放資料(只有最新一週)到 tdcc_weekly/YYYY-MM-DD.csv.gz。
+# 資料日 = 每週最後一個交易日;週六、下週一各試一次,資料日期已存過就跳過(不覆寫)。
+# 確切更新時間 Phase 0 還看不出來:每次執行都記在 tdcc_weekly/fetch_log.json,累積幾週後再調整時間。
+# GitHub schedule 常延遲數小時,對週資料影響不大;漏了就手動 workflow_dispatch 補。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 6'    # 台北週六 11:00
+    - cron: '0 1 * * 1'    # 台北週一 09:00
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tdcc-weekly
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests pytest
+
+      - name: Unit tests
+        run: python -m pytest -q test_tdcc_fetch.py
+
+      - name: Fetch
+        run: python tdcc_fetch.py
+
+      - name: Commit and push
+        if: always()
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add tdcc_weekly/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "無變更,不 commit"
+            exit 0
+          fi
+          git commit -m "TDCC weekly $(TZ=Asia/Taipei date +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push 失敗,第 $i 次重試"; sleep $((i * 10))
+          done
+          exit 1
