@@ -5,6 +5,8 @@ name: Intl Rank (美/日/韓成交值排行)
 # 排程(UTC):
 #   14:00 週一~五 = 台北 22:00 → 只跑日股、韓股(兩地當日已收盤)
 #   23:30 週一~五 = 台北 07:30(週二~週六)→ 跑美股(美股前一交易日已收盤);日韓資料日落後才補跑(--catchup)
+# 2026-10-27:GitHub schedule 常延遲 2~5 小時(美股那次實際約台北 10:00 才 commit)→ GAS IntlRankMorning.js
+#   每天台北約 05:30(週二~週六,美股收盤後)用 workflow_dispatch 觸發 markets=us;上面的 schedule 不變,當備援。
 # 其餘市場沿用舊資料並標 stale(intl_rank_core.merge_preserve)。
 on:
   schedule:
@@ -50,6 +52,23 @@ jobs:
       - name: Group money-flow consensus
         continue-on-error: true
         run: python group_flow.py
+
+      # 2026-10-27:族群金流先 commit,不用等後面的排行榜(美股約 20 分鐘)。GAS 早上 05:30 觸發這個 workflow 後
+      # 約 25 分鐘去讀,族群金流可以先更新。失敗不影響排行榜;最後的 commit 步驟仍會一起帶 group_flow.json。
+      - name: Commit group flow early
+        continue-on-error: true
+        run: |
+          [ -f group_flow.json ] || exit 0
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add group_flow.json
+          if git diff --staged --quiet; then echo "族群金流無變更"; exit 0; fi
+          git commit -m "Group flow $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push 失敗,第 $i 次重試"; sleep $((i * 10))
+          done
+          exit 1
 
       - name: Build rankings
         env:
