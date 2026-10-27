@@ -137,23 +137,33 @@ def week_of(day, tdcc_dates):
 
 # ── 法人:同一集保週加總 ──
 def _inst_row(doc, code):
-    """→ [f, t, d, n] 或 None。市場整段是 null 或代號不在表裡都算缺(不當成 0)。"""
+    """→ (市場, [f, t, d, n]) 或 (None, None)。"""
     for mk in ("twse", "tpex"):
         sec = (doc or {}).get(mk)
         if sec and code in sec:
-            return sec[code]
-    return None
+            return mk, sec[code]
+    return None, None
 
 
 def inst_week(code, days, insti_daily, unit="shares"):
-    """→ {foreign, trust, dealer, net, net_for_agreement, days, missing_days}。
-    任一交易日缺資料 → 數值全部 None(不補值),missing_days 列出缺的日子。"""
-    out = {"days": list(days), "missing_days": []}
+    """→ {foreign, trust, dealer, net, net_for_agreement, days, missing_days, zero_filled_days}。
+    2026-10-27 使用者決定(選項 2):某天「該股所屬市場的那段有資料」但代號不在表裡 → 當天算 0 股,
+      記在 zero_filled_days(推定:T86/TPEx 當天沒有法人交易的股票不列出,官方沒有明文,未驗證)。
+      所屬市場從同一集保週其他天判斷;整週都沒出現(多是興櫃/未上市,T86/TPEx 不涵蓋)→ 判斷不了,算缺。
+    該市場那天整段沒有(檔案不在、或 twse/tpex 是 null/空)→ 算缺。任一天缺 → 數值全部 None,不補值。"""
+    out = {"days": list(days), "missing_days": [], "zero_filled_days": []}
+    rows = {d: _inst_row(insti_daily.get(d), code) for d in days}
+    markets = {mk for mk, _ in rows.values() if mk}
+    market = markets.pop() if len(markets) == 1 else None
     acc = [0, 0, 0, 0]
     for d in days:
-        row = _inst_row(insti_daily.get(d), code)
+        mk, row = rows[d]
         if row is None:
-            out["missing_days"].append(d)
+            sec = (insti_daily.get(d) or {}).get(market) if market else None
+            if sec:
+                out["zero_filled_days"].append(d)
+            else:
+                out["missing_days"].append(d)
             continue
         for i in range(4):
             acc[i] += to_shares(row[i], unit)
@@ -283,6 +293,8 @@ def stock_series(code, tdcc_weeks, insti_daily, calendar, cfg=CHIP_CFG):
         inst = inst_week(code, days, insti_daily)
         if inst["missing_days"]:
             flags.append("inst_missing_days")
+        if inst["zero_filled_days"]:
+            flags.append("inst_zero_filled_days")
         if not days:
             flags.append("no_trading_days_in_calendar")
         rec = {"d": date, "m": m, "inst": inst, "flags": flags, "unreliable": unreliable,

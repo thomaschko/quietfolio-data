@@ -100,6 +100,22 @@ def test_inst_week_sums_and_missing_day_blanks():
     assert w["net"] is None and w["missing_days"] == [days[2]]       # 缺一天就留空,不補
 
 
+def test_inst_absent_code_zero_filled_when_market_present():
+    days = ["20260105", "20260106", "20260107"]
+    ins = {"20260105": {"twse": {"1233": [100, 0, 0, 100], "2330": [1, 1, 1, 3]}, "tpex": {"6488": [5, 0, 0, 5]}},
+           "20260106": {"twse": {"2330": [1, 1, 1, 3]}, "tpex": {"6488": [5, 0, 0, 5]}},
+           "20260107": {"twse": {"1233": [-40, 10, 0, -30]}, "tpex": None}}
+    w = cs.inst_week("1233", days, ins)
+    assert w["zero_filled_days"] == ["20260106"] and w["missing_days"] == []
+    assert w["foreign"] == 60 and w["net"] == 70
+    # 上櫃那天整段是 null → 算缺,不當 0
+    w = cs.inst_week("6488", days, ins)
+    assert w["missing_days"] == ["20260107"] and w["net"] is None
+    # 整週都沒出現(興櫃等)→ 判斷不了市場,算缺
+    w = cs.inst_week("9999", days, ins)
+    assert w["missing_days"] == days and w["zero_filled_days"] == []
+
+
 def test_inst_market_section_null_counts_as_missing():
     ins = {"20260105": {"twse": {}, "tpex": None}}
     assert cs.inst_week("6488", ["20260105"], ins)["missing_days"] == ["20260105"]
