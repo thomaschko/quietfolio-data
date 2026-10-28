@@ -213,3 +213,33 @@ def test_build_drops_market_with_low_coverage():
     old = {"asof": {"tw": "2026-09-01"}, "themes": [{"theme": "甲", "markets": {"tw": rs(5)}}]}
     kept = gf.keep_newer(out, old)                                          # → 台股沿用上次、標 stale
     assert kept["stale"] == ["tw"] and kept["themes"][0]["markets"]["tw"]["stale"] is True
+
+
+def test_members_have_5d_metrics_and_names():
+    close, vol = panel({"A": (lambda i: 100.0 + i, lambda i: 1e6 if i < 20 else 3e6)})
+    m = gf.basket_stats(close, vol, ["A"])["members"][0]
+    assert m["chg5"] == round((124 / 119 - 1) * 100, 2) and m["vs5"] > 100     # 近 5 日成交值約 3 倍
+    baskets = {"記憶體": {"us": ["MU"], "kr": ["005930"], "tw": ["2408"]}}
+
+    def fetch(mk, codes):
+        c, v = panel({x: (lambda i: 100.0, lambda i: 1e6) for x in codes})
+        return c, v, []
+    out = gf.build(baskets, fetch=fetch, names={"us": {"MU": "Micron"}, "kr": {"005930": "삼성전자"}})
+    mk = out["themes"][0]["markets"]
+    assert mk["us"]["members"][0]["name"] == "Micron" and mk["kr"]["members"][0]["name"] == "삼성전자"
+    assert "name" not in mk["tw"]["members"][0]                                # 台股名稱由網頁查
+
+
+def test_load_names_uses_listing_then_cache():
+    with tempfile.TemporaryDirectory() as d:
+        path = os.path.join(d, "names.json")
+        uni = {"us": {"MU": {"code": "MU", "name": "Micron"}, "BRK-B": {"code": "BRK.B", "name": "Berkshire"}},
+               "jp": {"285A.T": {"code": "285A", "name": "キオクシア"}},
+               "kr": {"005930.KS": {"code": "005930", "name": "삼성전자"}}}
+        by = {"us": ["MU", "BRK-B"], "jp": ["285A"], "kr": ["005930"], "tw": ["2408"]}
+        n = gf.load_names(by, fetch=lambda m: uni[m], path=path)
+        assert n == {"us": {"BRK-B": "Berkshire", "MU": "Micron"}, "jp": {"285A": "キオクシア"}, "kr": {"005930": "삼성전자"}}
+
+        def boom(m):
+            raise RuntimeError("down")
+        assert gf.load_names(by, fetch=boom, path=path) == n                     # 清單抓不到 → 快取
