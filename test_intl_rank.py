@@ -204,3 +204,14 @@ def test_expected_asof_and_catchup():
             json.dump({"markets": {"jp": _block("jp", "2026-10-20"), "kr": _block("kr", "2026-10-21")}}, f)
         assert ir.stale_markets(["jp", "kr"], out=out, now_utc=now) == ["jp"]
         assert ir.stale_markets(["jp"], out=os.path.join(d, "none.json"), now_utc=now) == ["jp"]
+
+
+def test_clear_current_stale_only_when_up_to_date():
+    # 台北 10/28 05:39 = UTC 10/27 21:39:日韓應有資料日 10/27
+    now = dt.datetime(2026, 10, 27, 21, 39, tzinfo=dt.timezone.utc)
+    p = {"markets": {"us": _block("us", "2026-10-27"),
+                     "jp": {**_block("jp", "2026-10-27"), "stale": True},
+                     "kr": {**_block("kr", "2026-10-26"), "stale": True}}}
+    ir.clear_current_stale(p, now)
+    assert "stale" not in p["markets"]["jp"]                # 沿用但已是最新 → 不標舊
+    assert p["markets"]["kr"]["stale"] is True              # 真的落後 → 保留

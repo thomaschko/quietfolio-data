@@ -358,6 +358,7 @@ def run(markets, out=OUT_FILE, top_n=50, build=build_market, fx_loader=_yf_fx, b
     save_totals({i["market"]: i["totals"] for i in infos if i.get("totals")},
                 path=os.path.join(os.path.dirname(out) or ".", TOTALS_FILE))
     payload = core.merge_preserve(old, new, generated)
+    clear_current_stale(payload)
     payload["last_run"] = {"at": generated, "requested": list(markets),
                            "ok": [m for m in markets if new.get(m)], "failed": [m for m in markets if not new.get(m)]}
     payload, n = core.fit_size(payload, limit=SIZE_LIMIT)
@@ -393,6 +394,16 @@ def expected_asof(market, now_utc=None):
     while d.weekday() >= 5:
         d -= dt.timedelta(days=1)
     return d.isoformat()
+
+
+def clear_current_stale(payload, now_utc=None):
+    """沿用的市場(stale)若資料日已經 ≥ 該市場最近一個應已收盤的平日 → 資料是最新的,拿掉 stale。
+    2026-10-28:早上 05:30 只跑美股,日韓沿用凌晨那次已抓好的 10/27,卻被標「舊」。使用者要求最新的就不標。
+    資料日真的落後(或這次更新失敗且資料日落後)才保留 stale;last_run.failed 照樣記錄。"""
+    for k, m in payload.get("markets", {}).items():
+        if m.get("stale") and m.get("asof") and m["asof"] >= expected_asof(k, now_utc):
+            m.pop("stale", None)
+    return payload
 
 
 def stale_markets(candidates, out=OUT_FILE, now_utc=None):
