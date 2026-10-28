@@ -62,6 +62,7 @@ jobs:
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
           git add group_flow.json
+          [ -f intl_names.json ] && git add intl_names.json || true
           if git diff --staged --quiet; then echo "族群金流無變更"; exit 0; fi
           git commit -m "Group flow $(date -u +%Y-%m-%d)"
           for i in 1 2 3; do
@@ -91,6 +92,7 @@ jobs:
           git add intl_rank.json
           [ -f intl_market_totals.json ] && git add intl_market_totals.json || true
           [ -f group_flow.json ] && git add group_flow.json || true
+          [ -f intl_names.json ] && git add intl_names.json || true
           if git diff --staged --quiet; then
             echo "無變更,不 commit"
             exit 0

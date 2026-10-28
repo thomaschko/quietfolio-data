@@ -15,6 +15,8 @@ group_flow.py — 台/美/日/韓 供應鏈族群金流共識(2026-10-19 新增,
   up / n        今日上漲成員數 / 有資料成員數
   share_vs_avg  籃子占全市場成交值比例,對比前 20 日平均占比的增減 %(分母資料不足 → None)
   value_5d_vs_avg  近 5 日籃子成交值均值,對比再之前 20 日均值的增減 %(比單日穩定)
+  members(每檔):chg/chg5 = 1日/5日漲跌 %,vsAvg/vs5 = 成交值 1日/近5日均 對比前 20 日的增減 %,
+                name = 美日韓名稱(2026-10-28 新增,給網頁「強弱勢族群的強弱勢個股」用)
   weight / rot_vs_avg / rot_5d(2026-10-19 晚新增,板塊移動)
                 籃子占「該市場所有追蹤族群成分股(不重複)合計成交值」的比重 %;
                 rot_vs_avg = 今日比重對比前 20 日平均比重的增減 %,
@@ -50,6 +52,7 @@ BASKET_FILE = "intl_theme_baskets.json"
 TOTALS_FILE = "intl_market_totals.json"
 TW_HIST_DIR = "price_history"
 OUT_FILE = "group_flow.json"
+NAMES_FILE = "intl_names.json"     # 2026-10-28:美日韓成分股名稱快取(交易所股票清單)
 PERIOD = "60d"
 WINDOW = 20
 MIN_PRIOR = 10
@@ -148,8 +151,9 @@ def basket_stats(close, volume, codes, totals=None, universe=None):
         mv = val[k]
         mprior = mv.iloc[-(WINDOW + 1):-1]
         mprior = mprior[mprior > 0]
-        members.append({"code": k, "chg": r1, "value": round(float(mv.iloc[-1]), 1),
-                        "vsAvg": _pct(float(mv.iloc[-1]), mprior.mean()) if len(mprior) >= MIN_PRIOR else None})
+        members.append({"code": k, "chg": r1, "chg5": r5, "value": round(float(mv.iloc[-1]), 1),
+                        "vsAvg": _pct(float(mv.iloc[-1]), mprior.mean()) if len(mprior) >= MIN_PRIOR else None,
+                        "vs5": recent_vs_prior(mv)})
     share = share_vs = None
     if totals:
         ser = pd.Series({pd.Timestamp(d): t for d, t in totals.items() if t and t > 0})
@@ -306,9 +310,46 @@ def fetch_market(market, codes, download=_yf_download, now_utc=None, sleep=time.
     return close, volume, missing
 
 
-def build(baskets, fetch=fetch_market, totals=None, tw_tot=None):
+def basket_codes(baskets):
+    return {m: sorted({str(c) for th in baskets.values() for c in th.get(m, [])}) for m in MARKET_ORDER}
+
+
+def load_names(by_market, fetch=None, path=NAMES_FILE):
+    """美日韓成分股名稱(台股由網頁自己查)。用 intl_rank 的交易所股票清單(不是 Yahoo,不會撞限流);
+    某市場清單抓不到 → 用 intl_names.json 快取。→ {市場: {代碼: 名稱}}"""
+    if fetch is None:
+        from intl_rank import fetch_universe as fetch
+    try:
+        with open(path, encoding="utf-8") as f:
+            cache = json.load(f)
+    except Exception:
+        cache = {}
+    out = {}
+    for m in ("us", "jp", "kr"):
+        want = set(by_market.get(m) or [])
+        got = dict(cache.get(m) or {})
+        if want - set(got):
+            try:
+                uni = fetch(m)
+                for key, v in uni.items():
+                    code = key.split(".")[0] if m != "us" else key
+                    if code in want:
+                        got[code] = v["name"]
+            except Exception as e:
+                log(f"  ⚠ {CFG[m]['label']} 股票清單抓不到,名稱用快取:{e}")
+        out[m] = {c: got[c] for c in sorted(want) if c in got}
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(out, f, ensure_ascii=False, indent=1)
+    except Exception as e:
+        log(f"  ⚠ {path} 寫入失敗:{e}")
+    return out
+
+
+def build(baskets, fetch=fetch_market, totals=None, tw_tot=None, names=None):
     totals = totals or {}
-    by_market = {m: sorted({c for th in baskets.values() for c in th.get(m, [])}) for m in MARKET_ORDER}
+    names = names or {}
+    by_market = basket_codes(baskets)
     panels, missing = {}, {}
     for m, codes in by_market.items():
         if not codes:
@@ -337,6 +378,9 @@ def build(baskets, fetch=fetch_market, totals=None, tw_tot=None):
                 continue
             tot = tw_tot if m == "tw" else totals.get(m)
             stats[m] = basket_stats(close, volume, [str(c) for c in codes], tot, univ.get(m))
+            for x in (stats[m] or {}).get("members", []):
+                if names.get(m, {}).get(x["code"]):
+                    x["name"] = names[m][x["code"]]
         themes.append({"theme": name, "markets": {m: s for m, s in stats.items() if s}, **theme_status(stats)})
     order = {"consensus": 0, "partial": 1, "quiet": 2}
     themes.sort(key=lambda t: (order[t["status"]], -len(t["hot_up"]) - len(t["hot_down"])))
@@ -379,7 +423,7 @@ def main():
             totals = json.load(f)
     except Exception:
         totals = {}
-    out = build(baskets, totals=totals, tw_tot=tw_totals())
+    out = build(baskets, totals=totals, tw_tot=tw_totals(), names=load_names(basket_codes(baskets)))
     try:
         with open(OUT_FILE, encoding="utf-8") as f:
             out = keep_newer(out, json.load(f))
