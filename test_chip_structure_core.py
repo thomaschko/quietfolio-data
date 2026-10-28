@@ -116,6 +116,14 @@ def test_inst_absent_code_zero_filled_when_market_present():
     assert w["missing_days"] == days and w["zero_filled_days"] == []
 
 
+def test_tpex_count_low_day_not_zero_filled():
+    days = ["20260105", "20260106"]
+    ins = {"20260105": {"twse": {}, "tpex": {"6488": [5, 0, 0, 5]}},
+           "20260106": {"twse": {}, "tpex": {"5347": [1, 0, 0, 1]}, "tpex_count_low": True}}
+    w = cs.inst_week("6488", days, ins)
+    assert w["missing_days"] == ["20260106"] and w["zero_filled_days"] == [] and w["net"] is None
+
+
 def test_inst_market_section_null_counts_as_missing():
     ins = {"20260105": {"twse": {}, "tpex": None}}
     assert cs.inst_week("6488", ["20260105"], ins)["missing_days"] == ["20260105"]

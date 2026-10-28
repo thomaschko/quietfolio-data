@@ -150,7 +150,7 @@ def inst_week(code, days, insti_daily, unit="shares"):
     2026-10-27 使用者決定(選項 2):某天「該股所屬市場的那段有資料」但代號不在表裡 → 當天算 0 股,
       記在 zero_filled_days(推定:T86/TPEx 當天沒有法人交易的股票不列出,官方沒有明文,未驗證)。
       所屬市場從同一集保週其他天判斷;整週都沒出現(多是興櫃/未上市,T86/TPEx 不涵蓋)→ 判斷不了,算缺。
-    該市場那天整段沒有(檔案不在、或 twse/tpex 是 null/空)→ 算缺。任一天缺 → 數值全部 None,不補值。"""
+    該市場那天整段沒有(檔案不在、或 twse/tpex 是 null/空),或上櫃那天標 tpex_count_low → 算缺。任一天缺 → 數值全部 None,不補值。"""
     out = {"days": list(days), "missing_days": [], "zero_filled_days": []}
     rows = {d: _inst_row(insti_daily.get(d), code) for d in days}
     markets = {mk for mk, _ in rows.values() if mk}
@@ -159,8 +159,10 @@ def inst_week(code, days, insti_daily, unit="shares"):
     for d in days:
         mk, row = rows[d]
         if row is None:
-            sec = (insti_daily.get(d) or {}).get(market) if market else None
-            if sec:
+            doc = insti_daily.get(d) or {}
+            sec = doc.get(market) if market else None
+            # 2026-10-28:那天上櫃檔數明顯偏少(GAS 標 tpex_count_low)→ 名單可能不完整,不補 0
+            if sec and not (market == "tpex" and doc.get("tpex_count_low")):
                 out["zero_filled_days"].append(d)
             else:
                 out["missing_days"].append(d)
