@@ -16,6 +16,8 @@ group_flow.py — 台/美/日/韓 供應鏈族群金流共識(2026-10-19 新增,
   share_vs_avg  籃子占全市場成交值比例,對比前 20 日平均占比的增減 %(分母資料不足 → None)
   value_5d_vs_avg  近 5 日籃子成交值均值,對比再之前 20 日均值的增減 %(比單日穩定)
   members(每檔):chg/chg5 = 1日/5日漲跌 %,vsAvg/vs5 = 成交值 1日/近5日均 對比前 20 日的增減 %,
+                share/share5 = 個股占「該族群跨市場合計成交值(換成美元)」的 %,當日 / 近 5 日平均
+                (2026-10-28 使用者要求:強弱勢族群列出金流占比最高的前 5 檔;匯率 TWD/JPY/KRW=X),
                 name = 美日韓名稱(2026-10-28 新增,給網頁「強弱勢族群的強弱勢個股」用)
   weight / rot_vs_avg / rot_5d(2026-10-19 晚新增,板塊移動)
                 籃子占「該市場所有追蹤族群成分股(不重複)合計成交值」的比重 %;
@@ -152,6 +154,7 @@ def basket_stats(close, volume, codes, totals=None, universe=None):
         mprior = mv.iloc[-(WINDOW + 1):-1]
         mprior = mprior[mprior > 0]
         members.append({"code": k, "chg": r1, "chg5": r5, "value": round(float(mv.iloc[-1]), 1),
+                        "value5": round(float(mv.iloc[-RECENT:].mean()), 1),
                         "vsAvg": _pct(float(mv.iloc[-1]), mprior.mean()) if len(mprior) >= MIN_PRIOR else None,
                         "vs5": recent_vs_prior(mv)})
     share = share_vs = None
@@ -346,6 +349,50 @@ def load_names(by_market, fetch=None, path=NAMES_FILE):
     return out
 
 
+FX_TICKERS = {"tw": "TWD=X", "jp": "JPY=X", "kr": "KRW=X"}
+
+
+def _yf_fx():
+    import yfinance as yf
+    return yf.download(list(FX_TICKERS.values()), period="60d", interval="1d", progress=False, group_by="ticker")
+
+
+def load_fx(asof, loader=_yf_fx):
+    """各市場資料日的「當地幣 / 1 美元」;美股 = 1。抓不到的市場不放(那個市場的成分股就不算占比)。"""
+    from intl_rank import fx_on
+    out = {"us": 1.0}
+    try:
+        frame = loader()
+    except Exception as e:
+        log(f"  ⚠ 匯率抓不到,族群內個股占比只算美股:{e}")
+        return out
+    for m, tk in FX_TICKERS.items():
+        if (asof or {}).get(m):
+            r = fx_on(frame, tk, asof[m])
+            if r:
+                out[m] = r
+    return out
+
+
+def member_shares(markets, fx):
+    """族群內(跨市場)個股成交值占比 %:各市場成交值換成美元後,個股 / 族群合計。
+    share = 當日、share5 = 近 5 日平均。沒有匯率的市場不算(不放 share)。→ 有算進去的市場清單"""
+    rows = [(x, fx[m]) for m, st in markets.items() if m in fx for x in st.get("members", [])]
+    for key, out in (("value", "share"), ("value5", "share5")):
+        tot = sum(x[key] / r for x, r in rows if x.get(key) is not None)
+        for x, r in rows:
+            x.pop(out, None)
+            if tot > 0 and x.get(key) is not None:
+                x[out] = round(x[key] / r / tot * 100, 1)
+    return sorted(m for m in markets if m in fx)
+
+
+def add_shares(out, fx):
+    for t in out["themes"]:
+        t["share_markets"] = member_shares(t["markets"], fx)
+    return out
+
+
 def build(baskets, fetch=fetch_market, totals=None, tw_tot=None, names=None):
     totals = totals or {}
     names = names or {}
@@ -434,6 +481,7 @@ def main():
     if not any(t["markets"] for t in out["themes"]):
         log("✗ 所有題材都沒有資料,不覆寫 group_flow.json")
         return 1
+    add_shares(out, load_fx(out.get("asof")))
     text = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
     with open(OUT_FILE, "w", encoding="utf-8") as f:
         f.write(text)
