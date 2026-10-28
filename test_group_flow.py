@@ -243,3 +243,20 @@ def test_load_names_uses_listing_then_cache():
         def boom(m):
             raise RuntimeError("down")
         assert gf.load_names(by, fetch=boom, path=path) == n                     # 清單抓不到 → 快取
+
+
+def test_member_shares_convert_to_usd():
+    mk = {"tw": {"members": [{"code": "2330", "value": 320.0, "value5": 300.0}]},
+          "us": {"members": [{"code": "NVDA", "value": 30.0, "value5": 20.0}]},
+          "kr": {"members": [{"code": "005930", "value": 9000.0, "value5": 9000.0}]}}
+    used = gf.member_shares(mk, {"us": 1.0, "tw": 32.0})                       # 韓股沒有匯率 → 不算
+    assert used == ["tw", "us"]
+    assert mk["tw"]["members"][0]["share"] == 25.0 and mk["us"]["members"][0]["share"] == 75.0   # 10 vs 30 億美元
+    assert mk["tw"]["members"][0]["share5"] == round(300 / 32 / (300 / 32 + 20) * 100, 1)
+    assert "share" not in mk["kr"]["members"][0]
+
+
+def test_load_fx_us_only_when_loader_fails():
+    def boom():
+        raise RuntimeError("x")
+    assert gf.load_fx({"tw": "2026-10-27"}, loader=boom) == {"us": 1.0}
