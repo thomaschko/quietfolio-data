@@ -113,43 +113,111 @@ def _parse_row_date(v):
     return None
 
 
+# 2026-10-30:上市改用證交所官網 MI_INDEX(GAS 排行榜/報價用的同一個來源)。
+# 原本的 OpenAPI STOCK_DAY_ALL 在台北 17:30 左右常常還是前一個交易日 → price_history 的上市價格間歇性落後一天
+# (10/13、10/19~21、10/27~29 都是),而上櫃是當天,兩天的價格存在同一個檔。
+MI_INDEX_URLS = ["https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX?response=json&type=ALL",
+                 "https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&type=ALL"]
+
+
+def parse_mi_index(j):
+    """MI_INDEX JSON → (date 'YYYYMMDD' or None, {code: [close, volume(股)]})。個股表 = 欄位含「證券代號」「成交金額」的那張。"""
+    rows = None
+    for t in (j.get("tables") or []):
+        f = ",".join(t.get("fields") or [])
+        if "證券代號" in f and "成交金額" in f:
+            rows = t.get("data")
+    if rows is None:
+        rows = j.get("data9")
+    out = {}
+    for row in rows or []:
+        code = str(row[0]).strip()
+        close = _num(row[8]) if len(row) > 8 else None
+        vol = _num(row[2]) if len(row) > 2 else None
+        # 只收股票與 ETF(4 碼,或 00 開頭的 5~6 碼);MI_INDEX 全部表含權證(03~08 開頭 6 碼),不收
+        if (re.match(r"^\d{4}$", code) or re.match(r"^00\d{3,4}[A-Z]?$", code)) and close and close > 0:
+            out[code] = [close, vol or 0]
+    return _parse_row_date(j.get("date")), out
+
+
+def fetch_mi_index(date=None):
+    """上市 MI_INDEX(date='YYYYMMDD' 指定日期,None = 最新)→ (date, {code: [close, vol]});新版網址失敗退回舊版。"""
+    last = None
+    for base in MI_INDEX_URLS:
+        url = base + (f"&date={date}" if date else "")
+        try:
+            r = requests.get(url, headers=UA, timeout=40)
+            r.raise_for_status()
+            d, rows = parse_mi_index(r.json())
+            if rows:
+                return d, rows
+            last = "沒有個股表"
+        except Exception as e:
+            last = e
+    raise RuntimeError(f"MI_INDEX 失敗: {last}")
+
+
 def fetch_market_snapshot():
-    """回傳 (date_str or None, {code: [close, volume]}, {code: 'TWSE'|'TPEx'})"""
-    snap, market, dates = {}, {}, []
+    """回傳 (date_str or None, {code: [close, volume]}, {code: 'TWSE'|'TPEx'})。
+    2026-10-30:上市與上櫃的資料日期不同時,只保留日期較新的那個市場(不把兩天的價格存在同一個檔),並印出警告。"""
+    snap, market = {}, {}
+    by_mkt = {"TWSE": (None, {}), "TPEx": (None, {})}
 
     try:
-        for row in _get_json("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL"):
-            code = str(row.get("Code", "")).strip()
-            close = _num(row.get("ClosingPrice"))
-            vol = _num(row.get("TradeVolume"))
-            if re.match(r"^\d{4,6}$", code) and close and close > 0:
-                snap[code] = [close, vol or 0]
-                market[code] = "TWSE"
-                d = _parse_row_date(row.get("Date"))
-                if d:
-                    dates.append(d)
-        print(f"  TWSE 快照: {len(snap)} 檔")
+        d, rows = fetch_mi_index()
+        by_mkt["TWSE"] = (d, rows)
+        print(f"  TWSE 快照: {len(rows)} 檔(MI_INDEX {d})")
     except Exception as e:
-        print(f"  ⚠ TWSE 快照失敗: {e}")
+        print(f"  ⚠ TWSE MI_INDEX 失敗: {e} → 改用 OpenAPI STOCK_DAY_ALL(日期若比上櫃舊,下面會不存)")
+        try:
+            rows, dates = {}, []
+            for row in _get_json("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL"):
+                code = str(row.get("Code", "")).strip()
+                close = _num(row.get("ClosingPrice"))
+                if re.match(r"^\d{4,6}$", code) and close and close > 0:
+                    rows[code] = [close, _num(row.get("TradeVolume")) or 0]
+                    d = _parse_row_date(row.get("Date"))
+                    if d:
+                        dates.append(d)
+            by_mkt["TWSE"] = (max(dates) if dates else None, rows)
+            print(f"  TWSE 快照(OpenAPI): {len(rows)} 檔({by_mkt['TWSE'][0]})")
+        except Exception as e2:
+            print(f"  ⚠ TWSE 快照失敗: {e2}")
 
     try:
-        before = len(snap)
+        rows, dates = {}, []
         for row in _get_json("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes",
                              verify=False):
             code = str(row.get("SecuritiesCompanyCode", "")).strip()
             close = _num(row.get("Close"))
             vol = _num(row.get("TradingShares") or row.get("TradingVolume") or row.get("TradeVolume"))
             if re.match(r"^\d{4,6}$", code) and close and close > 0:
-                snap[code] = [close, vol or 0]
-                market[code] = "TPEx"
+                rows[code] = [close, vol or 0]
                 d = _parse_row_date(row.get("Date"))
                 if d:
                     dates.append(d)
-        print(f"  TPEx 快照: +{len(snap) - before} 檔")
+        by_mkt["TPEx"] = (max(dates) if dates else None, rows)
+        print(f"  TPEx 快照: {len(rows)} 檔({by_mkt['TPEx'][0]})")
     except Exception as e:
         print(f"  ⚠ TPEx 快照失敗: {e}")
 
-    date = max(dates) if dates else None
+    return merge_markets(by_mkt)
+
+
+def merge_markets(by_mkt):
+    """{market: (date, rows)} → (date, snap, market)。只合併資料日期 = 最新日期的市場。"""
+    dated = [d for d, rows in by_mkt.values() if d and rows]
+    date = max(dated) if dated else None
+    snap, market = {}, {}
+    for mk, (d, rows) in by_mkt.items():
+        if not rows:
+            continue
+        if date and d and d != date:
+            print(f"  ⚠ {mk} 資料日 {d} 比 {date} 舊 → 這次不存 {mk}(不混兩天的價格)")
+            continue
+        for code, v in rows.items():
+            snap[code] = v
+            market[code] = mk
     return date, snap, market
 
 
@@ -182,6 +250,13 @@ def save_snapshot(date, snap):
         date = dt.date.today().strftime("%Y%m%d")
 
     path = os.path.join(HIST_DIR, f"{date}.json")
+    # 2026-10-30:同一天重跑(例如這次只有上市、上櫃還沒更新)→ 和已存的合併,不把另一個市場蓋掉
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                snap = {**json.load(f), **snap}
+        except Exception:
+            pass
     with open(path, "w", encoding="utf-8") as f:
         json.dump(snap, f, ensure_ascii=False, separators=(",", ":"))
     print(f"  已存 {path}({len(snap)} 檔)")
