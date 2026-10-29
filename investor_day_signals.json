@@ -1,14 +1,30 @@
 {
- "generated_at": "2026-10-28 23:32:13",
- "date": "20261028",
+ "generated_at": "2026-10-29 17:38:08",
+ "date": "20261029",
  "events": [
+  {
+   "type": "investor_day",
+   "symbol": "NVDA",
+   "name": "Nvidia",
+   "event": "Investor Day",
+   "event_date": "2026-10-29",
+   "day_offset": 0,
+   "date_inferred": true,
+   "news_count": 1,
+   "recap_count": 0,
+   "recap_sources": [],
+   "titles": [
+    "Anthropic IPO On Tap, NVIDIA Updates And Other Investor Days Shaping Markets - Seeking Alpha"
+   ],
+   "keywords": {}
+  },
   {
    "type": "investor_day",
    "symbol": "AMAT",
    "name": "Applied Materials",
    "event": "Investor Day",
    "event_date": "2026-10-24",
-   "day_offset": 4,
+   "day_offset": 5,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -23,30 +39,37 @@
    "symbol": "ORCL",
    "name": "Oracle",
    "event": "Investor Day",
-   "event_date": "2026-10-22",
+   "event_date": "2026-10-23",
    "day_offset": 6,
    "date_inferred": true,
-   "news_count": 16,
+   "news_count": 25,
    "recap_count": 0,
-   "recap_sources": [],
+   "recap_sources": [
+    "8-K"
+   ],
    "titles": [
-    "Oracle Stock Has Lost 60% Since Its Last Investor Day. Is It a Buy Before Wednesday? - The Motley Fool",
+    "Oracle Investor Day 2026: Accelerating Value Creation - Oracle - Investor Relations",
     "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - Investing News Network",
+    "Oracle Stock Has Lost 60% Since Its Last Investor Day. Is It a Buy Before Wednesday? - The Motley Fool",
+    "Market Take | Oracle Investor Day: Three Numbers That Could Change Everything - Moomoo",
     "Oracle perks up on wave of new chip partnerships ahead of Investor Day - Seeking Alpha",
-    "ORACLE INVESTOR DAY MEETING TO BE HELD OCTOBER 28, 2026 - Moomoo",
-    "Oracle Investor Day to Focus on OCI Capacity Ramp, Applications Growth, RBC Says - marketscreener.com",
-    "Oracle Expands AI Software Offerings Ahead of Investor Day - TradingView"
+    "Oracle Investor Day 2026: Accelerating Value Creation - Star Local Media"
    ],
    "keywords": {
+    "capex": {
+     "count": 3,
+     "category": "客戶capex/需求"
+    },
     "capacity": {
-     "count": 2,
+     "count": 1,
      "category": "平台/網通/供應鏈"
     },
-    "capex": {
-     "count": 2,
+    "datacenter": {
+     "count": 1,
      "category": "客戶capex/需求"
     }
-   }
+   },
+   "sec_filing": "2026-10-28 8-K Item 7.01,9.01"
   },
   {
    "type": "investor_day",
@@ -54,7 +77,7 @@
    "name": "ASML",
    "event": "Investor Day",
    "event_date": "2026-10-24",
-   "day_offset": 4,
+   "day_offset": 5,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -76,16 +99,14 @@
    "event": "Nvidia GTC",
    "event_date": null,
    "day_offset": null,
-   "news_count": 6,
+   "news_count": 4,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
     "Agile Robots Launches Agile ONE SN Humanoid at NVIDIA GTC Berlin and Pilots Humanoids with Audi - Yahoo Finance",
     "NVIDIA GTC conference in Berlin - The Daily News | Texas' Oldest Newspaper",
     "Capacity Global at NVIDIA GTC 2026: Nokia and NVIDIA on AI-RAN’s Next Phase - Capacity Media",
-    "Polarise Launches Sovereign AI Cloud at NVIDIA GTC Berlin, … - Easy News Press Agency",
-    "Jensen Huang calls AI as a five-layer cake: Nvidia GTC Berlin - DQ",
-    "Synopsys at Nvidia GTC Berlin: Delivering engineering precision with speed - DQ"
+    "Polarise Launches Sovereign AI Cloud at NVIDIA GTC Berlin, … - Easy News Press Agency"
    ],
    "keywords": {
     "capacity": {
@@ -102,18 +123,27 @@
    "label": "ORCL(Investor Day)",
    "event": "Investor Day",
    "type": "investor_day",
-   "keyword": "capacity",
-   "category": "平台/網通/供應鏈",
-   "count": 2
+   "keyword": "capex",
+   "category": "客戶capex/需求",
+   "count": 3
   },
   {
    "symbol": "ORCL",
    "label": "ORCL(Investor Day)",
    "event": "Investor Day",
    "type": "investor_day",
-   "keyword": "capex",
+   "keyword": "capacity",
+   "category": "平台/網通/供應鏈",
+   "count": 1
+  },
+  {
+   "symbol": "ORCL",
+   "label": "ORCL(Investor Day)",
+   "event": "Investor Day",
+   "type": "investor_day",
+   "keyword": "datacenter",
    "category": "客戶capex/需求",
-   "count": 2
+   "count": 1
   },
   {
    "symbol": "ASML",

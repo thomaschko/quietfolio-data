@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28 15:31:58",
+  "generated_at": "2026-10-29 09:37:56",
   "lookback_days": 7,
   "events": [
     {
@@ -24,6 +24,18 @@
         "財報及附件"
       ],
       "url": "https://www.sec.gov/Archives/edgar/data/1835632/000119312526430424/d147430d8k.htm"
+    },
+    {
+      "code": "GOOGL",
+      "role": "客戶-Alphabet(capex)",
+      "form": "8-K",
+      "filing_date": "2026-10-28",
+      "items": "2.02,9.01",
+      "item_labels": [
+        "營運及財務業績",
+        "財報及附件"
+      ],
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000080/goog-20261028.htm"
     },
     {
       "code": "TER",
@@ -158,49 +170,102 @@
       "exhibit_keywords": {}
     },
     {
-      "code": "META",
-      "role": "investor day追蹤-Meta Platforms",
+      "code": "MSFT",
+      "role": "investor day追蹤-Microsoft",
       "form": "8-K",
-      "filing_date": "2026-10-21",
-      "items": "1.01,2.02,8.01,9.01",
+      "filing_date": "2026-10-28",
+      "items": "8.01,9.01",
       "item_labels": [
-        "訂立重大協議",
-        "營運及財務業績",
         "其他重大事件",
         "財報及附件"
       ],
-      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026066700/meta-20261019.htm",
-      "exhibits_read": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436149/msft-20261028.htm",
+      "exhibits_read": 2,
       "event_terms": [],
       "exhibit_keywords": {
+        "AI infrastructure": {
+          "count": 8,
+          "category": "客戶capex/需求"
+        },
+        "GPU": {
+          "count": 6,
+          "category": "客戶capex/需求"
+        },
         "capacity": {
-          "count": 2,
+          "count": 4,
           "category": "平台/網通/供應鏈"
+        },
+        "training": {
+          "count": 4,
+          "category": "客戶capex/需求"
+        },
+        "supply chain": {
+          "count": 3,
+          "category": "平台/網通/供應鏈"
+        },
+        "foundry": {
+          "count": 3,
+          "category": "平台/網通/供應鏈"
+        },
+        "datacenter": {
+          "count": 3,
+          "category": "客戶capex/需求"
         }
       }
     },
     {
-      "code": "DELL",
-      "role": "investor day追蹤-Dell Technologies",
+      "code": "MSFT",
+      "role": "investor day追蹤-Microsoft",
       "form": "8-K",
-      "filing_date": "2026-10-21",
-      "items": "5.02",
-      "item_labels": [
-        "高層異動(董事/主管)"
-      ],
-      "url": "https://www.sec.gov/Archives/edgar/data/1571996/000119312526427920/d163575d8k.htm"
-    },
-    {
-      "code": "LRCX",
-      "role": "investor day追蹤-Lam Research",
-      "form": "8-K",
-      "filing_date": "2026-10-21",
+      "filing_date": "2026-10-28",
       "items": "2.02,9.01",
       "item_labels": [
         "營運及財務業績",
         "財報及附件"
       ],
-      "url": "https://www.sec.gov/Archives/edgar/data/707549/000070754926000052/lrcx-20261021.htm"
+      "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436122/msft-20261028.htm"
+    },
+    {
+      "code": "ORCL",
+      "role": "investor day追蹤-Oracle",
+      "form": "8-K",
+      "filing_date": "2026-10-28",
+      "items": "7.01,9.01",
+      "item_labels": [
+        "Reg FD揭露",
+        "財報及附件"
+      ],
+      "url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526435853/d75538d8k.htm",
+      "exhibits_read": 2,
+      "event_terms": [
+        "investor day"
+      ],
+      "exhibit_keywords": {
+        "capacity": {
+          "count": 1,
+          "category": "平台/網通/供應鏈"
+        },
+        "capex": {
+          "count": 1,
+          "category": "客戶capex/需求"
+        },
+        "datacenter": {
+          "count": 1,
+          "category": "客戶capex/需求"
+        }
+      }
+    },
+    {
+      "code": "KLAC",
+      "role": "investor day追蹤-KLA Corp",
+      "form": "8-K",
+      "filing_date": "2026-10-28",
+      "items": "2.02,9.01",
+      "item_labels": [
+        "營運及財務業績",
+        "財報及附件"
+      ],
+      "url": "https://www.sec.gov/Archives/edgar/data/319201/000031920126000032/klac-20261028.htm"
     },
     {
       "code": "CDNS",
