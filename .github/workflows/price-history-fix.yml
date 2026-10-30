@@ -1,0 +1,48 @@
+name: Price History TWSE Fix (一次性)
+
+# 2026-10-30:price_history/YYYYMMDD.json 的上市價格間歇性落後一天(price_stage.py 原本用 OpenAPI STOCK_DAY_ALL)。
+# 用證交所官網 MI_INDEX(指定日期)把每個檔案的上市價格重寫成當天的官方收盤;上櫃不動。只手動執行。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: price-history-fix
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests urllib3 pytest
+
+      - name: Unit tests
+        run: python -m pytest -q test_price_stage_twse.py
+
+      - name: Rewrite TWSE prices
+        run: python price_history_fix_twse.py
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add price_history/
+          if git diff --staged --quiet; then echo "無變更"; exit 0; fi
+          git commit -m "Fix price_history TWSE prices with official MI_INDEX"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push 失敗,第 $i 次重試"; sleep $((i * 10))
+          done
+          exit 1
