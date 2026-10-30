@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-29 23:34:13",
- "date": "20261029",
+ "generated_at": "2026-10-30 18:10:52",
+ "date": "20261030",
  "events": [
   {
    "type": "investor_day",
@@ -8,7 +8,7 @@
    "name": "Nvidia",
    "event": "Investor Day",
    "event_date": "2026-10-29",
-   "day_offset": 0,
+   "day_offset": 1,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -20,27 +20,11 @@
   },
   {
    "type": "investor_day",
-   "symbol": "AMAT",
-   "name": "Applied Materials",
-   "event": "Investor Day",
-   "event_date": "2026-10-24",
-   "day_offset": 5,
-   "date_inferred": true,
-   "news_count": 1,
-   "recap_count": 0,
-   "recap_sources": [],
-   "titles": [
-    "Applied Materials Sinks 17% in a Week After a Forecast-Free Investor Day: “Tremendous Confidence” - Yahoo Finance"
-   ],
-   "keywords": {}
-  },
-  {
-   "type": "investor_day",
    "symbol": "ORCL",
    "name": "Oracle",
    "event": "Investor Day",
    "event_date": "2026-10-26",
-   "day_offset": 3,
+   "day_offset": 4,
    "date_inferred": true,
    "news_count": 26,
    "recap_count": 0,
@@ -49,15 +33,19 @@
    ],
    "titles": [
     "Oracle Investor Day 2026: Accelerating Value Creation - Oracle - Investor Relations",
+    "Oracle Investor Day 2026 - Moomoo",
     "Oracle Stock Has Lost 60% Since Its Last Investor Day. Is It a Buy Before Wednesday? - The Motley Fool",
-    "Market Take | Oracle Investor Day: Three Numbers That Could Change Everything - Moomoo",
     "Oracle perks up on wave of new chip partnerships ahead of Investor Day - Seeking Alpha",
-    "Oracle Investor Day 2026: Accelerating Value Creation - Star Local Media",
-    "ORCL Stock Slips to $141.67 After Oracle’s Investor Day Rally - FXLeaders"
+    "Oracle analyst day eases funding concerns and bolsters growth outlook - Proactive financial news",
+    "Oracle Investor Day 2026: Accelerating Value Creation - Star Local Media"
    ],
    "keywords": {
     "capex": {
      "count": 3,
+     "category": "客戶capex/需求"
+    },
+    "AI infrastructure": {
+     "count": 2,
      "category": "客戶capex/需求"
     },
     "capacity": {
@@ -72,27 +60,6 @@
    "sec_filing": "2026-10-28 8-K Item 7.01,9.01"
   },
   {
-   "type": "investor_day",
-   "symbol": "ASML",
-   "name": "ASML",
-   "event": "Investor Day",
-   "event_date": "2026-10-24",
-   "day_offset": 5,
-   "date_inferred": true,
-   "news_count": 1,
-   "recap_count": 0,
-   "recap_sources": [],
-   "titles": [
-    "ASML provides updated view on demand outlook, capacity plans and business model at Investor Day meeting - TechInsights"
-   ],
-   "keywords": {
-    "capacity": {
-     "count": 2,
-     "category": "平台/網通/供應鏈"
-    }
-   }
-  },
-  {
    "type": "conference",
    "symbol": "NVDA",
    "name": "Nvidia GTC",
@@ -103,15 +70,71 @@
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "Agile Robots Launches Agile ONE SN Humanoid at NVIDIA GTC Berlin and Pilots Humanoids with Audi - Yahoo Finance",
+    "China Merchants Securities: NVIDIA GTC Leads New Trends in Physical AI, Further Clarifying Industry Development Trajectories - 富途牛牛",
     "NVIDIA GTC conference in Berlin - The Daily News | Texas' Oldest Newspaper",
     "Capacity Global at NVIDIA GTC 2026: Nokia and NVIDIA on AI-RAN’s Next Phase - Capacity Media",
-    "Polarise Launches Sovereign AI Cloud at NVIDIA GTC Berlin, … - Easy News Press Agency"
+    "NVIDIA GTC Berlin 2026 Highlights | Agentic AI, Physical AI & Robotics - Howl.Link"
    ],
    "keywords": {
     "capacity": {
      "count": 4,
      "category": "平台/網通/供應鏈"
+    }
+   }
+  },
+  {
+   "type": "conference",
+   "symbol": "",
+   "name": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "event_date": null,
+   "day_offset": null,
+   "news_count": 3,
+   "recap_count": 0,
+   "recap_sources": [],
+   "titles": [
+    "OCP Global Summit 2026 | Credo | LK Bhupathi | Going Wide: Scalable and Reliable Optical Interconnects - Simple Tech Trend",
+    "2026 OCP Global Summit: Broadcom Advances Open Ethernet for Scalable AI Infrastructure - Broadcom",
+    "OCP Global Summit 2026 | Avicena | Nigel Alvares | µLED Interconnects for Scale-In and Scale-Up - Simple Tech Trend"
+   ],
+   "keywords": {
+    "optical": {
+     "count": 2,
+     "category": "光通訊/CPO"
+    },
+    "AI infrastructure": {
+     "count": 2,
+     "category": "客戶capex/需求"
+    },
+    "scale-up": {
+     "count": 2,
+     "category": "互連/網通"
+    }
+   }
+  },
+  {
+   "type": "conference",
+   "symbol": "",
+   "name": "SEMICON West",
+   "event": "SEMICON West",
+   "event_date": null,
+   "day_offset": null,
+   "news_count": 3,
+   "recap_count": 0,
+   "recap_sources": [],
+   "titles": [
+    "6-DOF MagLev Systems for Advanced Packaging Introduced at SEMICON West 2026, New From PI - AZoNano",
+    "Semicon West Is Running Out of Time: ATE, Chemicals, and the Hiring Freeze Nobody Can Explain - BigGo Finance",
+    "Korea Zinc discusses semiconductor materials supply with Micron, Intel at SEMICON West 2026 - 헤럴드경제"
+   ],
+   "keywords": {
+    "advanced packaging": {
+     "count": 2,
+     "category": "先進封裝/光互連"
+    },
+    "ATE": {
+     "count": 2,
+     "category": "測試設備"
     }
    }
   }
@@ -132,6 +155,15 @@
    "label": "ORCL(Investor Day)",
    "event": "Investor Day",
    "type": "investor_day",
+   "keyword": "AI infrastructure",
+   "category": "客戶capex/需求",
+   "count": 2
+  },
+  {
+   "symbol": "ORCL",
+   "label": "ORCL(Investor Day)",
+   "event": "Investor Day",
+   "type": "investor_day",
    "keyword": "capacity",
    "category": "平台/網通/供應鏈",
    "count": 1
@@ -146,15 +178,6 @@
    "count": 1
   },
   {
-   "symbol": "ASML",
-   "label": "ASML(Investor Day)",
-   "event": "Investor Day",
-   "type": "investor_day",
-   "keyword": "capacity",
-   "category": "平台/網通/供應鏈",
-   "count": 2
-  },
-  {
    "symbol": "NVDA",
    "label": "Nvidia GTC",
    "event": "Nvidia GTC",
@@ -162,6 +185,51 @@
    "keyword": "capacity",
    "category": "平台/網通/供應鏈",
    "count": 4
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "optical",
+   "category": "光通訊/CPO",
+   "count": 2
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "AI infrastructure",
+   "category": "客戶capex/需求",
+   "count": 2
+  },
+  {
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
+   "type": "conference",
+   "keyword": "scale-up",
+   "category": "互連/網通",
+   "count": 2
+  },
+  {
+   "symbol": "SEMICON West",
+   "label": "SEMICON West",
+   "event": "SEMICON West",
+   "type": "conference",
+   "keyword": "advanced packaging",
+   "category": "先進封裝/光互連",
+   "count": 2
+  },
+  {
+   "symbol": "SEMICON West",
+   "label": "SEMICON West",
+   "event": "SEMICON West",
+   "type": "conference",
+   "keyword": "ATE",
+   "category": "測試設備",
+   "count": 2
   }
  ],
  "sources_status": {
@@ -181,8 +249,8 @@
     "items": 20
    },
    "chipstrat": {
-    "ok": false,
-    "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    "ok": true,
+    "items": 20
    }
   }
  }
