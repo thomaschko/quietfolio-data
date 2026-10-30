@@ -1,18 +1,18 @@
 {
- "generated_at": "2026-10-29 22:11:02",
- "data_date": "2026-10-29",
+ "generated_at": "2026-10-30 22:02:43",
+ "data_date": "2026-10-30",
  "universe": "前200大(前60日平均成交值)",
  "universe_size": 200,
  "market_scan": {
   "上市": {
-   "scan_date": "2026-10-29",
-   "members": 148,
-   "scanned": 148
+   "scan_date": "2026-10-30",
+   "members": 147,
+   "scanned": 147
   },
   "上櫃": {
-   "scan_date": "2026-10-29",
-   "members": 52,
-   "scanned": 52
+   "scan_date": "2026-10-30",
+   "members": 53,
+   "scanned": 53
   }
  },
  "params": {
@@ -28,160 +28,179 @@
   "COOLDOWN": 5
  },
  "market": {
-  "index_date": "2026-10-29",
-  "drawdown_from_20d_high": 0.0693,
+  "index_date": "2026-10-30",
+  "drawdown_from_20d_high": 0.0925,
   "market_stress": true
  },
  "backtest_note": "回測(2019–2026,前200大成交值股票池):扣成本後平均報酬為正,但與同一天在池內隨機買股、持有相同天數相比沒有顯著差異(樣本外 −0.42%,95% 信賴區間 −1.48%~+0.74%),報酬主要來自大盤急殺後的反彈。",
  "counts": {
   "confirm": 0,
-  "noconfirm": 5,
-  "watch": 2
+  "noconfirm": 3,
+  "watch": 5
  },
  "confirm": [],
  "noconfirm": [
   {
-   "code": "2303",
-   "name": "聯電",
-   "market": "上市",
-   "signal_date": "2026-10-29",
-   "turnover_rank": 6,
-   "close": 115.5,
-   "chg_today": -0.0977,
-   "drawdown_3d_max": 0.2848,
-   "drawdown_today": 0.2848,
-   "vol_mult_max_3d": 2.78,
+   "code": "5347",
+   "name": "世界",
+   "market": "上櫃",
+   "signal_date": "2026-10-30",
+   "turnover_rank": 86,
+   "close": 144.0,
+   "chg_today": -0.0799,
+   "drawdown_3d_max": 0.2461,
+   "drawdown_today": 0.2461,
+   "vol_mult_max_3d": 2.55,
    "cap_dates": [
-    "2026-10-29"
+    "2026-10-30"
    ],
-   "ref_high": 161.5,
-   "trough_3d": 115.5,
-   "target": 143.1,
-   "stop": 113.05
+   "ref_high": 191.0,
+   "trough_3d": 144.0,
+   "target": 172.2,
+   "stop": 133.7
   },
+  {
+   "code": "3376",
+   "name": "新日興",
+   "market": "上市",
+   "signal_date": "2026-10-30",
+   "turnover_rank": 200,
+   "close": 139.5,
+   "chg_today": -0.0971,
+   "drawdown_3d_max": 0.2356,
+   "drawdown_today": 0.2356,
+   "vol_mult_max_3d": 2.4,
+   "cap_dates": [
+    "2026-10-30"
+   ],
+   "ref_high": 182.5,
+   "trough_3d": 139.5,
+   "target": 165.3,
+   "stop": 127.75
+  },
+  {
+   "code": "3711",
+   "name": "日月光投控",
+   "market": "上市",
+   "signal_date": "2026-10-30",
+   "turnover_rank": 22,
+   "close": 668.0,
+   "chg_today": -0.022,
+   "drawdown_3d_max": 0.1234,
+   "drawdown_today": 0.1234,
+   "vol_mult_max_3d": 2.24,
+   "cap_dates": [
+    "2026-10-30"
+   ],
+   "ref_high": 762.0,
+   "trough_3d": 668.0,
+   "target": 724.4,
+   "stop": 533.4
+  }
+ ],
+ "watch": [
   {
    "code": "2455",
    "name": "全新",
    "market": "上市",
-   "signal_date": "2026-10-29",
-   "turnover_rank": 53,
-   "close": 484.0,
-   "chg_today": -0.0547,
-   "drawdown_3d_max": 0.231,
-   "drawdown_today": 0.2013,
-   "vol_mult_max_3d": 2.83,
+   "signal_date": "2026-10-30",
+   "turnover_rank": 52,
+   "close": 447.0,
+   "chg_today": -0.0764,
+   "drawdown_3d_max": 0.2624,
+   "drawdown_today": 0.2624,
+   "vol_mult_max_3d": 2.8,
    "cap_dates": [
     "2026-10-29"
    ],
    "ref_high": 606.0,
-   "trough_3d": 466.0,
-   "target": 550.0,
+   "trough_3d": 447.0,
+   "target": 542.4,
    "stop": 424.2
+  },
+  {
+   "code": "6538",
+   "name": "倉和",
+   "market": "上櫃",
+   "signal_date": "2026-10-30",
+   "turnover_rank": 198,
+   "close": 290.5,
+   "chg_today": -0.0807,
+   "drawdown_3d_max": 0.2201,
+   "drawdown_today": 0.2201,
+   "vol_mult_max_3d": 2.04,
+   "cap_dates": [
+    "2026-10-29"
+   ],
+   "ref_high": 372.5,
+   "trough_3d": 290.5,
+   "target": 339.7,
+   "stop": 260.75
   },
   {
    "code": "2337",
    "name": "旺宏",
    "market": "上市",
-   "signal_date": "2026-10-29",
+   "signal_date": "2026-10-30",
    "turnover_rank": 46,
-   "close": 100.0,
-   "chg_today": -0.0338,
-   "drawdown_3d_max": 0.1837,
-   "drawdown_today": 0.1837,
+   "close": 95.4,
+   "chg_today": -0.046,
+   "drawdown_3d_max": 0.218,
+   "drawdown_today": 0.218,
    "vol_mult_max_3d": 3.37,
    "cap_dates": [
     "2026-10-29"
    ],
-   "ref_high": 122.5,
-   "trough_3d": 100.0,
-   "target": 113.5,
-   "stop": 85.75
+   "ref_high": 122.0,
+   "trough_3d": 95.4,
+   "target": 111.36,
+   "stop": 85.4
   },
   {
    "code": "6510",
    "name": "精測",
    "market": "上櫃",
-   "signal_date": "2026-10-29",
-   "turnover_rank": 91,
-   "close": 2880.0,
-   "chg_today": -0.1,
-   "drawdown_3d_max": 0.1579,
-   "drawdown_today": 0.1579,
-   "vol_mult_max_3d": 2.31,
+   "signal_date": "2026-10-30",
+   "turnover_rank": 89,
+   "close": 2820.0,
+   "chg_today": -0.0208,
+   "drawdown_3d_max": 0.1754,
+   "drawdown_today": 0.1754,
+   "vol_mult_max_3d": 2.18,
    "cap_dates": [
     "2026-10-29"
    ],
    "ref_high": 3420.0,
-   "trough_3d": 2880.0,
-   "target": 3204.0,
+   "trough_3d": 2820.0,
+   "target": 3180.0,
    "stop": 2394.0
   },
   {
-   "code": "3260",
-   "name": "威剛",
-   "market": "上櫃",
-   "signal_date": "2026-10-29",
-   "turnover_rank": 78,
-   "close": 362.0,
-   "chg_today": -0.0041,
-   "drawdown_3d_max": 0.1348,
-   "drawdown_today": 0.0524,
-   "vol_mult_max_3d": 3.18,
+   "code": "2376",
+   "name": "技嘉",
+   "market": "上市",
+   "signal_date": "2026-10-30",
+   "turnover_rank": 95,
+   "close": 336.0,
+   "chg_today": -0.0204,
+   "drawdown_3d_max": 0.1351,
+   "drawdown_today": 0.1351,
+   "vol_mult_max_3d": 2.11,
    "cap_dates": [
     "2026-10-29"
    ],
-   "ref_high": 382.0,
-   "trough_3d": 330.5,
-   "target": 361.4,
-   "stop": 267.4
-  }
- ],
- "watch": [
-  {
-   "code": "6269",
-   "name": "台郡",
-   "market": "上市",
-   "signal_date": "2026-10-29",
-   "turnover_rank": 143,
-   "close": 75.8,
-   "chg_today": -0.0779,
-   "drawdown_3d_max": 0.1416,
-   "drawdown_today": 0.1416,
-   "vol_mult_max_3d": 2.79,
-   "cap_dates": [
-    "2026-10-27"
-   ],
-   "ref_high": 88.3,
-   "trough_3d": 75.8,
-   "target": 83.3,
-   "stop": 61.81
-  },
-  {
-   "code": "6213",
-   "name": "聯茂",
-   "market": "上市",
-   "signal_date": "2026-10-29",
-   "turnover_rank": 28,
-   "close": 745.0,
-   "chg_today": -0.0424,
-   "drawdown_3d_max": 0.1297,
-   "drawdown_today": 0.1297,
-   "vol_mult_max_3d": 2.64,
-   "cap_dates": [
-    "2026-10-27"
-   ],
-   "ref_high": 856.0,
-   "trough_3d": 745.0,
-   "target": 811.6,
-   "stop": 599.2
+   "ref_high": 388.5,
+   "trough_3d": 336.0,
+   "target": 367.5,
+   "stop": 271.95
   }
  ],
  "data_quality": {
-  "usable": 1977,
+  "usable": 1978,
   "failed": 6,
   "official_dates": {
-   "上市": "2026-10-29",
-   "上櫃": "2026-10-29"
+   "上市": "2026-10-30",
+   "上櫃": "2026-10-30"
   },
   "official_source": {
    "上市": "證交所MI_INDEX(指定日期)",
@@ -189,15 +208,15 @@
   },
   "yahoo_last_dates": {
    "上市": {
-    "2026-10-29": 1081,
-    "2026-10-28": 7
+    "2026-10-30": 1083,
+    "2026-10-29": 5
    },
    "上櫃": {
-    "2026-10-29": 865,
-    "2026-10-28": 24
+    "2026-10-30": 871,
+    "2026-10-29": 19
    }
   },
-  "official_replaced": 1951,
+  "official_replaced": 1957,
   "official_appended": 0,
   "official_inserted": 0
  }
