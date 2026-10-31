@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-30 23:26:36",
- "date": "20261030",
+ "generated_at": "2026-10-31 18:08:10",
+ "date": "20261031",
  "events": [
   {
    "type": "investor_day",
@@ -8,7 +8,7 @@
    "name": "Nvidia",
    "event": "Investor Day",
    "event_date": "2026-10-29",
-   "day_offset": 1,
+   "day_offset": 2,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -24,9 +24,9 @@
    "name": "Oracle",
    "event": "Investor Day",
    "event_date": "2026-10-26",
-   "day_offset": 4,
+   "day_offset": 5,
    "date_inferred": true,
-   "news_count": 26,
+   "news_count": 31,
    "recap_count": 0,
    "recap_sources": [
     "8-K"
@@ -65,7 +65,7 @@
    "name": "Synopsys",
    "event": "Investor Day",
    "event_date": "2026-10-30",
-   "day_offset": 0,
+   "day_offset": 1,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -74,30 +74,6 @@
     "Synopsys stock weighs AI growth plan after Investor Day - ad-hoc-news.de"
    ],
    "keywords": {}
-  },
-  {
-   "type": "conference",
-   "symbol": "NVDA",
-   "name": "Nvidia GTC",
-   "event": "Nvidia GTC",
-   "event_date": null,
-   "day_offset": null,
-   "news_count": 5,
-   "recap_count": 0,
-   "recap_sources": [],
-   "titles": [
-    "LIVE WEBINAR – DEBRIEF NVIDIA GTC BERLIN 2026 - Yole Group",
-    "China Merchants Securities: NVIDIA GTC Leads New Trends in Physical AI, Further Clarifying Industry Development Trajectories - 富途牛牛",
-    "NVIDIA GTC conference in Berlin - The Daily News | Texas' Oldest Newspaper",
-    "Capacity Global at NVIDIA GTC 2026: Nokia and NVIDIA on AI-RAN’s Next Phase - Capacity Media",
-    "NVIDIA GTC Berlin 2026 Highlights | Agentic AI, Physical AI & Robotics - Howl.Link"
-   ],
-   "keywords": {
-    "capacity": {
-     "count": 4,
-     "category": "平台/網通/供應鏈"
-    }
-   }
   },
   {
    "type": "conference",
@@ -110,48 +86,22 @@
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
-    "OCP Global Summit 2026 | Credo | LK Bhupathi | Going Wide: Scalable and Reliable Optical Interconnects - Simple Tech Trend",
     "2026 OCP Global Summit: Broadcom Advances Open Ethernet for Scalable AI Infrastructure - Broadcom",
+    "OCP Global Summit 2026 | Credo | LK Bhupathi | Going Wide: Scalable and Reliable Optical Interconnects - Simple Tech Trend",
     "OCP Global Summit 2026 | Avicena | Nigel Alvares | µLED Interconnects for Scale-In and Scale-Up - Simple Tech Trend"
    ],
    "keywords": {
-    "optical": {
-     "count": 2,
-     "category": "光通訊/CPO"
-    },
     "AI infrastructure": {
      "count": 2,
      "category": "客戶capex/需求"
     },
+    "optical": {
+     "count": 2,
+     "category": "光通訊/CPO"
+    },
     "scale-up": {
      "count": 2,
      "category": "互連/網通"
-    }
-   }
-  },
-  {
-   "type": "conference",
-   "symbol": "",
-   "name": "SEMICON West",
-   "event": "SEMICON West",
-   "event_date": null,
-   "day_offset": null,
-   "news_count": 3,
-   "recap_count": 0,
-   "recap_sources": [],
-   "titles": [
-    "6-DOF MagLev Systems for Advanced Packaging Introduced at SEMICON West 2026, New From PI - AZoNano",
-    "Semicon West Is Running Out of Time: ATE, Chemicals, and the Hiring Freeze Nobody Can Explain - BigGo Finance",
-    "Korea Zinc discusses semiconductor materials supply with Micron, Intel at SEMICON West 2026 - 헤럴드경제"
-   ],
-   "keywords": {
-    "advanced packaging": {
-     "count": 2,
-     "category": "先進封裝/光互連"
-    },
-    "ATE": {
-     "count": 2,
-     "category": "測試設備"
     }
    }
   }
@@ -195,13 +145,13 @@
    "count": 1
   },
   {
-   "symbol": "NVDA",
-   "label": "Nvidia GTC",
-   "event": "Nvidia GTC",
+   "symbol": "OCP Global Summit",
+   "label": "OCP Global Summit",
+   "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "capacity",
-   "category": "平台/網通/供應鏈",
-   "count": 4
+   "keyword": "AI infrastructure",
+   "category": "客戶capex/需求",
+   "count": 2
   },
   {
    "symbol": "OCP Global Summit",
@@ -217,35 +167,8 @@
    "label": "OCP Global Summit",
    "event": "OCP Global Summit",
    "type": "conference",
-   "keyword": "AI infrastructure",
-   "category": "客戶capex/需求",
-   "count": 2
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
    "keyword": "scale-up",
    "category": "互連/網通",
-   "count": 2
-  },
-  {
-   "symbol": "SEMICON West",
-   "label": "SEMICON West",
-   "event": "SEMICON West",
-   "type": "conference",
-   "keyword": "advanced packaging",
-   "category": "先進封裝/光互連",
-   "count": 2
-  },
-  {
-   "symbol": "SEMICON West",
-   "label": "SEMICON West",
-   "event": "SEMICON West",
-   "type": "conference",
-   "keyword": "ATE",
-   "category": "測試設備",
    "count": 2
   }
  ],

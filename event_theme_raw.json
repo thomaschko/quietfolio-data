@@ -1,45 +1,42 @@
 {
-  "generated_at": "2026-10-30 15:08:47",
-  "date": "20261030",
+  "generated_at": "2026-10-31 09:57:39",
+  "date": "20261031",
   "window": {
-    "today": "2026-10-30",
-    "trading_day": true,
+    "today": "2026-10-31",
+    "trading_day": false,
     "recent_start": "2026-10-28",
     "recent_trading_days": 3,
-    "recent_calendar_days": 3,
+    "recent_calendar_days": 4,
     "holidays_loaded": 24
   },
   "mops_stats": {
     "上市": {
       "http": 200,
-      "total": 182,
-      "hits": 20,
-      "fetched_at": "2026-10-30 15:15:22",
+      "total": 170,
+      "hits": 23,
+      "fetched_at": "2026-10-31 10:02:13",
       "date_dist": {
-        "1151030": 182
+        "1151031": 170
       }
     },
     "上櫃": {
       "http": 200,
-      "total": 74,
-      "hits": 8,
-      "fetched_at": "2026-10-30 15:15:23",
+      "total": 67,
+      "hits": 6,
+      "fetched_at": "2026-10-31 10:02:18",
       "date_dist": {
-        "1151030": 74
+        "1151031": 67
       }
     }
   },
   "overheat": {
-    "6873": "因本公司有價證券於集中交易市場達公布注意交易資訊標準，故公布相關財務業務等重大訊息，以利投資人區別瞭解",
-    "3374": "本公司有價證券近期多次達公佈注意交易資訊標準，故公告相關訊息，以利投資人區別暸解。",
-    "1569": "本公司有價證券近期多次達公布注意交易資訊標準，故公告相關訊息，以利投資人區別暸解",
-    "3498": "本公司有價證券近期達公布注意交易資訊標準，故公告相關訊息，以利投資人區別瞭解。"
+    "6873": "公告泓德能源科技股份有限公司國內第二次無擔保轉換公司債(簡稱：泓德能源二，代碼：68732)於櫃檯買賣市場交易達公布注意"
   },
   "themes": [
     {
       "theme": "矽光子",
-      "ratio": 3.12,
-      "recent_count": 11,
+      "ratio": 3.68,
+      "recent_count": 13,
       "codes": [
         "3019",
         "3081",
@@ -116,16 +113,14 @@
     },
     {
       "theme": "光通訊",
-      "ratio": 2.4,
-      "recent_count": 14,
+      "ratio": 2.58,
+      "recent_count": 15,
       "codes": [
         "3105",
-        "4977",
         "6456"
       ],
       "names": {
         "3105": "穩懋",
-        "4977": "眾達-KY",
         "6456": "GIS-KY"
       },
       "source": "關鍵字暴增",
@@ -180,8 +175,8 @@
     },
     {
       "theme": "FOPLP",
-      "ratio": 4.53,
-      "recent_count": 4,
+      "ratio": 6.8,
+      "recent_count": 6,
       "codes": [],
       "names": {},
       "source": "關鍵字暴增",
@@ -216,13 +211,13 @@
       "ratio": 5.67,
       "recent_count": 9,
       "codes": [
-        "2301",
         "3597",
+        "2301",
         "4919"
       ],
       "names": {
-        "2301": "光寶科",
         "3597": "映興",
+        "2301": "光寶科",
         "4919": "新唐"
       },
       "source": "關鍵字暴增",
@@ -273,8 +268,8 @@
     },
     {
       "theme": "SiC",
-      "ratio": 9.63,
-      "recent_count": 17,
+      "ratio": 10.2,
+      "recent_count": 18,
       "codes": [
         "2301",
         "2308",
@@ -345,22 +340,22 @@
     },
     {
       "theme": "ASIC",
-      "ratio": 2.96,
-      "recent_count": 46,
+      "ratio": 3.03,
+      "recent_count": 47,
       "codes": [
         "2454",
         "3035",
         "1459",
         "2301",
         "2303",
-        "6225",
-        "3324",
         "1605",
-        "4966",
-        "2379",
-        "2330",
         "2492",
-        "6510"
+        "4966",
+        "6225",
+        "6510",
+        "2330",
+        "2379",
+        "3324"
       ],
       "names": {
         "2454": "聯發科",
@@ -368,14 +363,14 @@
         "1459": "聯發",
         "2301": "光寶科",
         "2303": "聯電",
-        "6225": "天瀚",
-        "3324": "雙鴻",
         "1605": "華新",
-        "4966": "譜瑞-KY",
-        "2379": "瑞昱",
-        "2330": "台積電",
         "2492": "華新科",
-        "6510": "精測"
+        "4966": "譜瑞-KY",
+        "6225": "天瀚",
+        "6510": "精測",
+        "2330": "台積電",
+        "2379": "瑞昱",
+        "3324": "雙鴻"
       },
       "source": "關鍵字暴增",
       "codes_source": "關鍵字暴增"
@@ -491,34 +486,61 @@
       "codes_source": "my-tw-coverage"
     },
     {
-      "theme": "漲價",
-      "ratio": 2.62,
-      "recent_count": 60,
+      "theme": "擴產",
+      "ratio": 1.55,
+      "recent_count": 43,
       "codes": [
-        "2330",
         "2303",
-        "2379",
-        "1303",
-        "4966",
-        "2408",
-        "1210",
-        "2344",
+        "2330",
+        "2301",
+        "6510",
+        "1717",
+        "3081",
+        "2317",
+        "3037",
         "4923",
+        "6274"
+      ],
+      "names": {
+        "2303": "聯電",
+        "2330": "台積電",
+        "2301": "光寶科",
+        "6510": "精測",
+        "1717": "長興",
+        "3081": "聯亞",
+        "2317": "鴻海",
+        "3037": "欣興",
+        "4923": "力士",
+        "6274": "台燿"
+      },
+      "source": "關鍵字暴增",
+      "codes_source": "關鍵字暴增"
+    },
+    {
+      "theme": "漲價",
+      "ratio": 2.88,
+      "recent_count": 66,
+      "codes": [
+        "2303",
+        "4966",
+        "2379",
+        "2408",
+        "1303",
         "2483",
+        "2357",
+        "2330",
         "4540",
         "5289"
       ],
       "names": {
-        "2330": "台積電",
         "2303": "聯電",
-        "2379": "瑞昱",
-        "1303": "南亞",
         "4966": "譜瑞-KY",
+        "2379": "瑞昱",
         "2408": "南亞科",
-        "1210": "大成",
-        "2344": "華邦電",
-        "4923": "力士",
+        "1303": "南亞",
         "2483": "百容",
+        "2357": "華碩",
+        "2330": "台積電",
         "4540": "全球傳動",
         "5289": "宜鼎"
       },
@@ -536,8 +558,8 @@
     },
     {
       "theme": "併購",
-      "ratio": 2.25,
-      "recent_count": 23,
+      "ratio": 2.54,
+      "recent_count": 26,
       "codes": [],
       "names": {},
       "source": "關鍵字暴增",
@@ -559,16 +581,14 @@
       "codes": [
         "2344",
         "1303",
-        "2408",
-        "1210",
-        "2002"
+        "2002",
+        "2408"
       ],
       "names": {
         "2344": "華邦電",
         "1303": "南亞",
-        "2408": "南亞科",
-        "1210": "大成",
-        "2002": "中鋼"
+        "2002": "中鋼",
+        "2408": "南亞科"
       },
       "source": "關鍵字暴增",
       "codes_source": "關鍵字暴增"
@@ -590,8 +610,8 @@
     },
     {
       "theme": "HBM4",
-      "ratio": 6.8,
-      "recent_count": 12,
+      "ratio": 7.37,
+      "recent_count": 13,
       "codes": [
         "4923"
       ],
@@ -603,25 +623,23 @@
     },
     {
       "theme": "DRAM",
-      "ratio": 1.8,
-      "recent_count": 35,
+      "ratio": 1.91,
+      "recent_count": 37,
       "codes": [
         "4923",
         "1303",
-        "2408",
         "4966",
+        "2408",
         "3006",
-        "1210",
-        "2344"
+        "3167"
       ],
       "names": {
         "4923": "力士",
         "1303": "南亞",
-        "2408": "南亞科",
         "4966": "譜瑞-KY",
+        "2408": "南亞科",
         "3006": "晶豪科",
-        "1210": "大成",
-        "2344": "華邦電"
+        "3167": "大量"
       },
       "source": "關鍵字暴增",
       "codes_source": "關鍵字暴增"
@@ -663,8 +681,8 @@
     },
     {
       "theme": "1.6T",
-      "ratio": 1.55,
-      "recent_count": 9,
+      "ratio": 1.72,
+      "recent_count": 10,
       "codes": [
         "2303",
         "6274"
@@ -678,8 +696,8 @@
     },
     {
       "theme": "800G",
-      "ratio": 2.38,
-      "recent_count": 13,
+      "ratio": 2.56,
+      "recent_count": 14,
       "codes": [
         "2379",
         "4966",
@@ -717,12 +735,90 @@
       "ratio": null,
       "recent_count": 1,
       "codes": [
-        "2464"
+        "2414"
       ],
       "names": {
-        "2464": "盟立"
+        "2414": "精技"
       },
-      "subject": "公告本公司115年現金增資股款催繳期間屆滿暨催繳股數發放事宜",
+      "subject": "公告本公司訂定115年現金增資認股基準日等相關事宜(補充公告每股發行價格、代收及專戶存儲價款行庫)",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:私募",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "2467"
+      ],
+      "names": {
+        "2467": "志聖"
+      },
+      "subject": "公告本公司認購暉盛科技股份有限公司私募普通股",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:處分",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "2327"
+      ],
+      "names": {
+        "2327": "國巨*"
+      },
+      "subject": "代&#12070;公司東莞奇力新電&#12070;有限公司公告處分理財商品",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:授權",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "6467"
+      ],
+      "names": {
+        "6467": "泰合"
+      },
+      "subject": "本公司日本授權夥伴Miyarisan就TAH4411化療止吐口溶膜用於兒童新適應症向日本主管機關提出新藥上市申請",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:重大",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "2465"
+      ],
+      "names": {
+        "2465": "麗臺"
+      },
+      "subject": "係因本公司有價證券於集中交易市場有異常交易情形，故公布基本資料及相關財務業務等重大訊息，以利投資人區別瞭解。",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:取得/轉投資",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "2421"
+      ],
+      "names": {
+        "2421": "建準"
+      },
+      "subject": "代重要子公司建準國際公告轉投資之北海立準電子有限公司取得同一理財商品累積金額達新台幣三億元",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:取得",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "3665"
+      ],
+      "names": {
+        "3665": "貿聯-KY"
+      },
+      "subject": "代美國子公司BOBI,LLC公告取得不動產",
       "source": "MOPS重訊"
     },
     {
@@ -730,12 +826,25 @@
       "ratio": null,
       "recent_count": 1,
       "codes": [
-        "2409"
+        "2059"
       ],
       "names": {
-        "2409": "友達"
+        "2059": "川湖"
       },
-      "subject": "本公司董事會核准新增資本支出預算",
+      "subject": "本公司擬認購子公司川益科技(股)公司（下稱「川益科技」）現金增資所發行之普通股新股",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:增資",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "8163"
+      ],
+      "names": {
+        "8163": "達方"
+      },
+      "subject": "代重要子公司太宇科技股份有限公司公告董事會訂定現金增資認股基準日",
       "source": "MOPS重訊"
     },
     {
@@ -743,12 +852,25 @@
       "ratio": null,
       "recent_count": 1,
       "codes": [
-        "2395"
+        "6757"
       ],
       "names": {
-        "2395": "研華"
+        "6757": "台灣虎航"
       },
-      "subject": "本公司董事會通過115年度第3季合併財務報表",
+      "subject": "本公司董事會通過115年第三季財務報表",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:取得/通過",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "6757"
+      ],
+      "names": {
+        "6757": "台灣虎航"
+      },
+      "subject": "本公司董事會通過向全球人壽租賃取得不動產使用權資產案",
       "source": "MOPS重訊"
     },
     {
@@ -756,12 +878,38 @@
       "ratio": null,
       "recent_count": 1,
       "codes": [
-        "2382"
+        "2408"
       ],
       "names": {
-        "2382": "廣達"
+        "2408": "南亞科"
       },
-      "subject": "公告變更本公司取得土地及建物等資產案",
+      "subject": "公告本公司取得機器設備",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:取得/通過",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "2454"
+      ],
+      "names": {
+        "2454": "聯發科"
+      },
+      "subject": "本公司董事會通過取得營業設備案",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:取得/通過",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "2454"
+      ],
+      "names": {
+        "2454": "聯發科"
+      },
+      "subject": "本公司董事會通過取得無形資產",
       "source": "MOPS重訊"
     },
     {
@@ -769,25 +917,12 @@
       "ratio": null,
       "recent_count": 1,
       "codes": [
-        "2409"
+        "2881"
       ],
       "names": {
-        "2409": "友達"
+        "2881": "富邦金"
       },
-      "subject": "本公司處分台中廠二期廠房及其相關廠務附屬設施",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:處分",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "2409"
-      ],
-      "names": {
-        "2409": "友達"
-      },
-      "subject": "(補充公告)本公司處分華亞廠不動產及其相關廠務附屬設施",
+      "subject": "代富邦香港人壽公告處分ALLYBRIDGEMEDALPHAINTERNATIONALFUND對沖基金(補充115/8/27)",
       "source": "MOPS重訊"
     },
     {
@@ -795,142 +930,12 @@
       "ratio": null,
       "recent_count": 1,
       "codes": [
-        "2330"
+        "2323"
       ],
       "names": {
-        "2330": "台積電"
+        "2323": "中環"
       },
-      "subject": "公告本公司取得廠房及附屬設施",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:取得",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "3037"
-      ],
-      "names": {
-        "3037": "欣興"
-      },
-      "subject": "本公司取得機器設備之相關資料",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:取得",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "3037"
-      ],
-      "names": {
-        "3037": "欣興"
-      },
-      "subject": "本公司取得廠務工程之相關資料",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:取得",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "3037"
-      ],
-      "names": {
-        "3037": "欣興"
-      },
-      "subject": "本公司取得機器設備之相關資料",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:取得",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "2387"
-      ],
-      "names": {
-        "2387": "精元"
-      },
-      "subject": "本公司公告取得有價證券",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:取得",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "6669"
-      ],
-      "names": {
-        "6669": "緯穎"
-      },
-      "subject": "代&#12070;公司WiwynnTechnologyCorporation公告向非關係人取得營業使用設備",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:增資",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "6533"
-      ],
-      "names": {
-        "6533": "晶心科"
-      },
-      "subject": "公告本公司115年現金增資收足股款暨增資基準日",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:增資/私募",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "2887"
-      ],
-      "names": {
-        "2887": "台新新光金"
-      },
-      "subject": "本公司擬全額認購子公司台新證券以私募方式辦理現金增資發行之普通股新股",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:私募/處分",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "3231"
-      ],
-      "names": {
-        "3231": "緯創"
-      },
-      "subject": "公告本公司及子公司鼎創有限公司處分磐儀科技股份有限公司私募普通股",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:私募",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "2354"
-      ],
-      "names": {
-        "2354": "鴻準"
-      },
-      "subject": "代重要子公司Q-RunHoldingsLimited公告決議認購私募基金QudaCapitalFundI",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:私募",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "2354"
-      ],
-      "names": {
-        "2354": "鴻準"
-      },
-      "subject": "代重要子公司Q-RunHoldingsLimited公告決議認購私募基金PrimeMoversEquityFundIILP",
+      "subject": "公告本公司取得有價證券",
       "source": "MOPS重訊"
     },
     {
@@ -960,16 +965,133 @@
       "source": "MOPS重訊"
     },
     {
+      "theme": "重訊:增資",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "6472"
+      ],
+      "names": {
+        "6472": "保瑞"
+      },
+      "subject": "代重要子公司BoraPharmaceuticalsUSAInc.公告對子公司BoraPharmaceuticalsInjectablesInc.現金增資案",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:增資",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "1477"
+      ],
+      "names": {
+        "1477": "聚陽"
+      },
+      "subject": "公告本公司新增資金貸與金額達本公司最近期財務報表淨值2%以上",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:通過",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "2006"
+      ],
+      "names": {
+        "2006": "東和鋼鐵"
+      },
+      "subject": "補充110/11/12公告本公司董事會通過自地委建桃園加工中心擴建，與關係人簽訂工程承攬契約書",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:增資",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "3706"
+      ],
+      "names": {
+        "3706": "神達"
+      },
+      "subject": "公告本公司訂定115年現金增資認股基準日相關事宜",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:通過",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "3189"
+      ],
+      "names": {
+        "3189": "景碩"
+      },
+      "subject": "公告本公司董事會通過新增專案資本支出預算案",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:通過",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "4974"
+      ],
+      "names": {
+        "4974": "亞泰"
+      },
+      "subject": "本公司董事會通過民國115年第三季財務報表",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:通過",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "5604"
+      ],
+      "names": {
+        "5604": "中連"
+      },
+      "subject": "董事會通過本公司115年第三季合併財務報表",
+      "source": "MOPS重訊"
+    },
+    {
       "theme": "重訊:取得",
       "ratio": null,
       "recent_count": 1,
       "codes": [
-        "2881"
+        "4416"
       ],
       "names": {
-        "2881": "富邦金"
+        "4416": "三圓"
       },
-      "subject": "富邦人壽公告取得BlueOwlDigitalInfrastructureFund",
+      "subject": "本公司向關係人山圓建設股份有限公司取得車位案補充說明",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:增資",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "6126"
+      ],
+      "names": {
+        "6126": "信音"
+      },
+      "subject": "公告本公司國內第三次無擔保轉換公司債115年第三季轉換普通股之增資基準日",
+      "source": "MOPS重訊"
+    },
+    {
+      "theme": "重訊:增資",
+      "ratio": null,
+      "recent_count": 1,
+      "codes": [
+        "5475"
+      ],
+      "names": {
+        "5475": "德宏"
+      },
+      "subject": "公告本公司115年現金增資認股基準日及其相關事宜",
       "source": "MOPS重訊"
     },
     {
@@ -977,103 +1099,12 @@
       "ratio": null,
       "recent_count": 1,
       "codes": [
-        "3265"
+        "2926"
       ],
       "names": {
-        "3265": "台星科"
+        "2926": "誠品生活"
       },
-      "subject": "公告本公司取得機器設備達新臺幣5億元以上",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:取得",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "3265"
-      ],
-      "names": {
-        "3265": "台星科"
-      },
-      "subject": "公告本公司取得機器設備達新臺幣5億元以上",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:取得/通過",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "6588"
-      ],
-      "names": {
-        "6588": "東典光電"
-      },
-      "subject": "代孫公司科沃斯先進股份有限公司公告向關係人取得不動產使用權資產(補充公告業經本公司股臨會決議通過)",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:通過",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "8049"
-      ],
-      "names": {
-        "8049": "晶采"
-      },
-      "subject": "公告本公司董事會通過設置永續長",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:通過",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "6690"
-      ],
-      "names": {
-        "6690": "安碁資訊"
-      },
-      "subject": "公告本公司董事會通過115年第三季合併財務報表",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:通過",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "5009"
-      ],
-      "names": {
-        "5009": "榮剛"
-      },
-      "subject": "公告本公司董事會通過設置永續長",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:通過",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "6266"
-      ],
-      "names": {
-        "6266": "泰詠"
-      },
-      "subject": "公告本公司董事會通過115年第三季財務報表案",
-      "source": "MOPS重訊"
-    },
-    {
-      "theme": "重訊:通過",
-      "ratio": null,
-      "recent_count": 1,
-      "codes": [
-        "3221"
-      ],
-      "names": {
-        "3221": "台嘉碩"
-      },
-      "subject": "公告本公司董事會通過限制員工權利股票收回註銷減資基準日",
+      "subject": "公告本公司取得不動產使用權資產",
       "source": "MOPS重訊"
     }
   ],
@@ -1084,9 +1115,9 @@
       "recent_count": 16
     },
     {
-      "theme": "擴產",
-      "ratio": 1.46,
-      "recent_count": 41
+      "theme": "Vera Rubin",
+      "ratio": 1.44,
+      "recent_count": 14
     },
     {
       "theme": "液冷",
@@ -1094,14 +1125,14 @@
       "recent_count": 17
     },
     {
-      "theme": "Vera Rubin",
-      "ratio": 1.34,
-      "recent_count": 13
-    },
-    {
       "theme": "DDR5",
       "ratio": 0.94,
       "recent_count": 5
+    },
+    {
+      "theme": "Blackwell",
+      "ratio": 0.92,
+      "recent_count": 6
     },
     {
       "theme": "南亞科",
@@ -1111,9 +1142,9 @@
   ],
   "keyword_stats": {
     "矽光子": {
-      "recent": 11,
+      "recent": 13,
       "earlier_daily": 1.176,
-      "ratio": 3.12,
+      "ratio": 3.68,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1132,9 +1163,9 @@
       "phrase_filtered": false
     },
     "光通訊": {
-      "recent": 14,
+      "recent": 15,
       "earlier_daily": 1.941,
-      "ratio": 2.4,
+      "ratio": 2.58,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1258,9 +1289,9 @@
       "phrase_filtered": false
     },
     "FOPLP": {
-      "recent": 4,
+      "recent": 6,
       "earlier_daily": 0.294,
-      "ratio": 4.53,
+      "ratio": 6.8,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1419,9 +1450,9 @@
       "phrase_filtered": false
     },
     "記憶體漲價": {
-      "recent": 5,
+      "recent": 7,
       "earlier_daily": 0.118,
-      "ratio": 14.17,
+      "ratio": 19.83,
       "enough_base": false,
       "phrase_filtered": false
     },
@@ -1454,9 +1485,9 @@
       "phrase_filtered": false
     },
     "SiC": {
-      "recent": 17,
+      "recent": 18,
       "earlier_daily": 0.588,
-      "ratio": 9.63,
+      "ratio": 10.2,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1587,9 +1618,9 @@
       "phrase_filtered": false
     },
     "ASIC": {
-      "recent": 46,
+      "recent": 47,
       "earlier_daily": 5.176,
-      "ratio": 2.96,
+      "ratio": 3.03,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1713,9 +1744,9 @@
       "phrase_filtered": false
     },
     "擴產": {
-      "recent": 41,
-      "earlier_daily": 9.353,
-      "ratio": 1.46,
+      "recent": 43,
+      "earlier_daily": 9.235,
+      "ratio": 1.55,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1727,9 +1758,9 @@
       "phrase_filtered": false
     },
     "漲價": {
-      "recent": 60,
+      "recent": 66,
       "earlier_daily": 7.647,
-      "ratio": 2.62,
+      "ratio": 2.88,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1748,9 +1779,9 @@
       "phrase_filtered": false
     },
     "併購": {
-      "recent": 23,
+      "recent": 26,
       "earlier_daily": 3.412,
-      "ratio": 2.25,
+      "ratio": 2.54,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1776,9 +1807,9 @@
       "phrase_filtered": false
     },
     "Vera Rubin": {
-      "recent": 13,
+      "recent": 14,
       "earlier_daily": 3.235,
-      "ratio": 1.34,
+      "ratio": 1.44,
       "enough_base": true,
       "phrase_filtered": true
     },
@@ -1804,9 +1835,9 @@
       "phrase_filtered": true
     },
     "Blackwell": {
-      "recent": 5,
+      "recent": 6,
       "earlier_daily": 2.176,
-      "ratio": 0.77,
+      "ratio": 0.92,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -1937,16 +1968,16 @@
       "phrase_filtered": false
     },
     "HBM4": {
-      "recent": 12,
+      "recent": 13,
       "earlier_daily": 0.588,
-      "ratio": 6.8,
+      "ratio": 7.37,
       "enough_base": true,
       "phrase_filtered": false
     },
     "DRAM": {
-      "recent": 35,
+      "recent": 37,
       "earlier_daily": 6.471,
-      "ratio": 1.8,
+      "ratio": 1.91,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -2252,9 +2283,9 @@
       "phrase_filtered": false
     },
     "1.6T": {
-      "recent": 9,
+      "recent": 10,
       "earlier_daily": 1.941,
-      "ratio": 1.55,
+      "ratio": 1.72,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -2266,9 +2297,9 @@
       "phrase_filtered": false
     },
     "800G": {
-      "recent": 13,
+      "recent": 14,
       "earlier_daily": 1.824,
-      "ratio": 2.38,
+      "ratio": 2.56,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -2455,9 +2486,9 @@
       "phrase_filtered": true
     },
     "MGX": {
-      "recent": 0,
+      "recent": 2,
       "earlier_daily": 1.0,
-      "ratio": 0.0,
+      "ratio": 0.67,
       "enough_base": true,
       "phrase_filtered": false
     },
@@ -2541,12 +2572,28 @@
         "CDU",
         "HVDC",
         "SiC",
-        "低軌衛星"
+        "低軌衛星",
+        "擴產"
       ],
       "sources": [
         "關鍵字暴增"
       ],
-      "hit_count": 6,
+      "hit_count": 7,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "3081",
+      "themes": [
+        "CPO",
+        "擴產",
+        "矽光子",
+        "磷化銦"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 4,
       "subjects": [],
       "fermentation": null
     },
@@ -2556,6 +2603,21 @@
         "800G",
         "ASIC",
         "DSP",
+        "漲價"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 4,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "2303",
+      "themes": [
+        "1.6T",
+        "ASIC",
+        "擴產",
         "漲價"
       ],
       "sources": [
@@ -2581,12 +2643,12 @@
       "fermentation": null
     },
     {
-      "code": "4923",
+      "code": "6274",
       "themes": [
-        "DRAM",
-        "HBM4",
-        "NAND",
-        "漲價"
+        "1.6T",
+        "800G",
+        "低軌衛星",
+        "擴產"
       ],
       "sources": [
         "關鍵字暴增"
@@ -2596,17 +2658,36 @@
       "fermentation": null
     },
     {
-      "code": "3081",
+      "code": "4923",
       "themes": [
-        "CPO",
-        "矽光子",
-        "磷化銦"
+        "DRAM",
+        "HBM4",
+        "NAND",
+        "擴產"
       ],
       "sources": [
         "關鍵字暴增"
       ],
-      "hit_count": 3,
+      "hit_count": 4,
       "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "2408",
+      "themes": [
+        "DRAM",
+        "漲價",
+        "華邦電",
+        "重訊:取得"
+      ],
+      "sources": [
+        "MOPS重訊",
+        "關鍵字暴增"
+      ],
+      "hit_count": 4,
+      "subjects": [
+        "公告本公司取得機器設備"
+      ],
       "fermentation": null
     },
     {
@@ -2638,10 +2719,10 @@
       "fermentation": null
     },
     {
-      "code": "2303",
+      "code": "2330",
       "themes": [
-        "1.6T",
         "ASIC",
+        "擴產",
         "漲價"
       ],
       "sources": [
@@ -2652,80 +2733,7 @@
       "fermentation": null
     },
     {
-      "code": "2330",
-      "themes": [
-        "ASIC",
-        "漲價",
-        "重訊:取得"
-      ],
-      "sources": [
-        "MOPS重訊",
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "subjects": [
-        "公告本公司取得廠房及附屬設施"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "6274",
-      "themes": [
-        "1.6T",
-        "800G",
-        "低軌衛星"
-      ],
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "subjects": [],
-      "fermentation": null
-    },
-    {
       "code": "1303",
-      "themes": [
-        "DRAM",
-        "漲價",
-        "華邦電"
-      ],
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "subjects": [],
-      "fermentation": null
-    },
-    {
-      "code": "2408",
-      "themes": [
-        "DRAM",
-        "漲價",
-        "華邦電"
-      ],
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "subjects": [],
-      "fermentation": null
-    },
-    {
-      "code": "1210",
-      "themes": [
-        "DRAM",
-        "漲價",
-        "華邦電"
-      ],
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 3,
-      "subjects": [],
-      "fermentation": null
-    },
-    {
-      "code": "2344",
       "themes": [
         "DRAM",
         "漲價",
@@ -2882,10 +2890,10 @@
       "fermentation": null
     },
     {
-      "code": "2382",
+      "code": "3706",
       "themes": [
         "HBM",
-        "重訊:取得"
+        "重訊:增資"
       ],
       "sources": [
         "MOPS重訊",
@@ -2893,15 +2901,15 @@
       ],
       "hit_count": 2,
       "subjects": [
-        "公告變更本公司取得土地及建物等資產案"
+        "公告本公司訂定115年現金增資認股基準日相關事宜"
       ],
       "fermentation": null
     },
     {
-      "code": "3231",
+      "code": "2454",
       "themes": [
-        "HBM",
-        "重訊:私募/處分"
+        "ASIC",
+        "重訊:取得/通過"
       ],
       "sources": [
         "MOPS重訊",
@@ -2909,24 +2917,22 @@
       ],
       "hit_count": 2,
       "subjects": [
-        "公告本公司及子公司鼎創有限公司處分磐儀科技股份有限公司私募普通股"
+        "本公司董事會通過取得營業設備案",
+        "本公司董事會通過取得無形資產"
       ],
       "fermentation": null
     },
     {
-      "code": "6669",
+      "code": "6510",
       "themes": [
-        "HBM",
-        "重訊:取得"
+        "ASIC",
+        "擴產"
       ],
       "sources": [
-        "MOPS重訊",
         "關鍵字暴增"
       ],
       "hit_count": 2,
-      "subjects": [
-        "代&#12070;公司WiwynnTechnologyCorporation公告向非關係人取得營業使用設備"
-      ],
+      "subjects": [],
       "fermentation": null
     },
     {
@@ -2943,10 +2949,10 @@
       "fermentation": null
     },
     {
-      "code": "3221",
+      "code": "2327",
       "themes": [
-        "低軌衛星",
-        "重訊:通過"
+        "被動元件",
+        "重訊:處分"
       ],
       "sources": [
         "MOPS重訊",
@@ -2954,24 +2960,23 @@
       ],
       "hit_count": 2,
       "subjects": [
-        "公告本公司董事會通過限制員工權利股票收回註銷減資基準日"
+        "代&#12070;公司東莞奇力新電&#12070;有限公司公告處分理財商品"
       ],
       "fermentation": null
     },
     {
-      "code": "2409",
+      "code": "6757",
       "themes": [
-        "重訊:增資",
-        "重訊:處分"
+        "重訊:取得/通過",
+        "重訊:通過"
       ],
       "sources": [
         "MOPS重訊"
       ],
       "hit_count": 2,
       "subjects": [
-        "本公司董事會核准新增資本支出預算",
-        "本公司處分台中廠二期廠房及其相關廠務附屬設施",
-        "(補充公告)本公司處分華亞廠不動產及其相關廠務附屬設施"
+        "本公司董事會通過115年第三季財務報表",
+        "本公司董事會通過向全球人壽租賃取得不動產使用權資產案"
       ],
       "fermentation": null
     },
@@ -2986,6 +2991,7 @@
       ],
       "hit_count": 2,
       "subjects": [
+        "公告本公司取得有價證券",
         "公告本公司取得有價證券",
         "公告本公司處分有價證券"
       ],
@@ -3112,18 +3118,6 @@
       "fermentation": null
     },
     {
-      "code": "4977",
-      "themes": [
-        "光通訊"
-      ],
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 1,
-      "subjects": [],
-      "fermentation": null
-    },
-    {
       "code": "2455",
       "themes": [
         "磷化銦"
@@ -3196,7 +3190,31 @@
       "fermentation": null
     },
     {
+      "code": "2382",
+      "themes": [
+        "HBM"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
       "code": "2444",
+      "themes": [
+        "HBM"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "3231",
       "themes": [
         "HBM"
       ],
@@ -3244,18 +3262,6 @@
       "fermentation": null
     },
     {
-      "code": "3706",
-      "themes": [
-        "HBM"
-      ],
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 1,
-      "subjects": [],
-      "fermentation": null
-    },
-    {
       "code": "5386",
       "themes": [
         "HBM"
@@ -3269,6 +3275,18 @@
     },
     {
       "code": "6239",
+      "themes": [
+        "HBM"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "6669",
       "themes": [
         "HBM"
       ],
@@ -3604,18 +3622,6 @@
       "fermentation": null
     },
     {
-      "code": "2454",
-      "themes": [
-        "ASIC"
-      ],
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 1,
-      "subjects": [],
-      "fermentation": null
-    },
-    {
       "code": "3035",
       "themes": [
         "ASIC"
@@ -3629,18 +3635,6 @@
     },
     {
       "code": "1459",
-      "themes": [
-        "ASIC"
-      ],
-      "sources": [
-        "關鍵字暴增"
-      ],
-      "hit_count": 1,
-      "subjects": [],
-      "fermentation": null
-    },
-    {
-      "code": "6225",
       "themes": [
         "ASIC"
       ],
@@ -3676,7 +3670,7 @@
       "fermentation": null
     },
     {
-      "code": "6510",
+      "code": "6225",
       "themes": [
         "ASIC"
       ],
@@ -3821,6 +3815,18 @@
     },
     {
       "code": "3178",
+      "themes": [
+        "低軌衛星"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "3221",
       "themes": [
         "低軌衛星"
       ],
@@ -4156,7 +4162,55 @@
       "fermentation": null
     },
     {
+      "code": "1717",
+      "themes": [
+        "擴產"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "2317",
+      "themes": [
+        "擴產"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "3037",
+      "themes": [
+        "擴產"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
       "code": "2483",
+      "themes": [
+        "漲價"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "2357",
       "themes": [
         "漲價"
       ],
@@ -4183,6 +4237,18 @@
       "code": "5289",
       "themes": [
         "漲價"
+      ],
+      "sources": [
+        "關鍵字暴增"
+      ],
+      "hit_count": 1,
+      "subjects": [],
+      "fermentation": null
+    },
+    {
+      "code": "2344",
+      "themes": [
+        "華邦電"
       ],
       "sources": [
         "關鍵字暴增"
@@ -4240,9 +4306,9 @@
       "fermentation": null
     },
     {
-      "code": "2327",
+      "code": "3167",
       "themes": [
-        "被動元件"
+        "DRAM"
       ],
       "sources": [
         "關鍵字暴增"
@@ -4252,7 +4318,7 @@
       "fermentation": null
     },
     {
-      "code": "2464",
+      "code": "2414",
       "themes": [
         "重訊:增資"
       ],
@@ -4261,84 +4327,12 @@
       ],
       "hit_count": 1,
       "subjects": [
-        "公告本公司115年現金增資股款催繳期間屆滿暨催繳股數發放事宜"
+        "公告本公司訂定115年現金增資認股基準日等相關事宜(補充公告每股發行價格、代收及專戶存儲價款行庫)"
       ],
       "fermentation": null
     },
     {
-      "code": "2395",
-      "themes": [
-        "重訊:通過"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "本公司董事會通過115年度第3季合併財務報表"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "3037",
-      "themes": [
-        "重訊:取得"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "本公司取得機器設備之相關資料",
-        "本公司取得廠務工程之相關資料",
-        "本公司取得機器設備之相關資料"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "2387",
-      "themes": [
-        "重訊:取得"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "本公司公告取得有價證券"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "6533",
-      "themes": [
-        "重訊:增資"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "公告本公司115年現金增資收足股款暨增資基準日"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "2887",
-      "themes": [
-        "重訊:增資/私募"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "本公司擬全額認購子公司台新證券以私募方式辦理現金增資發行之普通股新股"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "2354",
+      "code": "2467",
       "themes": [
         "重訊:私募"
       ],
@@ -4347,14 +4341,195 @@
       ],
       "hit_count": 1,
       "subjects": [
-        "代重要子公司Q-RunHoldingsLimited公告決議認購私募基金QudaCapitalFundI",
-        "代重要子公司Q-RunHoldingsLimited公告決議認購私募基金PrimeMoversEquityFundIILP"
+        "公告本公司認購暉盛科技股份有限公司私募普通股"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "6467",
+      "themes": [
+        "重訊:授權"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "本公司日本授權夥伴Miyarisan就TAH4411化療止吐口溶膜用於兒童新適應症向日本主管機關提出新藥上市申請"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "2465",
+      "themes": [
+        "重訊:重大"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "係因本公司有價證券於集中交易市場有異常交易情形，故公布基本資料及相關財務業務等重大訊息，以利投資人區別瞭解。"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "2421",
+      "themes": [
+        "重訊:取得/轉投資"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "代重要子公司建準國際公告轉投資之北海立準電子有限公司取得同一理財商品累積金額達新台幣三億元"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "3665",
+      "themes": [
+        "重訊:取得"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "代美國子公司BOBI,LLC公告取得不動產"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "2059",
+      "themes": [
+        "重訊:增資"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "本公司擬認購子公司川益科技(股)公司（下稱「川益科技」）現金增資所發行之普通股新股"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "8163",
+      "themes": [
+        "重訊:增資"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "代重要子公司太宇科技股份有限公司公告董事會訂定現金增資認股基準日"
       ],
       "fermentation": null
     },
     {
       "code": "2881",
       "themes": [
+        "重訊:處分"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "代富邦香港人壽公告處分ALLYBRIDGEMEDALPHAINTERNATIONALFUND對沖基金(補充115/8/27)"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "6472",
+      "themes": [
+        "重訊:增資"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "代重要子公司BoraPharmaceuticalsUSAInc.公告對子公司BoraPharmaceuticalsInjectablesInc.現金增資案"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "1477",
+      "themes": [
+        "重訊:增資"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "公告本公司新增資金貸與金額達本公司最近期財務報表淨值2%以上"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "2006",
+      "themes": [
+        "重訊:通過"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "補充110/11/12公告本公司董事會通過自地委建桃園加工中心擴建，與關係人簽訂工程承攬契約書"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "3189",
+      "themes": [
+        "重訊:通過"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "公告本公司董事會通過新增專案資本支出預算案"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "4974",
+      "themes": [
+        "重訊:通過"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "本公司董事會通過民國115年第三季財務報表"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "5604",
+      "themes": [
+        "重訊:通過"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "董事會通過本公司115年第三季合併財務報表"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "4416",
+      "themes": [
         "重訊:取得"
       ],
       "sources": [
@@ -4362,12 +4537,40 @@
       ],
       "hit_count": 1,
       "subjects": [
-        "富邦人壽公告取得BlueOwlDigitalInfrastructureFund"
+        "本公司向關係人山圓建設股份有限公司取得車位案補充說明"
       ],
       "fermentation": null
     },
     {
-      "code": "3265",
+      "code": "6126",
+      "themes": [
+        "重訊:增資"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "公告本公司國內第三次無擔保轉換公司債115年第三季轉換普通股之增資基準日"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "5475",
+      "themes": [
+        "重訊:增資"
+      ],
+      "sources": [
+        "MOPS重訊"
+      ],
+      "hit_count": 1,
+      "subjects": [
+        "公告本公司115年現金增資認股基準日及其相關事宜"
+      ],
+      "fermentation": null
+    },
+    {
+      "code": "2926",
       "themes": [
         "重訊:取得"
       ],
@@ -4376,78 +4579,7 @@
       ],
       "hit_count": 1,
       "subjects": [
-        "公告本公司取得機器設備達新臺幣5億元以上",
-        "公告本公司取得機器設備達新臺幣5億元以上"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "6588",
-      "themes": [
-        "重訊:取得/通過"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "代孫公司科沃斯先進股份有限公司公告向關係人取得不動產使用權資產(補充公告業經本公司股臨會決議通過)"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "8049",
-      "themes": [
-        "重訊:通過"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "公告本公司董事會通過設置永續長"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "6690",
-      "themes": [
-        "重訊:通過"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "公告本公司董事會通過115年第三季合併財務報表"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "5009",
-      "themes": [
-        "重訊:通過"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "公告本公司董事會通過設置永續長"
-      ],
-      "fermentation": null
-    },
-    {
-      "code": "6266",
-      "themes": [
-        "重訊:通過"
-      ],
-      "sources": [
-        "MOPS重訊"
-      ],
-      "hit_count": 1,
-      "subjects": [
-        "公告本公司董事會通過115年第三季財務報表案"
+        "公告本公司取得不動產使用權資產"
       ],
       "fermentation": null
     }
