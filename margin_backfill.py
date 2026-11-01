@@ -67,6 +67,7 @@ class Http:
         self.sleep, self.clock, self.gap = sleep, clock, gap
         self.last = {}
         self.robots = {}
+        self.robots_info = {}
         self.count = 0
 
     def _wait(self, host):
@@ -75,11 +76,11 @@ class Http:
             if w > 0:
                 self.sleep(w)
 
-    def _raw(self, url):
+    def _raw(self, url, follow=False):
         host = urlsplit(url).netloc
         self._wait(host)
         try:
-            return self.s.get(url, timeout=60, allow_redirects=False)
+            return self.s.get(url, timeout=60, allow_redirects=follow)
         finally:
             self.last[host] = self.clock()
             self.count += 1
@@ -87,13 +88,17 @@ class Http:
     def _robots_ok(self, url):
         p = urlsplit(url)
         if p.netloc not in self.robots:
-            r = self._raw(f"{p.scheme}://{p.netloc}/robots.txt")
+            # 2026-11-01:robots.txt 要跟隨轉址(櫃買的 robots.txt 會轉址;不跟隨 → 3xx 被誤判成不允許)
+            r = self._raw(f"{p.scheme}://{p.netloc}/robots.txt", follow=True)
+            self.robots_info[p.netloc] = "HTTP %s" % r.status_code
             if r.status_code == 404:
                 self.robots[p.netloc] = None
             elif r.status_code == 200:
                 rp = robotparser.RobotFileParser()
                 rp.parse(r.text.splitlines())
                 self.robots[p.netloc] = rp
+                self.robots_info[p.netloc] += ";" + " | ".join(
+                    x.strip() for x in r.text.splitlines() if x.strip().lower().startswith(("user-agent", "disallow")))[:300]
             else:
                 self.robots[p.netloc] = False
         rp = self.robots[p.netloc]
@@ -106,7 +111,7 @@ class Http:
     def json(self, url):
         """→ dict;403/429/驗證碼/非 JSON/robots 不允許 → Blocked(呼叫端停止整批)"""
         if not self._robots_ok(url):
-            raise Blocked("robots.txt 不允許:" + url)
+            raise Blocked("robots.txt 不允許(%s):%s" % (self.robots_info.get(urlsplit(url).netloc), url))
         try:
             r = self._raw(url)
         except requests.RequestException as e:
