@@ -1,0 +1,3150 @@
+{
+ "generated": "2026-11-01T22:00:28+08:00",
+ "ua": "quietfolio-margin-share-probe/1.0 (read-only research; github.com/thomaschko/quietfolio-data)",
+ "repo": {
+  "margin_daily": {
+   "files": 1,
+   "first": "20261030",
+   "last": "20261030",
+   "note": "GAS runMarginDrop 推送(2026-11-01 新增);在那之前 repo 沒有任何全市場個股融資餘額",
+   "latest_sample": {
+    "date": "20261030",
+    "status": "ok",
+    "unit": "lots",
+    "fields": [
+     "bal",
+     "prev",
+     "limit",
+     "note"
+    ],
+    "tpex_date": "20261030",
+    "twse_fields": [
+     "代號",
+     "名稱",
+     "買進",
+     "賣出",
+     "現金償還",
+     "前日餘額",
+     "今日餘額",
+     "次一營業日限額",
+     "買進",
+     "賣出",
+     "現券償還",
+     "前日餘額",
+     "今日餘額",
+     "次一營業日限額",
+     "資券互抵",
+     "註記"
+    ],
+    "tpex_keys": [
+     "Date",
+     "SecuritiesCompanyCode",
+     "CompanyName",
+     "MarginPurchaseBalancePreviousDay",
+     "MarginPurchase",
+     "MarginSales",
+     "CashRedemption",
+     "MarginPurchaseBalance",
+     "MarginPurchaseBalanceBelongSecuritiesFinanceEnterprise",
+     "MarginPurchaseUtilizationRate",
+     "MarginPurchaseQuota",
+     "ShortSaleBalancePreviousDay",
+     "ShortSale",
+     "ShortConvering",
+     "StockRedemption",
+     "ShortSaleBalance",
+     "ShortSaleBalanceBelongSecuritiesFinanceEnterprise",
+     "ShortSaleUtilizationRate",
+     "ShortSaleQuota",
+     "Offsetting",
+     "Note"
+    ]
+   },
+   "latest_counts": {
+    "twse": 1304,
+    "tpex": 919
+   },
+   "twse_summary": {
+    "title": "115年10月30日 信用交易統計",
+    "fields": [
+     "項目",
+     "買進",
+     "賣出",
+     "現金(券)償還",
+     "前日餘額",
+     "今日餘額"
+    ],
+    "data": [
+     [
+      "融資(交易單位)",
+      "353,926",
+      "377,224",
+      "9,729",
+      "9,588,756",
+      "9,555,729"
+     ],
+     [
+      "融券(交易單位)",
+      "36,026",
+      "45,607",
+      "1,224",
+      "189,002",
+      "197,359"
+     ],
+     [
+      "融資金額(仟元)",
+      "20,744,449",
+      "29,996,997",
+      "1,190,414",
+      "633,910,848",
+      "623,467,886"
+     ]
+    ]
+   }
+  },
+  "price_history": {
+   "days": 17,
+   "first": "20261005",
+   "last": "20261030",
+   "latest_codes": 6939,
+   "latest_etf_00": 257,
+   "market_json_codes": 272,
+   "missing_vs_insti_daily": []
+  },
+  "existing_margin_fetch": {
+   "where": "quietfolio-gas MarginDrop.js(runMarginDrop,排程鏈 night 22:00)",
+   "twse": "MI_MARGN selectType=ALL(可指定日期)",
+   "tpex": "openapi v1 tpex_mainboard_margin_balance(只有最新一日)",
+   "kept_before_2026_11_01": "只留排行前 50 名(margindrop 分頁、daily.json.marginDrop),全市場個股沒有存"
+  }
+ },
+ "industry_etf": {
+  "twse_isin": {
+   "url": "https://isin.twse.com.tw/isin/C_public.jsp?strMode=2",
+   "status": 200,
+   "rows": 41119,
+   "sections": {
+    "股票": 1058,
+    "上市認購(售)權證": 39728,
+    "特別股": 27,
+    "創新板": 31,
+    "ETF": 245,
+    "ETN": 14,
+    "臺灣存託憑證(TDR)": 10,
+    "受益證券-不動產投資信託": 6
+   },
+   "stocks": 1058,
+   "industries": 32,
+   "industry_counts": {
+    "電子零組件業": 103,
+    "半導體業": 91,
+    "光電業": 68,
+    "電腦及週邊設備業": 64,
+    "建材營造業": 55,
+    "生技醫療業": 55,
+    "其他業": 52,
+    "電機機械": 49,
+    "通信網路業": 46,
+    "其他電子業": 45,
+    "紡織纖維": 42,
+    "汽車工業": 40,
+    "鋼鐵工業": 31,
+    "金融保險業": 31,
+    "化學工業": 28,
+    "航運業": 28,
+    "食品工業": 24,
+    "塑膠工業": 21,
+    "綠能環保": 21,
+    "電子通路業": 21,
+    "觀光餐旅": 19,
+    "運動休閒": 18,
+    "貿易百貨業": 18,
+    "電器電纜": 16,
+    "居家生活": 12,
+    "橡膠工業": 11,
+    "資訊服務業": 11,
+    "數位雲端": 10,
+    "油電燃氣業": 9,
+    "水泥工業": 7,
+    "造紙工業": 7,
+    "玻璃陶瓷": 5
+   },
+   "stock_blank_industry": 0,
+   "etf": 245,
+   "etf_industry_values": [
+    ""
+   ],
+   "etf_cfi_prefix": [
+    "CE"
+   ],
+   "etf_code_not_00": [],
+   "code00_not_etf_section": [],
+   "sample_stock": {
+    "code": "1101",
+    "name": "台泥",
+    "market": "上市",
+    "industry": "水泥工業",
+    "cfi": "ESVUFR",
+    "section": "股票"
+   },
+   "sample_etf": {
+    "code": "00400A",
+    "name": "主動國泰動能高息",
+    "market": "上市",
+    "industry": "",
+    "cfi": "CEOJEU",
+    "section": "ETF"
+   }
+  },
+  "tpex_isin": {
+   "url": "https://isin.twse.com.tw/isin/C_public.jsp?strMode=4",
+   "status": 200,
+   "rows": 13723,
+   "sections": {
+    "上櫃認購(售)權證": 12696,
+    "ETF": 119,
+    "ETN": 6,
+    "股票": 897,
+    "特別股": 1,
+    "受益證券-資產基礎證券": 4
+   },
+   "stocks": 897,
+   "industries": 28,
+   "industry_counts": {
+    "半導體業": 111,
+    "電子零組件業": 106,
+    "生技醫療業": 98,
+    "電機機械": 52,
+    "其他電子業": 48,
+    "光電業": 48,
+    "電腦及週邊設備業": 46,
+    "通信網路業": 45,
+    "其他業": 42,
+    "資訊服務業": 36,
+    "建材營造業": 33,
+    "觀光餐旅": 32,
+    "數位雲端": 27,
+    "文化創意業": 26,
+    "居家生活": 25,
+    "綠能環保": 19,
+    "鋼鐵工業": 17,
+    "電子通路業": 16,
+    "化學工業": 14,
+    "食品工業": 10,
+    "紡織纖維": 10,
+    "運動休閒": 9,
+    "金融保險業": 9,
+    "航運業": 6,
+    "農業科技業": 4,
+    "塑膠工業": 4,
+    "油電燃氣業": 3,
+    "電器電纜": 1
+   },
+   "stock_blank_industry": 0,
+   "etf": 119,
+   "etf_industry_values": [
+    ""
+   ],
+   "etf_cfi_prefix": [
+    "CE"
+   ],
+   "etf_code_not_00": [],
+   "code00_not_etf_section": [],
+   "sample_stock": {
+    "code": "1240",
+    "name": "茂生農經",
+    "market": "上櫃",
+    "industry": "農業科技業",
+    "cfi": "ESVUFR",
+    "section": "股票"
+   },
+   "sample_etf": {
+    "code": "00411A",
+    "name": "主動統一前沿科技",
+    "market": "上櫃",
+    "industry": "",
+    "cfi": "CEOIEU",
+    "section": "ETF"
+   }
+  },
+  "twse_openapi_t187ap03_L": {
+   "status": 200,
+   "content_type": "application/json",
+   "bytes": 1332397,
+   "json": true,
+   "rows": 1099,
+   "keys": [
+    "出表日期",
+    "公司代號",
+    "公司名稱",
+    "公司簡稱",
+    "外國企業註冊地國",
+    "產業別",
+    "住址",
+    "營利事業統一編號",
+    "董事長",
+    "總經理",
+    "發言人",
+    "發言人職稱",
+    "代理發言人",
+    "總機電話",
+    "成立日期",
+    "上市日期",
+    "普通股每股面額",
+    "實收資本額",
+    "私募股數",
+    "特別股",
+    "編制財務報表類型",
+    "股票過戶機構",
+    "過戶電話",
+    "過戶地址",
+    "簽證會計師事務所",
+    "簽證會計師1",
+    "簽證會計師2",
+    "英文簡稱",
+    "英文通訊地址",
+    "傳真機號碼",
+    "電子郵件信箱",
+    "網址",
+    "已發行普通股數或TDR原股發行股數"
+   ],
+   "sample": {
+    "出表日期": "1151031",
+    "公司代號": "1101",
+    "公司名稱": "臺灣水泥股份有限公司",
+    "公司簡稱": "台泥",
+    "外國企業註冊地國": "－ ",
+    "產業別": "01",
+    "住址": "台北市中山北路2段113號",
+    "營利事業統一編號": "11913502",
+    "董事長": "張安平",
+    "總經理": "程耀輝",
+    "發言人": "葉毓君",
+    "發言人職稱": "永續長"
+   }
+  },
+  "tpex_openapi_mopsfin_t187ap03_O": {
+   "status": 200,
+   "content_type": "application/json",
+   "bytes": 1079395,
+   "json": true,
+   "rows": 897,
+   "keys": [
+    "Date",
+    "SecuritiesCompanyCode",
+    "CompanyName",
+    "CompanyAbbreviation",
+    "Registration",
+    "SecuritiesIndustryCode",
+    "Address",
+    "UnifiedBusinessNo.",
+    "Chairman",
+    "GeneralManager",
+    "Spokesman",
+    "TitleOfSpokesman",
+    "DeputySpokesperson",
+    "Telephone",
+    "DateOfIncorporation",
+    "DateOfListing",
+    "ParValueOfCommonStock",
+    "Paidin.Capital.NTDollars",
+    "PrivateStock.shares",
+    "PreferredStock.shares",
+    "PreparationOfFinancialReportType",
+    "StockTransferAgent",
+    "StockTransferAgentTelephone",
+    "StockTransferAgentAddress",
+    "AccountingFirm",
+    "CPA.CharteredPublicAccountant.First",
+    "CPA.CharteredPublicAccountant.Second",
+    "Symbol",
+    "Fax",
+    "EmailAddress",
+    "WebAddress",
+    "IssueShares"
+   ],
+   "sample": {
+    "Date": "1151101",
+    "SecuritiesCompanyCode": "1240",
+    "CompanyName": "茂生農經股份有限公司",
+    "CompanyAbbreviation": "茂生農經",
+    "Registration": "－ ",
+    "SecuritiesIndustryCode": "33",
+    "Address": "2F.,No.30,Sec. 1,Heping W.Rd.,Zhongzheng Dist.,Taipei City 100028TAIPEI,TAIWAN(R.O.C)",
+    "UnifiedBusinessNo.": "18795706",
+    "Chairman": "吳清德",
+    "GeneralManager": "吳清德",
+    "Spokesman": "林信鴻",
+    "TitleOfSpokesman": "公司治理主管"
+   }
+  }
+ },
+ "themes": {
+  "intl_theme_baskets_tw": {
+   "themes": 30,
+   "stocks": 107,
+   "membership": {
+    "1": 107
+   },
+   "max_themes_per_stock": 1,
+   "theme_size_median": 3.5,
+   "theme_size_max": 7,
+   "etf_in_mapping": [],
+   "matched_official_ratio": 1.0,
+   "unmatched_first10": []
+  },
+  "my_tw_coverage": {
+   "md_files": 1764,
+   "theme_files": 21,
+   "dirs": [
+    ".claude",
+    "CLAUDE.md",
+    "Pilot_Reports",
+    "README.md",
+    "WIKILINKS.md",
+    "task.md",
+    "themes"
+   ],
+   "themes": 21,
+   "stocks": 575,
+   "membership": {
+    "1": 323,
+    "2+": 252
+   },
+   "max_themes_per_stock": 6,
+   "theme_size_median": 22,
+   "theme_size_max": 148,
+   "etf_in_mapping": [],
+   "matched_official_ratio": 0.9513,
+   "unmatched_first10": [
+    "2245",
+    "2256",
+    "3595",
+    "3616",
+    "4573",
+    "4582",
+    "4590",
+    "4738",
+    "6407",
+    "6555"
+   ],
+   "fetched_theme_files": 21,
+   "license_note": "repo README 標 MIT(既有 tw_coverage_lookup.py 已在使用)"
+  }
+ },
+ "latest_consistency": {
+  "twse_notes_raw": null,
+  "twse_latest_date": "2026-10-30",
+  "twse_fields": [
+   "代號",
+   "名稱",
+   "買進",
+   "賣出",
+   "現金償還",
+   "前日餘額",
+   "今日餘額",
+   "次一營業日限額",
+   "買進",
+   "賣出",
+   "現券償還",
+   "前日餘額",
+   "今日餘額",
+   "次一營業日限額",
+   "資券互抵",
+   "註記"
+  ],
+  "twse_summary_table": {
+   "title": "115年10月30日 信用交易統計",
+   "fields": [
+    "項目",
+    "買進",
+    "賣出",
+    "現金(券)償還",
+    "前日餘額",
+    "今日餘額"
+   ],
+   "data": [
+    [
+     "融資(交易單位)",
+     "353,926",
+     "377,224",
+     "9,729",
+     "9,588,756",
+     "9,555,729"
+    ],
+    [
+     "融券(交易單位)",
+     "36,026",
+     "45,607",
+     "1,224",
+     "189,002",
+     "197,359"
+    ],
+    [
+     "融資金額(仟元)",
+     "20,744,449",
+     "29,996,997",
+     "1,190,414",
+     "633,910,848",
+     "623,467,886"
+    ]
+   ]
+  },
+  "twse_note_values": {
+   "X": 15,
+   "O": 1,
+   "OX": 66,
+   "OX!": 1,
+   "@": 2
+  },
+  "twse_note_legend": "MI_MARGN 註記欄(例如停止融資、除權息…)的代碼說明在原回應 notes 欄,見 twse_notes_raw",
+  "twse_codes": 1304,
+  "twse_etf_with_margin": 228,
+  "twse_zero_balance": 66,
+  "twse_close_date": "20261030",
+  "twse_close_codes": 1375,
+  "twse_est_value": 1070785879650.0,
+  "twse_missing_price": {
+   "n": 4,
+   "lots": 142.0
+  },
+  "twse_official_margin_k": 623467886.0,
+  "twse_recon_ratio": 1.7175,
+  "tpex_margin_latest": {
+   "status": 200,
+   "rows": 919,
+   "keys": [
+    "Date",
+    "SecuritiesCompanyCode",
+    "CompanyName",
+    "MarginPurchaseBalancePreviousDay",
+    "MarginPurchase",
+    "MarginSales",
+    "CashRedemption",
+    "MarginPurchaseBalance",
+    "MarginPurchaseBalanceBelongSecuritiesFinanceEnterprise",
+    "MarginPurchaseUtilizationRate",
+    "MarginPurchaseQuota",
+    "ShortSaleBalancePreviousDay",
+    "ShortSale",
+    "ShortConvering",
+    "StockRedemption",
+    "ShortSaleBalance",
+    "ShortSaleBalanceBelongSecuritiesFinanceEnterprise",
+    "ShortSaleUtilizationRate",
+    "ShortSaleQuota",
+    "Offsetting",
+    "Note"
+   ],
+   "sample": {
+    "Date": "1151030",
+    "SecuritiesCompanyCode": "00411A",
+    "CompanyName": "主動統一前沿科技",
+    "MarginPurchaseBalancePreviousDay": "13313",
+    "MarginPurchase": "398",
+    "MarginSales": "188",
+    "CashRedemption": "0",
+    "MarginPurchaseBalance": "13523",
+    "MarginPurchaseBalanceBelongSecuritiesFinanceEnterprise": "65",
+    "MarginPurchaseUtilizationRate": "11.88",
+    "MarginPurchaseQuota": "113769",
+    "ShortSaleBalancePreviousDay": "84",
+    "ShortSale": "0",
+    "ShortConvering": "0",
+    "StockRedemption": "0",
+    "ShortSaleBalance": "84",
+    "ShortSaleBalanceBelongSecuritiesFinanceEnterprise": "0",
+    "ShortSaleUtilizationRate": "0.07",
+    "ShortSaleQuota": "113769",
+    "Offsetting": "5",
+    "Note": ""
+   }
+  },
+  "tpex_margin_dates": [
+   "1151030"
+  ],
+  "tpex_codes": 919,
+  "tpex_etf_with_margin": 75,
+  "tpex_zero_balance": 103,
+  "tpex_est_value": 341627540370.0,
+  "tpex_missing_price": {
+   "n": 69,
+   "lots": 79173.0,
+   "price_source": "price_history/20261030.json"
+  }
+ },
+ "history": {
+  "dates": {
+   "1w": "2026-10-23",
+   "3m": "2026-07-31",
+   "6m": "2026-05-01",
+   "1y": "2025-10-31",
+   "2y": "2024-11-01"
+  },
+  "twse_margin": {
+   "1w": {
+    "date": "2026-10-23",
+    "codes": 0,
+    "resp": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 50,
+     "json": true,
+     "top_keys": [
+      "stat"
+     ],
+     "stat": "很抱歉，沒有符合條件的資料",
+     "tables": []
+    }
+   },
+   "3m": {
+    "date": "2026-07-31",
+    "codes": 1291,
+    "has_summary": true,
+    "fields_same_as_today": null,
+    "fields": [
+     "代號",
+     "名稱",
+     "買進",
+     "賣出",
+     "現金償還",
+     "前日餘額",
+     "今日餘額",
+     "次一營業日限額",
+     "買進",
+     "賣出",
+     "現券償還",
+     "前日餘額",
+     "今日餘額",
+     "次一營業日限額",
+     "資券互抵",
+     "註記"
+    ]
+   },
+   "6m": {
+    "date": "2026-05-01",
+    "codes": 0,
+    "resp": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 50,
+     "json": true,
+     "top_keys": [
+      "stat"
+     ],
+     "stat": "很抱歉，沒有符合條件的資料",
+     "tables": []
+    }
+   },
+   "1y": {
+    "date": "2025-10-31",
+    "codes": 1231,
+    "has_summary": true,
+    "fields_same_as_today": null,
+    "fields": [
+     "代號",
+     "名稱",
+     "買進",
+     "賣出",
+     "現金償還",
+     "前日餘額",
+     "今日餘額",
+     "次一營業日限額",
+     "買進",
+     "賣出",
+     "現券償還",
+     "前日餘額",
+     "今日餘額",
+     "次一營業日限額",
+     "資券互抵",
+     "註記"
+    ]
+   },
+   "2y": {
+    "date": "2024-11-01",
+    "codes": 1172,
+    "has_summary": true,
+    "fields_same_as_today": null,
+    "fields": [
+     "代號",
+     "名稱",
+     "買進",
+     "賣出",
+     "現金償還",
+     "前日餘額",
+     "今日餘額",
+     "次一營業日限額",
+     "買進",
+     "賣出",
+     "現券償還",
+     "前日餘額",
+     "今日餘額",
+     "次一營業日限額",
+     "資券互抵",
+     "註記"
+    ]
+   }
+  },
+  "twse_close": {
+   "1w": {
+    "date": "2026-10-23",
+    "ok": false,
+    "summary": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 71,
+     "json": true,
+     "top_keys": [
+      "stat",
+      "type"
+     ],
+     "stat": "很抱歉，沒有符合條件的資料!",
+     "tables": []
+    }
+   },
+   "3m": {
+    "date": "2026-07-31",
+    "ok": true,
+    "summary": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 246229,
+     "json": true,
+     "top_keys": [
+      "tables",
+      "type",
+      "params",
+      "stat",
+      "date"
+     ],
+     "stat": "OK",
+     "date": "20260731",
+     "tables": [
+      {
+       "title": "115年07月31日 價格指數(臺灣證券交易所)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 56,
+       "sample": [
+        "寶島股價指數",
+        "47,596.17",
+        "<p style ='color:red'>+</p>",
+        "3,481.68",
+        "7.89",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "價格指數(跨市場)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 47,
+       "sample": [
+        "臺灣生技指數",
+        "3,819.06",
+        "<p style ='color:red'>+</p>",
+        "50.01",
+        "1.33",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "價格指數(臺灣指數公司)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 35,
+       "sample": [
+        "金融類日報酬兩倍指數",
+        "105,969.00",
+        "<p style ='color:red'>+</p>",
+        "8,654.87",
+        "8.89",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(臺灣證券交易所)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 47,
+       "sample": [
+        "寶島股價報酬指數",
+        "73,821.87",
+        "<p style ='color:red'>+</p>",
+        "5,401.81",
+        "7.90",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(跨市場)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 48,
+       "sample": [
+        "臺灣生技報酬指數",
+        "4,475.21",
+        "<p style ='color:red'>+</p>",
+        "62.14",
+        "1.41",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(臺灣指數公司)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 34,
+       "sample": [
+        "漲升股利150報酬指數",
+        "30,762.69",
+        "<p style ='color:red'>+</p>",
+        "1,806.54",
+        "6.24",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "115年07月31日 大盤統計資訊",
+       "fields": [
+        "成交統計",
+        "成交金額(元)",
+        "成交股數(股)",
+        "成交筆數"
+       ],
+       "rows": 17,
+       "sample": [
+        "1.一般股票",
+        "725,313,092,291",
+        "4,981,167,213",
+        "2,793,475"
+       ],
+       "summary": null
+      },
+      {
+       "title": "漲跌證券數合計",
+       "fields": [
+        "類型",
+        "整體市場",
+        "股票"
+       ],
+       "rows": 5,
+       "sample": [
+        "上漲(漲停)",
+        "8,951(810)",
+        "892(113)"
+       ],
+       "summary": null
+      },
+      {
+       "title": "115年07月31日 每日收盤行情(全部(不含權證、牛熊證、可展延牛熊證))",
+       "fields": [
+        "證券代號",
+        "證券名稱",
+        "成交股數",
+        "成交筆數",
+        "成交金額",
+        "開盤價",
+        "最高價",
+        "最低價",
+        "收盤價",
+        "漲跌(+/-)",
+        "漲跌價差",
+        "最後揭示買價",
+        "最後揭示買量",
+        "最後揭示賣價",
+        "最後揭示賣量",
+        "本益比"
+       ],
+       "rows": 1373,
+       "sample": [
+        "00400A",
+        "主動國泰動能高息",
+        "102,910,202",
+        "9,341",
+        "1,322,798,650",
+        "12.70",
+        "13.00",
+        "12.69",
+        "12.94",
+        "<p style= color:red>+</p>",
+        "1.11",
+        "12.94",
+        "203",
+        "12.95",
+        "1,501",
+        "0.00"
+       ],
+       "summary": null
+      },
+      {
+       "title": null,
+       "fields": null,
+       "rows": 0,
+       "sample": null,
+       "summary": null
+      }
+     ]
+    }
+   },
+   "6m": {
+    "date": "2026-05-01",
+    "ok": false,
+    "summary": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 71,
+     "json": true,
+     "top_keys": [
+      "stat",
+      "type"
+     ],
+     "stat": "很抱歉，沒有符合條件的資料!",
+     "tables": []
+    }
+   },
+   "1y": {
+    "date": "2025-10-31",
+    "ok": true,
+    "summary": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 236979,
+     "json": true,
+     "top_keys": [
+      "tables",
+      "type",
+      "params",
+      "stat",
+      "date"
+     ],
+     "stat": "OK",
+     "date": "20251031",
+     "tables": [
+      {
+       "title": "114年10月31日 價格指數(臺灣證券交易所)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 56,
+       "sample": [
+        "寶島股價指數",
+        "31,482.53",
+        "<p style ='color:green'>-</p>",
+        "36.66",
+        "-0.12",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "價格指數(跨市場)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 50,
+       "sample": [
+        "臺灣生技指數",
+        "3,861.74",
+        "<p style ='color:red'>+</p>",
+        "52.16",
+        "1.37",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "價格指數(臺灣指數公司)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 33,
+       "sample": [
+        "金融類日報酬兩倍指數",
+        "49,839.44",
+        "<p style ='color:green'>-</p>",
+        "704.26",
+        "-1.39",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(臺灣證券交易所)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 47,
+       "sample": [
+        "寶島股價報酬指數",
+        "48,122.62",
+        "<p style ='color:green'>-</p>",
+        "56.01",
+        "-0.12",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(跨市場)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 51,
+       "sample": [
+        "臺灣生技報酬指數",
+        "4,480.13",
+        "<p style ='color:red'>+</p>",
+        "60.50",
+        "1.37",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(臺灣指數公司)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 32,
+       "sample": [
+        "漲升股利150報酬指數",
+        "18,307.04",
+        "<p style ='color:red'>+</p>",
+        "4.89",
+        "0.03",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "114年10月31日 大盤統計資訊",
+       "fields": [
+        "成交統計",
+        "成交金額(元)",
+        "成交股數(股)",
+        "成交筆數"
+       ],
+       "rows": 17,
+       "sample": [
+        "1.一般股票",
+        "543,676,764,043",
+        "4,539,577,516",
+        "3,205,648"
+       ],
+       "summary": null
+      },
+      {
+       "title": "漲跌證券數合計",
+       "fields": [
+        "類型",
+        "整體市場",
+        "股票"
+       ],
+       "rows": 5,
+       "sample": [
+        "上漲(漲停)",
+        "6,947(88)",
+        "376(6)"
+       ],
+       "summary": null
+      },
+      {
+       "title": "114年10月31日 每日收盤行情(全部(不含權證、牛熊證、可展延牛熊證))",
+       "fields": [
+        "證券代號",
+        "證券名稱",
+        "成交股數",
+        "成交筆數",
+        "成交金額",
+        "開盤價",
+        "最高價",
+        "最低價",
+        "收盤價",
+        "漲跌(+/-)",
+        "漲跌價差",
+        "最後揭示買價",
+        "最後揭示買量",
+        "最後揭示賣價",
+        "最後揭示賣量",
+        "本益比"
+       ],
+       "rows": 1319,
+       "sample": [
+        "0050",
+        "元大台灣50",
+        "55,956,524",
+        "44,302",
+        "3,616,991,558",
+        "64.60",
+        "64.80",
+        "64.40",
+        "64.75",
+        "<p style= color:red>+</p>",
+        "0.35",
+        "64.75",
+        "281",
+        "64.80",
+        "3,289",
+        "0.00"
+       ],
+       "summary": null
+      },
+      {
+       "title": null,
+       "fields": null,
+       "rows": 0,
+       "sample": null,
+       "summary": null
+      }
+     ]
+    }
+   },
+   "2y": {
+    "date": "2024-11-01",
+    "ok": true,
+    "summary": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 226850,
+     "json": true,
+     "top_keys": [
+      "tables",
+      "type",
+      "params",
+      "stat",
+      "date"
+     ],
+     "stat": "OK",
+     "date": "20241101",
+     "tables": [
+      {
+       "title": "113年11月01日 價格指數(臺灣證券交易所)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 56,
+       "sample": [
+        "寶島股價指數",
+        "25,838.09",
+        "<p style ='color:green'>-</p>",
+        "35.99",
+        "-0.14",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "價格指數(跨市場)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 50,
+       "sample": [
+        "臺灣生技指數",
+        "4,205.58",
+        "<p style ='color:red'>+</p>",
+        "39.41",
+        "0.95",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "價格指數(臺灣指數公司)",
+       "fields": [
+        "指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 34,
+       "sample": [
+        "金融類日報酬兩倍指數",
+        "45,526.70",
+        "<p style ='color:green'>-</p>",
+        "599.28",
+        "-1.30",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(臺灣證券交易所)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 47,
+       "sample": [
+        "寶島股價報酬指數",
+        "38,350.21",
+        "<p style ='color:green'>-</p>",
+        "52.92",
+        "-0.14",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(跨市場)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 51,
+       "sample": [
+        "臺灣生技報酬指數",
+        "4,798.51",
+        "<p style ='color:red'>+</p>",
+        "44.97",
+        "0.95",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "報酬指數(臺灣指數公司)",
+       "fields": [
+        "報酬指數",
+        "收盤指數",
+        "漲跌(+/-)",
+        "漲跌點數",
+        "漲跌百分比(%)",
+        "特殊處理註記"
+       ],
+       "rows": 33,
+       "sample": [
+        "漲升股利150報酬指數",
+        "14,741.14",
+        "<p style ='color:green'>-</p>",
+        "55.13",
+        "-0.37",
+        ""
+       ],
+       "summary": null
+      },
+      {
+       "title": "113年11月01日 大盤統計資訊",
+       "fields": [
+        "成交統計",
+        "成交金額(元)",
+        "成交股數(股)",
+        "成交筆數"
+       ],
+       "rows": 17,
+       "sample": [
+        "1.一般股票",
+        "385,626,611,308",
+        "3,653,895,482",
+        "2,260,287"
+       ],
+       "summary": null
+      },
+      {
+       "title": "漲跌證券數合計",
+       "fields": [
+        "類型",
+        "整體市場",
+        "股票"
+       ],
+       "rows": 5,
+       "sample": [
+        "上漲(漲停)",
+        "4,026(18)",
+        "672(14)"
+       ],
+       "summary": null
+      },
+      {
+       "title": "113年11月01日 每日收盤行情(全部(不含權證、牛熊證、可展延牛熊證))",
+       "fields": [
+        "證券代號",
+        "證券名稱",
+        "成交股數",
+        "成交筆數",
+        "成交金額",
+        "開盤價",
+        "最高價",
+        "最低價",
+        "收盤價",
+        "漲跌(+/-)",
+        "漲跌價差",
+        "最後揭示買價",
+        "最後揭示買量",
+        "最後揭示賣價",
+        "最後揭示賣量",
+        "本益比"
+       ],
+       "rows": 1259,
+       "sample": [
+        "0050",
+        "元大台灣50",
+        "21,072,030",
+        "31,562",
+        "3,965,634,116",
+        "186.15",
+        "190.55",
+        "185.95",
+        "190.50",
+        "<p style= color:green>-</p>",
+        "1.30",
+        "190.50",
+        "19",
+        "190.55",
+        "27",
+        "0.00"
+       ],
+       "summary": null
+      },
+      {
+       "title": null,
+       "fields": null,
+       "rows": 0,
+       "sample": null,
+       "summary": null
+      }
+     ]
+    }
+   }
+  },
+  "tpex_margin": {
+   "1w": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/margin/balance?response=json&date=2026/10/23",
+     "ok": false,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 419,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20261023",
+      "tables": [
+       {
+        "title": "上櫃股票融資融券餘額",
+        "fields": [
+         "代號",
+         "名稱",
+         "前資餘額(張)",
+         "資買",
+         "資賣",
+         "現償",
+         "資餘額",
+         "資屬證金",
+         "資使用率(%)",
+         "資限額",
+         "前券餘額(張)",
+         "券賣",
+         "券買",
+         "券償",
+         "券餘額",
+         "券屬證金",
+         "券使用率(%)",
+         "券限額",
+         "資券相抵(張)",
+         "備註"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": []
+       }
+      ]
+     }
+    },
+    {
+     "url": "https://www.tpex.org.tw/web/stock/margin_trading/margin_balance/margin_bal_result.php?l=zh-tw&o=json&d=115/10/23",
+     "ok": false,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 419,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20261023",
+      "tables": [
+       {
+        "title": "上櫃股票融資融券餘額",
+        "fields": [
+         "代號",
+         "名稱",
+         "前資餘額(張)",
+         "資買",
+         "資賣",
+         "現償",
+         "資餘額",
+         "資屬證金",
+         "資使用率(%)",
+         "資限額",
+         "前券餘額(張)",
+         "券賣",
+         "券買",
+         "券償",
+         "券餘額",
+         "券屬證金",
+         "券使用率(%)",
+         "券限額",
+         "資券相抵(張)",
+         "備註"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": []
+       }
+      ]
+     }
+    }
+   ],
+   "3m": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/margin/balance?response=json&date=2026/07/31",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 106208,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20260731",
+      "tables": [
+       {
+        "title": "上櫃股票融資融券餘額",
+        "fields": [
+         "代號",
+         "名稱",
+         "前資餘額(張)",
+         "資買",
+         "資賣",
+         "現償",
+         "資餘額",
+         "資屬證金",
+         "資使用率(%)",
+         "資限額",
+         "前券餘額(張)",
+         "券賣",
+         "券買",
+         "券償",
+         "券餘額",
+         "券屬證金",
+         "券使用率(%)",
+         "券限額",
+         "資券相抵(張)",
+         "備註"
+        ],
+        "rows": 914,
+        "sample": [
+         "00679B",
+         "元大美債20年",
+         "4,178",
+         "51",
+         "354",
+         "0",
+         "3,875",
+         "9",
+         "0.24",
+         "1,589,298",
+         "24",
+         "0",
+         "1",
+         "0",
+         "23",
+         "0",
+         "0.0",
+         "1,589,298",
+         "0",
+         ""
+        ],
+        "summary": [
+         [
+          "",
+          "合計(張)",
+          "2,149,360",
+          "69,455",
+          "45,743",
+          "2,667",
+          "2,170,405",
+          "",
+          "",
+          "",
+          "31,943",
+          "4,638",
+          "5,607",
+          "328",
+          "30,646",
+          "",
+          "",
+          "",
+          "",
+          ""
+         ],
+         [
+          "",
+          "融資金(仟元)",
+          "163,014,474",
+          "7,053,685",
+          "3,472,533",
+          "437,130",
+          "166,158,496",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+         ]
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "6m": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/margin/balance?response=json&date=2026/05/01",
+     "ok": false,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 419,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20260501",
+      "tables": [
+       {
+        "title": "上櫃股票融資融券餘額",
+        "fields": [
+         "代號",
+         "名稱",
+         "前資餘額(張)",
+         "資買",
+         "資賣",
+         "現償",
+         "資餘額",
+         "資屬證金",
+         "資使用率(%)",
+         "資限額",
+         "前券餘額(張)",
+         "券賣",
+         "券買",
+         "券償",
+         "券餘額",
+         "券屬證金",
+         "券使用率(%)",
+         "券限額",
+         "資券相抵(張)",
+         "備註"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": []
+       }
+      ]
+     }
+    },
+    {
+     "url": "https://www.tpex.org.tw/web/stock/margin_trading/margin_balance/margin_bal_result.php?l=zh-tw&o=json&d=115/05/01",
+     "ok": false,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 419,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20260501",
+      "tables": [
+       {
+        "title": "上櫃股票融資融券餘額",
+        "fields": [
+         "代號",
+         "名稱",
+         "前資餘額(張)",
+         "資買",
+         "資賣",
+         "現償",
+         "資餘額",
+         "資屬證金",
+         "資使用率(%)",
+         "資限額",
+         "前券餘額(張)",
+         "券賣",
+         "券買",
+         "券償",
+         "券餘額",
+         "券屬證金",
+         "券使用率(%)",
+         "券限額",
+         "資券相抵(張)",
+         "備註"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": []
+       }
+      ]
+     }
+    }
+   ],
+   "1y": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/margin/balance?response=json&date=2025/10/31",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 96925,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20251031",
+      "tables": [
+       {
+        "title": "上櫃股票融資融券餘額",
+        "fields": [
+         "代號",
+         "名稱",
+         "前資餘額(張)",
+         "資買",
+         "資賣",
+         "現償",
+         "資餘額",
+         "資屬證金",
+         "資使用率(%)",
+         "資限額",
+         "前券餘額(張)",
+         "券賣",
+         "券買",
+         "券償",
+         "券餘額",
+         "券屬證金",
+         "券使用率(%)",
+         "券限額",
+         "資券相抵(張)",
+         "備註"
+        ],
+        "rows": 829,
+        "sample": [
+         "00679B",
+         "元大美債20年",
+         "14,633",
+         "86",
+         "174",
+         "0",
+         "14,545",
+         "163",
+         "0.65",
+         "2,231,673",
+         "28",
+         "41",
+         "0",
+         "0",
+         "69",
+         "0",
+         "0.0",
+         "2,231,673",
+         "254",
+         ""
+        ],
+        "summary": [
+         [
+          "",
+          "合計(張)",
+          "2,090,618",
+          "84,931",
+          "71,132",
+          "1,198",
+          "2,103,219",
+          "",
+          "",
+          "",
+          "95,824",
+          "5,599",
+          "5,415",
+          "432",
+          "95,576",
+          "",
+          "",
+          "",
+          "",
+          ""
+         ],
+         [
+          "",
+          "融資金(仟元)",
+          "108,815,684",
+          "6,647,403",
+          "5,658,598",
+          "62,344",
+          "109,742,145",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+         ]
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "2y": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/margin/balance?response=json&date=2024/11/01",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 94370,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20241101",
+      "tables": [
+       {
+        "title": "上櫃股票融資融券餘額",
+        "fields": [
+         "代號",
+         "名稱",
+         "前資餘額(張)",
+         "資買",
+         "資賣",
+         "現償",
+         "資餘額",
+         "資屬證金",
+         "資使用率(%)",
+         "資限額",
+         "前券餘額(張)",
+         "券賣",
+         "券買",
+         "券償",
+         "券餘額",
+         "券屬證金",
+         "券使用率(%)",
+         "券限額",
+         "資券相抵(張)",
+         "備註"
+        ],
+        "rows": 799,
+        "sample": [
+         "00679B",
+         "元大美債20年",
+         "31,852",
+         "170",
+         "177",
+         "0",
+         "31,845",
+         "579",
+         "1.23",
+         "2,582,673",
+         "17",
+         "0",
+         "0",
+         "0",
+         "17",
+         "0",
+         "0.0",
+         "2,582,673",
+         "0",
+         ""
+        ],
+        "summary": [
+         [
+          "",
+          "合計(張)",
+          "2,434,670",
+          "62,264",
+          "51,629",
+          "2,895",
+          "2,442,410",
+          "",
+          "",
+          "",
+          "95,066",
+          "8,469",
+          "9,348",
+          "1,188",
+          "92,999",
+          "",
+          "",
+          "",
+          "",
+          ""
+         ],
+         [
+          "",
+          "融資金(仟元)",
+          "112,847,106",
+          "3,416,356",
+          "2,654,541",
+          "100,523",
+          "113,508,398",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+         ]
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "tpex_close": {
+   "1w": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?response=json&date=2026/10/23",
+     "ok": false,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1630,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "flagField",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20261023",
+      "tables": [
+       {
+        "title": "上櫃股票行情",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       },
+       {
+        "title": "管理股票",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       }
+      ]
+     }
+    },
+    {
+     "url": "https://www.tpex.org.tw/web/stock/aftertrading/daily_close_quotes/stk_quote_result.php?l=zh-tw&o=json&d=115/10/23",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1991830,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "flagField",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20261030",
+      "tables": [
+       {
+        "title": "上櫃股票行情",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 13360,
+        "sample": [
+         "00411A",
+         "主動統一前沿科技",
+         "9.73",
+         "-0.31 ",
+         "9.66",
+         "9.74",
+         "9.61",
+         "9.66",
+         "8,822,678",
+         "85,250,229",
+         "2,252",
+         "9.72",
+         "122",
+         "9.73",
+         "231",
+         "456,576,000",
+         "9.73",
+         "9999.95",
+         "0.01"
+        ],
+        "summary": null
+       },
+       {
+        "title": "管理股票",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       }
+      ]
+     }
+    }
+   ],
+   "3m": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?response=json&date=2026/07/31",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1512553,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "flagField",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20260731",
+      "tables": [
+       {
+        "title": "上櫃股票行情",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 10218,
+        "sample": [
+         "006201",
+         "元大富櫃50",
+         "38.07",
+         "+3.12",
+         "37.72",
+         "38.17",
+         "37.53",
+         "37.82",
+         "618,354",
+         "23,384,964",
+         "477",
+         "38.05",
+         "1",
+         "38.07",
+         "20",
+         "22,946,000",
+         "38.07",
+         "41.87",
+         "34.27"
+        ],
+        "summary": null
+       },
+       {
+        "title": "管理股票",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       }
+      ]
+     }
+    }
+   ],
+   "6m": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?response=json&date=2026/05/01",
+     "ok": false,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1630,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "flagField",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20260501",
+      "tables": [
+       {
+        "title": "上櫃股票行情",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       },
+       {
+        "title": "管理股票",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       }
+      ]
+     }
+    },
+    {
+     "url": "https://www.tpex.org.tw/web/stock/aftertrading/daily_close_quotes/stk_quote_result.php?l=zh-tw&o=json&d=115/05/01",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1991830,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "flagField",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20261030",
+      "tables": [
+       {
+        "title": "上櫃股票行情",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 13360,
+        "sample": [
+         "00411A",
+         "主動統一前沿科技",
+         "9.73",
+         "-0.31 ",
+         "9.66",
+         "9.74",
+         "9.61",
+         "9.66",
+         "8,822,678",
+         "85,250,229",
+         "2,252",
+         "9.72",
+         "122",
+         "9.73",
+         "231",
+         "456,576,000",
+         "9.73",
+         "9999.95",
+         "0.01"
+        ],
+        "summary": null
+       },
+       {
+        "title": "管理股票",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       }
+      ]
+     }
+    }
+   ],
+   "1y": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?response=json&date=2025/10/31",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1816898,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "flagField",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20251031",
+      "tables": [
+       {
+        "title": "上櫃股票行情",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 12133,
+        "sample": [
+         "006201",
+         "元大富櫃50",
+         "24.87",
+         "+0.35",
+         "24.82",
+         "24.87",
+         "24.75",
+         "24.82",
+         "79,034",
+         "1,961,912",
+         "56",
+         "24.86",
+         "1",
+         "24.89",
+         "1",
+         "16,946,000",
+         "24.87",
+         "27.35",
+         "22.39"
+        ],
+        "summary": null
+       },
+       {
+        "title": "管理股票",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(張數)",
+         "最後賣價",
+         "最後賣量(張數)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       }
+      ]
+     }
+    }
+   ],
+   "2y": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?response=json&date=2024/11/01",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1802662,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "flagField",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20241101",
+      "tables": [
+       {
+        "title": "上櫃股票行情",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(千股)",
+         "最後賣價",
+         "最後賣量(千股)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 12165,
+        "sample": [
+         "006201",
+         "元大富櫃50",
+         "23.83",
+         "-0.12 ",
+         "23.53",
+         "23.83",
+         "23.43",
+         "23.63",
+         "73,826",
+         "1,744,626",
+         "47",
+         "23.82",
+         "4",
+         "23.83",
+         "2",
+         "15,946,000",
+         "23.83",
+         "26.21",
+         "21.45"
+        ],
+        "summary": null
+       },
+       {
+        "title": "管理股票",
+        "fields": [
+         "代號",
+         "名稱",
+         "收盤",
+         "漲跌",
+         "開盤",
+         "最高",
+         "最低",
+         "均價",
+         "成交股數",
+         "成交金額(元)",
+         "成交筆數",
+         "最後買價",
+         "最後買量(千股)",
+         "最後賣價",
+         "最後賣量(千股)",
+         "發行股數",
+         "次日 參考價",
+         "次日 漲停價",
+         "次日 跌停價"
+        ],
+        "rows": 0,
+        "sample": null,
+        "summary": null
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "twse_index": {
+   "1w": {
+    "month": "2026-10",
+    "ok": true,
+    "summary": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 1371,
+     "json": true,
+     "top_keys": [
+      "stat",
+      "title",
+      "date",
+      "fields",
+      "data",
+      "total"
+     ],
+     "stat": "OK",
+     "date": "20261001",
+     "tables": [
+      {
+       "key": "fields",
+       "rows": 5,
+       "sample": [
+        "日期",
+        "開盤指數",
+        "最高指數",
+        "最低指數",
+        "收盤指數"
+       ]
+      },
+      {
+       "key": "data",
+       "rows": 19,
+       "sample": [
+        "115/10/01",
+        "47,961.98",
+        "48,353.49",
+        "47,893.42",
+        "48,353.49"
+       ]
+      }
+     ]
+    }
+   },
+   "1y": {
+    "month": "2025-10",
+    "ok": true,
+    "summary": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 1433,
+     "json": true,
+     "top_keys": [
+      "stat",
+      "title",
+      "date",
+      "fields",
+      "data",
+      "total"
+     ],
+     "stat": "OK",
+     "date": "20251001",
+     "tables": [
+      {
+       "key": "fields",
+       "rows": 5,
+       "sample": [
+        "日期",
+        "開盤指數",
+        "最高指數",
+        "最低指數",
+        "收盤指數"
+       ]
+      },
+      {
+       "key": "data",
+       "rows": 20,
+       "sample": [
+        "114/10/01",
+        "26,078.29",
+        "26,325.79",
+        "25,982.91",
+        "25,982.91"
+       ]
+      }
+     ]
+    }
+   },
+   "2y": {
+    "month": "2024-11",
+    "ok": true,
+    "summary": {
+     "status": 200,
+     "content_type": "application/json;charset=UTF-8",
+     "bytes": 1495,
+     "json": true,
+     "top_keys": [
+      "stat",
+      "title",
+      "date",
+      "fields",
+      "data",
+      "total"
+     ],
+     "stat": "OK",
+     "date": "20241101",
+     "tables": [
+      {
+       "key": "fields",
+       "rows": 5,
+       "sample": [
+        "日期",
+        "開盤指數",
+        "最高指數",
+        "最低指數",
+        "收盤指數"
+       ]
+      },
+      {
+       "key": "data",
+       "rows": 21,
+       "sample": [
+        "113/11/01",
+        "22,438.93",
+        "22,828.98",
+        "22,231.94",
+        "22,780.08"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "tpex_index": {
+   "1w": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/indexInfo/inx?response=json&date=2026/10/01",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1327,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20261001",
+      "tables": [
+       {
+        "title": "櫃買指數(月查詢)",
+        "fields": [
+         "日期",
+         "開市",
+         "最高",
+         "最低",
+         "收市",
+         "漲/跌"
+        ],
+        "rows": 19,
+        "sample": [
+         "2026/10/01",
+         "417.48",
+         "421.21",
+         "417.09",
+         "418.82",
+         "1.75"
+        ],
+        "summary": []
+       }
+      ]
+     }
+    }
+   ],
+   "1y": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/indexInfo/inx?response=json&date=2025/10/01",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1379,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20251001",
+      "tables": [
+       {
+        "title": "櫃買指數(月查詢)",
+        "fields": [
+         "日期",
+         "開市",
+         "最高",
+         "最低",
+         "收市",
+         "漲/跌"
+        ],
+        "rows": 20,
+        "sample": [
+         "2025/10/01",
+         "261.86",
+         "263.97",
+         "261.38",
+         "261.47",
+         "-0.05"
+        ],
+        "summary": []
+       }
+      ]
+     }
+    }
+   ],
+   "2y": [
+    {
+     "url": "https://www.tpex.org.tw/www/zh-tw/indexInfo/inx?response=json&date=2024/11/01",
+     "ok": true,
+     "summary": {
+      "status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1439,
+      "json": true,
+      "top_keys": [
+       "date",
+       "tables",
+       "stat"
+      ],
+      "stat": "ok",
+      "date": "20241101",
+      "tables": [
+       {
+        "title": "櫃買指數(月查詢)",
+        "fields": [
+         "日期",
+         "開市",
+         "最高",
+         "最低",
+         "收市",
+         "漲/跌"
+        ],
+        "rows": 21,
+        "sample": [
+         "2024/11/01",
+         "263.70",
+         "264.94",
+         "259.02",
+         "264.94",
+         "0.72"
+        ],
+        "summary": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ },
+ "rate_limit": {
+  "requests": 20,
+  "results": [
+   {
+    "date": "2026-10-30",
+    "status": 200,
+    "sec": 0.19
+   },
+   {
+    "date": "2026-10-29",
+    "status": 200,
+    "sec": 0.56
+   },
+   {
+    "date": "2026-10-28",
+    "status": 200,
+    "sec": 0.52
+   },
+   {
+    "date": "2026-10-27",
+    "status": 200,
+    "sec": 0.79
+   },
+   {
+    "date": "2026-10-26",
+    "status": 200,
+    "sec": 0.34
+   },
+   {
+    "date": "2026-10-23",
+    "status": 200,
+    "sec": 0.14
+   },
+   {
+    "date": "2026-10-22",
+    "status": 200,
+    "sec": 0.47
+   },
+   {
+    "date": "2026-10-21",
+    "status": 200,
+    "sec": 0.59
+   },
+   {
+    "date": "2026-10-20",
+    "status": 200,
+    "sec": 0.55
+   },
+   {
+    "date": "2026-10-19",
+    "status": 200,
+    "sec": 0.5
+   },
+   {
+    "date": "2026-10-16",
+    "status": 200,
+    "sec": 0.56
+   },
+   {
+    "date": "2026-10-15",
+    "status": 200,
+    "sec": 0.56
+   },
+   {
+    "date": "2026-10-14",
+    "status": 200,
+    "sec": 0.68
+   },
+   {
+    "date": "2026-10-13",
+    "status": 200,
+    "sec": 0.65
+   },
+   {
+    "date": "2026-10-12",
+    "status": 200,
+    "sec": 0.96
+   },
+   {
+    "date": "2026-10-09",
+    "status": 200,
+    "sec": 0.27
+   },
+   {
+    "date": "2026-10-08",
+    "status": 200,
+    "sec": 0.69
+   },
+   {
+    "date": "2026-10-07",
+    "status": 200,
+    "sec": 1.88
+   },
+   {
+    "date": "2026-10-06",
+    "status": 200,
+    "sec": 1.68
+   },
+   {
+    "date": "2026-10-05",
+    "status": 200,
+    "sec": 0.72
+   }
+  ],
+  "blocked": {}
+ },
+ "finmind": {
+  "skipped": "FINMIND_TOKEN 不存在"
+ },
+ "history_feasibility": {
+  "twse_margin_earliest_tested_ok": "2024-11-01",
+  "twse_close_earliest_tested_ok": "2024-11-01",
+  "tpex_margin_earliest_tested_ok": "2024-11-01",
+  "tpex_close_earliest_tested_ok": "2024-11-01",
+  "rate_limited": false,
+  "estimate_490d": {
+   "requests": 1960,
+   "minutes_at_3s": 98,
+   "batches_of_150_days": 4
+  },
+  "survivorship_note": "官方每日全市場行情含當日所有掛牌股(當時已存在、之後下市的也在);yfinance 缺已下市股票"
+ },
+ "have": {
+  "existing_margin_daily": true,
+  "twse_margin": true,
+  "tpex_margin": true,
+  "industry_twse": true,
+  "industry_tpex": true,
+  "themes": true,
+  "official_total_twse": true
+ },
+ "verdict": "ok",
+ "request_log_tail": [
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20241101",
+   "status": 200,
+   "sec": 0.56,
+   "bytes": 116991
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX?response=json&type=ALLBUT0999&date=20241101",
+   "status": 200,
+   "sec": 1.23,
+   "bytes": 226850
+  },
+  {
+   "url": "https://www.tpex.org.tw/www/zh-tw/margin/balance?response=json&date=2024/11/01",
+   "status": 200,
+   "sec": 0.38,
+   "bytes": 94370
+  },
+  {
+   "url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?response=json&date=2024/11/01",
+   "status": 200,
+   "sec": 3.85,
+   "bytes": 1802662
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST?response=json&date=20261001",
+   "status": 200,
+   "sec": 0.14,
+   "bytes": 1371
+  },
+  {
+   "url": "https://www.tpex.org.tw/www/zh-tw/indexInfo/inx?response=json&date=2026/10/01",
+   "status": 200,
+   "sec": 0.33,
+   "bytes": 1327
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST?response=json&date=20251001",
+   "status": 200,
+   "sec": 0.4,
+   "bytes": 1433
+  },
+  {
+   "url": "https://www.tpex.org.tw/www/zh-tw/indexInfo/inx?response=json&date=2025/10/01",
+   "status": 200,
+   "sec": 0.34,
+   "bytes": 1379
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST?response=json&date=20241101",
+   "status": 200,
+   "sec": 0.69,
+   "bytes": 1495
+  },
+  {
+   "url": "https://www.tpex.org.tw/www/zh-tw/indexInfo/inx?response=json&date=2024/11/01",
+   "status": 200,
+   "sec": 0.63,
+   "bytes": 1439
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261030",
+   "status": 200,
+   "sec": 0.19,
+   "bytes": 129757
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261029",
+   "status": 200,
+   "sec": 0.56,
+   "bytes": 129203
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261028",
+   "status": 200,
+   "sec": 0.52,
+   "bytes": 129197
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261027",
+   "status": 200,
+   "sec": 0.79,
+   "bytes": 129163
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261026",
+   "status": 200,
+   "sec": 0.34,
+   "bytes": 50
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261023",
+   "status": 200,
+   "sec": 0.14,
+   "bytes": 50
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261022",
+   "status": 200,
+   "sec": 0.47,
+   "bytes": 129327
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261021",
+   "status": 200,
+   "sec": 0.59,
+   "bytes": 129028
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261020",
+   "status": 200,
+   "sec": 0.55,
+   "bytes": 129016
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261019",
+   "status": 200,
+   "sec": 0.5,
+   "bytes": 129320
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261016",
+   "status": 200,
+   "sec": 0.56,
+   "bytes": 129125
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261015",
+   "status": 200,
+   "sec": 0.56,
+   "bytes": 129578
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261014",
+   "status": 200,
+   "sec": 0.68,
+   "bytes": 129113
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261013",
+   "status": 200,
+   "sec": 0.65,
+   "bytes": 129408
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261012",
+   "status": 200,
+   "sec": 0.96,
+   "bytes": 129103
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261009",
+   "status": 200,
+   "sec": 0.27,
+   "bytes": 50
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261008",
+   "status": 200,
+   "sec": 0.69,
+   "bytes": 128935
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261007",
+   "status": 200,
+   "sec": 1.88,
+   "bytes": 129011
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261006",
+   "status": 200,
+   "sec": 1.68,
+   "bytes": 128932
+  },
+  {
+   "url": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL&date=20261005",
+   "status": 200,
+   "sec": 0.72,
+   "bytes": 129107
+  }
+ ],
+ "request_count": 83
+}
