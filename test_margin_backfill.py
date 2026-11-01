@@ -52,6 +52,9 @@ class FakeSession:
             return Resp(404, text="")
         if self.block_on and self.block_on in url:
             return Resp(429, text="too many")
+        if getattr(self, "net_fail_on", None) and self.net_fail_on in url:
+            import requests
+            raise requests.exceptions.ChunkedEncodingError("cut")
         if "MI_5MINS_HIST" in url:
             ym = url.split("date=")[1][:6]
             data = [[roc(d), "1", "1", "1", str(100 + i)] for i, d in enumerate(DAYS) if d.replace("-", "")[:6] == ym]
@@ -197,6 +200,16 @@ class TestBackfill(unittest.TestCase):
         code, log = mb.run_batch(make_http(s), mb.Store(self.d), self.today)
         self.assertEqual(code, 2)
         self.assertIn("Disallow: /www/", log["stopped"])
+
+    def test_connection_cut_is_code_4_and_resumable(self):
+        s = FakeSession()
+        s.net_fail_on = "dailyQuotes?response=json&date=2026/10/28"
+        code, log = mb.run_batch(make_http(s), mb.Store(self.d), self.today)
+        self.assertEqual(code, 4)
+        self.assertIn("ChunkedEncodingError", log["stopped"])
+        code, _ = mb.run_batch(make_http(FakeSession()), mb.Store(self.d), self.today)
+        self.assertEqual(code, 10)
+        self.assertEqual(len(self.rows()), len(DAYS) * 5)
 
     def test_num(self):
         self.assertEqual(mb.num("1,234.5"), 1234.5)
