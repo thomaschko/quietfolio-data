@@ -59,3 +59,13 @@ def test_unchanged_ignores_generated(tmp_path, monkeypatch):
     cb.write(out)
     again = cb.build(_weeks(), insti_for(cal), cal, now=NOW + dt.timedelta(hours=3))
     assert cb.unchanged(again)
+
+
+def test_etf_excluded():
+    cal = weekdays_cal()
+    weeks = [(d, dict(lv, **{"0050": levels()})) for d, lv in _weeks()]
+    ins = insti_for(cal, code="0050")
+    for doc in ins.values():
+        doc["twse"]["2408"] = [1, 0, 0, 1]
+    out = cb.build(weeks, ins, cal, now=NOW)
+    assert "0050" not in out["stocks"] and "2408" in out["stocks"]

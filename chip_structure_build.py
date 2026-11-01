@@ -4,7 +4,7 @@ chip_structure_build.py — 個股籌碼結構 Phase 3(方案 A):全市場精簡
 ============================================================
 輸入:tdcc_weekly/*.csv.gz(集保週,全部週)、insti_daily/*.json(法人日)、trading_calendar(交易日)
 計算:chip_structure_core.stock_series(純函式,無 look-ahead)
-輸出:chip_structure_full.json —— 只放有法人資料的上市櫃股票(興櫃/未上市集保有、但 T86/TPEx 不涵蓋,不放)
+輸出:chip_structure_full.json —— 只放有法人資料的上市櫃股票(興櫃/未上市集保有、但 T86/TPEx 不涵蓋,不放);ETF(00 開頭)不放
   頂層:generated / tdcc_asof / inst_asof / date_mismatch / weeks / cfg / notes / stale
   每檔(鍵 = 代號):
     n   名稱(insti_daily 的 names)
@@ -99,7 +99,8 @@ def build(weeks, insti, calendar, now=None):
             listed.update((doc.get(mk) or {}).keys())
     inst_asof = max(insti) if insti else None
     stocks = {}
-    for code in sorted(c for c in weeks[-1][1] if c in listed):
+    # 2026-11-01 使用者決定排除 ETF(00 開頭):受益權單位天天因申購贖回變動,大戶比重沒有意義,也幾乎都會被標股本變動
+    for code in sorted(c for c in weeks[-1][1] if c in listed and not c.startswith("00")):
         row = compact(code, cs.stock_series(code, weeks, insti, calendar), names)
         if row:
             stocks[code] = row
