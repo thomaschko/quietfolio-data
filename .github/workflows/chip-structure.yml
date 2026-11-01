@@ -1,0 +1,57 @@
+name: Chip Structure (集保 × 法人 籌碼結構)
+
+# 2026-10-31 Phase 3(方案 A):重算全市場 chip_structure_full.json。
+# 觸發:集保週資料(TDCC Weekly)跑完之後;平日台北約 20:30(GAS 約 19:57 推完當天法人之後);也可手動。
+# 內容沒變(只差產生時間)就不 commit。GAS ChipStructureFetch.js 每小時讀這份、挑頁面要用的股票。
+on:
+  workflow_run:
+    workflows: ["TDCC Weekly (集保戶股權分散表)"]
+    types: [completed]
+  schedule:
+    - cron: '30 12 * * 1-5'   # 台北 20:30
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chip-structure
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests pytest
+
+      - name: Unit tests
+        run: python -m pytest -q test_chip_structure_core.py test_chip_structure_build.py test_tdcc_fetch.py
+
+      - name: Build
+        run: python chip_structure_build.py
+
+      - name: Commit and push
+        if: always()
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          [ -f chip_structure_full.json ] && git add chip_structure_full.json || true
+          if git diff --staged --quiet; then echo "無變更,不 commit"; exit 0; fi
+          git commit -m "Chip structure $(TZ=Asia/Taipei date +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push 失敗,第 $i 次重試"; sleep $((i * 10))
+          done
+          exit 1
