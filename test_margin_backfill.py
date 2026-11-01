@@ -39,9 +39,16 @@ class FakeSession:
         self.tpex_close_missing = set(tpex_close_missing)
         self.twse_date_override = twse_date_override or {}
 
+    robots = None   # {host: (status, text)};沒設 → 404
+
     def get(self, url, timeout=None, allow_redirects=None):
         self.calls.append(url)
         if url.endswith("/robots.txt"):
+            for host, (st, txt) in (self.robots or {}).items():
+                if host in url:
+                    if st in (301, 302) and not allow_redirects:
+                        return Resp(st, text="")
+                    return Resp(200 if st in (301, 302) else st, text=txt)
             return Resp(404, text="")
         if self.block_on and self.block_on in url:
             return Resp(429, text="too many")
@@ -177,6 +184,19 @@ class TestBackfill(unittest.TestCase):
         p = os.path.join(self.d, "x.csv")
         mb.merge_rows(p, ["date", "market", "v"], ["date", "market"], [("d1", "twse", 1), ("d1", "twse", 2)])
         self.assertEqual(self.csv("x.csv"), [{"date": "d1", "market": "twse", "v": "2"}])
+
+    def test_robots_redirect_followed(self):
+        s = FakeSession()
+        s.robots = {"www.tpex.org.tw": (301, "User-agent: *\nDisallow: /admin/\n")}
+        code, _ = mb.run_batch(make_http(s), mb.Store(self.d), self.today)
+        self.assertEqual(code, 10)
+
+    def test_robots_disallow_stops(self):
+        s = FakeSession()
+        s.robots = {"www.tpex.org.tw": (200, "User-agent: *\nDisallow: /www/\n")}
+        code, log = mb.run_batch(make_http(s), mb.Store(self.d), self.today)
+        self.assertEqual(code, 2)
+        self.assertIn("Disallow: /www/", log["stopped"])
 
     def test_num(self):
         self.assertEqual(mb.num("1,234.5"), 1234.5)
