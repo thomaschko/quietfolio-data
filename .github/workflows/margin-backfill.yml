@@ -1,0 +1,58 @@
+name: Margin History Backfill (融資占比歷史回補)
+
+# 2026-11-01 Phase 1.5。只手動執行。每批 ≤ 150 個交易日、請求間隔 3 秒;每批結束 commit 一次(斷點續跑)。
+# 被限流 / 封鎖(結束碼 2)或超過 50 MB(結束碼 3)就停止,不重試;全部完成(結束碼 10)也停止。
+on:
+  workflow_dispatch:
+    inputs:
+      batches:
+        description: '這次最多跑幾批(每批 ≤ 150 個交易日)'
+        required: false
+        default: '4'
+
+permissions:
+  contents: write
+
+concurrency: margin-backfill
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Backfill
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          n=${{ github.event.inputs.batches || '4' }}
+          final=0
+          for b in $(seq 1 $n); do
+            echo "=== batch $b/$n ==="
+            set +e
+            python margin_backfill.py
+            rc=$?
+            set -e
+            git add margin_hist
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Margin history backfill batch $b (rc=$rc)"
+              for i in 1 2 3 4; do
+                git pull --rebase -q origin main && git push -q origin HEAD:main && break
+                sleep $((2**i))
+              done
+            fi
+            if [ $rc -eq 10 ]; then echo "全部完成"; break; fi
+            if [ $rc -ne 0 ]; then echo "停止(結束碼 $rc)"; final=$rc; break; fi
+          done
+          [ "$final" -eq 2 ] && exit 1 || true
+          [ "$final" -eq 3 ] && exit 1 || true
