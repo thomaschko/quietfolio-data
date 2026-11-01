@@ -1,0 +1,59 @@
+name: Margin Share (族群 / ETF 融資占比)
+
+# 2026-11-02 Phase 2。只描述槓桿資金分布,不改任何雷達的收錄、排序、門檻。
+# 融資餘額來自 Apps Script runMarginDrop(夜間 22:00 鏈)推送的 margin_daily/;排在它之後,早上再補跑一次。
+# 收盤價、上櫃官方合計、指數沿用 margin_backfill.py 的官方端點與規則(robots、間隔 3 秒、遇 403/429 即停)。
+on:
+  schedule:
+    - cron: '20 15 * * 1-5'   # 台北 23:20(週一~五)
+    - cron: '40 0 * * 2-6'    # 台北 08:40(週二~六,前一晚沒跑成功時補)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: margin-backfill   # 和回補共用,避免同時寫 margin_hist
+
+jobs:
+  margin-share:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Get My-TW-Coverage themes (git shallow clone)
+        continue-on-error: true
+        run: |
+          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/Timeverse/My-TW-Coverage /tmp/twcov
+          git -C /tmp/twcov sparse-checkout set themes
+          echo "TW_COVERAGE_THEMES=/tmp/twcov/themes" >> "$GITHUB_ENV"
+          echo "TW_COVERAGE_SHA=$(git -C /tmp/twcov rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Compute
+        run: python margin_share.py
+
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in margin_hist margin_share.json margin_share_history.json margin_share_events.json \
+                   margin_share_classes.json margin_share_themes.json; do
+            [ -e "$f" ] && git add "$f"
+          done
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "Margin share update"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
