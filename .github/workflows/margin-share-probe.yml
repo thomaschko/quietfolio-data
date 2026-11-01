@@ -1,0 +1,57 @@
+name: Margin Share Probe (一次性探測)
+
+# 2026-11-01 族群 / ETF 融資占比模組 Phase 0:既有融資資料、收盤價、產業別、ETF 辨識、題材對照、
+# 官方融資總額、歷史可得性(只查不存)與限流行為。只手動執行。
+# 結果 margin_share_probe_result.json commit 回 repo(另以 artifact 上傳)。
+# FinMind 只在 GitHub Secrets 有 FINMIND_TOKEN 時才探測(沒有就跳過)。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: margin-share-probe
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run probe
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python margin_share_probe.py
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: margin_share_probe_result
+          path: margin_share_probe_result.json
+          if-no-files-found: warn
+
+      - name: Commit result
+        if: always()
+        run: |
+          [ -f margin_share_probe_result.json ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add margin_share_probe_result.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Margin share probe result"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
