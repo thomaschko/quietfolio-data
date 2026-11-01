@@ -21,7 +21,7 @@ margin_backfill.py — 融資占比歷史回補(2026-11-01,Phase 1.5)
   missing.csv   date,market,code,reason
   progress.json 已完成的 (market, date)、每批紀錄、停止原因
 結束碼:0 = 這批完成(可能還有剩)、10 = 全部完成、2 = 被限流 / 封鎖而停止、3 = 超過大小上限、
-      4 = 連線中斷(回應傳到一半被切斷、逾時、連線重置)而停止這一批
+      4 = 連線中斷(回應傳到一半被切斷、逾時、連線重置;同一網址等 60 秒重抓 1 次仍失敗)而停止這一批
   2026-11-01 使用者同意:連線中斷不視為限流,workflow 等 5 分鐘後接著跑,每次執行最多 3 次;
   403 / 429 / 驗證碼 / robots 不允許仍照規格立即停止、不重試。
 """
@@ -42,6 +42,7 @@ import requests
 UA = "quietfolio-margin-backfill/1.0 (read-only research; github.com/thomaschko/quietfolio-data)"
 OUT_DIR = "margin_hist"
 MIN_GAP = 3.0
+NET_RETRY_WAIT = 60
 BATCH_DAYS = 150
 TARGET_DAYS = 490
 MAX_BYTES = 50 * 1024 * 1024
@@ -77,6 +78,7 @@ class Http:
         self.robots = {}
         self.robots_info = {}
         self.count = 0
+        self.net_retries = 0
 
     def _wait(self, host):
         if host in self.last:
@@ -127,7 +129,13 @@ class Http:
         try:
             r = self._raw(url)
         except requests.RequestException as e:
-            raise NetError("連線中斷 %s:%s" % (type(e).__name__, url))
+            # 2026-11-01 使用者同意:連線中斷(不是限流)→ 等 60 秒、同一網址只重抓 1 次;再失敗才停止這一批
+            self.net_retries += 1
+            self.sleep(NET_RETRY_WAIT)
+            try:
+                r = self._raw(url)
+            except requests.RequestException as e2:
+                raise NetError("連線中斷 %s(已重抓 1 次仍失敗,第一次 %s):%s" % (type(e2).__name__, type(e).__name__, url))
         if r.status_code in (403, 429):
             raise Blocked("HTTP %s:%s" % (r.status_code, url))
         if r.status_code != 200:
@@ -454,7 +462,7 @@ def run_batch(http=None, store=None, today=None, batch_days=BATCH_DAYS, target_d
             code = 4 if isinstance(e, NetError) else 2
             break
     remaining = len([d for d in target if any(not store.done(m, d) for m in MARKETS)])
-    log.update({"remaining": remaining, "requests": http.count - log.pop("requests_before"),
+    log.update({"remaining": remaining, "requests": http.count - log.pop("requests_before"), "net_retries": http.net_retries,
                 "seconds": round(time.time() - t0)})
     store.prog["batches"].append(log)
     store.flush()
