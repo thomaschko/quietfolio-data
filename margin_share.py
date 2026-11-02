@@ -313,10 +313,12 @@ def events_payload(mkt, days, index, names, n_stocks=5):
         fwd = days[i + fwd_n][1]["industry"] if i + fwd_n < len(days) else None
         ch = ms.event_group_changes(prev["industry"], cur["industry"], fwd=fwd or {})   # 沒有 t+5 → None
         per[d] = ch
-        ranked = sorted(((g, v) for g, v in ch.items() if v["d_lots_pct"] is not None), key=lambda x: (x[1]["d_lots_pct"], x[0]))
+        # 依減少張數排序(2026-11-02 使用者同意;百分比排序會讓一兩檔的小產業排到前面)
+        ranked = sorted(((g, v) for g, v in ch.items() if v["d_lots"] is not None and v["d_lots"] < 0),
+                        key=lambda x: (x[1]["d_lots"], x[0]))
         rows.append({
             "date": d, "dir": kind, "index_ret_pct": ret,
-            "groups_lots_down3": [[g, v["d_lots_pct"], v["d_share_pp"], v["d_lots_5d_pct"]] for g, v in ranked[:3]],
+            "groups_lots_down3": [[g, v["d_lots"], v["d_lots_pct"], v["d_share_pp"], v["d_lots_5d_pct"]] for g, v in ranked[:3]],
             "stocks_lots_drop": [[x["code"], x["name"], int(x["drop_lots"]), x["pct_of_prev"]]
                                  for x in ms.top_lot_drops(prev["lots"], cur["lots"], names, n=n_stocks)],
         })
@@ -324,7 +326,7 @@ def events_payload(mkt, days, index, names, n_stocks=5):
     s.pop("events", None)
     s["return_days"] = len(rets)
     s["events"] = rows
-    s["fields"] = {"groups_lots_down3": "[產業, 融資張數變化%, 占比變化(百分點), t→t+5 張數變化%(回溯描述;最近 5 日內的事件為空)]",
+    s["fields"] = {"groups_lots_down3": "[產業, 融資張數增減(張), 張數變化%, 占比變化(百分點), t→t+5 張數變化%(回溯描述;最近 5 日內的事件為空)]",
                    "stocks_lots_drop": "[代號, 名稱, 減少張數, 占前一日餘額%]"}
     return s
 
