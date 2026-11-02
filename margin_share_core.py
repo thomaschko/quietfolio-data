@@ -237,7 +237,7 @@ def _pct(a, b):
 
 def event_group_changes(prev, cur, fwd=None):
     """prev / cur / fwd:{組: {share, lots, est_value}}(t−1 / t / t+5)。
-    → {組: {d_share_pp, d_lots_pct, d_est_pct, d_lots_5d_pct}};
+    → {組: {d_share_pp, d_lots, d_lots_pct, d_est_pct, d_lots_5d_pct}};d_lots = 張數增減(張);
     d_lots_5d_pct 是回溯描述,只在歷史報表(fwd 有給)時出現,不得用於當日輸出。"""
     out = {}
     for g, c in cur.items():
@@ -246,6 +246,7 @@ def event_group_changes(prev, cur, fwd=None):
             continue
         row = {
             "d_share_pp": round((c["share"] - p["share"]) * 100, 3) if c.get("share") is not None and p.get("share") is not None else None,
+            "d_lots": round(c["lots"] - p["lots"]) if c.get("lots") is not None and p.get("lots") is not None else None,
             "d_lots_pct": _pct(c.get("lots"), p.get("lots")),
             "d_est_pct": _pct(c.get("est_value"), p.get("est_value")),
         }
@@ -273,7 +274,7 @@ def top_lot_drops(prev_lots, cur_lots, names, n=10):
 def summarize_events(events, per_event, cfg=MARGIN_SHARE_CFG):
     """events [(日期, 方向, 報酬)];per_event {日期: {組: 變化}}。
     n_events < 10 → 只回逐事件列表;≥ 10 → 加上各組 d_lots_pct 中位數,
-    以及大跌日「融資張數減少最多的前 3 組」出現次數。"""
+    以及大跌日「融資減少張數最多的前 3 組」出現次數。"""
     out = {"n_events": len(events), "events": [{"date": d, "dir": k, "ret": r} for d, k, r in events]}
     if len(events) < cfg["event_min_for_stats"]:
         out["stats"] = None
@@ -294,8 +295,9 @@ def summarize_events(events, per_event, cfg=MARGIN_SHARE_CFG):
         if kind == "down":
             cnt = {}
             for d in ds:
-                rows = [(g, r["d_lots_pct"]) for g, r in (per_event.get(d) or {}).items() if r.get("d_lots_pct") is not None]
-                for g, _ in sorted(rows, key=lambda x: x[1])[:3]:
+                # 2026-11-02 使用者同意:依減少張數(不是百分比)排序,避免一兩檔的小產業排到前面;只計真的減少
+                rows = [(g, r["d_lots"]) for g, r in (per_event.get(d) or {}).items() if r.get("d_lots") is not None and r["d_lots"] < 0]
+                for g, _ in sorted(rows, key=lambda x: (x[1], x[0]))[:3]:
                     cnt[g] = cnt.get(g, 0) + 1
             stats[kind]["top3_lot_drop_counts"] = dict(sorted(cnt.items(), key=lambda kv: -kv[1]))
     out["stats"] = stats

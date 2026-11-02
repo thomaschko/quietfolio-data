@@ -151,6 +151,7 @@ class TestEvents(unittest.TestCase):
         self.assertNotIn("d_lots_5d_pct", today["g"])
         self.assertAlmostEqual(today["g"]["d_share_pp"], 2.0)
         self.assertAlmostEqual(today["g"]["d_lots_pct"], -10.0)
+        self.assertEqual(today["g"]["d_lots"], -10)
         hist = ms.event_group_changes(prev, cur, fwd={"g": {"lots": 81}})
         self.assertAlmostEqual(hist["g"]["d_lots_5d_pct"], -10.0)
 
@@ -165,11 +166,13 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(s["n_events"], 9)
         self.assertIsNone(s["stats"])
         ev = [("d%d" % i, "down", -2.0) for i in range(10)]
-        per = {d: {"g1": {"d_lots_pct": -3.0}, "g2": {"d_lots_pct": -1.0}, "g3": {"d_lots_pct": 0.5},
-                   "g4": {"d_lots_pct": 1.0}} for d, _, _ in ev}
+        # g1 百分比跌最多但張數少;排序看張數:g2(−500)、g3(−200)、g1(−5);g4 增加不計
+        per = {d: {"g1": {"d_lots_pct": -30.0, "d_lots": -5}, "g2": {"d_lots_pct": -1.0, "d_lots": -500},
+                   "g3": {"d_lots_pct": -0.5, "d_lots": -200}, "g4": {"d_lots_pct": 1.0, "d_lots": 300}} for d, _, _ in ev}
         s = ms.summarize_events(ev, per)
-        self.assertEqual(s["stats"]["down"]["median_d_lots_pct"]["g1"], -3.0)
-        self.assertEqual(s["stats"]["down"]["top3_lot_drop_counts"], {"g1": 10, "g2": 10, "g3": 10})
+        self.assertEqual(s["stats"]["down"]["median_d_lots_pct"]["g1"], -30.0)
+        self.assertEqual(list(s["stats"]["down"]["top3_lot_drop_counts"]), ["g2", "g3", "g1"])
+        self.assertEqual(s["stats"]["down"]["top3_lot_drop_counts"]["g2"], 10)
 
 
 class TestWording(unittest.TestCase):
