@@ -1,22 +1,28 @@
 {
- "generated_at": "2026-11-01 23:34:26",
- "date": "20261101",
+ "generated_at": "2026-11-02 18:10:09",
+ "date": "20261102",
  "events": [
   {
    "type": "investor_day",
    "symbol": "NVDA",
    "name": "Nvidia",
-   "event": "Investor Day",
+   "event": "AI Day",
    "event_date": "2026-10-29",
-   "day_offset": 3,
+   "day_offset": 4,
    "date_inferred": true,
-   "news_count": 1,
+   "news_count": 2,
    "recap_count": 0,
    "recap_sources": [],
    "titles": [
+    "Nvidia to Showcase Latest AI Infrastructure at AI Day Seoul 2026 Starting Nov. 9 - www.thelec.net",
     "Anthropic IPO on Tap, NVIDIA Updates, & Other Investor Days Shaping Markets - Wall Street Horizon - Commentaries - Advisor Perspectives"
    ],
-   "keywords": {}
+   "keywords": {
+    "AI infrastructure": {
+     "count": 2,
+     "category": "客戶capex/需求"
+    }
+   }
   },
   {
    "type": "investor_day",
@@ -24,20 +30,20 @@
    "name": "Oracle",
    "event": "Investor Day",
    "event_date": "2026-10-27",
-   "day_offset": 5,
+   "day_offset": 6,
    "date_inferred": true,
-   "news_count": 26,
+   "news_count": 21,
    "recap_count": 0,
    "recap_sources": [
     "8-K"
    ],
    "titles": [
     "Oracle Investor Day 2026: Accelerating Value Creation - Oracle - Investor Relations",
-    "Oracle Investor Day 2026 - Moomoo",
-    "Oracle Stock Has Lost 60% Since Its Last Investor Day. Is It a Buy Before Wednesday? - The Motley Fool",
-    "Oracle analyst day eases funding concerns and bolsters growth outlook - Proactive financial news",
     "Oracle perks up on wave of new chip partnerships ahead of Investor Day - Seeking Alpha",
-    "Oracle Investor Day 2026: Accelerating Value Creation - Star Local Media"
+    "Oracle analyst day eases funding concerns and bolsters growth outlook - Proactive financial news",
+    "Oracle Investor Day 2026: Accelerating Value Creation - Star Local Media",
+    "Oracle Investor Day 2026 - Moomoo",
+    "Oracle jumps as company provides long-term guidance at analyst day (ORCL:NYSE) - Seeking Alpha"
    ],
    "keywords": {
     "AI infrastructure": {
@@ -65,7 +71,7 @@
    "name": "Synopsys",
    "event": "Investor Day",
    "event_date": "2026-10-30",
-   "day_offset": 2,
+   "day_offset": 3,
    "date_inferred": true,
    "news_count": 1,
    "recap_count": 0,
@@ -74,36 +80,19 @@
     "Synopsys stock weighs AI growth plan after Investor Day - ad-hoc-news.de"
    ],
    "keywords": {}
-  },
-  {
-   "type": "conference",
-   "symbol": "",
-   "name": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "event_date": null,
-   "day_offset": null,
-   "news_count": 3,
-   "recap_count": 0,
-   "recap_sources": [],
-   "titles": [
-    "OCP Global Summit 2026 | Credo | LK Bhupathi | Going Wide: Scalable and Reliable Optical Interconnects - Simple Tech Trend",
-    "OCP Global Summit 2026 | Avicena | Nigel Alvares | µLED Interconnects for Scale-In and Scale-Up - Simple Tech Trend",
-    "Murata Showcases ‘Powering AI Scalability’ At the 2026 OCP Global Summit - NewswireToday"
-   ],
-   "keywords": {
-    "optical": {
-     "count": 2,
-     "category": "光通訊/CPO"
-    },
-    "scale-up": {
-     "count": 2,
-     "category": "互連/網通"
-    }
-   }
   }
  ],
  "upcoming": [],
  "keyword_hits": [
+  {
+   "symbol": "NVDA",
+   "label": "NVDA(AI Day)",
+   "event": "AI Day",
+   "type": "investor_day",
+   "keyword": "AI infrastructure",
+   "category": "客戶capex/需求",
+   "count": 2
+  },
   {
    "symbol": "ORCL",
    "label": "ORCL(Investor Day)",
@@ -139,24 +128,6 @@
    "keyword": "datacenter",
    "category": "客戶capex/需求",
    "count": 1
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "optical",
-   "category": "光通訊/CPO",
-   "count": 2
-  },
-  {
-   "symbol": "OCP Global Summit",
-   "label": "OCP Global Summit",
-   "event": "OCP Global Summit",
-   "type": "conference",
-   "keyword": "scale-up",
-   "category": "互連/網通",
-   "count": 2
   }
  ],
  "sources_status": {
