@@ -47,7 +47,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for f in margin_hist margin_share.json margin_share_history.json margin_share_events.json \
-                   margin_share_classes.json margin_share_themes.json; do
+                   margin_share_classes.json margin_share_themes.json margin_share_movers.json; do
             [ -e "$f" ] && git add "$f"
           done
           if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
