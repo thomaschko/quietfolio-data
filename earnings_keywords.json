@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26 07:21:57.814696",
+  "generated_at": "2026-11-02 08:47:56.778329",
   "quarters_queried": [
     "2026Q3",
     "2026Q2"
@@ -221,23 +221,71 @@
     },
     "AMZN": {
       "role": "客戶-亞馬遜(AWS)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.34
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "memory": 2,
+          "capacity": 21,
+          "yield": 1,
+          "capex": 8,
+          "data center": 1,
+          "custom silicon": 2,
+          "accelerator": 1,
+          "training": 4,
+          "inference": 12
+        }
       }
     },
     "GOOGL": {
       "role": "客戶-Alphabet(capex)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.361
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "capacity": 11,
+          "optical": 1,
+          "capex": 9,
+          "data center": 1,
+          "AI infrastructure": 3,
+          "TPU": 44,
+          "training": 6,
+          "inference": 4
+        }
       }
     },
     "TER": {
       "role": "測試設備-泰瑞達(CPO測試瓶頸)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.33
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "CPO": 8,
+          "HBM": 16,
+          "DRAM": 10,
+          "LPDDR": 2,
+          "NAND": 2,
+          "memory": 22,
+          "supply chain": 5,
+          "capacity": 21,
+          "lead time": 1,
+          "bottleneck": 1,
+          "TSMC": 1,
+          "optical": 6,
+          "capex": 3,
+          "data center": 2,
+          "AI infrastructure": 1,
+          "training": 1,
+          "inference": 2,
+          "GPU": 2,
+          "burn-in": 3,
+          "test time": 2,
+          "ATE": 7,
+          "analog": 1
+        }
       }
     },
     "AEHR": {
@@ -341,9 +389,32 @@
     },
     "AXTI": {
       "role": "化合物半導體基板-AXT",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.532
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "co-packaged": 1,
+          "silicon photonics": 1,
+          "HBM": 2,
+          "supply chain": 2,
+          "capacity": 25,
+          "lead time": 1,
+          "yield": 2,
+          "optical": 6,
+          "photonics": 2,
+          "laser": 9,
+          "transceiver": 1,
+          "EML": 1,
+          "800G": 1,
+          "1.6T": 1,
+          "indium phosphide": 34,
+          "capex": 1,
+          "data center": 5,
+          "AI infrastructure": 3,
+          "GPU": 1,
+          "gallium arsenide": 6
+        }
       }
     },
     "LWLG": {
@@ -419,9 +490,19 @@
     },
     "VRT": {
       "role": "資料中心電源-Vertiv(HVDC)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.22
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "liquid cooling": 5,
+          "supply chain": 3,
+          "capacity": 26,
+          "capex": 5,
+          "data center": 11,
+          "thermal management": 2,
+          "UPS": 2
+        }
       }
     }
   },
@@ -457,6 +538,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "GOOGL",
+      "keyword": "TPU",
+      "category": "客戶capex/需求",
+      "this_count": 44,
+      "prev_count": 0,
+      "delta": 44,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "TSM",
       "keyword": "TSMC",
       "category": "台廠點名",
@@ -473,6 +564,16 @@
       "this_count": 37,
       "prev_count": 0,
       "delta": 37,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "indium phosphide",
+      "category": "功率化合物半導體",
+      "this_count": 34,
+      "prev_count": 0,
+      "delta": 34,
       "this_q": "2026Q3",
       "prev_q": ""
     },
@@ -517,8 +618,28 @@
       "prev_q": ""
     },
     {
+      "symbol": "VRT",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 26,
+      "prev_count": 0,
+      "delta": 26,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AVGO",
       "keyword": "Tomahawk",
+      "category": "平台/網通/供應鏈",
+      "this_count": 25,
+      "prev_count": 0,
+      "delta": 25,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "capacity",
       "category": "平台/網通/供應鏈",
       "this_count": 25,
       "prev_count": 0,
@@ -553,6 +674,36 @@
       "this_count": 23,
       "prev_count": 0,
       "delta": 23,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "memory",
+      "category": "記憶體",
+      "this_count": 22,
+      "prev_count": 0,
+      "delta": 22,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMZN",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 21,
+      "prev_count": 0,
+      "delta": 21,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 21,
+      "prev_count": 0,
+      "delta": 21,
       "this_q": "2026Q3",
       "prev_q": ""
     },
@@ -640,6 +791,16 @@
       "symbol": "LITE",
       "keyword": "laser",
       "category": "光通訊/CPO",
+      "this_count": 16,
+      "prev_count": 0,
+      "delta": 16,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "HBM",
+      "category": "記憶體",
       "this_count": 16,
       "prev_count": 0,
       "delta": 16,
@@ -807,6 +968,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "AMZN",
+      "keyword": "inference",
+      "category": "客戶capex/需求",
+      "this_count": 12,
+      "prev_count": 0,
+      "delta": 12,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AEHR",
       "keyword": "silicon photonics",
       "category": "先進封裝/光互連",
@@ -847,6 +1018,26 @@
       "prev_q": ""
     },
     {
+      "symbol": "GOOGL",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 11,
+      "prev_count": 0,
+      "delta": 11,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "VRT",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
+      "this_count": 11,
+      "prev_count": 0,
+      "delta": 11,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "NVDA",
       "keyword": "GPU",
       "category": "客戶capex/需求",
@@ -877,6 +1068,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "TER",
+      "keyword": "DRAM",
+      "category": "記憶體",
+      "this_count": 10,
+      "prev_count": 0,
+      "delta": 10,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AVGO",
       "keyword": "capacity",
       "category": "平台/網通/供應鏈",
@@ -890,6 +1091,16 @@
       "symbol": "COHR",
       "keyword": "EML",
       "category": "光通訊/CPO",
+      "this_count": 9,
+      "prev_count": 0,
+      "delta": 9,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "GOOGL",
+      "keyword": "capex",
+      "category": "客戶capex/需求",
       "this_count": 9,
       "prev_count": 0,
       "delta": 9,
@@ -920,6 +1131,16 @@
       "symbol": "AMAT",
       "keyword": "foundry",
       "category": "平台/網通/供應鏈",
+      "this_count": 9,
+      "prev_count": 0,
+      "delta": 9,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "laser",
+      "category": "光通訊/CPO",
       "this_count": 9,
       "prev_count": 0,
       "delta": 9,
@@ -960,6 +1181,26 @@
       "symbol": "LITE",
       "keyword": "1.6T",
       "category": "光通訊/CPO",
+      "this_count": 8,
+      "prev_count": 0,
+      "delta": 8,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMZN",
+      "keyword": "capex",
+      "category": "客戶capex/需求",
+      "this_count": 8,
+      "prev_count": 0,
+      "delta": 8,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "CPO",
+      "category": "先進封裝/光互連",
       "this_count": 8,
       "prev_count": 0,
       "delta": 8,
@@ -1010,6 +1251,16 @@
       "symbol": "LITE",
       "keyword": "optical",
       "category": "光通訊/CPO",
+      "this_count": 7,
+      "prev_count": 0,
+      "delta": 7,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "ATE",
+      "category": "測試設備",
       "this_count": 7,
       "prev_count": 0,
       "delta": 7,
@@ -1137,6 +1388,26 @@
       "prev_q": ""
     },
     {
+      "symbol": "GOOGL",
+      "keyword": "training",
+      "category": "客戶capex/需求",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "optical",
+      "category": "光通訊/CPO",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AEHR",
       "keyword": "DRAM",
       "category": "記憶體",
@@ -1150,6 +1421,26 @@
       "symbol": "AMAT",
       "keyword": "NAND",
       "category": "記憶體",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "optical",
+      "category": "光通訊/CPO",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "gallium arsenide",
+      "category": "功率化合物半導體",
       "this_count": 6,
       "prev_count": 0,
       "delta": 6,
@@ -1179,6 +1470,16 @@
     {
       "symbol": "MRVL",
       "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 5,
+      "prev_count": 0,
+      "delta": 5,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "supply chain",
       "category": "平台/網通/供應鏈",
       "this_count": 5,
       "prev_count": 0,
@@ -1217,6 +1518,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "AXTI",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
+      "this_count": 5,
+      "prev_count": 0,
+      "delta": 5,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "ADI",
       "keyword": "capex",
       "category": "客戶capex/需求",
@@ -1229,6 +1540,26 @@
     {
       "symbol": "ADI",
       "keyword": "AI infrastructure",
+      "category": "客戶capex/需求",
+      "this_count": 5,
+      "prev_count": 0,
+      "delta": 5,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "VRT",
+      "keyword": "liquid cooling",
+      "category": "資料中心電源",
+      "this_count": 5,
+      "prev_count": 0,
+      "delta": 5,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "VRT",
+      "keyword": "capex",
       "category": "客戶capex/需求",
       "this_count": 5,
       "prev_count": 0,
@@ -1289,6 +1620,26 @@
     {
       "symbol": "COHR",
       "keyword": "datacenter",
+      "category": "客戶capex/需求",
+      "this_count": 4,
+      "prev_count": 0,
+      "delta": 4,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMZN",
+      "keyword": "training",
+      "category": "客戶capex/需求",
+      "this_count": 4,
+      "prev_count": 0,
+      "delta": 4,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "GOOGL",
+      "keyword": "inference",
       "category": "客戶capex/需求",
       "this_count": 4,
       "prev_count": 0,
@@ -1497,6 +1848,36 @@
       "prev_q": ""
     },
     {
+      "symbol": "GOOGL",
+      "keyword": "AI infrastructure",
+      "category": "客戶capex/需求",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "capex",
+      "category": "客戶capex/需求",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "burn-in",
+      "category": "測試設備",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AEHR",
       "keyword": "CoWoS",
       "category": "先進封裝/光互連",
@@ -1547,6 +1928,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "AXTI",
+      "keyword": "AI infrastructure",
+      "category": "客戶capex/需求",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "QCOM",
       "keyword": "custom silicon",
       "category": "客戶capex/需求",
@@ -1578,6 +1969,16 @@
     },
     {
       "symbol": "ADI",
+      "keyword": "supply chain",
+      "category": "平台/網通/供應鏈",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "VRT",
       "keyword": "supply chain",
       "category": "平台/網通/供應鏈",
       "this_count": 3,
@@ -1757,6 +2158,86 @@
       "prev_q": ""
     },
     {
+      "symbol": "AMZN",
+      "keyword": "memory",
+      "category": "記憶體",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMZN",
+      "keyword": "custom silicon",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "LPDDR",
+      "category": "記憶體",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "NAND",
+      "category": "記憶體",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "inference",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "GPU",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TER",
+      "keyword": "test time",
+      "category": "測試設備",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AEHR",
       "keyword": "yield",
       "category": "測試設備",
@@ -1830,6 +2311,46 @@
       "symbol": "AMAT",
       "keyword": "training",
       "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "HBM",
+      "category": "記憶體",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "supply chain",
+      "category": "平台/網通/供應鏈",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "yield",
+      "category": "測試設備",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AXTI",
+      "keyword": "photonics",
+      "category": "光通訊/CPO",
       "this_count": 2,
       "prev_count": 0,
       "delta": 2,
@@ -1915,37 +2436,52 @@
       "delta": 2,
       "this_q": "2026Q3",
       "prev_q": ""
+    },
+    {
+      "symbol": "VRT",
+      "keyword": "thermal management",
+      "category": "資料中心電源",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "VRT",
+      "keyword": "UPS",
+      "category": "資料中心電源",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
     }
   ],
   "intl_news_heat": [
     {
-      "keyword": "data center",
+      "keyword": "capex",
       "category": "客戶capex/需求",
       "count": 3
     },
     {
-      "keyword": "memory",
-      "category": "記憶體",
+      "keyword": "TSMC",
+      "category": "台廠點名",
       "count": 2
     },
     {
-      "keyword": "Vera Rubin",
-      "category": "平台/網通/供應鏈",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
+      "count": 2
+    },
+    {
+      "keyword": "DRAM",
+      "category": "記憶體",
       "count": 1
     },
     {
-      "keyword": "Rubin",
-      "category": "平台/網通/供應鏈",
-      "count": 1
-    },
-    {
-      "keyword": "Blackwell",
-      "category": "平台/網通/供應鏈",
-      "count": 1
-    },
-    {
-      "keyword": "capacity",
-      "category": "平台/網通/供應鏈",
+      "keyword": "memory",
+      "category": "記憶體",
       "count": 1
     },
     {
@@ -1954,22 +2490,7 @@
       "count": 1
     },
     {
-      "keyword": "capex",
-      "category": "客戶capex/需求",
-      "count": 1
-    },
-    {
       "keyword": "AI infrastructure",
-      "category": "客戶capex/需求",
-      "count": 1
-    },
-    {
-      "keyword": "accelerator",
-      "category": "客戶capex/需求",
-      "count": 1
-    },
-    {
-      "keyword": "GPU",
       "category": "客戶capex/需求",
       "count": 1
     }
