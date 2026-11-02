@@ -65,6 +65,29 @@ class TestIndustry(unittest.TestCase):
         self.assertNotEqual(t1, t2)
 
 
+class TestEtfType(unittest.TestCase):
+    def test_classify(self):
+        self.assertEqual(ms.etf_type("00981A", "主動統一台股增長"), "主動")
+        self.assertEqual(ms.etf_type("00980D", "主動聯博投等入息"), "主動")
+        self.assertEqual(ms.etf_type("00631L", "元大台灣50正2"), "槓桿")
+        self.assertEqual(ms.etf_type("00632R", "元大台灣50反1"), "反向")
+        self.assertEqual(ms.etf_type("0050", "元大台灣50"), "被動")
+        self.assertEqual(ms.etf_type("00679B", "元大美債20年"), "被動")
+
+    def test_breakdown_sums(self):
+        etf = {"0050", "00981A", "00631L", "00632R"}
+        names = {"00981A": "主動統一台股增長", "00631L": "元大台灣50正2", "00632R": "元大台灣50反1"}
+        est, lots, _ = ms.est_values({"2330": 10, "0050": 10, "00981A": 10, "00631L": 20, "00632R": 0},
+                                     {"2330": 100, "0050": 100, "00981A": 100, "00631L": 100, "00632R": 10})
+        r = ms.by_etf_type(est, lots, etf, names)
+        self.assertEqual(list(r), ["主動", "被動", "槓桿", "反向"])
+        self.assertAlmostEqual(r["槓桿"]["share"], 0.4)            # 分母是整個市場
+        self.assertAlmostEqual(r["槓桿"]["share_in_etf"], 0.5)     # 分母是 ETF 合計
+        self.assertAlmostEqual(sum(x["share_in_etf"] for x in r.values()), 1.0)
+        total, g = ms.by_industry(est, lots, IND, etf, names)
+        self.assertAlmostEqual(sum(x["share"] for x in r.values()), g["ETF"]["share"])
+
+
 class TestTheme(unittest.TestCase):
     def test_overlap_counted_in_both_union_not_double(self):
         est, lots, _ = ms.est_values({"2330": 10, "2303": 10, "2317": 10, "0050": 10},

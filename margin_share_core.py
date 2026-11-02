@@ -116,6 +116,42 @@ def by_theme(est, lots, themes, etf_set, names, k=None):
     return rows, cov, (1 - cov) if cov is not None else None
 
 
+ETF_TYPES = ("主動", "被動", "槓桿", "反向")
+
+
+def etf_type(code, name=""):
+    """ETF 細分(2026-11-02 使用者要求):依證交所代號尾碼慣例 + 名稱。
+    A(主動股票)、D(主動債券)或名稱以「主動」開頭 → 主動;L 或名稱含「正2」→ 槓桿;R 或名稱含「反1」→ 反向;
+    其餘(含 B 債券、U 期貨、K 等)→ 被動。"""
+    c, n = str(code).upper(), name or ""
+    if c.endswith(("A", "D")) or n.startswith("主動"):
+        return "主動"
+    if c.endswith("L") or "正2" in n:
+        return "槓桿"
+    if c.endswith("R") or "反1" in n:
+        return "反向"
+    return "被動"
+
+
+def by_etf_type(est, lots, etf_set, names, k=None):
+    """ETF 再細分(互斥);share 仍以「整個市場」為分母,另給 share_in_etf(占 ETF 合計)。
+    → {類型: row}(該市場沒有這類 ETF → 不列)"""
+    k = k or MARGIN_SHARE_CFG["top_k"]
+    total = sum(est.values())
+    groups = {}
+    for c in est:
+        if c in etf_set:
+            groups.setdefault(etf_type(c, names.get(c, "")), []).append(c)
+    etf_total = sum(est[c] for cs in groups.values() for c in cs)
+    out = {}
+    for t in ETF_TYPES:
+        if t in groups:
+            r = _group_row(groups[t], est, lots, names, total, k)
+            r["share_in_etf"] = r["est_value"] / etf_total if etf_total else None
+            out[t] = r
+    return out
+
+
 # ------------------------------------------------------------------ 變化與歷史
 def share_change(history, date, key, n):
     """history:[(日期, {key: share})] 由舊到新、只含 ≤ date 的資料日(呼叫端保證無 look-ahead)。

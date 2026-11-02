@@ -221,7 +221,8 @@ def compute_day(rows, cls, themes):
     est, lots, exc = ms.est_values(margin, close)
     total, ind = ms.by_industry(est, lots, cls["industry"], set(cls["etf"]), cls["names"])
     th, cov, unm = ms.by_theme(est, lots, themes, set(cls["etf"]), cls["names"])
-    return {"total": total, "lots_total": sum(lots.values()), "excluded": exc, "industry": ind, "theme": th,
+    et = ms.by_etf_type(est, lots, set(cls["etf"]), cls["names"])
+    return {"total": total, "lots_total": sum(lots.values()), "excluded": exc, "industry": ind, "theme": th, "etf_type": et,
             "coverage_union": cov, "unmapped_share": unm, "lots": lots, "n_codes": len(margin)}
 
 
@@ -250,6 +251,8 @@ def fmt_row(name, row, hist, date, past_shares, top_names=True):
                    else [t["code"], r2(t["w"] * 100 if t["w"] is not None else None, 1)] for t in row["top3"]]
     if "n_multi" in row:
         out["n_multi"] = row["n_multi"]
+    if "share_in_etf" in row:
+        out["share_in_etf_pct"] = r2(row["share_in_etf"] * 100 if row["share_in_etf"] is not None else None)
     return out
 
 
@@ -272,7 +275,7 @@ def market_report(mkt, days, official, done, md, top_names=True):
     close_date = None if str(done.get(date, "")).startswith("ok_no_close") else date
     flags, unrel = ms.market_flags(date, close_date, cur["excluded"], notes)
     out["flags"], out["unreliable"] = flags, unrel
-    for kind in ("industry", "theme"):
+    for kind in ("industry", "theme", "etf_type"):
         hist = [(d, {g: r["share"] for g, r in c[kind].items()}) for d, c in days]
         rows = []
         for g, r in cur[kind].items():
@@ -292,7 +295,7 @@ def history_payload(series, step):
         days = days[-HIST_DAYS:]
         pick = days[::-1][::step][::-1]
         m = {"dates": [d for d, _ in pick], "total_est_value_e8": [e8(c["total"]) for _, c in pick]}
-        for kind in ("industry", "theme"):
+        for kind in ("industry", "theme", "etf_type"):
             groups = sorted({g for _, c in pick for g in c[kind]})
             m[kind] = {g: [(round(c[kind][g]["share"] * 10000) if g in c[kind] and c[kind][g]["share"] is not None else None)
                            for _, c in pick] for g in groups}
@@ -349,6 +352,8 @@ def build(series, official, index, done, cls, themes_meta, md, sources, status):
                            "share_pctile": "當日占比在過去可得歷史(不含當日)的百分位;歷史 < 120 日為空",
                            "top3": "[代號, 名稱, 占該組 %]" if top_names else "[代號, 占該組 %](名稱因字數限制省略)",
                            "concentration_pct": "前 3 檔占該組 %", "n_multi": "同時屬於其他題材的檔數",
+                           "etf_type": "ETF 細分:主動(代號尾碼 A/D 或名稱「主動」)/ 被動 / 槓桿(L、正2)/ 反向(R、反1);share_pct 占整個市場",
+                           "share_in_etf_pct": "占該市場 ETF 合計 %",
                            "est_value_e8": "億元(擔保股票市值估算,不是官方融資金額)"},
                 "notes": ms.NOTES + ["產業別 / ETF / 未分類互斥,加總 = 100%;題材可重疊,ETF 不計入題材",
                                      "官方註記(suspended_or_special)只列原文與檔數,這些股票預設仍計入"],
