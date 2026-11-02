@@ -183,6 +183,14 @@ class TestEvents(unittest.TestCase):
         self.assertEqual([x["code"] for x in r], ["a", "c"])
         self.assertEqual(r[0]["pct_of_prev"], 40.0)
 
+    def test_lot_movers(self):
+        prev = {"a": 100, "b": 50, "c": 0, "d": 10, "e": 5}
+        cur = {"a": 130, "b": 20, "c": 7, "d": 10, "x": 99}
+        r = ms.lot_movers(prev, cur, ["a", "b", "c", "d", "e", "x"], {"a": "A"}, n=5)
+        self.assertEqual(r["up"], [["a", "A", 30, 30.0], ["c", "", 7, None]])   # 前一日 0 → % 為 None
+        self.assertEqual(r["down"], [["b", "", -30, -60.0]])                    # d 沒變、e/x 只有一天 → 不列
+        self.assertEqual(ms.lot_movers(prev, cur, ["a", "b", "c"], {}, n=1)["up"][0][0], "a")
+
     def test_summary_needs_10_events(self):
         ev = [("d%d" % i, "down", -2.0) for i in range(9)]
         s = ms.summarize_events(ev, {})

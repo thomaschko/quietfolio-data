@@ -165,10 +165,13 @@ class TestRun(unittest.TestCase):
         ev = mb._read_json(M.EV_OUT, None)["markets"]["twse"]
         self.assertEqual([e["date"] for e in ev["events"]], ["2026-03-02", "2026-04-11"])
         self.assertIsNone(ev["stats"])          # 事件數 < 10
+        mv = mb._read_json(M.MOVERS_OUT, None)["markets"]["twse"]
+        self.assertEqual(mv["industry"]["半導體業"]["up"][0][:3], ["2330", "台積電", 1])   # 每天 +1 張
+        self.assertEqual(mv["industry"]["半導體業"]["down"], [])
         hist = mb._read_json(M.HIST_OUT, None)
         self.assertEqual(hist["step_days"], 1)
         self.assertEqual(len(hist["markets"]["twse"]["dates"]), 150)
-        for s in (M.OUT, M.HIST_OUT, M.EV_OUT):
+        for s in (M.OUT, M.HIST_OUT, M.EV_OUT, M.MOVERS_OUT):
             with open(s, encoding="utf-8") as f:
                 self.assertLessEqual(len(f.read()), M.SIZE_LIMIT)
         with open(M.OUT, encoding="utf-8") as f:
@@ -177,7 +180,7 @@ class TestRun(unittest.TestCase):
             self.assertNotIn(w, text)
 
     def test_oversize_keeps_old_files(self):
-        for p in (M.OUT, M.HIST_OUT, M.EV_OUT):
+        for p in (M.OUT, M.HIST_OUT, M.EV_OUT, M.MOVERS_OUT):
             with open(p, "w") as f:
                 f.write("OLD")
         old = M.SIZE_LIMIT
@@ -187,7 +190,7 @@ class TestRun(unittest.TestCase):
         finally:
             M.SIZE_LIMIT = old
         self.assertEqual(code, 1)
-        for p in (M.OUT, M.HIST_OUT, M.EV_OUT):
+        for p in (M.OUT, M.HIST_OUT, M.EV_OUT, M.MOVERS_OUT):
             with open(p) as f:
                 self.assertEqual(f.read(), "OLD")
 

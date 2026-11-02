@@ -17,6 +17,7 @@ margin_share.py — 族群 / ETF 融資占比 每日計算(2026-11-02,Phase 2)
                              歷史分位、集中度、核對比、資料旗標
   margin_share_history.json  近 260 個交易日占比序列(萬分比整數;字數不夠時改為每 N 日取樣並註明)
   margin_share_events.json   指數大漲 / 大跌日的產業融資變化(事件數 < 10 不輸出中位數)
+  margin_share_movers.json   最新一日各產業 / ETF 類型融資張數增加、減少最多的個股(2026-11-02 使用者要求)
 """
 import datetime as dt
 import glob
@@ -31,6 +32,7 @@ import margin_share_core as ms
 OUT = "margin_share.json"
 HIST_OUT = "margin_share_history.json"
 EV_OUT = "margin_share_events.json"
+MOVERS_OUT = "margin_share_movers.json"
 CLASS_CACHE = "margin_share_classes.json"
 THEME_CACHE = "margin_share_themes.json"
 SIZE_LIMIT = 45000
@@ -223,6 +225,7 @@ def compute_day(rows, cls, themes):
     th, cov, unm = ms.by_theme(est, lots, themes, set(cls["etf"]), cls["names"])
     et = ms.by_etf_type(est, lots, set(cls["etf"]), cls["names"])
     return {"total": total, "lots_total": sum(lots.values()), "excluded": exc, "industry": ind, "theme": th, "etf_type": et,
+            "raw_lots": {c: l for c, l in margin.items() if l is not None},
             "coverage_union": cov, "unmapped_share": unm, "lots": lots, "n_codes": len(margin)}
 
 
@@ -334,6 +337,26 @@ def events_payload(mkt, days, index, names, n_stocks=5):
     return s
 
 
+def movers_payload(series, cls, n):
+    """最新一日 vs 前一個資料日:每個產業(含 ETF、未分類)與每個 ETF 類型,融資張數增加 / 減少最多的前 n 檔"""
+    out = {}
+    for m, days in series.items():
+        if len(days) < 2:
+            continue
+        (d0, prev), (d1, cur) = days[-2], days[-1]
+        ind, etf, names = cls[m]["industry"], set(cls[m]["etf"]), cls[m]["names"]
+        groups, etypes = {}, {}
+        a, b = prev["raw_lots"], cur["raw_lots"]
+        for c in b:
+            groups.setdefault(ms.industry_of(c, ind, etf), []).append(c)
+            if c in etf:
+                etypes.setdefault(ms.etf_type(c, names.get(c, "")), []).append(c)
+        out[m] = {"date": d1, "prev_date": d0,
+                  "industry": {g: ms.lot_movers(a, b, cs, names, n) for g, cs in groups.items()},
+                  "etf_type": {t: ms.lot_movers(a, b, cs, names, n) for t, cs in etypes.items()}}
+    return out
+
+
 def dumps(obj):
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
 
@@ -377,7 +400,15 @@ def build(series, official, index, done, cls, themes_meta, md, sources, status):
         s_ev = dumps(ev)
         if len(s_ev) <= SIZE_LIMIT:
             break
-    return s_main, s_hist, s_ev
+    s_mv = None
+    for n in (5, 4, 3, 2):
+        mv = {"generated": gen, "n": n, "markets": movers_payload(series, cls, n),
+              "fields": "[代號, 名稱, 融資增減張數(與前一個資料日相比), 占前一日餘額 %]",
+              "notes": ["融資餘額增減只描述槓桿部位變化,不代表看法;缺收盤價的個股張數仍列入"]}
+        s_mv = dumps(mv)
+        if len(s_mv) <= SIZE_LIMIT:
+            break
+    return s_main, s_hist, s_ev, s_mv
 
 
 def write_outputs(pairs):
@@ -437,9 +468,10 @@ def run(http=None, today=None, themes_dir=None, themes_sha=None, hist_dir=mb.OUT
                "industry": cls.get("source"), "industry_asof": cls.get("asof"), "industry_load": cls_note,
                "themes": th.get("source"), "themes_commit": th.get("commit"), "themes_load": th_note,
                "ingest": ing}
-    s_main, s_hist, s_ev = build(series, official, index, done, cls, th, md, sources, status)
-    bad = write_outputs([(OUT, s_main), (HIST_OUT, s_hist), (EV_OUT, s_ev)])
-    log = {"status": status, "last": last, "sizes": {OUT: len(s_main), HIST_OUT: len(s_hist), EV_OUT: len(s_ev)},
+    s_main, s_hist, s_ev, s_mv = build(series, official, index, done, cls, th, md, sources, status)
+    bad = write_outputs([(OUT, s_main), (HIST_OUT, s_hist), (EV_OUT, s_ev), (MOVERS_OUT, s_mv)])
+    log = {"status": status, "last": last,
+           "sizes": {OUT: len(s_main), HIST_OUT: len(s_hist), EV_OUT: len(s_ev), MOVERS_OUT: len(s_mv)},
            "requests": http.count, "net_retries": http.net_retries}
     if bad:
         log["kept_old"] = bad

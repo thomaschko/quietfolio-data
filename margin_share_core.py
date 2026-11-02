@@ -307,6 +307,20 @@ def top_lot_drops(prev_lots, cur_lots, names, n=10):
     return rows[:n]
 
 
+def lot_movers(prev_lots, cur_lots, codes, names, n=5):
+    """codes 這一組裡,和前一個資料日相比融資張數增加 / 減少最多的前 n 檔(兩天都有資料、張數有變動才列)。
+    → {"up": [[代號, 名稱, 增減張數, 占前一日餘額 %]], "down": [...]};前一日 0 張 → % 為 None"""
+    rows = []
+    for c in codes:
+        p, q = prev_lots.get(c), cur_lots.get(c)
+        if p is None or q is None or q == p:
+            continue
+        rows.append([c, names.get(c, ""), int(round(q - p)), round((q - p) / p * 100, 2) if p else None])
+    up = sorted((r for r in rows if r[2] > 0), key=lambda r: (-r[2], r[0]))[:n]
+    down = sorted((r for r in rows if r[2] < 0), key=lambda r: (r[2], r[0]))[:n]
+    return {"up": up, "down": down}
+
+
 def summarize_events(events, per_event, cfg=MARGIN_SHARE_CFG):
     """events [(日期, 方向, 報酬)];per_event {日期: {組: 變化}}。
     n_events < 10 → 只回逐事件列表;≥ 10 → 加上各組 d_lots_pct 中位數,
