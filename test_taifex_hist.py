@@ -73,6 +73,15 @@ class TestParse(unittest.TestCase):
         self.assertEqual(T.parse_large(LARGE), [("2026-10-05", "TX", "999999", "0", "30000", "40000", "45000", "55000", "120000")])
 
 
+class TestUnpublished(unittest.TestCase):
+    def test_all_zero_day_dropped(self):
+        rows = [("2026-11-04", "TMF", "外資及陸資", "0", "0", "0", "0", "0"), ("2026-11-04", "TMF", "投信", "0", "0", "0", "0", "0"),
+                ("2026-11-03", "TMF", "投信", "0", "0", "0", "0", "0"), ("2026-11-03", "TMF", "外資及陸資", "1", "2", "-1", "-5", "3")]
+        kept, bad = T.drop_unpublished(rows)
+        self.assertEqual(bad, ["2026-11-04"])
+        self.assertEqual(len(kept), 2)
+
+
 class TestRun(unittest.TestCase):
     def setUp(self):
         self.d = tempfile.mkdtemp()
