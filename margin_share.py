@@ -259,7 +259,7 @@ def fmt_row(name, row, hist, date, past_shares, top_names=True):
     return out
 
 
-def market_report(mkt, days, official, done, md, top_names=True):
+def market_report(mkt, days, official, done, md, top_names=True, fx=None):
     """days:[(date, computed)] 由舊到新 → 最新一日報表 dict"""
     date, cur = days[-1]
     n_days = len(days)
@@ -284,10 +284,47 @@ def market_report(mkt, days, official, done, md, top_names=True):
         for g, r in cur[kind].items():
             past = [c[kind][g]["share"] for _, c in days[:-1] if g in c[kind]]
             rows.append(fmt_row(g, r, hist, date, past, top_names))
+        if fx and kind in fx:
+            for x in rows:
+                if x["name"] in fx[kind]:
+                    x["fx"] = fx[kind][x["name"]]
         rows.sort(key=lambda x: (-(x["share_pct"] or 0), x["name"]))
         out[kind] = rows
+    if fx:
+        out["fx_base_dates"] = fx.get("base_dates")
+        out["fx_total_lots"] = fx.get("total_lots")
     out["theme_coverage_union_pct"] = r2(cur["coverage_union"] * 100 if cur["coverage_union"] is not None else None)
     out["theme_unmapped_pct"] = r2(cur["unmapped_share"] * 100 if cur["unmapped_share"] is not None else None)
+    return out
+
+
+FX_WINDOWS = (1, 5, 20)
+
+
+def px_fixed_payload(rows_by_date, cls_m):
+    """最新一日 vs 1 / 5 / 20 個資料日前,扣掉股價影響的占比(產業別 + ETF 細分)。
+    → {"industry": {組: {"1": [之前%, 現在%, 變化pp], ...}}, "etf_type": {...}, "base_dates": {"1": 日期, ...}}"""
+    dates = sorted(rows_by_date)
+    cur_rows = rows_by_date[dates[-1]]
+    close = {c: p for c, (_, p) in cur_rows.items() if p}
+    cur = {c: l for c, (l, _) in cur_rows.items() if l is not None}
+    ind, etf, names = cls_m["industry"], set(cls_m["etf"]), cls_m["names"]
+    groupers = {"industry": lambda c: ms.industry_of(c, ind, etf),
+                # 非 ETF 也要計入分母,讓 ETF 細分的占比同樣是「占整個市場」
+                "etf_type": lambda c: ms.etf_type(c, names.get(c, "")) if c in etf else "_non_etf"}
+    out = {"industry": {}, "etf_type": {}, "base_dates": {}}
+    for n in FX_WINDOWS:
+        if len(dates) <= n:
+            continue
+        d0 = dates[-1 - n]
+        prev = {c: l for c, (l, _) in rows_by_date[d0].items() if l is not None}
+        out["base_dates"][str(n)] = d0
+        out.setdefault("total_lots", {})[str(n)] = [int(sum(prev.values())), int(sum(cur.values()))]
+        for kind, gf in groupers.items():
+            for g, (a, b) in ms.px_fixed_shares(prev, cur, close, gf).items():
+                if g == "_non_etf":
+                    continue
+                out[kind].setdefault(g, {})[str(n)] = [round(a * 100, 2), round(b * 100, 2), round((b - a) * 100, 3)]
     return out
 
 
@@ -361,14 +398,15 @@ def dumps(obj):
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
 
 
-def build(series, official, index, done, cls, themes_meta, md, sources, status):
+def build(series, official, index, done, cls, themes_meta, md, sources, status, fx=None):
     names = {}
     for m in mb.MARKETS:
         names.update(cls[m]["names"])
     gen = now().isoformat(timespec="seconds")
     reports = {}
     for top_names in (True, False):
-        reports = {m: market_report(m, series[m], official, done.get(m, {}), md, top_names) for m in series}
+        reports = {m: market_report(m, series[m], official, done.get(m, {}), md, top_names,
+                                    (fx or {}).get(m)) for m in series}
         main = {"generated": gen, "status": status["status"], "status_notes": status["notes"],
                 "date": max(r["date"] for r in reports.values()), "markets": reports,
                 "fields": {"share_pct": "占該市場 est_value 總額 %", "d5_pp/d20_pp": "與 5 / 20 個交易日前相比(百分點)",
@@ -377,6 +415,7 @@ def build(series, official, index, done, cls, themes_meta, md, sources, status):
                            "concentration_pct": "前 3 檔占該組 %", "n_multi": "同時屬於其他題材的檔數",
                            "etf_type": "ETF 細分:主動(代號尾碼 A/D 或名稱「主動」)/ 被動 / 槓桿(L、正2)/ 反向(R、反1);share_pct 占整個市場",
                            "share_in_etf_pct": "占該市場 ETF 合計 %",
+                           "fx": "扣掉股價影響:{N日: [N 個資料日前占比 %, 現在占比 %, 變化 pp]},兩邊都用最新收盤價計價,變化只來自融資張數增減",
                            "est_value_e8": "億元(擔保股票市值估算,不是官方融資金額)"},
                 "notes": ms.NOTES + ["產業別 / ETF / 未分類互斥,加總 = 100%;題材可重疊,ETF 不計入題材",
                                      "官方註記(suspended_or_special)只列原文與檔數,這些股票預設仍計入"],
@@ -468,7 +507,11 @@ def run(http=None, today=None, themes_dir=None, themes_sha=None, hist_dir=mb.OUT
                "industry": cls.get("source"), "industry_asof": cls.get("asof"), "industry_load": cls_note,
                "themes": th.get("source"), "themes_commit": th.get("commit"), "themes_load": th_note,
                "ingest": ing}
-    s_main, s_hist, s_ev, s_mv = build(series, official, index, done, cls, th, md, sources, status)
+    fx = {}
+    for m in series:
+        recent = {d: data[m][d] for d in sorted(data[m])[-(max(FX_WINDOWS) + 1):]}
+        fx[m] = px_fixed_payload(recent, cls[m])
+    s_main, s_hist, s_ev, s_mv = build(series, official, index, done, cls, th, md, sources, status, fx)
     bad = write_outputs([(OUT, s_main), (HIST_OUT, s_hist), (EV_OUT, s_ev), (MOVERS_OUT, s_mv)])
     log = {"status": status, "last": last,
            "sizes": {OUT: len(s_main), HIST_OUT: len(s_hist), EV_OUT: len(s_ev), MOVERS_OUT: len(s_mv)},
