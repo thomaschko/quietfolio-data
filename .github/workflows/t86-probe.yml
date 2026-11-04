@@ -1,0 +1,33 @@
+name: T86 Probe (證交所三大法人 T86 一次性診斷)
+
+# 2026-11-04:Apps Script 17:00 抓 T86 新舊網址都回 HTTP 307(11/3、11/4)。
+# 這裡只查不存:不跟隨轉址,記下回應碼、Location、Content-Type 與前 200 字;間隔 3 秒、誠實 User-Agent。只手動執行。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Probe
+        run: |
+          UA="quietfolio-t86-probe/1.0 (read-only diagnosis; github.com/thomaschko/quietfolio-data)"
+          curl -sS -A "$UA" -o /dev/null -w "robots.txt HTTP %{http_code}\n" https://www.twse.com.tw/robots.txt; sleep 3
+          curl -sS -A "$UA" https://www.twse.com.tw/robots.txt | head -20; sleep 3
+          for d in 20261104 20261103 20261102; do
+            for base in https://www.twse.com.tw/rwd/zh/fund/T86 https://www.twse.com.tw/fund/T86; do
+              u="$base?response=json&date=$d&selectType=ALLBUT0999"
+              echo "=== $u"
+              curl -sS -A "$UA" -D /tmp/h -o /tmp/b "$u" -w "HTTP %{http_code}  size %{size_download}  redirect=%{redirect_url}\n"
+              grep -iE "^(location|content-type|set-cookie):" /tmp/h | cut -c1-200
+              head -c 200 /tmp/b; echo
+              sleep 3
+            done
+          done
+          echo "=== follow redirects (rwd, 20261104)"
+          curl -sS -L -A "$UA" -o /tmp/b "https://www.twse.com.tw/rwd/zh/fund/T86?response=json&date=20261104&selectType=ALLBUT0999" -w "HTTP %{http_code}  final=%{url_effective}  size %{size_download}\n"
+          head -c 300 /tmp/b; echo
