@@ -88,6 +88,27 @@ class TestEtfType(unittest.TestCase):
         self.assertAlmostEqual(sum(x["share"] for x in r.values()), g["ETF"]["share"])
 
 
+class TestPxFixed(unittest.TestCase):
+    def test_price_move_alone_changes_nothing(self):
+        lots = {"a": 10, "b": 10}
+        g = {"a": "A", "b": "B"}.get
+        r = ms.px_fixed_shares(lots, lots, {"a": 100, "b": 10}, g)
+        self.assertEqual(r["A"][0], r["A"][1])                  # 張數沒變 → 占比不變(不管股價)
+
+    def test_lots_change(self):
+        g = {"a": "A", "b": "B", "c": "B"}.get
+        r = ms.px_fixed_shares({"a": 10, "b": 10}, {"a": 10, "b": 5, "c": 5}, {"a": 10, "b": 10, "c": 10, "x": 1}, g)
+        self.assertAlmostEqual(r["A"][0], 0.5)
+        self.assertAlmostEqual(r["A"][1], 0.5)                  # B 換股但總張數不變
+        r = ms.px_fixed_shares({"a": 10, "b": 10}, {"a": 10, "b": 30}, {"a": 10, "b": 10}, g)
+        self.assertAlmostEqual(r["B"][1], 0.75)
+
+    def test_no_close_excluded(self):
+        g = {"a": "A", "b": "B"}.get
+        r = ms.px_fixed_shares({"a": 10, "b": 10}, {"a": 10, "b": 10}, {"a": 10}, g)
+        self.assertEqual(list(r), ["A"])
+
+
 class TestTheme(unittest.TestCase):
     def test_overlap_counted_in_both_union_not_double(self):
         est, lots, _ = ms.est_values({"2330": 10, "2303": 10, "2317": 10, "0050": 10},

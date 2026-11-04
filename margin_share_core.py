@@ -166,6 +166,24 @@ def share_change(history, date, key, n):
     return round((a - b) * 100, 3)
 
 
+def px_fixed_shares(prev_lots, cur_lots, close, group_of):
+    """扣掉股價影響的占比比較(2026-11-04 使用者要求):之前與現在都用「現在的收盤價」計價,
+    差異只來自融資張數的增減。prev_lots / cur_lots {代號: 張},close {代號: 現在收盤價},group_of(代號) → 組名或 None。
+    沒有現在收盤價的代號兩邊都不算。→ {組: (之前占比, 現在占比)};任一邊總額為 0 → {}"""
+    pv, cv = {}, {}
+    for c in set(prev_lots) | set(cur_lots):
+        p = close.get(c)
+        g = group_of(c)
+        if not p or p <= 0 or g is None:
+            continue
+        pv[g] = pv.get(g, 0.0) + (prev_lots.get(c) or 0) * p
+        cv[g] = cv.get(g, 0.0) + (cur_lots.get(c) or 0) * p
+    tp, tc = sum(pv.values()), sum(cv.values())
+    if not tp or not tc:
+        return {}
+    return {g: (pv[g] / tp, cv[g] / tc) for g in pv}
+
+
 def history_level(n_days, cfg=MARGIN_SHARE_CFG):
     """→ 'none'(< 120,不輸出分位數與事件)/ 'low'(low_confidence)/ 'ok' / 'ok_2y'"""
     if n_days < cfg["hist_none"]:
