@@ -207,6 +207,15 @@ def parse_large(text, commodity=None):
     return out
 
 
+def drop_unpublished(rows, first_num=3):
+    """2026-11-04:當天三大法人資料公布前(約 15:00)下載,官網會回該日每列都是 0 → 視為尚未公布,不寫入(下次重抓)。"""
+    by = {}
+    for r in rows:
+        by.setdefault(r[0], []).append(r)
+    bad = {d for d, rs in by.items() if all(all(x in ("", "0") for x in r[first_num:]) for r in rs)}
+    return [r for r in rows if r[0] not in bad], sorted(bad)
+
+
 PARSERS = {"fut_inst": parse_fut_inst, "opt_inst": parse_opt_inst, "fut_oi": parse_fut_oi, "pcr": parse_pcr, "large": parse_large}
 
 
@@ -218,8 +227,9 @@ def read_csv(path):
         return list(csv.DictReader(f))
 
 
-def merge_csv(path, header, keys, rows):
-    m = {tuple(r[k] for k in keys): [r[h] for h in header] for r in read_csv(path)}
+def merge_csv(path, header, keys, rows, drop_dates=()):
+    drop = set(drop_dates)
+    m = {tuple(r[k] for k in keys): [r[h] for h in header] for r in read_csv(path) if r["date"] not in drop}
     idx = [header.index(k) for k in keys]
     for r in rows:
         r = [str(x) for x in r]
@@ -284,8 +294,13 @@ def run(http=None, out_dir=OUT_DIR, today=None, max_months=None):
                         form[pname] = v
                     text = http.post_csv(BASE + ep, form)
                     rows += PARSERS[ds](text, v)
+                bad = []
+                if ds in ("fut_inst", "opt_inst"):
+                    rows, bad = drop_unpublished(rows)
+                    if bad:
+                        log.setdefault("unpublished", {})[ds] = bad
                 header, keys = HEADERS[ds]
-                merge_csv(os.path.join(out_dir, ds + ".csv"), header, keys, rows)
+                merge_csv(os.path.join(out_dir, ds + ".csv"), header, keys, rows, drop_dates=bad)   # 先前存的 0 也清掉
                 log["rows"][ds] = log["rows"].get(ds, 0) + len(rows)
                 if key not in prog["done"].setdefault(ds, []):
                     prog["done"][ds].append(key)

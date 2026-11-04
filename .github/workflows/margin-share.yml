@@ -41,13 +41,18 @@ jobs:
       - name: Compute
         run: python margin_share.py
 
+      - name: Consensus (共識頁)
+        if: always()
+        continue-on-error: true
+        run: python consensus.py
+
       - name: Commit
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for f in margin_hist margin_share.json margin_share_history.json margin_share_events.json \
-                   margin_share_classes.json margin_share_themes.json margin_share_movers.json; do
+                   margin_share_classes.json margin_share_themes.json margin_share_movers.json consensus.json; do
             [ -e "$f" ] && git add "$f"
           done
           if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi

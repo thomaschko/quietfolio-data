@@ -36,12 +36,18 @@ jobs:
           python taifex_hist.py
           echo "rc=$?" >> "$GITHUB_OUTPUT"
 
+      - name: Consensus (共識頁)
+        if: always()
+        continue-on-error: true
+        run: python consensus.py
+
       - name: Commit
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           [ -d taifex_hist ] && git add taifex_hist
+          [ -f consensus.json ] && git add consensus.json
           if git diff --cached --quiet; then echo "沒有變更"; else
             git commit -q -m "TAIFEX history update (rc=${{ steps.fetch.outputs.rc }})"
             ok=0
