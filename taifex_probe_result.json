@@ -1,0 +1,1085 @@
+{
+ "generated": "2026-11-04T14:24:25+08:00",
+ "ua": "quietfolio-taifex-probe/1.0 (read-only research; github.com/thomaschko/quietfolio-data)",
+ "gap_sec": 3.0,
+ "results": {
+  "openapi_swagger": {
+   "status": 200,
+   "n_paths": 135,
+   "paths": [
+    "/AcceptableCollateralGovernmentBonds",
+    "/AcceptableCollateralInternationalBonds",
+    "/AcceptableCollateralLogStock",
+    "/AcceptableCollateralStock",
+    "/AccumulatedIncomeStateF",
+    "/AccumulatedIncomeStateR",
+    "/AccumulatedIncomeStateS",
+    "/AccumulatedIncomeStatementBeforeTaxStatement",
+    "/AnnualTradingFX",
+    "/AnnualTradingGold",
+    "/AnnualTradingIR",
+    "/AnnualTradingIndexFutures",
+    "/AnnualTradingIndexOptions",
+    "/AnnualTradingSSF",
+    "/AnnualTradingSSO",
+    "/AnnualTradingVolume",
+    "/BTContinuousMatchingSingleOrderFutures",
+    "/BTContinuousMatchingSingleOrderOptions",
+    "/BTDailyTradeInformationFutures",
+    "/BTDailyTradeInformationOptions",
+    "/BlockTrade",
+    "/BlockTradeContinuousMatchingCombinationOrder",
+    "/BlockTradeContinuousMatchingSingleOrder",
+    "/BlockTradeNegotiation",
+    "/CCP_CMLists",
+    "/CMLists",
+    "/ClearingBankLists",
+    "/ContractAdj",
+    "/CustodianBankLists",
+    "/DailyForeignExchangeRates",
+    "/DailyMarketReportFut",
+    "/DailyMarketReportOpt",
+    "/DailyOptionsDelta",
+    "/DailySummaryOfBlockTradeFutures",
+    "/DailySummaryOfBlockTradeOptions",
+    "/DailyVolumeReportOnCalendarSpreadOrders",
+    "/Daily_FUT",
+    "/Daily_OPT",
+    "/Daily_OPT_W",
+    "/EPSBeforeTaxF",
+    "/EPSBeforeTaxR",
+    "/EPSBeforeTaxS",
+    "/FCMBranchLists",
+    "/FCMLists",
+    "/FXFuturesAndOptionsMargining",
+    "/FinalSettlementPrice",
+    "/FinalSettlementPriceFutures",
+    "/FinalSettlementPriceFx",
+    "/FinalSettlementPriceGold",
+    "/FinalSettlementPriceIR",
+    "/FinalSettlementPriceIndexFutures",
+    "/FinalSettlementPriceIndexOptions",
+    "/FinalSettlementPriceOptions",
+    "/FinalSettlementPriceSSF",
+    "/FinalSettlementPriceSSO",
+    "/FuturesAndOptionsFeeSchedule",
+    "/GoldFuturesAndOptionsMargining",
+    "/IncomeStatementF",
+    "/IncomeStatementR",
+    "/IncomeStatementS",
+    "/IndexFuturesAndOptionsMargining",
+    "/InterestRateFuturesMargining",
+    "/MarketDataOfMajorInstitutionalTradersDetailsOfCallsAndPutsBytheDate",
+    "/MarketDataOfMajorInstitutionalTradersDetailsOfCallsAndPutsBytheWeek",
+    "/MarketDataOfMajorInstitutionalTradersDetailsOfFuturesContractsBytheDate",
+    "/MarketDataOfMajorInstitutionalTradersDetailsOfFuturesContractsBytheWeek",
+    "/MarketDataOfMajorInstitutionalTradersDetailsOfOptionsContractsBytheDate",
+    "/MarketDataOfMajorInstitutionalTradersDetailsOfOptionsContractsBytheWeek",
+    "/MarketDataOfMajorInstitutionalTradersDividedByFuturesAndOptionsBytheDate",
+    "/MarketDataOfMajorInstitutionalTradersDividedByFuturesAndOptionsBytheWeek",
+    "/MarketDataOfMajorInstitutionalTradersGeneralBytheDate",
+    "/MarketDataOfMajorInstitutionalTradersGeneralBytheWeek",
+    "/MarketMakerListsFut",
+    "/MarketMakerListsOpt",
+    "/MarketParticipants",
+    "/MonthlyTradingStatisticsFutures",
+    "/MonthlyTradingStatisticsOptions",
+    "/Monthly_FUT",
+    "/Monthly_OPT",
+    "/NetIncomeRankingF",
+    "/NetIncomeRankingR",
+    "/NetIncomeRankingS",
+    "/NetValuePerShareF",
+    "/NetValuePerShareR",
+    "/NetValuePerShareS",
+    "/NetValuePerShareStatement",
+    "/OpenInterestOfLargeTradersFutures",
+    "/OpenInterestOfLargeTradersOptions",
+    "/OptionsTimeAndSalesData",
+    "/PositionLimitEquity",
+    "/PositionLimitNonEquity",
+    "/PutCallRatio",
+    "/SSFAdjustedInfo",
+    "/SSFLists",
+    "/SSFRefferedOpeningPrice",
+    "/SSFRefferedOpeningPriceAh",
+    "/SSOLists",
+    "/STFTop10",
+    "/SettledPositionsFX",
+    "/SettledPositionsFXFutures",
+    "/SettledPositionsFutures",
+    "/SettledPositionsGold",
+    "/SettledPositionsIR",
+    "/SettledPositionsIndexFutures",
+    "/SettledPositionsIndexOptions",
+    "/SettledPositionsOfContractsOnExpirationDate",
+    "/SettledPositionsOptions",
+    "/SettledPositionsSSF",
+    "/SettledPositionsSSO",
+    "/SingleStockFuturesContractReferredOpeningPrice",
+    "/SingleStockFuturesETFMargining",
+    "/SingleStockFuturesMargining",
+    "/TimeAndSalesData",
+    "/TimeAndSalesDataOnCalendarSpreadOrders",
+    "/TotalMarketPositionLimitForSingleStockFuturesAndEquityOptions",
+    "/Weekly_FUT",
+    "/Weekly_OPT",
+    "/Yearly_FUT",
+    "/Yearly_OPT",
+    "/eTradeQty",
+    "/productsExemptedAH",
+    "/va01",
+    "/va02",
+    "/va03",
+    "/va04",
+    "/va05",
+    "/va06",
+    "/va07",
+    "/va08",
+    "/va09",
+    "/va10",
+    "/va11",
+    "/va12",
+    "/va13",
+    "/va14"
+   ]
+  },
+  "openapi/DailyMarketReportFut": {
+   "status": 200,
+   "rows": 2221,
+   "keys": [
+    "Date",
+    "Contract",
+    "ContractMonth(Week)",
+    "Open",
+    "High",
+    "Low",
+    "Last",
+    "Change",
+    "%",
+    "Volume",
+    "SettlementPrice",
+    "OpenInterest",
+    "BestBid",
+    "BestAsk",
+    "HistoricalHigh",
+    "HistoricalLow",
+    "TradingHalt",
+    "TradingSession",
+    "Volume(ExecutionsAmongSpreadOrderAndSingleOrderOnly)"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "Contract": "ZFF",
+    "ContractMonth(Week)": "202611",
+    "Open": "3735.4",
+    "High": "3758",
+    "Low": "3652.8",
+    "Last": "3661.2",
+    "Change": "-91.8",
+    "%": "-2.45%",
+    "Volume": "408",
+    "SettlementPrice": "3669.4",
+    "OpenInterest": "449",
+    "BestBid": "3661.2",
+    "BestAsk": "3663.6",
+    "HistoricalHigh": "3816.2",
+    "HistoricalLow": "3508.2",
+    "TradingHalt": "",
+    "TradingSession": "一般",
+    "Volume(ExecutionsAmongSpreadOrderAndSingleOrderOnly)": ""
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "openapi/DailyMarketReportOpt": {
+   "status": 200,
+   "rows": 11892,
+   "keys": [
+    "Date",
+    "Contract",
+    "ContractMonth(Week)",
+    "StrikePrice",
+    "CallPut",
+    "Open",
+    "High",
+    "Low",
+    "Close",
+    "Volume",
+    "SettlementPrice",
+    "OpenInterest",
+    "BestBid",
+    "BestAsk",
+    "HistoricalHigh",
+    "HistoricalLow",
+    "TradingHalt",
+    "TradingSession"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "Contract": "CAO",
+    "ContractMonth(Week)": "202611W1",
+    "StrikePrice": "250",
+    "CallPut": "買權",
+    "Open": "-",
+    "High": "-",
+    "Low": "-",
+    "Close": "-",
+    "Volume": "0",
+    "SettlementPrice": "22.5",
+    "OpenInterest": "0",
+    "BestBid": "-",
+    "BestAsk": "-",
+    "HistoricalHigh": "-",
+    "HistoricalLow": "-",
+    "TradingHalt": "",
+    "TradingSession": "一般"
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersDetailsOfCallsAndPutsBytheDate": {
+   "status": 200,
+   "rows": 30,
+   "keys": [
+    "Date",
+    "ContractCode",
+    "CallPut",
+    "Item",
+    "TradingVolume(Long)",
+    "TradingValue(Long)(Thousands)",
+    "TradingVolume(Short)",
+    "TradingValue(Short)(Thousands)",
+    "TradingVolume(Net)",
+    "TradingValue(Net)(Thousands)",
+    "OpenInterest(Long)",
+    "ContractValueofOpenInterest(Long)(Thousands)",
+    "OpenInterest(Short)",
+    "ContractValueofOpenInterest(Short)(Thousands)",
+    "OpenInterest(Net)",
+    "ContractValueofOpenInterest(Net)(Thousands)"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "ContractCode": "臺指選擇權",
+    "CallPut": "CALL",
+    "Item": "自營商",
+    "TradingVolume(Long)": "67095",
+    "TradingValue(Long)(Thousands)": "482333",
+    "TradingVolume(Short)": "74800",
+    "TradingValue(Short)(Thousands)": "525840",
+    "TradingVolume(Net)": "-7705",
+    "TradingValue(Net)(Thousands)": "-43507",
+    "OpenInterest(Long)": "53085",
+    "ContractValueofOpenInterest(Long)(Thousands)": "374688",
+    "OpenInterest(Short)": "48295",
+    "ContractValueofOpenInterest(Short)(Thousands)": "229567",
+    "OpenInterest(Net)": "4790",
+    "ContractValueofOpenInterest(Net)(Thousands)": "145121"
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersDetailsOfCallsAndPutsBytheWeek": {
+   "status": 200,
+   "rows": 30,
+   "keys": [
+    "FromDate",
+    "ToDate",
+    "ContractCode",
+    "CallPut",
+    "Item",
+    "TradingVolume(Long)",
+    "TradingValue(Long)(Thousands)",
+    "TradingVolume(Short)",
+    "TradingValue(Short)(Thousands)",
+    "TradingVolume(Net)",
+    "TradingValue(Net)(Thousands)",
+    "OpenInterest(Long)",
+    "ContractValueofOpenInterest(Long)(Thousands)",
+    "OpenInterest(Short)",
+    "ContractValueofOpenInterest(Short)(Thousands)",
+    "OpenInterest(Net)",
+    "ContractValueofOpenInterest(Net)(Thousands)"
+   ],
+   "sample": {
+    "FromDate": "20261027",
+    "ToDate": "20261030",
+    "ContractCode": "臺指選擇權",
+    "CallPut": "CALL",
+    "Item": "自營商",
+    "TradingVolume(Long)": "378464",
+    "TradingValue(Long)(Thousands)": "3509687",
+    "TradingVolume(Short)": "385344",
+    "TradingValue(Short)(Thousands)": "2337515",
+    "TradingVolume(Net)": "-6880",
+    "TradingValue(Net)(Thousands)": "1172172",
+    "OpenInterest(Long)": "31802",
+    "ContractValueofOpenInterest(Long)(Thousands)": "775215",
+    "OpenInterest(Short)": "25379",
+    "ContractValueofOpenInterest(Short)(Thousands)": "408433",
+    "OpenInterest(Net)": "6423",
+    "ContractValueofOpenInterest(Net)(Thousands)": "366782"
+   },
+   "dates": [
+    "20261027",
+    "20261030",
+    2
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersDetailsOfFuturesContractsBytheDate": {
+   "status": 200,
+   "rows": 66,
+   "keys": [
+    "Date",
+    "ContractCode",
+    "Item",
+    "TradingVolume(Long)",
+    "TradingValue(Long)(Thousands)",
+    "TradingVolume(Short)",
+    "TradingValue(Short)(Thousands)",
+    "TradingVolume(Net)",
+    "TradingValue(Net)(Thousands)",
+    "OpenInterest(Long)",
+    "ContractValueofOpenInterest(Long)(Thousands)",
+    "OpenInterest(Short)",
+    "ContractValueofOpenInterest(Short)(Thousands)",
+    "OpenInterest(Net)",
+    "ContractValueofOpenInterest(Net)(Thousands)"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "ContractCode": "臺股期貨",
+    "Item": "自營商",
+    "TradingVolume(Long)": "9523",
+    "TradingValue(Long)(Thousands)": "83954460",
+    "TradingVolume(Short)": "6898",
+    "TradingValue(Short)(Thousands)": "60427214",
+    "TradingVolume(Net)": "2625",
+    "TradingValue(Net)(Thousands)": "23527246",
+    "OpenInterest(Long)": "7540",
+    "ContractValueofOpenInterest(Long)(Thousands)": "65415596",
+    "OpenInterest(Short)": "3564",
+    "ContractValueofOpenInterest(Short)(Thousands)": "30935632",
+    "OpenInterest(Net)": "3976",
+    "ContractValueofOpenInterest(Net)(Thousands)": "34479964"
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersDetailsOfFuturesContractsBytheWeek": {
+   "status": 200,
+   "rows": 66,
+   "keys": [
+    "FromDate",
+    "ToDate",
+    "ContractCode",
+    "Item",
+    "TradingVolume(Long)",
+    "TradingValue(Long)(Thousands)",
+    "TradingVolume(Short)",
+    "TradingValue(Short)(Thousands)",
+    "TradingVolume(Net)",
+    "TradingValue(Net)(Thousands)",
+    "OpenInterest(Long)",
+    "ContractValueofOpenInterest(Long)(Thousands)",
+    "OpenInterest(Short)",
+    "ContractValueofOpenInterest(Short)(Thousands)",
+    "OpenInterest(Net)",
+    "ContractValueofOpenInterest(Net)(Thousands)"
+   ],
+   "sample": {
+    "FromDate": "20261027",
+    "ToDate": "20261030",
+    "ContractCode": "臺股期貨",
+    "Item": "自營商",
+    "TradingVolume(Long)": "25589",
+    "TradingValue(Long)(Thousands)": "235887337",
+    "TradingVolume(Short)": "27250",
+    "TradingValue(Short)(Thousands)": "251571555",
+    "TradingVolume(Net)": "-1661",
+    "TradingValue(Net)(Thousands)": "-15684218",
+    "OpenInterest(Long)": "6106",
+    "ContractValueofOpenInterest(Long)(Thousands)": "55360824",
+    "OpenInterest(Short)": "4370",
+    "ContractValueofOpenInterest(Short)(Thousands)": "39628863",
+    "OpenInterest(Net)": "1736",
+    "ContractValueofOpenInterest(Net)(Thousands)": "15731961"
+   },
+   "dates": [
+    "20261027",
+    "20261030",
+    2
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersDetailsOfOptionsContractsBytheDate": {
+   "status": 200,
+   "rows": 15,
+   "keys": [
+    "Date",
+    "ContractCode",
+    "Item",
+    "TradingVolume(Long)",
+    "TradingValue(Long)(Thousands)",
+    "TradingVolume(Short)",
+    "TradingValue(Short)(Thousands)",
+    "TradingVolume(Net)",
+    "TradingValue(Net)(Thousands)",
+    "OpenInterest(Long)",
+    "ContractValueofOpenInterest(Long)(Thousands)",
+    "OpenInterest(Short)",
+    "ContractValueofOpenInterest(Short)(Thousands)",
+    "OpenInterest(Net)",
+    "ContractValueofOpenInterest(Net)(Thousands)"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "ContractCode": "臺指選擇權",
+    "Item": "自營商",
+    "TradingVolume(Long)": "123594",
+    "TradingValue(Long)(Thousands)": "1286562",
+    "TradingVolume(Short)": "135042",
+    "TradingValue(Short)(Thousands)": "1369535",
+    "TradingVolume(Net)": "-11448",
+    "TradingValue(Net)(Thousands)": "-82973",
+    "OpenInterest(Long)": "75505",
+    "ContractValueofOpenInterest(Long)(Thousands)": "1651568",
+    "OpenInterest(Short)": "72482",
+    "ContractValueofOpenInterest(Short)(Thousands)": "1927136",
+    "OpenInterest(Net)": "3023",
+    "ContractValueofOpenInterest(Net)(Thousands)": "-275568"
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersDetailsOfOptionsContractsBytheWeek": {
+   "status": 200,
+   "rows": 15,
+   "keys": [
+    "FromDate",
+    "ToDate",
+    "ContractCode",
+    "Item",
+    "TradingVolume(Long)",
+    "TradingValue(Long)(Thousands)",
+    "TradingVolume(Short)",
+    "TradingValue(Short)(Thousands)",
+    "TradingVolume(Net)",
+    "TradingValue(Net)(Thousands)",
+    "OpenInterest(Long)",
+    "ContractValueofOpenInterest(Long)(Thousands)",
+    "OpenInterest(Short)",
+    "ContractValueofOpenInterest(Short)(Thousands)",
+    "OpenInterest(Net)",
+    "ContractValueofOpenInterest(Net)(Thousands)"
+   ],
+   "sample": {
+    "FromDate": "20261027",
+    "ToDate": "20261030",
+    "ContractCode": "臺指選擇權",
+    "Item": "自營商",
+    "TradingVolume(Long)": "720199",
+    "TradingValue(Long)(Thousands)": "6156526",
+    "TradingVolume(Short)": "710565",
+    "TradingValue(Short)(Thousands)": "5004779",
+    "TradingVolume(Net)": "9634",
+    "TradingValue(Net)(Thousands)": "1151747",
+    "OpenInterest(Long)": "50634",
+    "ContractValueofOpenInterest(Long)(Thousands)": "1327042",
+    "OpenInterest(Short)": "43562",
+    "ContractValueofOpenInterest(Short)(Thousands)": "1255357",
+    "OpenInterest(Net)": "7072",
+    "ContractValueofOpenInterest(Net)(Thousands)": "71685"
+   },
+   "dates": [
+    "20261027",
+    "20261030",
+    2
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersDividedByFuturesAndOptionsBytheDate": {
+   "status": 200,
+   "rows": 3,
+   "keys": [
+    "Date",
+    "Item",
+    "FuturesTradingVolume(Long)",
+    "OptionsTradingVolume(Long)",
+    "FuturesTradingValue(Long)(Thousands)",
+    "OptionsTradingValue(Long)(Thousands)",
+    "FuturesTradingVolume(Short)",
+    "OptionsTradingVolume(Short)",
+    "FuturesTradingValue(Short)(Thousands)",
+    "OptionsTradingValue(Short)(Thousands)",
+    "FuturesTradingVolume(Net)",
+    "OptionsTradingVolume(Net)",
+    "FuturesTradingValue(Net)(Thousands)",
+    "OptionsTradingValue(Net)(Thousands)",
+    "FuturesOpenInterest(Long)",
+    "OptionsOpenInterest(Long)",
+    "FuturesContractValueofOpenInterest(Long)(Thousands)",
+    "OptionsContractValueofOpenInterest(Long)(Thousands)",
+    "FuturesOpenInterest(Short)",
+    "OptionsOpenInterest(Short)",
+    "FuturesContractValueofOpenInterest(Short)(Thousands)",
+    "OptionsContractValueofOpenInterest(Short)(Thousands)",
+    "FuturesOpenInterest(Net)",
+    "OptionsOpenInterest(Net)",
+    "FuturesContractValueofOpenInterest(Net)(Thousands)",
+    "OptionsContractValueofOpenInterest(Net)(Thousands)"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "Item": "自營商",
+    "FuturesTradingVolume(Long)": "110738",
+    "OptionsTradingVolume(Long)": "124102",
+    "FuturesTradingValue(Long)(Thousands)": "145879716",
+    "OptionsTradingValue(Long)(Thousands)": "1296344",
+    "FuturesTradingVolume(Short)": "93268",
+    "OptionsTradingVolume(Short)": "135511",
+    "FuturesTradingValue(Short)(Thousands)": "114460269",
+    "OptionsTradingValue(Short)(Thousands)": "1377101",
+    "FuturesTradingVolume(Net)": "17470",
+    "OptionsTradingVolume(Net)": "-11409",
+    "FuturesTradingValue(Net)(Thousands)": "31419447",
+    "OptionsTradingValue(Net)(Thousands)": "-80757",
+    "FuturesOpenInterest(Long)": "145485",
+    "OptionsOpenInterest(Long)": "77923",
+    "FuturesContractValueofOpenInterest(Long)(Thousands)": "107985709",
+    "OptionsContractValueofOpenInterest(Long)(Thousands)": "1703946",
+    "FuturesOpenInterest(Short)": "390067",
+    "OptionsOpenInterest(Short)": "74564",
+    "FuturesContractValueofOpenInterest(Short)(Thousands)": "251903876",
+    "OptionsContractValueofOpenInterest(Short)(Thousands)": "2009641",
+    "FuturesOpenInterest(Net)": "-244582",
+    "OptionsOpenInterest(Net)": "3359",
+    "FuturesContractValueofOpenInterest(Net)(Thousands)": "-143918167",
+    "OptionsContractValueofOpenInterest(Net)(Thousands)": "-305695"
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersDividedByFuturesAndOptionsBytheWeek": {
+   "status": 200,
+   "rows": 3,
+   "keys": [
+    "FromDate",
+    "ToDate",
+    "Item",
+    "FuturesTradingVolume(Long)",
+    "OptionsTradingVolume(Long)",
+    "FuturesTradingValue(Long)(Thousands)",
+    "OptionsTradingValue(Long)(Thousands)",
+    "FuturesTradingVolume(Short)",
+    "OptionsTradingVolume(Short)",
+    "FuturesTradingValue(Short)(Thousands)",
+    "OptionsTradingValue(Short)(Thousands)",
+    "FuturesTradingVolume(Net)",
+    "OptionsTradingVolume(Net)",
+    "FuturesTradingValue(Net)(Thousands)",
+    "OptionsTradingValue(Net)(Thousands)",
+    "FuturesOpenInterest(Long)",
+    "OptionsOpenInterest(Long)",
+    "FuturesContractValueofOpenInterest(Long)(Thousands)",
+    "OptionsContractValueofOpenInterest(Long)(Thousands)",
+    "FuturesOpenInterest(Short)",
+    "OptionsOpenInterest(Short)",
+    "FuturesContractValueofOpenInterest(Short)(Thousands)",
+    "OptionsContractValueofOpenInterest(Short)(Thousands)",
+    "FuturesOpenInterest(Net)",
+    "OptionsOpenInterest(Net)",
+    "FuturesContractValueofOpenInterest(Net)(Thousands)",
+    "OptionsContractValueofOpenInterest(Net)(Thousands)"
+   ],
+   "sample": {
+    "FromDate": "20261027",
+    "ToDate": "20261030",
+    "Item": "自營商",
+    "FuturesTradingVolume(Long)": "307823",
+    "OptionsTradingVolume(Long)": "721864",
+    "FuturesTradingValue(Long)(Thousands)": "446054211",
+    "OptionsTradingValue(Long)(Thousands)": "6184286",
+    "FuturesTradingVolume(Short)": "303887",
+    "OptionsTradingVolume(Short)": "711743",
+    "FuturesTradingValue(Short)(Thousands)": "460502757",
+    "OptionsTradingValue(Short)(Thousands)": "5033829",
+    "FuturesTradingVolume(Net)": "3936",
+    "OptionsTradingVolume(Net)": "10121",
+    "FuturesTradingValue(Net)(Thousands)": "-14448546",
+    "OptionsTradingValue(Net)(Thousands)": "1150457",
+    "FuturesOpenInterest(Long)": "123612",
+    "OptionsOpenInterest(Long)": "52792",
+    "FuturesContractValueofOpenInterest(Long)(Thousands)": "93644637",
+    "OptionsContractValueofOpenInterest(Long)(Thousands)": "1367220",
+    "FuturesOpenInterest(Short)": "385326",
+    "OptionsOpenInterest(Short)": "45415",
+    "FuturesContractValueofOpenInterest(Short)(Thousands)": "275913626",
+    "OptionsContractValueofOpenInterest(Short)(Thousands)": "1319097",
+    "FuturesOpenInterest(Net)": "-261714",
+    "OptionsOpenInterest(Net)": "7377",
+    "FuturesContractValueofOpenInterest(Net)(Thousands)": "-182268989",
+    "OptionsContractValueofOpenInterest(Net)(Thousands)": "48123"
+   },
+   "dates": [
+    "20261027",
+    "20261030",
+    2
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersGeneralBytheDate": {
+   "status": 200,
+   "rows": 3,
+   "keys": [
+    "Date",
+    "Item",
+    "TradingVolume(Long)",
+    "TradingValue(Long)(Millions)",
+    "TradingVolume(Short)",
+    "TradingValue(Short)(Millions)",
+    "TradingVolume(Net)",
+    "TradingValue(Net)(Millions)",
+    "OpenInterest(Long)",
+    "ContractValueOfOpenInterest(Long)(Millions)",
+    "OpenInterest(Short)",
+    "ContractValueOfOpenInterest(Short)(Millions)",
+    "OpenInterest(Net)",
+    "ContractValueOfOpenInterest(Net)(Millions)"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "Item": "自營商",
+    "TradingVolume(Long)": "234840",
+    "TradingValue(Long)(Millions)": "147176",
+    "TradingVolume(Short)": "228779",
+    "TradingValue(Short)(Millions)": "115837",
+    "TradingVolume(Net)": "6061",
+    "TradingValue(Net)(Millions)": "31339",
+    "OpenInterest(Long)": "223408",
+    "ContractValueOfOpenInterest(Long)(Millions)": "109690",
+    "OpenInterest(Short)": "464631",
+    "ContractValueOfOpenInterest(Short)(Millions)": "253914",
+    "OpenInterest(Net)": "-241223",
+    "ContractValueOfOpenInterest(Net)(Millions)": "-144224"
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "openapi/MarketDataOfMajorInstitutionalTradersGeneralBytheWeek": {
+   "status": 200,
+   "rows": 3,
+   "keys": [
+    "FromDate",
+    "ToDate",
+    "Item",
+    "TradingVolume(Long)",
+    "TradingValue(Long)(Millions)",
+    "TradingVolume(Short)",
+    "TradingValue(Short)(Millions)",
+    "TradingVolume(Net)",
+    "TradingValue(Net)(Millions)",
+    "OpenInterest(Long)",
+    "ContractValueOfOpenInterest(Long)(Millions)",
+    "OpenInterest(Short)",
+    "ContractValueOfOpenInterest(Short)(Millions)",
+    "OpenInterest(Net)",
+    "ContractValueOfOpenInterest(Net)(Millions)"
+   ],
+   "sample": {
+    "FromDate": "20261027",
+    "ToDate": "20261030",
+    "Item": "自營商",
+    "TradingVolume(Long)": "1029687",
+    "TradingValue(Long)(Millions)": "452238",
+    "TradingVolume(Short)": "1015630",
+    "TradingValue(Short)(Millions)": "465537",
+    "TradingVolume(Net)": "14057",
+    "TradingValue(Net)(Millions)": "-13298",
+    "OpenInterest(Long)": "176404",
+    "ContractValueOfOpenInterest(Long)(Millions)": "95012",
+    "OpenInterest(Short)": "430741",
+    "ContractValueOfOpenInterest(Short)(Millions)": "277233",
+    "OpenInterest(Net)": "-254337",
+    "ContractValueOfOpenInterest(Net)(Millions)": "-182221"
+   },
+   "dates": [
+    "20261027",
+    "20261030",
+    2
+   ]
+  },
+  "openapi/OpenInterestOfLargeTradersFutures": {
+   "status": 200,
+   "rows": 1410,
+   "keys": [
+    "Date",
+    "Contract",
+    "ContractName",
+    "SettlementMonth",
+    "TypeOfTraders",
+    "Top5Buy",
+    "Top5Sell",
+    "Top10Buy",
+    "Top10Sell",
+    "OIOfMarket"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "Contract": "BRF",
+    "ContractName": "布蘭特原油期貨",
+    "SettlementMonth": "202701",
+    "TypeOfTraders": "0",
+    "Top5Buy": "73",
+    "Top5Sell": "40",
+    "Top10Buy": "74",
+    "Top10Sell": "58",
+    "OIOfMarket": "74"
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "openapi/OpenInterestOfLargeTradersOptions": {
+   "status": 200,
+   "rows": 320,
+   "keys": [
+    "Date",
+    "Contract",
+    "ContractName",
+    "CallPut",
+    "SettlementMonth",
+    "TypeOfTraders",
+    "Top5Buy",
+    "Top5Sell",
+    "Top10Buy",
+    "Top10Sell",
+    "OIOfMarket"
+   ],
+   "sample": {
+    "Date": "20261103",
+    "Contract": "CA",
+    "ContractName": "南亞",
+    "CallPut": "買權",
+    "SettlementMonth": "666666",
+    "TypeOfTraders": "0",
+    "Top5Buy": "12",
+    "Top5Sell": "12",
+    "Top10Buy": "12",
+    "Top10Sell": "12",
+    "OIOfMarket": "12"
+   },
+   "dates": [
+    "20261103",
+    "20261103",
+    1
+   ]
+  },
+  "futContractsDateDown_TMF_1m": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "big5",
+   "bytes": 6121,
+   "lines": 61,
+   "head": [
+    "日期,商品名稱,身份別,多方交易口數,多方交易契約金額(千元),空方交易口數,空方交易契約金額(千元),多空交易口數淨額,多空交易契約金額淨額(千元),多方未平倉口數,多方未平倉契約金額(千元),空方未平倉口數,空方未平倉契約金額(千元),多空未平倉口數淨額,多空未平倉契約金額淨額(千元)",
+    "2026/10/05,微型臺指期貨,自營商,29600,14653025,12533,6228102,17067,8424923,21774,10879724,9114,4574713,12660,6305011",
+    "2026/10/05,微型臺指期貨,投信,0,0,0,0,0,0,0,0,0,0,0,0",
+    "2026/10/05,微型臺指期貨,外資及陸資,130145,64400684,121636,60185698,8509,4214986,8277,4134128,5091,2542664,3186,1591464"
+   ],
+   "tail": [
+    "2026/11/04,微型臺指期貨,投信,0,0,0,0,0,0,0,0,0,0,0,0",
+    "2026/11/04,微型臺指期貨,外資及陸資,250272,108086521,243992,105353541,6280,2732980,0,0,0,0,0,0"
+   ],
+   "dates": [
+    "2026/10/05",
+    "2026/11/04",
+    20
+   ],
+   "looks_html": false,
+   "form": {
+    "queryStartDate": "2026/10/05",
+    "queryEndDate": "2026/11/04",
+    "commodityId": "TMF"
+   }
+  },
+  "futContractsDateDown_TX_1m": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "big5",
+   "bytes": 7192,
+   "lines": 61,
+   "head": [
+    "日期,商品名稱,身份別,多方交易口數,多方交易契約金額(千元),空方交易口數,空方交易契約金額(千元),多空交易口數淨額,多空交易契約金額淨額(千元),多方未平倉口數,多方未平倉契約金額(千元),空方未平倉口數,空方未平倉契約金額(千元),多空未平倉口數淨額,多空未平倉契約金額淨額(千元)",
+    "2026/10/05,臺股期貨,自營商,4841,48240660,5844,58141373,-1003,-9900714,2810,28097452,4965,49623454,-2155,-21526002",
+    "2026/10/05,臺股期貨,投信,579,5779717,104,1038217,475,4741499,77893,778057598,2749,27459211,75144,750598387",
+    "2026/10/05,臺股期貨,外資及陸資,43262,428883917,39967,396400014,3295,32483903,14760,147449399,91764,916699924,-77004,-769250525"
+   ],
+   "tail": [
+    "2026/11/04,臺股期貨,投信,2514,21731190,12,103867,2502,21627323,0,0,0,0,0,0",
+    "2026/11/04,臺股期貨,外資及陸資,93663,808359599,95523,823759306,-1860,-15399707,0,0,0,0,0,0"
+   ],
+   "dates": [
+    "2026/10/05",
+    "2026/11/04",
+    20
+   ],
+   "looks_html": false,
+   "form": {
+    "queryStartDate": "2026/10/05",
+    "queryEndDate": "2026/11/04",
+    "commodityId": "TXF"
+   }
+  },
+  "futContractsDateDown_TMF_2024_08": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "big5",
+   "bytes": 6138,
+   "lines": 67,
+   "head": [
+    "日期,商品名稱,身份別,多方交易口數,多方交易契約金額(千元),空方交易口數,空方交易契約金額(千元),多空交易口數淨額,多空交易契約金額淨額(千元),多方未平倉口數,多方未平倉契約金額(千元),空方未平倉口數,空方未平倉契約金額(千元),多空未平倉口數淨額,多空未平倉契約金額淨額(千元)",
+    "2024/08/01,微型臺指期貨,自營商,22028,4969054,21720,4897390,308,71663,4802,1088154,56,12743,4746,1075411",
+    "2024/08/01,微型臺指期貨,投信,0,0,0,0,0,0,0,0,0,0,0,0",
+    "2024/08/01,微型臺指期貨,外資及陸資,0,0,1,226,-1,-226,0,0,20,4532,-20,-4532"
+   ],
+   "tail": [
+    "2024/08/30,微型臺指期貨,投信,0,0,0,0,0,0,0,0,0,0,0,0",
+    "2024/08/30,微型臺指期貨,外資及陸資,33854,7558798,35208,7858709,-1354,-299911,0,0,5975,1333501,-5975,-1333501"
+   ],
+   "dates": [
+    "2024/08/01",
+    "2024/08/30",
+    22
+   ],
+   "looks_html": false,
+   "form": {
+    "queryStartDate": "2024/08/01",
+    "queryEndDate": "2024/08/31",
+    "commodityId": "TMF"
+   }
+  },
+  "futContractsDateDown_TX_1y": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "big5",
+   "bytes": 85038,
+   "lines": 727,
+   "head": [
+    "日期,商品名稱,身份別,多方交易口數,多方交易契約金額(千元),空方交易口數,空方交易契約金額(千元),多空交易口數淨額,多空交易契約金額淨額(千元),多方未平倉口數,多方未平倉契約金額(千元),空方未平倉口數,空方未平倉契約金額(千元),多空未平倉口數淨額,多空未平倉契約金額淨額(千元)",
+    "2025/11/04,臺股期貨,自營商,10389,58893085,10601,60129145,-212,-1236060,4496,25290318,4116,23151920,380,2138398",
+    "2025/11/04,臺股期貨,投信,0,0,384,2160030,-384,-2160030,27259,153299177,6640,37342032,20619,115957145",
+    "2025/11/04,臺股期貨,外資及陸資,58719,333227584,58752,333287483,-33,-59899,16846,94744495,44688,251330607,-27842,-156586112"
+   ],
+   "tail": [
+    "2026/11/04,臺股期貨,投信,2514,21731190,12,103867,2502,21627323,0,0,0,0,0,0",
+    "2026/11/04,臺股期貨,外資及陸資,93663,808359599,95523,823759306,-1860,-15399707,0,0,0,0,0,0"
+   ],
+   "dates": [
+    "2025/11/04",
+    "2026/11/04",
+    242
+   ],
+   "looks_html": false,
+   "form": {
+    "queryStartDate": "2025/11/04",
+    "queryEndDate": "2026/11/04",
+    "commodityId": "TXF"
+   }
+  },
+  "callsAndPutsDateDown_TXO_1m": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "big5",
+   "bytes": 12507,
+   "lines": 121,
+   "head": [
+    "日期,商品名稱,買賣權別,身份別,買方交易口數,買方交易契約金額(千元),賣方交易口數,賣方交易契約金額(千元),交易口數買賣淨額,交易契約金額買賣淨額(千元),買方未平倉口數,買方未平倉契約金額(千元),賣方未平倉口數,賣方未平倉契約金額(千元),未平倉口數買賣淨額,未平倉契約金額買賣淨額(千元)",
+    "2026/10/05,臺指選擇權,CALL,自營商,46390,685096,42294,513495,4096,171601,29248,1936557,20486,1362861,8762,573696",
+    "2026/10/05,臺指選擇權,CALL,投信,0,0,2150,158329,-2150,-158329,0,0,7770,911469,-7770,-911469",
+    "2026/10/05,臺指選擇權,CALL,外資及陸資,52075,585323,50899,545109,1176,40214,12587,1045836,12524,1271276,63,-225440"
+   ],
+   "tail": [
+    "2026/11/04,臺指選擇權,PUT,投信,105,456,162,2919,-57,-2462,0,0,0,0,0,0",
+    "2026/11/04,臺指選擇權,PUT,外資及陸資,144973,1230284,149598,1263705,-4625,-33421,0,0,0,0,0,0"
+   ],
+   "dates": [
+    "2026/10/05",
+    "2026/11/04",
+    20
+   ],
+   "looks_html": false,
+   "form": {
+    "queryStartDate": "2026/10/05",
+    "queryEndDate": "2026/11/04",
+    "commodityId": "TXO"
+   }
+  },
+  "futDataDown_TMF_1m": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "big5",
+   "bytes": 55897,
+   "lines": 627,
+   "head": [
+    "交易日期,契約,到期月份(週別),開盤價,最高價,最低價,收盤價,漲跌價,漲跌%,成交量,結算價,未沖銷契約數,最後最佳買價,最後最佳賣價,歷史最高價,歷史最低價,是否因訊息面暫停交易,交易時段,價差對單式委託成交量",
+    "2026/10/05,TMF,202610  ,49489,50098,49460,49954,1285,2.64%,142760,49944,68259,49944,49954,50098,39800,,一般,,",
+    "2026/10/05,TMF,202610  ,48692,49490,48680,49350,681,1.40%,195275,-,-,49352,49353,49490,39800,,盤後,,",
+    "2026/10/05,TMF,202611  ,49605,50265,49605,50125,1285,2.63%,9810,50096,9902,50120,50134,50265,44430,,一般,,"
+   ],
+   "tail": [
+    "2026/11/04,TMF,202612/202709    ,-,-,-,-,-,-,0,-,-,1197,1235,1294,1210,,盤後,10,",
+    "2026/11/04,TMF,202701/202709    ,-,-,-,-,-,-,0,-,-,-,-,-,-,,盤後,4,"
+   ],
+   "dates": [
+    "2026/10/05",
+    "2026/11/04",
+    20
+   ],
+   "looks_html": false,
+   "form": {
+    "down_type": "1",
+    "commodity_id": "TMF",
+    "queryStartDate": "2026/10/05",
+    "queryEndDate": "2026/11/04"
+   }
+  },
+  "futDataDown_TX_1m": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "big5",
+   "bytes": 43162,
+   "lines": 479,
+   "head": [
+    "交易日期,契約,到期月份(週別),開盤價,最高價,最低價,收盤價,漲跌價,漲跌%,成交量,結算價,未沖銷契約數,最後最佳買價,最後最佳賣價,歷史最高價,歷史最低價,是否因訊息面暫停交易,交易時段,價差對單式委託成交量",
+    "2026/10/05,TX,202610  ,49470,50097,49461,49949,1280,2.63%,41858,49944,108339,49944,49951,50097,39852,,一般,,",
+    "2026/10/05,TX,202610  ,48671,49495,48671,49346,677,1.39%,32288,-,-,49345,49349,49495,39852,,盤後,,",
+    "2026/10/05,TX,202611  ,49627,50269,49627,50125,1285,2.63%,423,50096,1566,50116,50130,50269,44435,,一般,,"
+   ],
+   "tail": [
+    "2026/11/04,TX,202611/202706    ,-,-,-,-,-,-,0,-,-,980,1025,1246,1220,,盤後,1,",
+    "2026/11/04,TX,202611/202709    ,-,-,-,-,-,-,0,-,-,1270,1325,1465,1395,,盤後,9,"
+   ],
+   "dates": [
+    "2026/10/05",
+    "2026/11/04",
+    20
+   ],
+   "looks_html": false,
+   "form": {
+    "down_type": "1",
+    "commodity_id": "TX",
+    "queryStartDate": "2026/10/05",
+    "queryEndDate": "2026/11/04"
+   }
+  },
+  "pcRatioDown_1m": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "big5",
+   "bytes": 1074,
+   "lines": 20,
+   "head": [
+    "日期,賣權成交量,買權成交量,買賣權成交量比率%,賣權未平倉量,買權未平倉量,買賣權未平倉量比率%",
+    "2026/11/03,217195,271541,79.99,76050,159184,47.77,",
+    "2026/11/02,148092,157966,93.75,69770,113305,61.58,",
+    "2026/10/30,419366,461304,90.91,46701,74619,62.59,"
+   ],
+   "tail": [
+    "2026/10/06,174220,161456,107.91,87176,91317,95.47,",
+    "2026/10/05,169815,166886,101.76,67328,73226,91.95,"
+   ],
+   "dates": [
+    "2026/10/05",
+    "2026/11/03",
+    19
+   ],
+   "looks_html": false,
+   "form": {
+    "queryStartDate": "2026/10/05",
+    "queryEndDate": "2026/11/04"
+   }
+  },
+  "pcRatioDown_2y": {
+   "status": 200,
+   "ctype": "text/html;charset=UTF-8",
+   "encoding": "utf-8-sig",
+   "bytes": 618,
+   "lines": 16,
+   "head": [
+    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">",
+    "<head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></head>",
+    "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"zh-Hant-TW\" >",
+    "\t\t<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\""
+   ],
+   "tail": [
+    "    </body>",
+    "</html>"
+   ],
+   "dates": null,
+   "looks_html": true,
+   "form": {
+    "queryStartDate": "2024/11/04",
+    "queryEndDate": "2026/11/04"
+   }
+  },
+  "largeTraderFutDown_1m": {
+   "status": 200,
+   "ctype": "text/html;charset=MS950",
+   "encoding": "cp950",
+   "bytes": 1656414,
+   "lines": 26386,
+   "head": [
+    "日期,商品(契約),商品名稱(契約名稱),到期月份(週別),交易人類別,前五大交易人買方,前五大交易人賣方,前十大交易人買方,前十大交易人賣方,全市場未沖銷部位數",
+    "2026/10/05,BRF    ,布蘭特原油期貨,202612  ,0,84,36,84,52,84",
+    "2026/10/05,BRF    ,布蘭特原油期貨,202612  ,1,0,0,0,0,84",
+    "2026/10/05,BRF    ,布蘭特原油期貨,999999  ,0,95,37,97,57,97"
+   ],
+   "tail": [
+    "交易人類別格式： 0 為部位排序前五大或前十大交易人，1 為部位排序前五大或前十大交易人中，屬於特定法人者",
+    "-表當日收盤後無週到期期貨契約；\"0\"表該契約於當日收盤後無未沖銷部位。"
+   ],
+   "dates": [
+    "2026/10/05",
+    "2026/11/03",
+    19
+   ],
+   "looks_html": false,
+   "form": {
+    "queryStartDate": "2026/10/05",
+    "queryEndDate": "2026/11/04"
+   }
+  }
+ },
+ "robots": {
+  "openapi.taifex.com.tw": {
+   "status": 200,
+   "text": "<!-- HTML for static distribution bundle build -->\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\">\n    <title>Swagger UI</title>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"./swagger-ui.css\" />\n    <link rel=\"icon\" type=\"image/png\" href=\"./favicon-32x32.png\" sizes=\"32x32\" />\n    <link rel=\"icon\" type=\"image/png\" href=\"./favicon-16x16.png\" sizes=\"16x16\" />\n    <style>\n      html\n      {\n        box-sizing: border-box;\n        overflow: -moz-scrollbars-vertical;\n        overflow-y: scroll;\n      }\n\n      *,\n      *:before,\n      *:after\n      {\n        box-sizing: inher"
+  },
+  "www.taifex.com.tw": {
+   "status": 200,
+   "text": "<HTML  xmlns='http://www.w3.org/1999/xhtml' lang='zh-TW'><head><meta http-equiv='Content-Type' content='text/html; charset=big5' /></head>\r\n<title>404</title>\r\n<STYLE type=\"text/css\">\r\nbody{\r\nfont-size:1em;\r\n }\r\n</STYLE>\r\n<body>\r\n<h1>404</h1>\r\n»OÆW´Á³f¥æ©ö©Òºô¯¸¤w¸g§ïª©¡A±zÂsÄýªº­¶­±¤w¸g¤£¦A´£¨ÑªA°È¡A _<br>\r\n½ÐÂI¿ï¤U¤è³sµ²¦^­º­¶!<br>\r\n<a href=\"https://www.taifex.com.tw/cht/index\">http://www.taifex.com.tw</a>\r\n</body>\r\n</html>\r\n\r\n"
+  }
+ }
+}
