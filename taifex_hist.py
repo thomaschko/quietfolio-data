@@ -260,9 +260,18 @@ def month_range(y, m, today):
     return a, min(b, today)
 
 
-def run(http=None, out_dir=OUT_DIR, today=None, max_months=None):
+PUBLISH_HOUR = 15   # 期交所盤後資料約 15:00 後公布
+
+
+def last_available(now):
+    """查詢結束日:15 點前用前一天。2026-11-05:午夜後執行時結束日 = 當天(還沒有資料)→ 官網回 HTML 錯誤頁,整批停止。"""
+    return now.date() if now.hour >= PUBLISH_HOUR else now.date() - dt.timedelta(days=1)
+
+
+def run(http=None, out_dir=OUT_DIR, today=None, max_months=None, now=None):
     http = http or Http()
-    today = today or dt.datetime.now(TPE).date()
+    if today is None:
+        today = last_available(now or dt.datetime.now(TPE))
     os.makedirs(out_dir, exist_ok=True)
     pp = os.path.join(out_dir, "progress.json")
     try:

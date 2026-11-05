@@ -82,6 +82,18 @@ class TestUnpublished(unittest.TestCase):
         self.assertEqual(len(kept), 2)
 
 
+class TestLastAvailable(unittest.TestCase):
+    def test_before_publish_uses_yesterday(self):
+        tz = T.TPE
+        self.assertEqual(T.last_available(dt.datetime(2026, 11, 5, 0, 33, tzinfo=tz)), dt.date(2026, 11, 4))
+        self.assertEqual(T.last_available(dt.datetime(2026, 11, 5, 16, 40, tzinfo=tz)), dt.date(2026, 11, 5))
+
+    def test_first_day_of_month_after_midnight(self):
+        # 12/1 00:30 → 結束日 11/30,本月(12 月)還沒有可查的日期 → 不查 12 月
+        ms = T.months(T.START, T.last_available(dt.datetime(2026, 12, 1, 0, 30, tzinfo=T.TPE)))
+        self.assertEqual(ms[-1], (2026, 11))
+
+
 class TestRun(unittest.TestCase):
     def setUp(self):
         self.d = tempfile.mkdtemp()
