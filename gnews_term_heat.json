@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-05 00:51:47",
+  "generated_at": "2026-11-05 18:23:59",
   "window": {
-    "recent_start": "2026-11-02",
+    "recent_start": "2026-11-03",
     "baseline_days": 20,
     "recent_trading_days": 3
   },
-  "n_terms": 129,
+  "n_terms": 132,
   "counts": {
     "surge": 19,
     "new": 1,
-    "watch": 4,
-    "quiet": 105
+    "watch": 3,
+    "quiet": 109
   },
   "errors": [],
   "ai_lookup": {
@@ -23,19 +23,89 @@
     "ok": 10,
     "failed": 0,
     "by_provider": {
-      "gemini": 10
+      "gemini": 7,
+      "groq:qwen3.8-27b": 3
     },
-    "kept": 21,
-    "dropped": 1,
+    "kept": 18,
+    "dropped": 5,
     "errors": [
+      "gemini: HTTP 503",
+      "gemini: HTTP 503",
       "gemini: HTTP 503"
     ]
   },
   "terms": [
     {
+      "term": "超級電容",
+      "us": false,
+      "returned": 10,
+      "truncated": false,
+      "recent": 4,
+      "earlier": 3,
+      "earlier_daily": 0.176,
+      "ratio": 7.56,
+      "status": "surge",
+      "codes": [],
+      "titles": [
+        "元力股份(300174.SZ)：超級電容炭、硬碳、多孔碳等產品已實現量產及批量供貨",
+        "元力股份：超級電容炭、硬碳、多孔碳等產品已量產及批量供貨",
+        "元力股份：超級電容炭、硬碳、多孔碳等產品已實現量產及批量供貨"
+      ],
+      "ai_companies": [],
+      "ai_dropped": [],
+      "ai_provider": "gemini"
+    },
+    {
+      "term": "HBF",
+      "us": false,
+      "returned": 15,
+      "truncated": false,
+      "recent": 4,
+      "earlier": 3,
+      "earlier_daily": 0.176,
+      "ratio": 7.56,
+      "status": "surge",
+      "codes": [],
+      "titles": [
+        "SSD 降價或無望！傳新世代記憶體 HBF 將消耗 6.5 倍晶圓產能，未來 NAND Flash 顆粒仍短缺",
+        "晶圓消耗量飆 6.5 倍！HBF 掀 NAND 產能排擠效應，SSD 價格下修遇亂流",
+        "HBF成AI記憶體雙面刃？ 有望分擔HBM成本卻恐排擠NAND產能"
+      ],
+      "ai_companies": [],
+      "ai_dropped": [
+        {
+          "name": "SK海力士",
+          "reason": "查無上市櫃股名"
+        }
+      ],
+      "ai_provider": "gemini"
+    },
+    {
+      "term": "N2",
+      "us": true,
+      "returned": 82,
+      "truncated": false,
+      "recent": 35,
+      "earlier": 27,
+      "earlier_daily": 1.588,
+      "ratio": 7.35,
+      "status": "surge",
+      "codes": [
+        "3265"
+      ],
+      "titles": [
+        "NASD Market Capitalisation Falls to N2.515trn After 0.88% Loss |",
+        "NERC fines YEDC N2.8m over consumers’ complaints",
+        "New Balance N2 1080 V2 - New Balance Moon Daze Pack everysize Blog"
+      ],
+      "ai_companies": [],
+      "ai_dropped": [],
+      "ai_provider": "gemini"
+    },
+    {
       "term": "光收發模組",
       "us": false,
-      "returned": 23,
+      "returned": 20,
       "truncated": false,
       "recent": 2,
       "earlier": 2,
@@ -47,7 +117,7 @@
       ],
       "titles": [
         "立碁赴荷首秀1.6T LPO光收發模組 實體成果落地、下一步直攻3.2T",
-        "聯發科旗下達發搶進光通訊！ 入股元澄半導體加速可插拔光收發模組| 財經焦點",
+        "聯發科旗下達發搶進光通訊！ 入股元澄半導體加速可插拔光收發模組",
         "AI 需求爆「石英元件迎大轉機」！這檔台廠攻1.6T光收發模組：毛利率看升- 財經"
       ],
       "ai_companies": [
@@ -63,251 +133,39 @@
         {
           "name": "達發",
           "code": "6526",
-          "role": "入股元澄搶進光通訊",
+          "role": "搶進光通訊與光收發模組",
           "title_ids": [
             2
           ],
-          "evidence": "聯發科旗下達發搶進光通訊！ 入股元澄半導體加速可插拔光收發模組| 財經焦點"
+          "evidence": "聯發科旗下達發搶進光通訊！ 入股元澄半導體加速可插拔光收發模組"
         },
         {
           "name": "環宇-KY",
           "code": "4991",
-          "role": "產品線迎爆發性成長",
+          "role": "光收發模組規格升級產品線",
           "title_ids": [
             4
           ],
           "evidence": "個股：光收發模組規格升級需求引爆，環宇-KY(4991)產品線迎來爆發性成長"
         }
       ],
-      "ai_dropped": [],
-      "ai_provider": "gemini"
-    },
-    {
-      "term": "OCS",
-      "us": false,
-      "returned": 13,
-      "truncated": false,
-      "recent": 2,
-      "earlier": 2,
-      "earlier_daily": 0.118,
-      "ratio": 5.67,
-      "status": "surge",
-      "codes": [],
-      "titles": [
-        "光聖獨供谷歌TPU光學OCS 外資上看3000元",
-        "Oculis Holding AG的股東人數 – NASDAQ:OCS",
-        "OCS與1.6T雙輪驅動，Lumentum業績能否再超預期、撐住估值？"
-      ],
-      "ai_companies": [
-        {
-          "name": "光聖",
-          "code": "6442",
-          "role": "獨供谷歌TPU光學OCS",
-          "title_ids": [
-            1
-          ],
-          "evidence": "光聖獨供谷歌TPU光學OCS 外資上看3000元"
-        },
-        {
-          "name": "啟碁",
-          "code": "6285",
-          "role": "展出OCS與1.6T交換器",
-          "title_ids": [
-            4
-          ],
-          "evidence": "外資觀點：啟碁OCP秀OCS、1.6T交換器，美系外資上修獲利，目標價調高至380元"
-        }
-      ],
-      "ai_dropped": [],
-      "ai_provider": "gemini"
-    },
-    {
-      "term": "EMIB-T",
-      "us": true,
-      "returned": 23,
-      "truncated": false,
-      "recent": 2,
-      "earlier": 2,
-      "earlier_daily": 0.118,
-      "ratio": 5.67,
-      "status": "surge",
-      "codes": [],
-      "titles": [
-        "6531 愛普* - CoWoS 供應瓶頸浮現，EMIB-T 開闢另一條封裝路線- 股市爆料同學會",
-        "CoWoS 供應瓶頸浮現，Intel EMIB-T 開闢另一條封裝路線",
-        "聯發科和英特爾合作EMIB-T受牽制？蔡力行：台積電是最重要的夥伴"
-      ],
-      "ai_companies": [
-        {
-          "name": "愛普",
-          "code": "6531",
-          "role": "封裝路線相關供應商",
-          "title_ids": [
-            1
-          ],
-          "evidence": "6531 愛普* - CoWoS 供應瓶頸浮現，EMIB-T 開闢另一條封裝路線- 股市爆料同學會"
-        },
-        {
-          "name": "聯發科",
-          "code": "2454",
-          "role": "與英特爾合作EMIB-T",
-          "title_ids": [
-            3
-          ],
-          "evidence": "聯發科和英特爾合作EMIB-T受牽制？蔡力行：台積電是最重要的夥伴"
-        }
-      ],
-      "ai_dropped": [],
-      "ai_provider": "gemini"
-    },
-    {
-      "term": "N2",
-      "us": true,
-      "returned": 86,
-      "truncated": false,
-      "recent": 31,
-      "earlier": 33,
-      "earlier_daily": 1.941,
-      "ratio": 5.32,
-      "status": "surge",
-      "codes": [
-        "2330"
-      ],
-      "titles": [
-        "One Killed, Three Injured in N2 Crash Near Hemingways Mall",
-        "Six mourners abducted in Benue released after N2.5m ransom |",
-        "LEAP Africa Awards N2.5m To Outstanding Social Innovators"
-      ],
-      "ai_companies": [
-        {
-          "name": "台積電",
-          "code": "2330",
-          "role": "N2放量助攻",
-          "title_ids": [
-            23
-          ],
-          "evidence": "台積電N2放量助攻！高盛大調WFE預測　後年支出可達2810億鎂"
-        }
-      ],
-      "ai_dropped": [],
-      "ai_provider": "gemini"
-    },
-    {
-      "term": "代理式AI",
-      "us": false,
-      "returned": 74,
-      "truncated": false,
-      "recent": 12,
-      "earlier": 13,
-      "earlier_daily": 0.765,
-      "ratio": 5.23,
-      "status": "surge",
-      "codes": [],
-      "titles": [
-        "領先部署卻賠上信任？解析代理式AI背後的影子風險， 企業治理正迎來最危險的一環",
-        "企業AI支出2026年衝上1,768億美元、暴增5.4倍，代理式AI成主力",
-        "創作者必看！RTX Spark 深度解析：Windows on Arm也具備獨顯等級GPU加速，連代理式AI 都能輕鬆跑"
-      ],
-      "ai_companies": [
-        {
-          "name": "華碩",
-          "code": "2357",
-          "role": "推論加速卡搶攻地端商機",
-          "title_ids": [
-            16
-          ],
-          "evidence": "華碩推32GB推論加速卡，搶攻地端代理式AI商機"
-        }
-      ],
       "ai_dropped": [
         {
-          "name": "美超微",
+          "name": "元澄半導體",
           "reason": "查無上市櫃股名"
         }
       ],
       "ai_provider": "gemini"
     },
     {
-      "term": "DDR4",
-      "us": true,
-      "returned": 76,
-      "truncated": false,
-      "recent": 16,
-      "earlier": 20,
-      "earlier_daily": 1.176,
-      "ratio": 4.53,
-      "status": "surge",
-      "codes": [
-        "2408",
-        "1303",
-        "2344"
-      ],
-      "titles": [
-        "Winbond Expands 16nm DRAM Portfolio with New DDR4 and LPDDR4 Products",
-        "anaconda ddr4 2666 8g",
-        "DDR4 Spot Prices Slip 0.09% as Buyers Hold Off, With Premiums Still High"
-      ],
-      "ai_companies": [
-        {
-          "name": "華邦電",
-          "code": "2344",
-          "role": "記憶體產品銷售與營收增長",
-          "title_ids": [
-            10,
-            11
-          ],
-          "evidence": "華邦電第三季EPS 7.58元 DDR4、LPDDR4銷售強勁- 產業"
-        },
-        {
-          "name": "南亞科",
-          "code": "2408",
-          "role": "記憶體毛利與DDR4缺口受惠",
-          "title_ids": [
-            12,
-            19
-          ],
-          "evidence": "AI越先進、DDR4反而越稀缺？成熟記憶體真的會消失嗎 南亞科高毛利能維持多久"
-        },
-        {
-          "name": "旺宏",
-          "code": "2337",
-          "role": "記憶體相關討論",
-          "title_ids": [
-            18
-          ],
-          "evidence": "10／28盤前｜DDR4缺到2027年、旺宏力成有話說、力積電遭鎖定、外資掃貨記憶體十強- 證券"
-        },
-        {
-          "name": "力成",
-          "code": "6239",
-          "role": "記憶體相關討論",
-          "title_ids": [
-            18
-          ],
-          "evidence": "10／28盤前｜DDR4缺到2027年、旺宏力成有話說、力積電遭鎖定、外資掃貨記憶體十強- 證券"
-        },
-        {
-          "name": "力積電",
-          "code": "6770",
-          "role": "記憶體相關討論",
-          "title_ids": [
-            18
-          ],
-          "evidence": "10／28盤前｜DDR4缺到2027年、旺宏力成有話說、力積電遭鎖定、外資掃貨記憶體十強- 證券"
-        }
-      ],
-      "ai_dropped": [],
-      "ai_provider": "gemini"
-    },
-    {
       "term": "Trident",
       "us": false,
-      "returned": 9,
+      "returned": 10,
       "truncated": false,
       "recent": 4,
-      "earlier": 5,
-      "earlier_daily": 0.294,
-      "ratio": 4.53,
+      "earlier": 6,
+      "earlier_daily": 0.353,
+      "ratio": 3.78,
       "status": "surge",
       "codes": [],
       "titles": [
@@ -322,16 +180,15 @@
     {
       "term": "LPO",
       "us": false,
-      "returned": 12,
+      "returned": 11,
       "truncated": false,
-      "recent": 4,
+      "recent": 3,
       "earlier": 5,
       "earlier_daily": 0.294,
-      "ratio": 4.53,
+      "ratio": 3.4,
       "status": "surge",
       "codes": [
-        "8111",
-        "6526"
+        "8111"
       ],
       "titles": [
         "8111 立碁- 立碁赴荷首秀1.6T LPO實體成果落地、下一步直攻3.2T - 股市爆料同學會",
@@ -353,7 +210,7 @@
         {
           "name": "正文",
           "code": "4906",
-          "role": "加入LPO標準協議",
+          "role": "布局光通訊商機",
           "title_ids": [
             4
           ],
@@ -362,7 +219,7 @@
         {
           "name": "嘉基",
           "code": "6715",
-          "role": "衝刺LPO",
+          "role": "衝刺NPO/LPO",
           "title_ids": [
             6
           ],
@@ -376,81 +233,78 @@
             7
           ],
           "evidence": "頎邦衝刺矽光子LPO，非驅動IC今年拚增3成"
-        },
-        {
-          "name": "達發",
-          "code": "6526",
-          "role": "LPO去DSP相關",
-          "title_ids": [
-            9
-          ],
-          "evidence": "LPO去DSP，對達發 (6526) 來說真的是壞事嗎？"
         }
       ],
       "ai_dropped": [],
       "ai_provider": "gemini"
     },
     {
-      "term": "HBF",
-      "us": false,
-      "returned": 15,
+      "term": "DDR4",
+      "us": true,
+      "returned": 68,
       "truncated": false,
-      "recent": 4,
-      "earlier": 5,
-      "earlier_daily": 0.294,
-      "ratio": 4.53,
+      "recent": 12,
+      "earlier": 21,
+      "earlier_daily": 1.235,
+      "ratio": 3.24,
       "status": "surge",
       "codes": [
-        "4923"
+        "2408",
+        "1303",
+        "2344"
       ],
       "titles": [
-        "SSD 降價或無望！傳新世代記憶體 HBF 將消耗 6.5 倍晶圓產能，未來 NAND Flash 顆粒仍短缺",
-        "晶圓消耗量飆 6.5 倍！HBF 掀 NAND 產能排擠效應，SSD 價格下修遇亂流",
-        "HBF成AI記憶體雙面刃？ 有望分擔HBM成本卻恐排擠NAND產能"
-      ],
-      "ai_companies": [],
-      "ai_dropped": [],
-      "ai_provider": "gemini"
-    },
-    {
-      "term": "後量子密碼",
-      "us": false,
-      "returned": 29,
-      "truncated": false,
-      "recent": 7,
-      "earlier": 9,
-      "earlier_daily": 0.529,
-      "ratio": 4.41,
-      "status": "surge",
-      "codes": [
-        "6590"
-      ],
-      "titles": [
-        "迎戰「現在攔截、日後解密」國安級威脅！TrustONE 碩壹資 訊推出全新PQC 後量子密碼防護方案",
-        "華經推大型專案驗收，布局後量子密碼/資安",
-        "科大夥金管局開發「後量子密碼學工具包」 助銀行應對量子時代"
+        "Winbond Expands 16nm DRAM Portfolio with New DDR4 and LPDDR4 Products",
+        "anaconda ddr4 2666 8g",
+        "DDR4 Spot Prices Slip 0.09% as Buyers Hold Off, With Premiums Still High"
       ],
       "ai_companies": [
         {
-          "name": "華經",
-          "code": "2468",
-          "role": "布局後量子密碼資安",
+          "name": "華邦電",
+          "code": "2344",
+          "role": "DDR4銷售強勁",
           "title_ids": [
-            2
+            9,
+            10
           ],
-          "evidence": "華經推大型專案驗收，布局後量子密碼/資安"
+          "evidence": "華邦電第三季EPS 7.58元 DDR4、LPDDR4銷售強勁- 產業"
         },
         {
-          "name": "普鴻",
-          "code": "6590",
-          "role": "推出後量子密碼解決方案",
+          "name": "南亞科",
+          "code": "2408",
+          "role": "記憶體大廠",
           "title_ids": [
-            8,
-            9,
-            10,
-            15
+            11,
+            18
           ],
-          "evidence": "普鴻資訊發表「PQC inside by ProVision」產品布局以國際驗證演算法為核心，推進金融及各產業後量子密碼遷移"
+          "evidence": "AI越先進、DDR4反而越稀缺？成熟記憶體真的會消失嗎 南亞科高毛利能維持多久"
+        },
+        {
+          "name": "旺宏",
+          "code": "2337",
+          "role": "記憶體相關",
+          "title_ids": [
+            17
+          ],
+          "evidence": "10／28盤前｜DDR4缺到2027年、旺宏力成有話說、力積電遭鎖定、外資掃貨記憶體十強- 證券"
+        },
+        {
+          "name": "力成",
+          "code": "6239",
+          "role": "記憶體相關",
+          "title_ids": [
+            17
+          ],
+          "evidence": "10／28盤前｜DDR4缺到2027年、旺宏力成有話說、力積電遭鎖定、外資掃貨記憶體十強- 證券"
+        },
+        {
+          "name": "力積電",
+          "code": "6770",
+          "role": "記憶體相關",
+          "title_ids": [
+            17
+          ],
+          "evidence": "10／28盤前｜DDR4缺到2027年、旺宏力成有話說、力積電遭鎖定、外資掃貨記憶體十強- 證券"
         }
       ],
       "ai_dropped": [],
@@ -459,50 +313,162 @@
     {
       "term": "PQC",
       "us": false,
-      "returned": 30,
+      "returned": 36,
       "truncated": false,
-      "recent": 5,
-      "earlier": 9,
-      "earlier_daily": 0.529,
-      "ratio": 3.15,
+      "recent": 6,
+      "earlier": 11,
+      "earlier_daily": 0.647,
+      "ratio": 3.09,
       "status": "surge",
       "codes": [
-        "6590"
+        "6590",
+        "6865"
       ],
       "titles": [
-        "迎戰「現在攔截、日後解密」國安級威脅！TrustONE 碩壹資 訊推出全新PQC 後量子密碼防護方案",
-        "PQC導入TLS面臨效能挑戰，交握延遲增加、防火牆相容性問題浮現",
-        "討論牆 | 普鴻PQC已獲客戶導入，將陸續發表衍生產品"
-      ]
+        "討論牆 | 偉康科技推進PQC產品開發，估明年發表對應產品",
+        "普鴻加速PQC產品導入，衍生應用瞄準醫療政府",
+        "偉康科技推進PQC產品開發，估明年發表對應產品- 新聞"
+      ],
+      "ai_companies": [
+        {
+          "name": "偉康科技",
+          "code": "6865",
+          "role": "推進PQC產品開發",
+          "title_ids": [
+            1,
+            3
+          ],
+          "evidence": "討論牆 | 偉康科技推進PQC產品開發，估明年發表對應產品"
+        },
+        {
+          "name": "普鴻",
+          "code": "6590",
+          "role": "發表PQC產品布局",
+          "title_ids": [
+            2,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+          ],
+          "evidence": "普鴻加速PQC產品導入，衍生應用瞄準醫療政府"
+        }
+      ],
+      "ai_dropped": [
+        {
+          "name": "碩壹資訊",
+          "reason": "查無上市櫃股名"
+        }
+      ],
+      "ai_provider": "groq:qwen3.8-27b"
     },
     {
-      "term": "RISC-V",
+      "term": "EMIB-T",
       "us": true,
-      "returned": 72,
+      "returned": 25,
       "truncated": false,
-      "recent": 15,
-      "earlier": 39,
-      "earlier_daily": 2.294,
-      "ratio": 2.18,
+      "recent": 2,
+      "earlier": 4,
+      "earlier_daily": 0.235,
+      "ratio": 2.83,
       "status": "surge",
       "codes": [
-        "6533"
+        "2330"
       ],
       "titles": [
-        "（專訪）英飛凌首款RISC-V車用MCU將生產10年 可擴展性成最大優勢",
-        "車用運算需求走向多元 英飛凌以RISC-V打造新一代MCU平台",
-        "Infineon's RISC-V Debut and Villach Fab Plan Test the Bull Case"
-      ]
+        "Intel’s EMIB-T takes aim at TSMC’s CoWoS-L as AI chip packaging gets crowded",
+        "放眼 AI 晶片封裝大尺寸化趨勢：英特爾 EMIB-T 大於台積電 CoWoS？",
+        "6531 愛普* - CoWoS 供應瓶頸浮現，EMIB-T 開闢另一條封裝路線- 股市爆料同學會"
+      ],
+      "ai_companies": [
+        {
+          "name": "愛普",
+          "code": "6531",
+          "role": "封裝路線相關",
+          "title_ids": [
+            3
+          ],
+          "evidence": "6531 愛普* - CoWoS 供應瓶頸浮現，EMIB-T 開闢另一條封裝路線- 股市爆料同學會"
+        },
+        {
+          "name": "聯發科",
+          "code": "2454",
+          "role": "合作夥伴",
+          "title_ids": [
+            5
+          ],
+          "evidence": "聯發科和英特爾合作EMIB-T受牽制？蔡力行：台積電是最重要的夥伴"
+        },
+        {
+          "name": "台積電",
+          "code": "2330",
+          "role": "競爭對手/夥伴",
+          "title_ids": [
+            2,
+            5
+          ],
+          "evidence": "放眼 AI 晶片封裝大尺寸化趨勢：英特爾 EMIB-T 大於台積電 CoWoS？"
+        }
+      ],
+      "ai_dropped": [],
+      "ai_provider": "groq:qwen3.8-27b"
+    },
+    {
+      "term": "後量子密碼",
+      "us": false,
+      "returned": 29,
+      "truncated": false,
+      "recent": 5,
+      "earlier": 11,
+      "earlier_daily": 0.647,
+      "ratio": 2.58,
+      "status": "surge",
+      "codes": [
+        "6590",
+        "2468"
+      ],
+      "titles": [
+        "華經金融專案續增，後量子密碼鎖定資安需求",
+        "迎戰「現在攔截、日後解密」國安級威脅！TrustONE 碩壹資 訊推出全新PQC 後量子密碼防護方案",
+        "科大與金管局推出後量子密碼學工具包 助銀行為量子時代做好準備"
+      ],
+      "ai_companies": [
+        {
+          "name": "華經",
+          "code": "2468",
+          "role": "專案驗收與布局",
+          "title_ids": [
+            1,
+            4
+          ],
+          "evidence": "華經金融專案續增，後量子密碼鎖定資安需求"
+        }
+      ],
+      "ai_dropped": [
+        {
+          "name": "TrustONE碩壹資訊",
+          "reason": "查無上市櫃股名"
+        },
+        {
+          "name": "普鴻資訊",
+          "reason": "查無上市櫃股名"
+        }
+      ],
+      "ai_provider": "groq:qwen3.8-27b"
     },
     {
       "term": "矽電容",
       "us": false,
-      "returned": 25,
+      "returned": 23,
       "truncated": false,
       "recent": 5,
-      "earlier": 14,
-      "earlier_daily": 0.824,
-      "ratio": 2.02,
+      "earlier": 12,
+      "earlier_daily": 0.706,
+      "ratio": 2.36,
       "status": "surge",
       "codes": [
         "2303",
@@ -516,47 +482,102 @@
       ]
     },
     {
-      "term": "CUBE",
+      "term": "WoW",
       "us": false,
-      "returned": 31,
+      "returned": 25,
       "truncated": false,
-      "recent": 6,
-      "earlier": 18,
-      "earlier_daily": 1.059,
+      "recent": 4,
+      "earlier": 11,
+      "earlier_daily": 0.647,
+      "ratio": 2.06,
+      "status": "surge",
+      "codes": [],
+      "titles": [
+        "WoW Forever「This Ruleset Is Temporarily Unavailable」解決方法",
+        "WoW Forever WOW51900337「Valid Access License」錯誤修復教學",
+        "R79｜爵士廣場開幕慶｜Growing Our Oasis獨家野餐墊、WOW BEER啤酒打卡送！再享限時滿千送百"
+      ]
+    },
+    {
+      "term": "功率元件",
+      "us": false,
+      "returned": 26,
+      "truncated": false,
+      "recent": 2,
+      "earlier": 6,
+      "earlier_daily": 0.353,
       "ratio": 1.89,
       "status": "surge",
       "codes": [
-        "2344"
+        "6651",
+        "2302",
+        "2342"
       ],
       "titles": [
-        "華邦電布局 AI 算力浪潮，矽電容與 CUBE 雙引擎 2027 年迎量產收割期",
-        "Cube System Inc.的每股營運資本 – TSE:2335",
-        "AI伺服器不只吃DRAM！華邦電估明年Server NOR Flash需求2.4億顆，布局矽電容與CUBE | 魏鑫陽 | 財經"
+        "AI外溢功率元件廠BB值創史高| 雜誌",
+        "中系功率元件第二波調漲全面引爆 華潤微喊漲15%起",
+        "數字台灣-晶片強國缺一角 功率元件拚十強 1004"
       ]
     },
     {
       "term": "固態電池",
       "us": false,
-      "returned": 38,
+      "returned": 31,
       "truncated": false,
-      "recent": 7,
-      "earlier": 22,
-      "earlier_daily": 1.294,
-      "ratio": 1.8,
+      "recent": 6,
+      "earlier": 19,
+      "earlier_daily": 1.118,
+      "ratio": 1.79,
+      "status": "surge",
+      "codes": [],
+      "titles": [
+        "華自科技(300490.SZ)：固態電池化成分容設備已在頭部客户聯測",
+        "Saft啟用法國首座固態電池產線，布局航太市場",
+        "固態電池產業化進程提速，上市公司搶抓行業機遇"
+      ]
+    },
+    {
+      "term": "CUBE",
+      "us": false,
+      "returned": 31,
+      "truncated": false,
+      "recent": 6,
+      "earlier": 19,
+      "earlier_daily": 1.118,
+      "ratio": 1.79,
       "status": "surge",
       "codes": [
-        "1772"
+        "2344"
       ],
       "titles": [
-        "《大陸產業》陸固態電池產業化進程加速 上市公司搶抓機會",
-        "固態電池產業化進程提速，上市公司搶抓行業機遇",
-        "中國固態電池類股逆勢掀漲停潮，機構看好2027年成量產元年"
+        "遠東SOGO週年慶今起壓軸開跑 首刷CUBE卡享4%回饋 三麗鷗4大角色萌翻來店禮",
+        "華邦電布局 AI 算力浪潮，矽電容與 CUBE 雙引擎 2027 年迎量產收割期",
+        "國泰世華CUBE卡首推「秋日遊」權益！旅日最高10%回饋，4大亮點、通路細節一次看 | 數位時代"
+      ]
+    },
+    {
+      "term": "RISC-V",
+      "us": true,
+      "returned": 66,
+      "truncated": false,
+      "recent": 12,
+      "earlier": 39,
+      "earlier_daily": 2.294,
+      "ratio": 1.74,
+      "status": "surge",
+      "codes": [
+        "6533"
+      ],
+      "titles": [
+        "Quintauris EM-Altair to bring greater consistency to embedded RISC-V systems",
+        "Open-Source RISC-V Computer Runs On FPGA",
+        "News Alert: Infineon unveils RISC-V chip platform, targets software-defined vehicles and Physical AI"
       ]
     },
     {
       "term": "邊緣運算",
       "us": false,
-      "returned": 24,
+      "returned": 26,
       "truncated": false,
       "recent": 4,
       "earlier": 13,
@@ -564,78 +585,56 @@
       "ratio": 1.74,
       "status": "surge",
       "codes": [
-        "2399",
+        "3287",
         "3015",
-        "3287"
+        "2395"
       ],
       "titles": [
+        "工業電腦迎世代交替！AI邊緣運算佈局加速，研華宣布2027年接班計畫-財經焦點情報站",
         "【09:01 即時新聞】廣寰科(3287)亮燈漲停，AI邊緣運算題材續吸金",
-        "功耗大砍 98%！日本愛信開發 MRAM 新型 AI 晶片，鎖定車用邊緣運算",
-        "電信塔可以成為AI推論據點！ SBA利用閒置電力部署邊緣運算"
+        "功耗大砍 98%！日本愛信開發 MRAM 新型 AI 晶片，鎖定車用邊緣運算"
       ]
     },
     {
-      "term": "XPO",
+      "term": "代理式AI",
       "us": false,
-      "returned": 17,
-      "truncated": false,
-      "recent": 3,
-      "earlier": 10,
-      "earlier_daily": 0.588,
-      "ratio": 1.7,
-      "status": "surge",
-      "codes": [],
-      "titles": [
-        "中際旭創：預計2027年就將產生XPO需求",
-        "正文布局光通訊商機 加入XPO、LPO與Open CPX MSA光通訊標準協議",
-        "立訊精密：CPC和XPO產品與頭部客户還在進行方案驗證 預計明年下半年會陸續量產"
-      ]
-    },
-    {
-      "term": "產能滿載",
-      "us": false,
-      "returned": 29,
+      "returned": 68,
       "truncated": false,
       "recent": 5,
       "earlier": 18,
       "earlier_daily": 1.059,
       "ratio": 1.57,
       "status": "surge",
-      "codes": [
-        "2303",
-        "2330"
-      ],
+      "codes": [],
       "titles": [
-        "AI光通訊熱到產能滿載！環宇、聯亞、全新…它卻有貨出不了？法人紛紛砍目標價：明年EPS估差2.5倍 - 上市櫃",
-        "矽晶圓春燕到？環球晶估再擴產 台勝科產能滿載 | EBC 東森新聞",
-        "財訊快報：AI產能滿載、供不應求，村田、國巨兩大龍頭啟動擴產"
+        "美圖伙Reap及Pivota 推代理式AI美妝購物 (14:20) - 20261105 - 即時財經新聞",
+        "代理式AI網路攻擊力道增 專家籲導入AI防禦、強化偵測",
+        "企業AI支出2026年衝上1,768億美元、暴增5.4倍，代理式AI成主力"
       ]
     },
     {
-      "term": "智慧眼鏡",
-      "us": false,
-      "returned": 68,
+      "term": "A14",
+      "us": true,
+      "returned": 71,
       "truncated": false,
       "recent": 9,
-      "earlier": 34,
-      "earlier_daily": 2.0,
-      "ratio": 1.5,
+      "earlier": 33,
+      "earlier_daily": 1.941,
+      "ratio": 1.55,
       "status": "surge",
       "codes": [
-        "2430",
-        "3038",
-        "2353"
+        "2330"
       ],
       "titles": [
-        "宏碁雙11年度購機優惠開跑 Swift Air 14筆電推出勃根地新色 贈送智慧眼鏡或LINE點數",
-        "聊天全被AI偷聽！Meta智慧眼鏡爆「沒指令也在錄」 官方回應了",
-        "宏碁雙11購機優惠開跑！周周抽LINE POINTS 再抽AI智慧眼鏡| 財經焦點"
+        "Lorry seen swerving 'left to right' before crash that killed van driver on A14",
+        "A14 delays likely as 46 tonne abnormal load to leave Suffolk seaside town",
+        "Two babies and three adults in hospital after A14 crash"
       ]
     },
     {
       "term": "空芯光纖",
       "us": false,
-      "returned": 2,
+      "returned": 3,
       "truncated": false,
       "recent": 2,
       "earlier": 0,
@@ -649,79 +648,64 @@
       ]
     },
     {
-      "term": "記憶體模組",
-      "us": false,
-      "returned": 43,
-      "truncated": false,
-      "recent": 2,
-      "earlier": 8,
-      "earlier_daily": 0.471,
-      "ratio": 1.42,
-      "status": "watch",
-      "codes": [
-        "4967",
-        "3260"
-      ],
-      "titles": [
-        "討論牆 | 記憶體模組大廠威剛科技發重訊 今晚8點召開記者會",
-        "Penguin Solutions 推出新一代 AI 資料中心專用 SMART Modular 高頻寬 MRDIMM 記憶體模組",
-        "4967 十銓- 【本週復盤】記憶體模組震盪，「3檔概念股」近5日仍有撐？ - 股市爆料同學會"
-      ]
-    },
-    {
-      "term": "面板級封裝",
-      "us": false,
-      "returned": 22,
-      "truncated": false,
-      "recent": 2,
-      "earlier": 9,
-      "earlier_daily": 0.529,
-      "ratio": 1.26,
-      "status": "watch",
-      "codes": [
-        "6239",
-        "2330"
-      ],
-      "titles": [
-        "2330 台積電 - 面板級封裝中介層 目前台積電CoPoS供應鏈中，玻璃基板由... - 股市爆料同學會",
-        "台積電衝刺 CoPoS 面板級封裝！友達傳佈局玻璃基板試產線、群創也跟上",
-        "日月光秀出AMD 處理器面板級封裝，力成攜手博通在新加坡設廠獲准| 動區動趨-最具影響力的區塊鏈新聞媒體"
-      ]
-    },
-    {
-      "term": "WoW",
-      "us": false,
-      "returned": 18,
-      "truncated": false,
-      "recent": 2,
-      "earlier": 9,
-      "earlier_daily": 0.529,
-      "ratio": 1.26,
-      "status": "watch",
-      "codes": [],
-      "titles": [
-        "特企／Coupang酷澎雙11下單加碼抽 WOW會員可獨得11萬酷澎幣",
-        "Woolworths Group Ltd (WOW) Income Statement & Earnings",
-        "Coupang Wow會員日11月2日登場：優惠券每天上午10點、下午5點限量發放"
-      ]
-    },
-    {
       "term": "反無人機",
       "us": false,
-      "returned": 43,
+      "returned": 46,
       "truncated": false,
-      "recent": 3,
-      "earlier": 16,
-      "earlier_daily": 0.941,
-      "ratio": 1.06,
+      "recent": 4,
+      "earlier": 17,
+      "earlier_daily": 1.0,
+      "ratio": 1.33,
       "status": "watch",
       "codes": [
+        "8033",
         "6914"
       ],
       "titles": [
-        "川普海湖莊園出雷射防空車 美軍部署LOCUST反無人機系統",
-        "影音／南韓成立「國防無人機總部」 自主研發反無人機雷射",
-        "【11/02 產業即時新聞】反無人機族群逆勢揚升，低軌衛星與軍工題材點火買盤"
+        "從實驗室走向國防供應鏈 德國反無人機雷射武器正式進入系列生產",
+        "不只買幾套反無人機系統試水溫 國軍擬砸188億建置千套系統",
+        "陸戰隊要引進「硬殺」反無人機系統 明年花近億元買2套30公厘砲塔"
+      ]
+    },
+    {
+      "term": "智慧眼鏡",
+      "us": false,
+      "returned": 63,
+      "truncated": false,
+      "recent": 7,
+      "earlier": 33,
+      "earlier_daily": 1.941,
+      "ratio": 1.2,
+      "status": "watch",
+      "codes": [
+        "2430",
+        "3038",
+        "2353"
+      ],
+      "titles": [
+        "時尚智慧眼鏡雙11降價！Even G2最高現折4千元　新鏡框同步登場",
+        "蘋果新專利曝光：未來AirPods、智慧眼鏡通話將更私密",
+        "宏碁雙11年度購機優惠開跑 Swift Air 14筆電推出勃根地新色 贈送智慧眼鏡或LINE點數"
+      ]
+    },
+    {
+      "term": "產能滿載",
+      "us": false,
+      "returned": 27,
+      "truncated": false,
+      "recent": 3,
+      "earlier": 18,
+      "earlier_daily": 1.059,
+      "ratio": 0.94,
+      "status": "watch",
+      "codes": [
+        "2330",
+        "2303"
+      ],
+      "titles": [
+        "AI光通訊熱到產能滿載！環宇、聯亞、全新…它卻有貨出不了？法人紛紛砍目標價：明年EPS估差2.5倍 - 上市櫃",
+        "矽晶圓春燕到？環球晶估再擴產 台勝科產能滿載 | EBC 東森新聞",
+        "財訊快報：AI產能滿載、供不應求，村田、國巨兩大龍頭啟動擴產"
       ]
     },
     {
@@ -770,6 +754,53 @@
       ]
     },
     {
+      "term": "CoWoS-L",
+      "us": true,
+      "returned": 21,
+      "truncated": false,
+      "recent": 1,
+      "earlier": 0,
+      "earlier_daily": 0.01,
+      "ratio": 33.33,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "Intel’s EMIB-T takes aim at TSMC’s CoWoS-L as AI chip packaging gets crowded"
+      ]
+    },
+    {
+      "term": "矽光子晶片",
+      "us": false,
+      "returned": 12,
+      "truncated": false,
+      "recent": 1,
+      "earlier": 1,
+      "earlier_daily": 0.059,
+      "ratio": 5.67,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "中山大學以矽光子晶片降低陀螺儀成本 不靠GPS也能精準導航",
+        "Micro LED爭議未歇！「這檔面板」董座力挺仍難擋外資提款11億居賣超首位聯電持矽光子晶片、CPO商機也難逃"
+      ]
+    },
+    {
+      "term": "鈉離子電池",
+      "us": false,
+      "returned": 5,
+      "truncated": false,
+      "recent": 1,
+      "earlier": 1,
+      "earlier_daily": 0.059,
+      "ratio": 5.67,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "元力股份(300174.SZ)：公司鈉離子電池用硬碳已實現量產及批量供貨",
+        "通用汽車注資1.08億美元押注鈉離子電池，Peak Energy規劃沙加緬度超級工廠"
+      ]
+    },
+    {
       "term": "潔淨管件",
       "us": false,
       "returned": 4,
@@ -788,9 +819,9 @@
       ]
     },
     {
-      "term": "DRAM合約價",
+      "term": "UFS",
       "us": false,
-      "returned": 10,
+      "returned": 9,
       "truncated": false,
       "recent": 1,
       "earlier": 2,
@@ -799,51 +830,15 @@
       "status": "quiet",
       "codes": [],
       "titles": [
-        "DRAM合約價漲最高20%！「這記憶體大廠」明年EPS估衝120元　目標價曝光",
-        "集邦諮詢預估2026年四季度DRAM合約價環比漲約20%",
-        "機構：預估Q4 DRAM合約價環比漲20%"
-      ]
-    },
-    {
-      "term": "共同封裝光學",
-      "us": false,
-      "returned": 20,
-      "truncated": false,
-      "recent": 1,
-      "earlier": 3,
-      "earlier_daily": 0.176,
-      "ratio": 1.89,
-      "status": "quiet",
-      "codes": [
-        "2317"
-      ],
-      "titles": [
-        "鴻海垂直整合優勢攻共同封裝光學CPO 估明年進入大量出貨期",
-        "AI運算再快也怕「塞車」 解析破局關鍵CPO共同封裝光學| 產經",
-        "CPO共同封裝光學買氣引爆！最新結盟注資逾48億元，玉晶光帶動概念股齊飆-財經焦點情報站"
-      ]
-    },
-    {
-      "term": "超級電容",
-      "us": false,
-      "returned": 7,
-      "truncated": false,
-      "recent": 1,
-      "earlier": 3,
-      "earlier_daily": 0.176,
-      "ratio": 1.89,
-      "status": "quiet",
-      "codes": [],
-      "titles": [
-        "金時科技(002951.SZ)：超級電容智能製造項目暫未建成投產",
-        "LS Eco Energy投入650億韓元擴產超級電容，越南基地2027年4月供貨",
-        "LS Eco Energy斥資650億韓元布局越南，AI資料中心用超級電容正式量產"
+        "討論牆 | 三星發布業界最快 UFS 5.0 快閃記憶體！讀寫速度翻倍衝上 10.8 GB/s",
+        "2026年第四季eMMC/UFS合約價格",
+        "三星 Galaxy S27 系列傳明年 1 月發表 Pro、Ultra 版或配 LPDDR6 及 UFS 5 晶片"
       ]
     },
     {
       "term": "矽光子與CPO",
       "us": false,
-      "returned": 21,
+      "returned": 20,
       "truncated": false,
       "recent": 1,
       "earlier": 3,
@@ -860,9 +855,26 @@
       ]
     },
     {
+      "term": "SoIC",
+      "us": false,
+      "returned": 6,
+      "truncated": false,
+      "recent": 1,
+      "earlier": 4,
+      "earlier_daily": 0.235,
+      "ratio": 1.42,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "討論牆 | 《DJ在線》SoIC明年產能倍增 設備供應鏈迎商機",
+        "討論牆 | 台積SoIC明年產能拚逾3萬片；嘉義AP7成擴產主力",
+        "台積 SoIC 明年產能拚逾 3 萬片；嘉義 AP7 成擴產主力"
+      ]
+    },
+    {
       "term": "電源管理",
       "us": false,
-      "returned": 18,
+      "returned": 17,
       "truncated": false,
       "recent": 1,
       "earlier": 4,
@@ -873,7 +885,27 @@
       "titles": [
         "安森美斥資7.75億美元收購Ferric 強化AI晶片電源管理布局",
         "前三季EPS達8.08元創新高！「電源管理巨頭」Q3狂賺74億同破紀錄 AI資料中心+全球擴產帶飛",
-        "Playground Global 擴大投資組合橫跨記憶體、電源管理、光通訊及先進封裝等領域-手機版"
+        "Playground Global 擴大投資組合橫跨記憶體、電源管理、光通訊及先進封裝等領域"
+      ]
+    },
+    {
+      "term": "利基型記憶體",
+      "us": false,
+      "returned": 17,
+      "truncated": false,
+      "recent": 1,
+      "earlier": 4,
+      "earlier_daily": 0.235,
+      "ratio": 1.42,
+      "status": "quiet",
+      "codes": [
+        "5351",
+        "3006"
+      ],
+      "titles": [
+        "中國兆易創新：利基型記憶體供應偏緊格局延續，DRAM價格將維持高檔",
+        "美光技術反哺利基型記憶體後如何強化力積電在WoW堆疊競爭力- 股市爆料同學會",
+        "北京君正3Q26淨利年增逾25倍 利基型記憶體扮成長主力"
       ]
     },
     {
@@ -896,84 +928,9 @@
       ]
     },
     {
-      "term": "PCIe 6.0",
-      "us": true,
-      "returned": 19,
-      "truncated": false,
-      "recent": 1,
-      "earlier": 5,
-      "earlier_daily": 0.294,
-      "ratio": 1.13,
-      "status": "quiet",
-      "codes": [],
-      "titles": [
-        "大普微在互動平台表示，公司PCIe 6.0主控芯片及SSD產品研發正按募投項目計劃順利推進，預計2027年進入量產狀態。",
-        "Serial Cables Introduces High-Performance Dual EDSFF PCIe 6.0 Adapter for Next-Gen CXL Memory Workloads",
-        "FADU puts the filesystem inside the SSD's flash to bypass host CPUs — File-Semantic PCIe 6.0 SSD delivers 460,000 ops/s to GPUs and DPUs, samples due by Q3 2027"
-      ]
-    },
-    {
-      "term": "利基型記憶體",
+      "term": "記憶體模組",
       "us": false,
-      "returned": 22,
-      "truncated": false,
-      "recent": 1,
-      "earlier": 6,
-      "earlier_daily": 0.353,
-      "ratio": 0.94,
-      "status": "quiet",
-      "codes": [
-        "5351",
-        "3006"
-      ],
-      "titles": [
-        "中國兆易創新：利基型記憶體供應偏緊格局延續，DRAM價格將維持高檔",
-        "鈺創科技 (5351) 深度解析：AI 邊緣運算與利基型記憶體雙引擎，迎來爆發性成長",
-        "美光技術反哺利基型記憶體後如何強化力積電在WoW堆疊競爭力- 股市爆料同學會"
-      ]
-    },
-    {
-      "term": "功率元件",
-      "us": false,
-      "returned": 23,
-      "truncated": false,
-      "recent": 1,
-      "earlier": 6,
-      "earlier_daily": 0.353,
-      "ratio": 0.94,
-      "status": "quiet",
-      "codes": [
-        "2302",
-        "2342",
-        "6651"
-      ],
-      "titles": [
-        "AI外溢功率元件廠BB值創史高| 雜誌",
-        "全宇昕 (6651) 深度解析：瀚荃結盟引爆 AI 電源商機，功率元件小巨人迎來爆發成長",
-        "GaN功率元件市場增溫 800V DC應用尤具成長潛力"
-      ]
-    },
-    {
-      "term": "冷板",
-      "us": false,
-      "returned": 17,
-      "truncated": false,
-      "recent": 1,
-      "earlier": 6,
-      "earlier_daily": 0.353,
-      "ratio": 0.94,
-      "status": "quiet",
-      "codes": [],
-      "titles": [
-        "華倫西亞一球挫艾爾切佐藤龍之介連續6場坐冷板| 日本．東瀛足球",
-        "「新尼馬」不甘長坐冷板 冬窗勢落車",
-        "元界智造AI算力液冷板等項目簽約張家港 總投資11億元"
-      ]
-    },
-    {
-      "term": "客製化晶片",
-      "us": false,
-      "returned": 35,
+      "returned": 43,
       "truncated": false,
       "recent": 1,
       "earlier": 8,
@@ -981,53 +938,91 @@
       "ratio": 0.71,
       "status": "quiet",
       "codes": [
-        "1459",
-        "2454"
+        "3260",
+        "4967"
       ],
       "titles": [
-        "AI客製化晶片ASIC迎出貨潮！半導體股重挫逾800點，聯發科挾獲利逆勢衝上4000元-財經焦點情報站",
-        "AI加速器與客製化晶片商機爆發！資料中心拉貨升溫，聯發科上修全年展望-財經焦點情報站",
-        "討論牆 | Google高層：台灣是客製化晶片重鎮(圖)"
+        "討論牆 | 記憶體模組大廠威剛科技發重訊 今晚8點召開記者會",
+        "4967 十銓- 【本週復盤】記憶體模組震盪，「3檔概念股」近5日仍有撐？ - 股市爆料同學會",
+        "【本週復盤】記憶體模組震盪，「3檔概念股」近5日仍有撐？-起漲K線"
       ]
     },
     {
-      "term": "氮化鎵",
+      "term": "碳化矽",
       "us": false,
-      "returned": 27,
+      "returned": 17,
       "truncated": false,
       "recent": 1,
-      "earlier": 12,
-      "earlier_daily": 0.706,
-      "ratio": 0.47,
+      "earlier": 10,
+      "earlier_daily": 0.588,
+      "ratio": 0.57,
       "status": "quiet",
       "codes": [],
       "titles": [
-        "立積新一代氮化鎵PA年底送樣，冀添明年動能",
-        "65W快充含線特價399元 Zikko氮化鎵充電器採1A2C輸出 免券就能撿便宜 #限時優惠 (253632)",
-        "快充紅利見頂，氮化鎵轉戰AI伺服器電源與車規領域"
+        "Wolfspeed商用化透明碳化矽技術，瞄準AR光波導與量子計算",
+        "Axiro Semiconductor加碼投資ThinSiC 強化次世代碳化矽半導體布局",
+        "安森美攜手陽光電源推進碳化矽應用 提升公用事業級儲能性能"
       ]
     },
     {
-      "term": "Vera CPU",
+      "term": "XPO",
       "us": false,
-      "returned": 29,
+      "returned": 16,
       "truncated": false,
       "recent": 1,
-      "earlier": 19,
-      "earlier_daily": 1.118,
-      "ratio": 0.3,
+      "earlier": 10,
+      "earlier_daily": 0.588,
+      "ratio": 0.57,
       "status": "quiet",
       "codes": [],
       "titles": [
-        "Oracle擴大OCI AI基礎設施：引入NVIDIA Vera Rubin、Vera CPU與Google TPU",
-        "輝達Vera CPU伺服器跑分對決英特爾、超微，仍有幾處落後",
-        "Supermicro 推 NVIDIA Vera CPU 機櫃：256 個 CPU 全液冷式機櫃級解決方案，可搭配NVIDIA Vera Rubin 實現大規模代理式AI 應用"
+        "中際旭創：預計2027年就將產生XPO需求",
+        "正文布局光通訊商機 加入XPO、LPO與Open CPX MSA光通訊標準協議",
+        "立訊精密：CPC和XPO產品與頭部客户還在進行方案驗證 預計明年下半年會陸續量產"
+      ]
+    },
+    {
+      "term": "High-NA EUV",
+      "us": true,
+      "returned": 51,
+      "truncated": false,
+      "recent": 1,
+      "earlier": 24,
+      "earlier_daily": 1.412,
+      "ratio": 0.24,
+      "status": "quiet",
+      "codes": [
+        "2026",
+        "2330",
+        "6830"
+      ],
+      "titles": [
+        "Micron details ambitious DRAM and NAND roadmap — 3D NAND, High-NA EUV, new materials, and custom silicon makes a comeback",
+        "South Korea's Youngkwang YKMC Begins Mass Production of High-NA EUV Parts, Targets 800 Billion Won in 2026 Revenue",
+        "High-NA EUV 發展未歇，英特爾率先採用、台積電與三星推進量產時程"
+      ]
+    },
+    {
+      "term": "共同封裝光學",
+      "us": false,
+      "returned": 21,
+      "truncated": false,
+      "recent": 0,
+      "earlier": 3,
+      "earlier_daily": 0.176,
+      "ratio": 0.0,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "鴻海垂直整合優勢攻共同封裝光學CPO 估明年進入大量出貨期",
+        "AI運算再快也怕「塞車」 解析破局關鍵CPO共同封裝光學| 產經",
+        "CPO共同封裝光學買氣引爆！最新結盟注資逾48億元，玉晶光帶動概念股齊飆-財經焦點情報站"
       ]
     },
     {
       "term": "DSP晶片",
       "us": false,
-      "returned": 15,
+      "returned": 6,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1040,7 +1035,7 @@
     {
       "term": "DSP缺貨",
       "us": false,
-      "returned": 2,
+      "returned": 1,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1053,7 +1048,7 @@
     {
       "term": "SerDes",
       "us": false,
-      "returned": 11,
+      "returned": 10,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1068,7 +1063,7 @@
     {
       "term": "CW雷射",
       "us": false,
-      "returned": 7,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1077,22 +1072,7 @@
       "status": "quiet",
       "codes": [],
       "titles": [
-        "AI光通訊需求從光模組延伸至上游晶片，源杰科技第三季淨利估年增逾6倍，CW雷射器成成長主力"
-      ]
-    },
-    {
-      "term": "矽光子晶片",
-      "us": false,
-      "returned": 11,
-      "truncated": false,
-      "recent": 0,
-      "earlier": 1,
-      "earlier_daily": 0.059,
-      "ratio": 0.0,
-      "status": "quiet",
-      "codes": [],
-      "titles": [
-        "Micro LED爭議未歇！「這檔面板」董座力挺仍難擋外資提款11億居賣超首位聯電持矽光子晶片、CPO商機也難逃"
+        "CW雷射器"
       ]
     },
     {
@@ -1111,7 +1091,7 @@
     {
       "term": "薄膜鈮酸鋰",
       "us": false,
-      "returned": 11,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1124,7 +1104,7 @@
     {
       "term": "矽中介層",
       "us": false,
-      "returned": 34,
+      "returned": 23,
       "truncated": false,
       "recent": 0,
       "earlier": 7,
@@ -1141,20 +1121,23 @@
       ]
     },
     {
-      "term": "SoIC",
+      "term": "面板級封裝",
       "us": false,
-      "returned": 5,
+      "returned": 21,
       "truncated": false,
       "recent": 0,
-      "earlier": 4,
-      "earlier_daily": 0.235,
+      "earlier": 11,
+      "earlier_daily": 0.647,
       "ratio": 0.0,
       "status": "quiet",
-      "codes": [],
+      "codes": [
+        "6239",
+        "2330"
+      ],
       "titles": [
-        "討論牆 | 台積SoIC明年產能拚逾3萬片；嘉義AP7成擴產主力",
-        "台積 SoIC 明年產能拚逾 3 萬片；嘉義 AP7 成擴產主力",
-        "2330 台積電 - 《DJ在線》SoIC明年產能倍增設備供應鏈迎商機- 股市爆料同學會"
+        "2330 台積電 - 面板級封裝中介層 目前台積電CoPoS供應鏈中，玻璃基板由... - 股市爆料同學會",
+        "台積電衝刺 CoPoS 面板級封裝！友達傳佈局玻璃基板試產線、群創也跟上",
+        "日月光秀出AMD 處理器面板級封裝，力成攜手博通在新加坡設廠獲准| 動區動趨-最具影響力的區塊鏈新聞媒體"
       ]
     },
     {
@@ -1175,7 +1158,7 @@
     {
       "term": "3D封裝",
       "us": false,
-      "returned": 11,
+      "returned": 10,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1188,11 +1171,11 @@
     {
       "term": "3奈米",
       "us": false,
-      "returned": 43,
+      "returned": 47,
       "truncated": false,
       "recent": 0,
-      "earlier": 30,
-      "earlier_daily": 1.765,
+      "earlier": 27,
+      "earlier_daily": 1.588,
       "ratio": 0.0,
       "status": "quiet",
       "codes": [
@@ -1201,19 +1184,19 @@
         "1473"
       ],
       "titles": [
-        "台灣半導體明年產值衝11.8兆！3奈米需求強勁、2奈米量產成關鍵",
-        "《半導體》備戰3奈米 瑞昱深化高速互連",
-        "台積電熊本二廠升級3奈米！投資加碼至逾230億美元2028年加入供應戰局- 日報"
+        "台積電熊本二廠升級3奈米！投資加碼至逾230億美元2028年加入供應戰局- 日報",
+        "破天荒！韓媒：三星將採台積電3奈米製程 為輝達生產下一代HBM基底裸片",
+        "輝達統一HBM製程台積3奈米需求發燙| 產經"
       ]
     },
     {
       "term": "高壓直流",
       "us": false,
-      "returned": 17,
+      "returned": 16,
       "truncated": false,
       "recent": 0,
-      "earlier": 3,
-      "earlier_daily": 0.176,
+      "earlier": 4,
+      "earlier_daily": 0.235,
       "ratio": 0.0,
       "status": "quiet",
       "codes": [],
@@ -1265,7 +1248,7 @@
     {
       "term": "均熱片",
       "us": false,
-      "returned": 8,
+      "returned": 7,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1293,7 +1276,7 @@
     {
       "term": "電池備援",
       "us": false,
-      "returned": 4,
+      "returned": 6,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1304,9 +1287,42 @@
       "titles": []
     },
     {
+      "term": "DRAM合約價",
+      "us": false,
+      "returned": 10,
+      "truncated": false,
+      "recent": 0,
+      "earlier": 2,
+      "earlier_daily": 0.118,
+      "ratio": 0.0,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "集邦諮詢預估2026年四季度DRAM合約價環比漲約20%",
+        "機構：預估Q4 DRAM合約價環比漲20%"
+      ]
+    },
+    {
+      "term": "氮化鎵",
+      "us": false,
+      "returned": 25,
+      "truncated": false,
+      "recent": 0,
+      "earlier": 13,
+      "earlier_daily": 0.765,
+      "ratio": 0.0,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "立積新一代氮化鎵PA年底送樣，冀添明年動能",
+        "65W快充含線特價399元 Zikko氮化鎵充電器採1A2C輸出 免券就能撿便宜 #限時優惠 (253632)",
+        "快充紅利見頂，氮化鎵轉戰AI伺服器電源與車規領域"
+      ]
+    },
+    {
       "term": "第三代半導體",
       "us": false,
-      "returned": 8,
+      "returned": 7,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1321,7 +1337,7 @@
     {
       "term": "RISC-V架構",
       "us": false,
-      "returned": 7,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1334,7 +1350,7 @@
     {
       "term": "開源指令集",
       "us": false,
-      "returned": 4,
+      "returned": 3,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1347,7 +1363,7 @@
     {
       "term": "PUF",
       "us": false,
-      "returned": 7,
+      "returned": 5,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1375,7 +1391,7 @@
     {
       "term": "PUFrt",
       "us": false,
-      "returned": 7,
+      "returned": 5,
       "truncated": false,
       "recent": 0,
       "earlier": 2,
@@ -1432,7 +1448,7 @@
     {
       "term": "信任根",
       "us": false,
-      "returned": 10,
+      "returned": 9,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1473,23 +1489,22 @@
     {
       "term": "Jericho",
       "us": false,
-      "returned": 8,
+      "returned": 9,
       "truncated": false,
       "recent": 0,
-      "earlier": 2,
-      "earlier_daily": 0.118,
+      "earlier": 1,
+      "earlier_daily": 0.059,
       "ratio": 0.0,
       "status": "quiet",
       "codes": [],
       "titles": [
-        "幾天前湖人曾與公鹿商討換取Jericho Sims ，交易告吹內幕曝光| No Look Pass",
-        "湖人醞釀交易 Dalton Knecht 換公鹿中鋒 Jericho Sims"
+        "幾天前湖人曾與公鹿商討換取Jericho Sims ，交易告吹內幕曝光| No Look Pass"
       ]
     },
     {
       "term": "特殊應用晶片",
       "us": false,
-      "returned": 8,
+      "returned": 7,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1504,7 +1519,7 @@
     {
       "term": "邊緣運算AI",
       "us": false,
-      "returned": 7,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1530,7 +1545,7 @@
     {
       "term": "諧波減速機",
       "us": false,
-      "returned": 6,
+      "returned": 3,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1543,7 +1558,7 @@
     {
       "term": "伺服馬達",
       "us": false,
-      "returned": 7,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1556,25 +1571,9 @@
       ]
     },
     {
-      "term": "鈉離子電池",
-      "us": false,
-      "returned": 5,
-      "truncated": false,
-      "recent": 0,
-      "earlier": 2,
-      "earlier_daily": 0.118,
-      "ratio": 0.0,
-      "status": "quiet",
-      "codes": [],
-      "titles": [
-        "通用汽車注資1.08億美元押注鈉離子電池，Peak Energy規劃沙加緬度超級工廠",
-        "美國新創 Mana Battery 獲千萬美元種子輪融資 鈉離子電池技術具成本優勢"
-      ]
-    },
-    {
       "term": "800V HVDC",
       "us": true,
-      "returned": 8,
+      "returned": 6,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1615,7 +1614,7 @@
     {
       "term": "power shelf",
       "us": false,
-      "returned": 7,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1628,7 +1627,7 @@
     {
       "term": "Blackwell Ultra",
       "us": false,
-      "returned": 7,
+      "returned": 9,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1684,7 +1683,7 @@
     {
       "term": "Spectrum-X",
       "us": true,
-      "returned": 26,
+      "returned": 20,
       "truncated": false,
       "recent": 0,
       "earlier": 3,
@@ -1703,7 +1702,7 @@
     {
       "term": "power rack",
       "us": false,
-      "returned": 5,
+      "returned": 6,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1718,7 +1717,7 @@
     {
       "term": "固態變壓器",
       "us": false,
-      "returned": 13,
+      "returned": 12,
       "truncated": false,
       "recent": 0,
       "earlier": 7,
@@ -1761,7 +1760,7 @@
     {
       "term": "54V",
       "us": true,
-      "returned": 11,
+      "returned": 10,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1789,25 +1788,9 @@
       ]
     },
     {
-      "term": "UFS",
-      "us": false,
-      "returned": 9,
-      "truncated": false,
-      "recent": 0,
-      "earlier": 2,
-      "earlier_daily": 0.118,
-      "ratio": 0.0,
-      "status": "quiet",
-      "codes": [],
-      "titles": [
-        "2026年第四季eMMC/UFS合約價格",
-        "三星 Galaxy S27 系列傳明年 1 月發表 Pro、Ultra 版或配 LPDDR6 及 UFS 5 晶片"
-      ]
-    },
-    {
       "term": "Wafer-on-Wafer",
       "us": true,
-      "returned": 15,
+      "returned": 14,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1833,7 +1816,7 @@
     {
       "term": "類HBM",
       "us": false,
-      "returned": 6,
+      "returned": 5,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1846,7 +1829,7 @@
     {
       "term": "大光罩",
       "us": false,
-      "returned": 5,
+      "returned": 6,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1859,7 +1842,7 @@
     {
       "term": "微影設備",
       "us": false,
-      "returned": 9,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -1869,6 +1852,26 @@
       "codes": [],
       "titles": [
         "需求激增 Canon 微影設備傳擴產 5 成"
+      ]
+    },
+    {
+      "term": "客製化晶片",
+      "us": false,
+      "returned": 35,
+      "truncated": false,
+      "recent": 0,
+      "earlier": 8,
+      "earlier_daily": 0.471,
+      "ratio": 0.0,
+      "status": "quiet",
+      "codes": [
+        "2454",
+        "1459"
+      ],
+      "titles": [
+        "AI客製化晶片ASIC迎出貨潮！半導體股重挫逾800點，聯發科挾獲利逆勢衝上4000元-財經焦點情報站",
+        "AI加速器與客製化晶片商機爆發！資料中心拉貨升溫，聯發科上修全年展望-財經焦點情報站",
+        "討論牆 | Google高層：台灣是客製化晶片重鎮(圖)"
       ]
     },
     {
@@ -1902,7 +1905,7 @@
     {
       "term": "AR光學",
       "us": false,
-      "returned": 9,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -1954,7 +1957,7 @@
     {
       "term": "半導體建廠",
       "us": false,
-      "returned": 23,
+      "returned": 22,
       "truncated": false,
       "recent": 0,
       "earlier": 7,
@@ -1965,13 +1968,13 @@
       "titles": [
         "強新為何翻紅？6.9億元擴產搭上半導體建廠需求 8月自結EPS達0.56元",
         "宏偉擬11月中旬上櫃 看好AI半導體建廠新機潮 (圖)",
-        "半導體建廠全面停工，封裝供應鏈營收能否先表態？-子敏左側交易"
+        "半導體建廠潮帶旺廠務工程，最新訂單飆破44億，這3檔供應鏈迎長線紅利！-財經焦點情報站"
       ]
     },
     {
       "term": "前驅物",
       "us": false,
-      "returned": 8,
+      "returned": 9,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -2012,7 +2015,7 @@
     {
       "term": "氣體供應系統",
       "us": false,
-      "returned": 3,
+      "returned": 5,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -2025,7 +2028,7 @@
     {
       "term": "光交換",
       "us": false,
-      "returned": 6,
+      "returned": 5,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -2038,7 +2041,7 @@
     {
       "term": "Spectrum-XGS",
       "us": true,
-      "returned": 4,
+      "returned": 2,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -2093,7 +2096,7 @@
     {
       "term": "BlueField-4",
       "us": true,
-      "returned": 22,
+      "returned": 21,
       "truncated": false,
       "recent": 0,
       "earlier": 3,
@@ -2110,11 +2113,11 @@
     {
       "term": "混合鍵合",
       "us": false,
-      "returned": 12,
+      "returned": 11,
       "truncated": false,
       "recent": 0,
-      "earlier": 8,
-      "earlier_daily": 0.471,
+      "earlier": 6,
+      "earlier_daily": 0.353,
       "ratio": 0.0,
       "status": "quiet",
       "codes": [],
@@ -2127,7 +2130,7 @@
     {
       "term": "玻璃通孔",
       "us": false,
-      "returned": 15,
+      "returned": 14,
       "truncated": false,
       "recent": 0,
       "earlier": 4,
@@ -2140,19 +2143,6 @@
         "觸控面板廠搶進AI先進封裝！宸鴻砸60億元布局TGV玻璃通孔 2028年量產成轉型關鍵",
         "科技1分鐘：TGV也有沙漏身形——認識玻璃通孔腰身比"
       ]
-    },
-    {
-      "term": "CoWoS-L",
-      "us": true,
-      "returned": 23,
-      "truncated": false,
-      "recent": 0,
-      "earlier": 0,
-      "earlier_daily": 0.01,
-      "ratio": 0.0,
-      "status": "quiet",
-      "codes": [],
-      "titles": []
     },
     {
       "term": "晶背供電",
@@ -2172,7 +2162,7 @@
     {
       "term": "UCIe",
       "us": false,
-      "returned": 9,
+      "returned": 8,
       "truncated": false,
       "recent": 0,
       "earlier": 3,
@@ -2191,7 +2181,7 @@
     {
       "term": "小晶片",
       "us": false,
-      "returned": 11,
+      "returned": 9,
       "truncated": false,
       "recent": 0,
       "earlier": 4,
@@ -2208,9 +2198,26 @@
       ]
     },
     {
+      "term": "冷板",
+      "us": false,
+      "returned": 16,
+      "truncated": false,
+      "recent": 0,
+      "earlier": 6,
+      "earlier_daily": 0.353,
+      "ratio": 0.0,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "「新尼馬」不甘長坐冷板 冬窗勢落車",
+        "元界智造AI算力液冷板等項目簽約張家港 總投資11億元",
+        "銀輪股份(002126.SZ)：冷板也是公司重點拓展的品類之一"
+      ]
+    },
+    {
       "term": "雙面冷板",
       "us": false,
-      "returned": 4,
+      "returned": 7,
       "truncated": false,
       "recent": 0,
       "earlier": 0,
@@ -2236,7 +2243,7 @@
     {
       "term": "垂直供電",
       "us": false,
-      "returned": 10,
+      "returned": 9,
       "truncated": false,
       "recent": 0,
       "earlier": 1,
@@ -2262,6 +2269,23 @@
       "titles": []
     },
     {
+      "term": "Vera CPU",
+      "us": false,
+      "returned": 27,
+      "truncated": false,
+      "recent": 0,
+      "earlier": 20,
+      "earlier_daily": 1.176,
+      "ratio": 0.0,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "Oracle擴大OCI AI基礎設施：引入NVIDIA Vera Rubin、Vera CPU與Google TPU",
+        "輝達Vera CPU伺服器跑分對決英特爾、超微，仍有幾處落後",
+        "Supermicro 推 NVIDIA Vera CPU 機櫃：256 個 CPU 全液冷式機櫃級解決方案，可搭配NVIDIA Vera Rubin 實現大規模代理式AI 應用"
+      ]
+    },
+    {
       "term": "高頻寬快閃",
       "us": false,
       "returned": 8,
@@ -2273,6 +2297,40 @@
       "status": "quiet",
       "codes": [],
       "titles": []
+    },
+    {
+      "term": "CXL",
+      "us": false,
+      "returned": 16,
+      "truncated": false,
+      "recent": 0,
+      "earlier": 3,
+      "earlier_daily": 0.176,
+      "ratio": 0.0,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "記憶體新武器！鎧俠展示新款 CXL 記憶體模組 KIOXIA XL1 系列，鎖定 AI 資料中心",
+        "客製化AI晶片與CXL記憶體開闢第二戰場，Marvell股價今年大漲175%",
+        "中國IC設計布局AI高速互連 瀾起DDR5介面晶片成長、德明利切入CXL"
+      ]
+    },
+    {
+      "term": "PCIe 6.0",
+      "us": true,
+      "returned": 15,
+      "truncated": false,
+      "recent": 0,
+      "earlier": 5,
+      "earlier_daily": 0.294,
+      "ratio": 0.0,
+      "status": "quiet",
+      "codes": [],
+      "titles": [
+        "大普微在互動平台表示，公司PCIe 6.0主控芯片及SSD產品研發正按募投項目計劃順利推進，預計2027年進入量產狀態。",
+        "Serial Cables Introduces High-Performance Dual EDSFF PCIe 6.0 Adapter for Next-Gen CXL Memory Workloads",
+        "FADU puts the filesystem inside the SSD's flash to bypass host CPUs — File-Semantic PCIe 6.0 SSD delivers 460,000 ops/s to GPUs and DPUs, samples due by Q3 2027"
+      ]
     },
     {
       "term": "HBM Base Die",
