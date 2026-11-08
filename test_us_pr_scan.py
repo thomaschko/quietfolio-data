@@ -198,8 +198,23 @@ class TestScan(unittest.TestCase):
         return code, log, buf.getvalue()
 
     def out(self):
+        txt = ""
+        for fn in sorted(os.listdir(os.path.join(self.d, P.DAY_DIR))):
+            with open(os.path.join(self.d, P.DAY_DIR, fn), encoding="utf-8") as f:
+                txt += f.read()
         with open(os.path.join(self.d, P.OUT), encoding="utf-8") as f:
-            return f.read()
+            return txt + f.read()
+
+    def items(self):
+        out = []
+        for fn in sorted(os.listdir(os.path.join(self.d, P.DAY_DIR))):
+            with open(os.path.join(self.d, P.DAY_DIR, fn), encoding="utf-8") as f:
+                out += P.decode_day(json.load(f))
+        return out
+
+    def summary(self):
+        with open(os.path.join(self.d, P.OUT), encoding="utf-8") as f:
+            return json.load(f)
 
     def state(self):
         with open(os.path.join(self.d, P.STATE), encoding="utf-8") as f:
@@ -210,14 +225,18 @@ class TestScan(unittest.TestCase):
         ed = FakeEdgar(routes)
         code, log, printed = self.run_(ed)
         self.assertEqual(code, 0)
-        doc = json.loads(self.out())
-        accs = {x["acc"]: x for x in doc["items"]}
+        accs = {x["acc"]: x for x in self.items()}
         self.assertEqual(set(accs), {a1, b1})                    # a2 是 5.02 → 不收;CIK 999 與 10-Q 不看
         hits = {h[0]: h for h in accs[a1]["hits"]}
         self.assertEqual(hits["記憶體|HBM"][1], 2)
         self.assertEqual(hits["先進封裝|CoWoS"][1], 1)
         self.assertNotIn("先進封裝|CPO", hits)                   # 小寫 cpo 不算
-        self.assertTrue(all(len(s) <= 200 for h in accs[a1]["hits"] for s in h[2]))
+        sn = accs[a1]["sn"]
+        self.assertEqual([t for t, _ in sn], ["記憶體|HBM", "先進封裝|CoWoS"])   # 次數多的詞優先,每份最多 2 段
+        self.assertTrue(all(len(x) <= 200 for _, x in sn))
+        agg = {r["term"]: r for r in self.summary()["aggregate"]}
+        self.assertEqual((agg["記憶體|HBM"]["n30"], agg["記憶體|HBM"]["tickers30"]), (1, ["AAA"]))
+        self.assertEqual(self.summary()["days"], [["2026-11-06", 2]])
         self.assertEqual(accs[b1]["status"], "unparsed")         # PDF
         self.assertNotIn("filler filler filler filler filler filler filler filler filler", self.out())
         self.assertNotIn("SECRET_FULL_TEXT_MARKER", printed)      # log 只有計數
@@ -234,7 +253,7 @@ class TestScan(unittest.TestCase):
         ed = FakeEdgar(routes)
         self.run_(ed)
         self.assertFalse([u for u in ed.urls if "submissions" in u])
-        self.assertEqual(len(json.loads(self.out())["items"]), 2)
+        self.assertEqual(len(self.items()), 2)
 
     def test_unpublished_index_keeps_watermark(self):
         routes, _ = self.routes()
@@ -254,7 +273,7 @@ class TestScan(unittest.TestCase):
         self.assertIn("時間預算", log["stopped"])
         self.run_(FakeEdgar(routes))
         self.assertEqual(self.state()["backlog"], [])
-        self.assertEqual({x["acc"] for x in json.loads(self.out())["items"]}, {a1, b1})
+        self.assertEqual({x["acc"] for x in self.items()}, {a1, b1})
 
     def test_abort_keeps_backlog(self):
         routes, (a1, a2, b1) = self.routes()
@@ -263,12 +282,33 @@ class TestScan(unittest.TestCase):
         self.assertIn("EDGAR 停止", log["stopped"])
         self.assertTrue(any(p[1] == a1 for p in self.state()["backlog"]))
 
-    def test_size_cap(self):
-        items = [{"filed": "2026-11-%02d" % (1 + i % 6), "acc": "x%05d" % i, "ticker": "T", "cik": 1, "url": "u", "status": "ok",
-                  "hits": [["g|w%d" % k, 3, ["y" * 200] * 3] for k in range(5)]} for i in range(200)]
-        kept, note = P.fit(sorted(items, key=lambda x: x["filed"], reverse=True))
-        self.assertLessEqual(len(json.dumps(kept, ensure_ascii=False, separators=(",", ":"))), P.SIZE_LIMIT - 3000)
-        self.assertIsNotNone(note)
+    def test_day_file_size_cap(self):
+        items = [{"ticker": "T%d" % i, "cik": i, "acc": "x%05d" % i, "url": "u", "status": "ok",
+                  "hits": [["g|w%d" % k, 3] for k in range(5)], "sn": [["g|w0", "y" * 200], ["g|w1", "y" * 200]]}
+                 for i in range(120)]
+        doc, note = P.fit_day({"date": "2026-11-05", "items": items})
+        self.assertLessEqual(len(P._dumps(doc)), P.SIZE_LIMIT)
+        self.assertEqual(note, "one_snippet")
+        self.assertEqual(len(doc["items"]), 120)                 # 不刪資料
+
+    def test_migrate_old_single_file_and_expire(self):
+        with open(os.path.join(self.d, P.OUT), "w", encoding="utf-8") as f:
+            json.dump({"items": [{"filed": "2026-11-04", "ticker": "OLD", "cik": 100, "acc": "old-1", "url": "u",
+                                  "status": "ok", "hits": [["記憶體|HBM", 2, []]]}]}, f)
+        os.makedirs(os.path.join(self.d, P.DAY_DIR))
+        with open(os.path.join(self.d, P.DAY_DIR, "2026-07-01.json"), "w") as f:
+            json.dump({"items": []}, f)
+        routes, _ = self.routes()
+        self.run_(FakeEdgar(routes))
+        self.assertFalse(os.path.exists(os.path.join(self.d, P.DAY_DIR, "2026-07-01.json")))   # 超過 90 天刪除
+        self.assertIn("OLD", {x["ticker"] for x in self.items()})
+        self.assertNotIn("items", self.summary())
+
+    def test_aggregate_windows(self):
+        days = {"2026-11-01": [{"ticker": "A", "hits": [["t", 2]]}], "2026-09-20": [{"ticker": "B", "hits": [["t", 1]]}],
+                "2026-08-20": [{"ticker": "C", "hits": [["t", 1]]}]}
+        r = P.aggregate(days, dt.date(2026, 11, 7))[0]
+        self.assertEqual((r["n30"], r["prev30"], r["n90"], r["tickers30"]), (1, 1, 3, ["A"]))
 
     def test_missing_terms_stops(self):
         with open(os.path.join(self.d, "earnings_keywords.py"), "w", encoding="utf-8") as f:
