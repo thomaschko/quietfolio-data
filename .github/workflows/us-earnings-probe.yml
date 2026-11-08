@@ -39,7 +39,7 @@ jobs:
         if: always()
         run: |
           [ -f us_earnings_probe_result.json ] || { echo "沒有結果檔" >> "$GITHUB_STEP_SUMMARY"; exit 0; }
-          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
           import json
           d = json.load(open("us_earnings_probe_result.json", encoding="utf-8"))
           print("## US Earnings Probe(Phase 0)\n")
@@ -56,6 +56,10 @@ jobs:
           for h, r in (d.get("request_rates") or {}).items():
               print("- %s:%s 次,最大 %s 次/秒" % (h, r["requests"], r["max_per_sec_observed"]))
           PY
+
+      - name: Print result to log (structure only, no transcript or release text)
+        if: always()
+        run: '[ -f us_earnings_probe_result.json ] && cat us_earnings_probe_result.json || true'
 
       - name: Upload result
         if: always()
