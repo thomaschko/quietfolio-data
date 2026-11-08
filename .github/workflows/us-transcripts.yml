@@ -33,12 +33,17 @@ jobs:
           ALPHAVANTAGE_KEY: ${{ secrets.ALPHAVANTAGE_KEY }}
         run: python us_transcripts.py
 
+      - name: US x TW resonance (美股法說題材共振)
+        if: always()
+        continue-on-error: true
+        run: python us_tw_resonance.py
+
       - name: Commit
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in us_transcript_hits.json us_transcript_state.json us_transcripts; do [ -e "$f" ] && git add "$f"; done
+          for f in us_transcript_hits.json us_transcript_state.json us_transcripts us_tw_resonance.json; do [ -e "$f" ] && git add "$f"; done
           if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
           git commit -q -m "US transcripts update"
           for i in 1 2 3 4; do
