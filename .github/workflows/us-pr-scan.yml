@@ -1,0 +1,43 @@
+name: US PR Scan (美股財報新聞稿 8-K 2.02)
+
+# 2026-11-08:us_pr_scan.py。每日索引約 UTC 02:00 發布 → 03:30 UTC(台北 11:30)讀前一天。
+# 只 commit 詞命中次數與 ≤200 字元片段;新聞稿全文不寫入 repo 或 log。
+on:
+  schedule:
+    - cron: '33 3 * * 2-6'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: us-pr-scan
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Scan
+        env:
+          EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+        run: |
+          if [ ! -e us_universe.json ]; then echo "還沒有 us_universe.json,先跑 US Universe"; exit 0; fi
+          python us_pr_scan.py
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in us_pr_hits.json us_pr_state.json; do [ -e "$f" ] && git add "$f"; done
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "US PR scan update"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
