@@ -46,13 +46,18 @@ jobs:
         continue-on-error: true
         run: python consensus.py
 
+      - name: US x TW resonance (美股法說題材共振)
+        if: always()
+        continue-on-error: true
+        run: python us_tw_resonance.py
+
       - name: Commit
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for f in margin_hist margin_share.json margin_share_history.json margin_share_events.json \
-                   margin_share_classes.json margin_share_themes.json margin_share_movers.json consensus.json; do
+                   margin_share_classes.json margin_share_themes.json margin_share_movers.json consensus.json us_tw_resonance.json; do
             [ -e "$f" ] && git add "$f"
           done
           if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
