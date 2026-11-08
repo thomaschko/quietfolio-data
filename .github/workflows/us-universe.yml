@@ -1,0 +1,41 @@
+name: US Universe (美股公司範圍:產業代碼對照)
+
+# 2026-11-08:us_universe.py。SEC company_tickers_exchange + 每家 submissions 的 sic,快取在 us_sic_cache.json(可續跑)。
+# User-Agent 只來自 Secret EDGAR_USER_AGENT;缺少就停止。自我限速 4 次/秒。
+on:
+  schedule:
+    - cron: '17 4 * * 0'      # 每週日 12:17 台北(只補新 CIK)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: us-universe
+
+jobs:
+  universe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Build universe
+        env:
+          EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+        run: python us_universe.py
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in us_sic_cache.json us_universe.json; do [ -e "$f" ] && git add "$f"; done
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "US universe update"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
