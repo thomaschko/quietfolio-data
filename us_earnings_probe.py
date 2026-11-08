@@ -48,7 +48,7 @@ NEWSWIRE_TERMS = {
 }
 EDGAR_MIN_GAP = 0.25          # ≤ 4 次/秒(官方上限 10)
 OTHER_GAP = 2.0
-GDELT_GAP = 6.0
+GDELT_GAP = 12.0          # 2026-11-08 第一次探測 6 秒仍 429,拉長
 SIC_CANDIDATES = ["3674", "3679", "3672", "3570", "3571", "3572", "3575", "3576", "3577", "3578", "3579",
                   "3661", "3663", "3669", "3612", "3613", "3621", "3629", "3690", "3825", "3559", "3827"]
 TERM_WORDS = re.compile(r"(?i)\b(store|storage|cache|redistribut\w*|derivative|display|republish|public|resell|"
@@ -692,7 +692,7 @@ def main():
     ua_source = "secret" if edgar_ua else "repo_url_default"
     edgar_ua = edgar_ua or EDGAR_UA_DEFAULT
     res = {"generated": NOW.isoformat(timespec="seconds"), "secrets_present": {
-        "EDGAR_USER_AGENT": bool(edgar_ua), "ALPHAVANTAGE_KEY": bool(os.environ.get("ALPHAVANTAGE_KEY")),
+        "EDGAR_USER_AGENT": ua_source == "secret", "ALPHAVANTAGE_KEY": bool(os.environ.get("ALPHAVANTAGE_KEY")),
         "ROIC_API_KEY": bool(os.environ.get("ROIC_API_KEY")), "API_NINJAS_KEY": bool(os.environ.get("API_NINJAS_KEY"))}, "edgar_ua_source": ua_source}
     http = Http(edgar_ua)
     src6 = src6_companies()
