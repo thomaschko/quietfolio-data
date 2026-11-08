@@ -92,8 +92,8 @@ class TestRun(unittest.TestCase):
         av = FakeAV(data={"NVDA": SEGS})
         code, log, out = self.run_(av)
         self.assertEqual(code, 0)
-        self.assertEqual(log["fetched"], ["NVDA"])
-        for p in (U.OUT_HITS, U.OUT_STATE):
+        self.assertEqual(log["fetched"], ["NVDA:2026Q3", "NVDA:2026Q2"])   # 本季 + 回補上季
+        for p in (U.OUT_HITS, U.OUT_STATE, "us_transcripts/counts_2026Q3.json", "us_transcripts/snippets_2026Q3.json"):
             with open(os.path.join(self.d, p), encoding="utf-8") as f:
                 txt = f.read()
             self.assertNotIn("NOMATCH_SENTENCE_XYZ", txt)      # 沒命中的段落不留
@@ -101,10 +101,10 @@ class TestRun(unittest.TestCase):
             self.assertLessEqual(len(txt), U.SIZE_LIMIT)
         self.assertNotIn("CoWoS capacity", out)               # log 不含原文
         self.assertNotIn("NOMATCH", out)
-        with open(os.path.join(self.d, U.OUT_HITS), encoding="utf-8") as f:
-            doc = json.load(f)
-        for h in doc["items"]["NVDA"]["2026Q3"]["hits"].values():
-            self.assertTrue(len(h["s"]) <= 3 and all(len(x) <= 200 for x in h["s"]))
+        with open(os.path.join(self.d, "us_transcripts/snippets_2026Q3.json"), encoding="utf-8") as f:
+            sn = json.load(f)["items"]["NVDA"]
+        self.assertTrue(len(sn) <= U.SNIPPETS_PER_COMPANY and all(len(x) <= 200 for _, x in sn))
+        self.assertEqual(sn[0][0], "記憶體|HBM")               # 分析師問答次數多的詞優先(HBM 2 次 > CPO 1 次)
 
     def test_budget_and_quota_stop(self):
         av = FakeAV(data={"NVDA": SEGS, "MU": SEGS, "AMD": SEGS})
@@ -113,6 +113,24 @@ class TestRun(unittest.TestCase):
         av = FakeAV(data={"NVDA": SEGS}, quota_at=1)
         code, log, _ = self.run_(av)
         self.assertIn("額度", log["stopped"])
+
+    def test_backfill_previous_quarter_and_fair_compare(self):
+        av = FakeAV(data={"NVDA": SEGS, "MU": [{"title": "CEO", "content": "HBM demand"}], "AMD": SEGS})
+        av.transcript_q = []
+        orig = av.transcript
+        av.transcript = lambda t, q: (av.transcript_q.append(q), orig(t, q))[1]
+        code, log, _ = self.run_(av)
+        self.assertIn("2026Q2", av.transcript_q)              # 本季做完 → 回補上季
+        with open(os.path.join(self.d, U.OUT_HITS), encoding="utf-8") as f:
+            summ = json.load(f)
+        self.assertEqual(summ["n_both_quarters"], 3)
+        row = [r for r in summ["aggregate"] if r["term"] == "CoWoS"][0]
+        self.assertEqual((row["n_cur_both"], row["n_prev_both"], row["new_this_q"]), (2, 2, []))
+
+    def test_counts_roundtrip_next_run(self):
+        self.run_(FakeAV(data={"NVDA": SEGS}))
+        items = U.load_store(self.d, ["2026Q3", "2026Q2"])
+        self.assertEqual(items["NVDA"]["2026Q3"]["hits"]["先進封裝|CPO"]["q"], 1)
 
     def test_monday_and_src6_day_skip(self):
         av = FakeAV(data={"NVDA": SEGS})

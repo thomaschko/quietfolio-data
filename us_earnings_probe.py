@@ -717,7 +717,9 @@ def main():
     targets = [("src6_company", "NVDA"), ("non_src6_large", "MSFT"), ("small_cap", "VICR")]
     res["roic"] = {"status": "not_tested", "note": "使用者決定不新增 API key"}
     res["api_ninjas"] = {"status": "not_tested", "note": "使用者決定不新增 API key"}
-    for fn in (probe_alphavantage,):
+    # 2026-11-08:Alpha Vantage 已由 us_transcripts.py 每天使用,探測不再動用額度(避免同時請求觸發每秒限制)
+    res["alphavantage"] = {"status": "not_tested", "note": "由 us_transcripts.py 使用;探測不動用額度"}
+    for fn in ():
         try:
             fn(http, res, targets)
         except Exception as e:
