@@ -1,0 +1,66 @@
+name: US Earnings Probe (美股法說資料擴充 Phase 0)
+
+# 2026-11-08 規格 Phase 0:EDGAR 公司範圍與 8-K Item 2.02、逐字稿來源(Alpha Vantage / ROIC.AI / API Ninjas)、GDELT。
+# 只手動執行、只讀、只記結構;結果以 artifact 上傳並寫入 job summary,不 commit。
+# 2026-11-08 不新增 API key:EDGAR 沒有 EDGAR_USER_AGENT secret 時用「Quietfolio research + repo 網址」;另測 SEC 全文檢索、新聞通訊社 RSS。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency: us-earnings-probe
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run probe
+        env:
+          EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+          ALPHAVANTAGE_KEY: ${{ secrets.ALPHAVANTAGE_KEY }}
+          ROIC_API_KEY: ${{ secrets.ROIC_API_KEY }}
+          API_NINJAS_KEY: ${{ secrets.API_NINJAS_KEY }}
+        run: python us_earnings_probe.py > /dev/null
+
+      - name: Job summary (structure only)
+        if: always()
+        run: |
+          [ -f us_earnings_probe_result.json ] || { echo "沒有結果檔" >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          d = json.load(open("us_earnings_probe_result.json", encoding="utf-8"))
+          print("## US Earnings Probe(Phase 0)\n")
+          print("產生時間:", d.get("generated"), "\n")
+          print("Secrets 是否存在:", json.dumps(d.get("secrets_present"), ensure_ascii=False), "\n")
+          print("| 來源 | 狀態 | 條款分類 |\n|---|---|---|")
+          for k in ("edgar", "alphavantage", "roic", "api_ninjas", "gdelt"):
+              v = d.get(k, {})
+              print("| %s | %s | %s |" % (k, v.get("status"), v.get("terms_class", "")))
+          print("\n### 判定\n")
+          for k, v in (d.get("summary") or {}).items():
+              print("- **%s**:%s" % (k, ";".join(v) if v else "(無)"))
+          print("\n### 請求速率\n")
+          for h, r in (d.get("request_rates") or {}).items():
+              print("- %s:%s 次,最大 %s 次/秒" % (h, r["requests"], r["max_per_sec_observed"]))
+          PY
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: us_earnings_probe_result
+          path: us_earnings_probe_result.json
+          if-no-files-found: warn
