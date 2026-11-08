@@ -2,7 +2,7 @@ name: US Earnings Probe (美股法說資料擴充 Phase 0)
 
 # 2026-11-08 規格 Phase 0:EDGAR 公司範圍與 8-K Item 2.02、逐字稿來源(Alpha Vantage / ROIC.AI / API Ninjas)、GDELT。
 # 只手動執行、只讀、只記結構;結果以 artifact 上傳並寫入 job summary,不 commit。
-# 金鑰與聯絡資訊只來自 GitHub Secrets;缺 EDGAR_USER_AGENT 時 EDGAR 部分停止,不發任何 SEC 請求。
+# 2026-11-08 不新增 API key:EDGAR 沒有 EDGAR_USER_AGENT secret 時用「Quietfolio research + repo 網址」;另測 SEC 全文檢索、新聞通訊社 RSS。
 on:
   workflow_dispatch:
 

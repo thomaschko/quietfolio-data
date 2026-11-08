@@ -4,9 +4,10 @@ us_earnings_probe.py — 美股法說資料擴充 Phase 0 探測(2026-11-08;只�
 ============================================================
 規格:EDGAR 公司範圍 / 8-K Item 2.02 財報新聞稿取得方式 / 逐字稿來源(Alpha Vantage、ROIC.AI、API Ninjas)/ GDELT。
 硬性規則:
-  - 金鑰與聯絡資訊只讀環境變數:EDGAR_USER_AGENT、ALPHAVANTAGE_KEY(沿用 src6 既有 secret 名稱)、
-    ROIC_API_KEY、API_NINJAS_KEY;缺哪個就跳過該來源(skipped_no_key)。不寫入任何輸出。
-  - 缺 EDGAR_USER_AGENT → EDGAR 部分直接報錯停止(needs_user_action),不發任何 SEC 請求,不編造聯絡資訊。
+  - 2026-11-08 使用者決定不新增 API key:只用免金鑰來源(EDGAR、SEC 全文檢索、新聞通訊社 RSS、GDELT)
+    與 src6 既有的 ALPHAVANTAGE_KEY;ROIC.AI、API Ninjas 不測。
+  - EDGAR User-Agent:有 EDGAR_USER_AGENT secret 就用;沒有就用「Quietfolio research + repo 網址」(使用者同意,
+    不含任何 email);SEC 不接受就照實回報。金鑰與 User-Agent 不寫入任何輸出。
   - EDGAR 自我限速 ≤ 4 次/秒、gzip;403/429 指數退避,連續 3 次失敗 → 停止所有 EDGAR 檢查。
   - 其他主機間隔 ≥ 2 秒(GDELT 6 秒),User-Agent quietfolio/1.0;先讀 robots.txt;
     robots 禁止、403/451/429、驗證碼、登入牆、額度訊息 → 停止該來源,不重試、不繞過。
@@ -31,6 +32,20 @@ import requests
 
 OUT = "us_earnings_probe_result.json"
 UA_GENERIC = "quietfolio/1.0 (read-only research probe)"
+# 2026-11-08 使用者決定:不新增任何 API key。EDGAR 不需要 key,但 SEC 要求 User-Agent 宣告名稱與聯絡方式;
+# 沒有 EDGAR_USER_AGENT secret 時,用專案名稱 + repo 網址(不含任何 email),SEC 不接受(403)就照實回報。
+EDGAR_UA_DEFAULT = "Quietfolio research https://github.com/thomaschko/quietfolio-data"
+# 新聞通訊社公開 RSS(網址待驗證;只記結構)
+NEWSWIRE_FEEDS = {
+    "globenewswire_earnings": "https://www.globenewswire.com/RssFeed/subjectcode/13-Earnings%20Releases%20And%20Operating%20Results/feedTitle/GlobeNewswire%20-%20Earnings%20Releases%20And%20Operating%20Results",
+    "prnewswire_earnings": "https://www.prnewswire.com/rss/financial-services-latest-news/earnings-list.rss",
+    "businesswire_home": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRWQ==",
+}
+NEWSWIRE_TERMS = {
+    "globenewswire_earnings": ["https://www.globenewswire.com/terms-of-service", "https://www.globenewswire.com/rss/list"],
+    "prnewswire_earnings": ["https://www.prnewswire.com/terms-of-use/", "https://www.prnewswire.com/rss/"],
+    "businesswire_home": ["https://www.businesswire.com/portal/site/home/terms-of-use/", "https://www.businesswire.com/portal/site/home/news/rss/"],
+}
 EDGAR_MIN_GAP = 0.25          # ≤ 4 次/秒(官方上限 10)
 OTHER_GAP = 2.0
 GDELT_GAP = 6.0
@@ -577,19 +592,88 @@ def probe_gdelt(http, res):
     out["status"] = status
 
 
+# ------------------------------------------------------------------ SEC 全文檢索(efts)
+def probe_efts(http, res):
+    out = res["sec_full_text"] = {"checks": {}}
+    end = NOW.date()
+    start = end - dt.timedelta(days=30)
+    for q in ('"power management"', '"800V"', '"lead time"'):
+        url = ("https://efts.sec.gov/LATEST/search-index?q=%s&forms=8-K&dateRange=custom&startdt=%s&enddt=%s"
+               % (quote(q), start, end))
+        try:
+            r = http.edgar(url)
+            j = {}
+            try:
+                j = r.json()
+            except ValueError:
+                pass
+            hits = (j.get("hits") or {})
+            arr = hits.get("hits") or []
+            src = arr[0].get("_source", {}) if arr else {}
+            items = {}
+            for h in arr:
+                for it in (h.get("_source", {}).get("items") or []):
+                    items[it] = items.get(it, 0) + 1
+            out["checks"][q] = {"status": r.status_code, "total": (hits.get("total") or {}).get("value"),
+                                "returned": len(arr), "source_fields": sorted(src.keys()),
+                                "file_types": sorted({h.get("_source", {}).get("file_type") for h in arr if h.get("_source")})[:10],
+                                "items_counts": dict(sorted(items.items(), key=lambda kv: -kv[1])[:8]),
+                                "non_json_head": None if j else r.text[:120]}
+        except StopSource as e:
+            out["checks"][q] = {"blocked": str(e)}
+            out["status"] = "blocked"
+            return
+    out["status"] = "ok"
+    out["note"] = "只記筆數與欄位;可否依 Item 2.02 / EX-99 篩選見 items_counts、file_types"
+
+
+# ------------------------------------------------------------------ 新聞通訊社 RSS
+def probe_newswires(http, res):
+    out = res["newswires"] = {"checks": {}}
+    ok = 0
+    for k, url in NEWSWIRE_FEEDS.items():
+        rec = {"url": url}
+        try:
+            r = http.other(url)
+            body = r.text
+            items = re.findall(r"(?is)<item\b.*?</item>", body)
+            titles = [re.sub(r"<[^>]+>", "", (re.search(r"(?is)<title>(.*?)</title>", x) or [None, ""])[1]) for x in items]
+            tick = sum(1 for x in items if re.search(r"(?i)\((NASDAQ|NYSE)\s*:\s*[A-Z.]+\)", x))
+            dates = re.findall(r"(?i)<pubDate>([^<]+)</pubDate>", body)
+            rec.update({"status": r.status_code, "ctype": r.headers.get("Content-Type"), "items": len(items),
+                        "item_tags": sorted(set(re.findall(r"<(\w+)[ >]", items[0])))[:20] if items else None,
+                        "items_with_exchange_ticker": tick, "pubdate_range": [dates[-1], dates[0]] if dates else None,
+                        "earnings_like_titles": sum(1 for t in titles if re.search(r"(?i)result|earnings|quarter", t))})
+            ok += 1 if items else 0
+        except StopSource as e:
+            rec["blocked"] = str(e)
+        except Exception as e:
+            rec["error"] = repr(e)[:200]
+        sub = {}
+        terms_check(http, sub, NEWSWIRE_TERMS.get(k, []))
+        rec["terms_excerpts"], rec["terms_class"] = sub["terms_excerpts"], sub["terms_class"]
+        out["checks"][k] = rec
+    out["status"] = "ok" if ok == len(NEWSWIRE_FEEDS) else ("partial" if ok else "unreachable")
+    out["note"] = "RSS 網址為候選,以 status / items 為準;只記結構,不存標題以外內容(標題也只計數)"
+
+
 # ------------------------------------------------------------------ 判定與輸出
 def summarize(res):
     s = {"usable_now": [], "usable_with_conditions": [], "not_usable": [], "needs_user_action": []}
     ed = res.get("edgar", {})
-    if ed.get("status") == "needs_user_action":
+    if ed.get("status") == "blocked" and res.get("edgar_ua_source") == "repo_url_default":
+        s["needs_user_action"].append("edgar: SEC 不接受以 repo 網址當聯絡方式的 User-Agent,需要你提供 EDGAR_USER_AGENT(名稱 + email)")
+    elif ed.get("status") == "needs_user_action":
         s["needs_user_action"].append("edgar: 缺 EDGAR_USER_AGENT(請在 GitHub Secrets 設定「專案名稱 聯絡方式」)")
     elif ed.get("status") == "ok":
         s["usable_with_conditions"].append("edgar: 技術可用;SEC 公開資料,須遵守 Fair Access(≤10 次/秒、宣告 User-Agent),條款原文見 terms_excerpts")
     else:
         s["not_usable"].append("edgar: " + str(ed.get("status")))
-    for k in ("alphavantage", "roic", "api_ninjas", "gdelt"):
+    for k in ("sec_full_text", "newswires", "alphavantage", "gdelt"):
         v = res.get(k, {})
         st = v.get("status")
+        if st in ("skipped", "not_tested"):
+            continue
         if st in ("skipped_no_key", "needs_user_action"):
             s["needs_user_action"].append("%s: %s" % (k, st))
         elif st in ("blocked", "unreachable"):
@@ -599,15 +683,17 @@ def summarize(res):
         else:
             s["usable_with_conditions"].append("%s: 技術可行(%s);條款分類 %s,原文見 terms_excerpts,由使用者決定" %
                                                (k, st, v.get("terms_class")))
-    s["not_adopted"] = ["Finnhub 逐字稿(付費)", "EarningsCalls.dev(免費僅約 250 字元預覽)", "FMP(免費方案是否含逐字稿待確認,未測)"]
+    s["not_adopted"] = ["ROIC.AI、API Ninjas(需要 key,使用者決定不新增)", "Finnhub 逐字稿(付費)", "EarningsCalls.dev(免費僅約 250 字元預覽)", "FMP(免費方案是否含逐字稿待確認,未測)"]
     return s
 
 
 def main():
     edgar_ua = os.environ.get("EDGAR_USER_AGENT", "").strip()
+    ua_source = "secret" if edgar_ua else "repo_url_default"
+    edgar_ua = edgar_ua or EDGAR_UA_DEFAULT
     res = {"generated": NOW.isoformat(timespec="seconds"), "secrets_present": {
         "EDGAR_USER_AGENT": bool(edgar_ua), "ALPHAVANTAGE_KEY": bool(os.environ.get("ALPHAVANTAGE_KEY")),
-        "ROIC_API_KEY": bool(os.environ.get("ROIC_API_KEY")), "API_NINJAS_KEY": bool(os.environ.get("API_NINJAS_KEY"))}}
+        "ROIC_API_KEY": bool(os.environ.get("ROIC_API_KEY")), "API_NINJAS_KEY": bool(os.environ.get("API_NINJAS_KEY"))}, "edgar_ua_source": ua_source}
     http = Http(edgar_ua)
     src6 = src6_companies()
     tick = {}
@@ -629,11 +715,26 @@ def main():
             res["edgar"]["terms_error"] = repr(e)[:200]
     # 逐字稿目標:src6 一家、非 src6 大型股、小型股
     targets = [("src6_company", "NVDA"), ("non_src6_large", "MSFT"), ("small_cap", "VICR")]
-    for fn in (probe_alphavantage, probe_roic, probe_ninjas):
+    res["roic"] = {"status": "not_tested", "note": "使用者決定不新增 API key"}
+    res["api_ninjas"] = {"status": "not_tested", "note": "使用者決定不新增 API key"}
+    for fn in (probe_alphavantage,):
         try:
             fn(http, res, targets)
         except Exception as e:
             res[fn.__name__.replace("probe_", "")] = {"status": "unreachable", "error": repr(e)[:200]}
+    if res.get("edgar", {}).get("status") == "ok":
+        try:
+            probe_efts(http, res)
+        except EdgarAbort as e:
+            res["sec_full_text"] = {"status": "blocked", "error": str(e)}
+        except Exception as e:
+            res["sec_full_text"] = {"status": "unreachable", "error": repr(e)[:200]}
+    else:
+        res["sec_full_text"] = {"status": "skipped", "note": "EDGAR 主檢查未通過"}
+    try:
+        probe_newswires(http, res)
+    except Exception as e:
+        res["newswires"] = {"status": "unreachable", "error": repr(e)[:200]}
     try:
         probe_gdelt(http, res)
     except Exception as e:
