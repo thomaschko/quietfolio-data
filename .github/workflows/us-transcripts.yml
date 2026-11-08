@@ -1,0 +1,48 @@
+name: US Transcripts (美股法說逐字稿追蹤)
+
+# 2026-11-08:us_transcripts.py。只用 src6 既有的 ALPHAVANTAGE_KEY;每天最多 20 次,週一(src6 執行日)不跑。
+# 逐字稿只在記憶體處理,只 commit 詞命中次數與短片段(us_transcript_hits.json / us_transcript_state.json)。
+on:
+  schedule:
+    - cron: '30 1 * * 2-6'    # 台北週二~六 09:30(美股盤後、申報高峰之後)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: us-transcripts
+
+jobs:
+  transcripts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Fetch and match
+        env:
+          ALPHAVANTAGE_KEY: ${{ secrets.ALPHAVANTAGE_KEY }}
+        run: python us_transcripts.py
+
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in us_transcript_hits.json us_transcript_state.json; do [ -f "$f" ] && git add "$f"; done
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "US transcripts update"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
