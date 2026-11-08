@@ -6,7 +6,9 @@ description: 解讀美股法說逐字稿的題材詞命中(us_transcript_hits.js
 # 美股法說解讀(us-earnings-review)
 
 ## 資料來源(都在 quietfolio-data repo;先 `git fetch origin main` 再讀 `origin/main` 的版本)
-- `us_transcript_hits.json`:us_transcripts.py 每天產生。`items[代號][季別].hits["群組|詞"] = {p: 公司講稿次數, q: 分析師問答次數, s: 片段(≤3,≤200 字元)}`;`aggregate` 是各詞本季 vs 上季提到的公司數;`universe` 是這家屬於 src6 與哪些題材籃子。
+- `us_transcript_hits.json`(摘要):`aggregate` 是各詞跨公司彙總(`n_cur` 本季提到的公司數;`n_cur_both` / `n_prev_both` 只算兩季都有逐字稿的公司;`new_this_q`、`dropped_this_q`);`universe` 是這家屬於 src6 與哪些題材籃子;`n_both_quarters` 是可比較的公司數。
+- `us_transcripts/counts_<季>.json`:`items[代號].h[詞編號] = [公司講稿次數, 分析師問答次數]`,詞名在同檔 `terms[編號]`。
+- `us_transcripts/snippets_<季>.json`:`items[代號] = [[詞, 片段(≤200 字元)], …]`,每家最多 2 個,問答優先。
 - `us_transcript_state.json`:每家每季抓取狀態(ok / empty / quota / error)。
 - `earnings_keywords.json`:src6(earnings_keywords.py)每週一的結果,23 家固定名單。
 - 對照台股:`intl_theme_baskets.json`(題材 ↔ 台美股)、My-TW-Coverage 題材(`margin_share_themes.json`)、`consensus.json`(市場氛圍、槓桿 + 法人)、`chip_structure_full.json`(集保大戶、法人週資料)。

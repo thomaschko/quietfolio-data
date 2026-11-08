@@ -12,10 +12,12 @@ us_transcripts.py — 美股法說逐字稿追蹤(2026-11-08,自製;只用 src6 
     回應出現額度 / 限速訊息 → 當天立即停止,不重試、不換來源。
   - 詞表:沿用 src6 的 KEYWORDS(使用者維護,讀取不修改);之後若有 theme_terms_bilingual.json 再改讀它。
   - 優先順序(先登記,不事後調整):行事曆顯示已發表財報 → 出現在幾個題材籃子(多者先)→ 屬於 src6 → 代號字母序。
-輸出:
-  us_transcript_hits.json   每家最近 2 季:詞命中(公司講稿 / 分析師問答分開計數)、片段;各詞跨公司彙總(本季 vs 上季)
-  us_transcript_state.json  每家每季的抓取狀態(ok / empty / quota / error)、財報行事曆快照
-兩者 ≤ 45,000 字元;超過先刪片段、再刪較舊的季;失敗保留舊檔。
+  2026-11-08 修正:本季做完還有額度就回補上季;「本季新提到」只比較兩季都有逐字稿的公司;輸出分檔。
+輸出(每個 ≤ 45,000 字元;任何一個超過就全部保留舊檔):
+  us_transcript_hits.json             摘要:各詞跨公司彙總(本季 vs 上季)、名單、檔案清單
+  us_transcripts/counts_<季>.json     每家詞命中次數(公司講稿 / 分析師問答),詞以編號表示
+  us_transcripts/snippets_<季>.json   每家最多 2 個片段(≤ 200 字元,問答優先)
+  us_transcript_state.json            每家每季的抓取狀態(ok / empty / quota / error)、財報行事曆快照
 """
 import ast
 import csv
@@ -30,8 +32,10 @@ import time
 import requests
 
 AV_URL = "https://www.alphavantage.co/query"
-OUT_HITS = "us_transcript_hits.json"
+OUT_HITS = "us_transcript_hits.json"          # 摘要:各詞跨公司彙總、名單
 OUT_STATE = "us_transcript_state.json"
+OUT_DIR = "us_transcripts"                     # 每季一份:counts_<季>.json(次數)、snippets_<季>.json(片段)
+SNIPPETS_PER_COMPANY = 2                       # 每家每季最多 2 個片段(問答優先);超過字數再減
 SIZE_LIMIT = 45000
 DAILY_BUDGET = 20           # 免費 25 次 / 天,保留 5 次給 src6 手動重跑
 GAP = 2.0                   # 每次請求間隔(AV 免費版另有每分鐘限制,保守)
@@ -187,6 +191,25 @@ def candidates(universe, state, calendar_hist, today, quarter):
     return [x[3] for x in out]
 
 
+def backfill_candidates(universe, state, today, cur, prev):
+    """本季已抓到、上季還沒有的公司 → 回補上季(同樣的優先順序,排在本季之後)"""
+    out = []
+    for t, info in universe.items():
+        sts = state.get(t) or {}
+        if (sts.get(cur) or {}).get("status") != "ok":
+            continue
+        st = sts.get(prev)
+        if st and st.get("status") == "ok":
+            continue
+        if st and st.get("status") == "empty":
+            last = dt.date.fromisoformat(st.get("at", "2000-01-01")[:10])
+            if (today - last).days < EMPTY_RETRY_DAYS:
+                continue
+        out.append((-len(info["baskets"]), 0 if info["src6"] else 1, t))
+    out.sort()
+    return [x[2] for x in out]
+
+
 # ------------------------------------------------------------------ Alpha Vantage
 class Quota(Exception):
     pass
@@ -242,47 +265,94 @@ class AV:
 def aggregate(items, quarters):
     """各詞:本季提到的公司數、上季提到的公司數(同一批公司兩季都有資料才比較)"""
     cur, prev = quarters[0], quarters[1] if len(quarters) > 1 else None
+    both = {t for t, qs in items.items() if cur in qs and prev in qs}     # 兩季都有資料的公司才比較
     by = {}
     for t, qs in items.items():
-        for q, rec in qs.items():
-            for k in rec.get("hits", {}):
-                d = by.setdefault(k, {"cur": [], "prev": []})
-                if q == cur:
-                    d["cur"].append(t)
-                elif q == prev:
-                    d["prev"].append(t)
+        for k in (qs.get(cur) or {}).get("hits", {}):
+            by.setdefault(k, {"cur": set(), "cur_both": set(), "prev_both": set()})["cur"].add(t)
+            if t in both:
+                by[k]["cur_both"].add(t)
+        if t in both:
+            for k in qs[prev].get("hits", {}):
+                by.setdefault(k, {"cur": set(), "cur_both": set(), "prev_both": set()})["prev_both"].add(t)
     rows = []
     for k, d in by.items():
         g, w = k.split("|", 1)
-        rows.append({"group": g, "term": w, "n_cur": len(d["cur"]), "n_prev": len(d["prev"]),
-                     "new_this_q": sorted(set(d["cur"]) - set(d["prev"]))[:10]})
-    rows.sort(key=lambda r: (-(r["n_cur"] - r["n_prev"]), -r["n_cur"], r["term"]))
-    return rows
+        rows.append({"group": g, "term": w, "n_cur": len(d["cur"]),
+                     "n_cur_both": len(d["cur_both"]), "n_prev_both": len(d["prev_both"]),
+                     "new_this_q": sorted(d["cur_both"] - d["prev_both"])[:10],
+                     "dropped_this_q": sorted(d["prev_both"] - d["cur_both"])[:10]})
+    rows.sort(key=lambda r: (-(r["n_cur_both"] - r["n_prev_both"]), -r["n_cur"], r["term"]))
+    return rows, len(both)
 
 
-def fit(doc):
-    s = json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
-    if len(s) <= SIZE_LIMIT:
-        return s, None
-    for t in doc["items"].values():
-        for rec in t.values():
-            for h in rec.get("hits", {}).values():
-                h["s"] = h["s"][:1]
-    s = json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
-    if len(s) <= SIZE_LIMIT:
-        return s, "片段縮為每詞 1 個"
-    for t in doc["items"].values():
-        for rec in t.values():
-            for h in rec.get("hits", {}).values():
-                h["s"] = []
-    s = json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
-    if len(s) <= SIZE_LIMIT:
-        return s, "超過字數,片段全部省略"
-    cur = doc["quarters"][0]
-    for t in doc["items"]:
-        doc["items"][t] = {q: v for q, v in doc["items"][t].items() if q == cur}
-    s = json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
-    return s, "超過字數,只留本季、不含片段"
+def compact_counts(items, q, term_list):
+    idx = {k: i for i, k in enumerate(term_list)}
+    out = {}
+    for t, qs in items.items():
+        rec = qs.get(q)
+        if rec:
+            out[t] = {"f": rec["fetched"], "c": rec["chars"],
+                      "h": {str(idx[k]): [v["p"], v["q"]] for k, v in rec["hits"].items() if k in idx}}
+    return {"quarter": q, "terms": term_list, "fields": {"h": "詞編號 → [公司講稿次數, 分析師問答次數]", "c": "逐字稿字元數"},
+            "items": out}
+
+
+def compact_snippets(items, q, per_company):
+    out = {}
+    for t, qs in items.items():
+        rec = qs.get(q)
+        if not rec:
+            continue
+        ranked = sorted(rec["hits"].items(), key=lambda kv: (-kv[1]["q"], -kv[1]["p"], kv[0]))
+        picked = []
+        for k, v in ranked:
+            for x in v.get("s") or []:
+                if len(picked) < per_company:
+                    picked.append([k, x])
+        if picked:
+            out[t] = picked
+    return {"quarter": q, "per_company": per_company, "items": out,
+            "note": "片段 ≤ 200 字元,公司陳述,未經查證;依分析師問答次數多的詞優先"}
+
+
+def load_store(base, quarters):
+    """讀回各季 counts / snippets → items {代號: {季: {fetched, chars, hits{詞: {p, q, s}}}}}"""
+    items = {}
+    for q in quarters:
+        try:
+            with open(os.path.join(base, OUT_DIR, "counts_%s.json" % q), encoding="utf-8") as f:
+                c = json.load(f)
+        except (OSError, ValueError):
+            continue
+        terms = c.get("terms") or []
+        snip = {}
+        try:
+            with open(os.path.join(base, OUT_DIR, "snippets_%s.json" % q), encoding="utf-8") as f:
+                for t, lst in (json.load(f).get("items") or {}).items():
+                    for k, x in lst:
+                        snip.setdefault(t, {}).setdefault(k, []).append(x)
+        except (OSError, ValueError):
+            pass
+        for t, rec in (c.get("items") or {}).items():
+            hits = {}
+            for i, (p, qq) in rec.get("h", {}).items():
+                k = terms[int(i)] if int(i) < len(terms) else None
+                if k:
+                    hits[k] = {"p": p, "q": qq, "s": (snip.get(t) or {}).get(k, [])}
+            items.setdefault(t, {})[q] = {"fetched": rec.get("f"), "chars": rec.get("c"), "hits": hits}
+    # 2026-11-08 第一版把全部放在 us_transcript_hits.json 的 items;還沒有分季檔時從舊格式讀回,避免已抓過的公司資料遺失
+    if not items:
+        try:
+            with open(os.path.join(base, OUT_HITS), encoding="utf-8") as f:
+                old = json.load(f).get("items") or {}
+            for t, qs in old.items():
+                for q, rec in qs.items():
+                    if q in quarters and isinstance(rec, dict) and "hits" in rec:
+                        items.setdefault(t, {})[q] = rec
+        except (OSError, ValueError):
+            pass
+    return items
 
 
 def write_atomic(path, text):
@@ -316,11 +386,6 @@ def run(av=None, today=None, budget=DAILY_BUDGET, base="."):
             st_doc = json.load(f)
     except (OSError, ValueError):
         st_doc = {"tickers": {}, "calendar": {}, "runs": []}
-    try:
-        with open(j(OUT_HITS), encoding="utf-8") as f:
-            hits_doc = json.load(f)
-    except (OSError, ValueError):
-        hits_doc = {"items": {}}
     if av is None:
         key = os.environ.get("ALPHAVANTAGE_KEY", "")
         if not key:
@@ -329,66 +394,92 @@ def run(av=None, today=None, budget=DAILY_BUDGET, base="."):
             return 0, log
         av = AV(key)
     quarters = recent_quarters(today, KEEP_QUARTERS)
-    cur = quarters[0]
+    cur, prev = quarters[0], quarters[1]
     state = st_doc.setdefault("tickers", {})
-    items = hits_doc.setdefault("items", {})
+    items = load_store(base, quarters)
     try:
         cal = av.calendar()
         # 行事曆只列未來的;記下每家最新一次看到的財報日,過了之後就知道「已發表」
         for t, d in cal.items():
             if t in universe:
                 st_doc["calendar"][t] = d
-        todo = candidates(universe, state, st_doc["calendar"], today, cur)
-        for t in todo:
-            if av.used >= budget:
+        todo = [(t, cur) for t in candidates(universe, state, st_doc["calendar"], today, cur)]
+        done_cur = False
+        while True:
+            for t, q in todo:
+                if av.used >= budget:
+                    break
+                segs = av.transcript(t, q)
+                rec = state.setdefault(t, {})
+                if segs is None:
+                    rec[q] = {"status": "error", "at": today.isoformat()}
+                    continue
+                if not segs:
+                    rec[q] = {"status": "empty", "at": today.isoformat()}
+                    continue
+                hits = match_transcript(segs, compiled)
+                n_chars = sum(len(str(x.get("content") or "")) for x in segs)
+                del segs
+                rec[q] = {"status": "ok", "at": today.isoformat(), "chars": n_chars}
+                items.setdefault(t, {})[q] = {"fetched": today.isoformat(), "chars": n_chars, "hits": hits}
+                log["fetched"].append("%s:%s" % (t, q))
+            if done_cur or av.used >= budget:
                 break
-            segs = av.transcript(t, cur)
-            rec = state.setdefault(t, {})
-            if segs is None:
-                rec[cur] = {"status": "error", "at": today.isoformat()}
-                continue
-            if not segs:
-                rec[cur] = {"status": "empty", "at": today.isoformat()}
-                continue
-            hits = match_transcript(segs, compiled)
-            n_chars = sum(len(str(s.get("content") or "")) for s in segs)
-            del segs
-            rec[cur] = {"status": "ok", "at": today.isoformat(), "chars": n_chars}
-            items.setdefault(t, {})[cur] = {"fetched": today.isoformat(), "chars": n_chars, "hits": hits}
-            log["fetched"].append(t)
+            # 本季做完還有額度 → 回補上季(才能比較兩季)
+            done_cur = True
+            todo = [(t, prev) for t in backfill_candidates(universe, state, today, cur, prev)]
     except Quota as e:
         log["stopped"] = "額度 / 限速:%s" % e
     except requests.RequestException as e:
         log["stopped"] = "連線失敗 %s" % type(e).__name__
     log["used"] = av.used
-    # 只留最近 KEEP_QUARTERS 季
     for t in list(items):
         items[t] = {q: v for q, v in items[t].items() if q in quarters}
         if not items[t]:
             del items[t]
-    hits_doc.update({"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-                     "quarters": quarters, "universe_size": len(universe),
-                     "universe": {t: {"src6": v["src6"], "baskets": v["baskets"]} for t, v in sorted(universe.items())
-                                  if t in items},
-                     "terms_source": "earnings_keywords.py KEYWORDS",
-                     "fields": {"p": "公司講稿命中次數", "q": "分析師問答命中次數", "s": "片段(≤3,≤200 字元)"},
-                     "notes": ["法說內容為公司陳述,未經查證;詞命中不等於題材成立,不是買賣建議",
-                               "第一個職稱含 analyst 的發言之後算問答;來源 Alpha Vantage EARNINGS_CALL_TRANSCRIPT"]})
-    hits_doc["aggregate"] = aggregate(items, quarters)[:80]
-    s_hits, note = fit(hits_doc)
-    if note:
-        hits_doc["size_note"] = note
-        s_hits, _ = fit(hits_doc)
+    term_list = ["%s|%s" % (g, w) for g, ws in terms.items() for w in ws]
+    files = {}
+    notes = []
+    for q in quarters:
+        files["%s/counts_%s.json" % (OUT_DIR, q)] = json.dumps(compact_counts(items, q, term_list), ensure_ascii=False, separators=(",", ":"))
+        for n in (SNIPPETS_PER_COMPANY, 1, 0):
+            sn = json.dumps(compact_snippets(items, q, n), ensure_ascii=False, separators=(",", ":"))
+            if len(sn) <= SIZE_LIMIT:
+                break
+        if n < SNIPPETS_PER_COMPANY:
+            notes.append("%s 片段因字數限制減為每家 %d 個" % (q, n))
+        files["%s/snippets_%s.json" % (OUT_DIR, q)] = sn
+    agg, n_both = aggregate(items, quarters)
+    summary = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+               "quarters": quarters, "universe_size": len(universe),
+               "n_with_transcript": {q: sum(1 for t in items if q in items[t]) for q in quarters},
+               "n_both_quarters": n_both,
+               "universe": {t: {"src6": v["src6"], "baskets": v["baskets"]} for t, v in sorted(universe.items()) if t in items},
+               "terms_source": "earnings_keywords.py KEYWORDS",
+               "files": sorted(files),
+               "fields": {"n_cur": "本季提到這個詞的公司數", "n_cur_both / n_prev_both": "兩季都有逐字稿的公司中,本季 / 上季提到的家數",
+                          "new_this_q": "上季沒提、本季提到(兩季都有資料者)", "dropped_this_q": "上季提到、本季沒提"},
+               "notes": ["法說內容為公司陳述,未經查證;詞命中不等於題材成立,不是買賣建議",
+                         "第一個職稱含 analyst 的發言之後算問答;來源 Alpha Vantage EARNINGS_CALL_TRANSCRIPT"] + notes}
+    for top in (80, 50, 30):
+        summary["aggregate"] = agg[:top]
+        s_hits = json.dumps(summary, ensure_ascii=False, separators=(",", ":"))
+        if len(s_hits) <= SIZE_LIMIT:
+            break
     st_doc["runs"] = (st_doc.get("runs") or [])[-30:] + [log]
     s_state = json.dumps(st_doc, ensure_ascii=False, separators=(",", ":"))
     if len(s_state) > SIZE_LIMIT:   # 狀態檔太大:只留近兩季
         for t in state:
             state[t] = {q: v for q, v in state[t].items() if q in quarters}
         s_state = json.dumps(st_doc, ensure_ascii=False, separators=(",", ":"))
-    if len(s_hits) > SIZE_LIMIT or len(s_state) > SIZE_LIMIT:
+    too_big = [k for k, v in files.items() if len(v) > SIZE_LIMIT]
+    if len(s_hits) > SIZE_LIMIT or len(s_state) > SIZE_LIMIT or too_big:
         log["stopped"] = (log["stopped"] or "") + ";輸出超過字數,保留舊檔"
         print(json.dumps(log, ensure_ascii=False))
         return 1, log
+    os.makedirs(j(OUT_DIR), exist_ok=True)
+    for k, v in files.items():
+        write_atomic(j(k), v)
     write_atomic(j(OUT_HITS), s_hits)
     write_atomic(j(OUT_STATE), s_state)
     print(json.dumps(log, ensure_ascii=False))   # 只印代號與次數,不印逐字稿

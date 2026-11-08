@@ -38,7 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in us_transcript_hits.json us_transcript_state.json; do [ -f "$f" ] && git add "$f"; done
+          for f in us_transcript_hits.json us_transcript_state.json us_transcripts; do [ -e "$f" ] && git add "$f"; done
           if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
           git commit -q -m "US transcripts update"
           for i in 1 2 3 4; do
