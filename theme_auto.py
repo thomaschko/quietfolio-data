@@ -190,17 +190,50 @@ def load_prompt(base="."):
         return None
 
 
-def note_inputs(theme, names, base="."):
+NOTE_VERSION = "v2"           # 2026-11-09:改帶更多美股新聞稿片段 → 版本變了會重寫一次草稿
+MAX_SNIPPETS = 8
+
+
+def us_snippets(theme, base=".", days=30, asof=None):
+    """近 30 天財報新聞稿(us_pr 單日檔)中,詞屬於題材的美股詞組、或詞 / 片段含題材別名的片段;每家公司最多 2 段,最多 8 段"""
+    import glob
+    asof = asof or dt.date.today()
+    groups = set(theme.get("us_groups") or [])
+    import re
+    pats = [re.compile(r"(?<![A-Za-z0-9])" + re.escape(a) + r"(?![A-Za-z0-9])", re.I)
+            for a in theme.get("radar_terms") or [] if len(a) >= 3]       # 完整單字才算(避免 OCS 配到 focus)
+    cutoff = (asof - dt.timedelta(days=days)).isoformat()
+    out, per = [], {}
+    for fn in sorted(glob.glob(os.path.join(base, "us_pr", "*.json")), reverse=True):
+        date = os.path.basename(fn)[:-5]
+        if date < cutoff:
+            break
+        d = _read(fn, {}) or {}
+        terms = d.get("terms")
+        for x in d.get("items") or []:
+            for t, s in x.get("sn") or []:
+                term = terms[t] if terms is not None and isinstance(t, int) else t
+                g, _, w = str(term).partition("|")
+                txt = str(s)
+                if g in groups or any(p.search(w) or p.search(txt) for p in pats):
+                    if per.get(x["ticker"], 0) >= 2 or any(txt == o[2] for o in out):
+                        continue
+                    per[x["ticker"]] = per.get(x["ticker"], 0) + 1
+                    out.append([date, x["ticker"], txt, w])
+    # 公司分散:先每家 1 段,再補第 2 段
+    first = [o for i, o in enumerate(out) if [p[1] for p in out].index(o[1]) == i]
+    rest = [o for o in out if o not in first]
+    return (first + rest)[:MAX_SNIPPETS]
+
+
+def note_inputs(theme, names, base=".", asof=None):
     res = _read(os.path.join(base, "us_tw_resonance.json"), {}) or {}
     gs = [g for g in res.get("groups") or [] if g.get("g") in theme.get("us_groups") or []]
-    snips = []
-    for r in res.get("recent") or []:
-        for t, s in r.get("sn") or []:
-            if t.split("|")[0] in theme.get("us_groups") or []:
-                snips.append("%s:%s" % (r["t"], s))
-    return {"題材": theme["name"], "雷達命中詞": theme.get("auto", {}).get("signals", {}),
-            "美股詞組": [[g["g"], g.get("pr_terms"), g.get("pr_tickers", [])[:6]] for g in gs],
-            "美股新聞稿片段(公司陳述)": snips[:3],
+    snips = us_snippets(theme, base, asof=asof)
+    return {"題材": theme["name"], "題材關鍵詞": (theme.get("radar_terms") or [])[:12],
+            "雷達命中詞": theme.get("auto", {}).get("signals", {}),
+            "美股詞組(近30天財報新聞稿提到的公司數與詞)": [[g["g"], g.get("pr_n30"), g.get("pr_terms"), g.get("pr_tickers", [])[:8]] for g in gs],
+            "美股財報新聞稿片段(公司陳述,未經查證)": ["%s %s [%s]:%s" % (d, t, w, s) for d, t, s, w in snips],
             "台股個股": ["%s %s(%s)" % (c, names.get(c, ""), src) for c, src in theme.get("_auto_stocks") or []][:12]}
 
 
@@ -237,8 +270,10 @@ def draft_notes(themes, names, base=".", asof=None, chain=None, max_calls=15):
             chain = None
     calls = 0
     for th in themes:
-        inp = note_inputs(th, names, base)
-        h = hashlib.sha1(json.dumps({k: inp[k] for k in ("題材", "台股個股")}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:12]
+        inp = note_inputs(th, names, base, asof)
+        key = {"v": NOTE_VERSION, "題材": inp["題材"], "台股個股": inp["台股個股"],
+               "片段公司": sorted({x.split(" ")[1] for x in inp["美股財報新聞稿片段(公司陳述,未經查證)"]})}
+        h = hashlib.sha1(json.dumps(key, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:12]
         old = cache.get(th["id"])
         fresh = old and old.get("hash") == h and (asof - dt.date.fromisoformat(old["date"])).days < AI_REFRESH_DAYS
         if fresh or not prompt or chain is None or not getattr(chain, "available", None) or calls >= max_calls:

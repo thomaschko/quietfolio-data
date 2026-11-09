@@ -282,6 +282,12 @@ class TestScan(unittest.TestCase):
         self.assertIn("EDGAR 停止", log["stopped"])
         self.assertTrue(any(p[1] == a1 for p in self.state()["backlog"]))
 
+    def test_snippets_prefer_specific_terms_and_groups(self):
+        hits = [["客戶capex/需求|capital expenditure", 9, ["capex text"]], ["光通訊/CPO|optical", 3, ["optical a"]],
+                ["光通訊/CPO|laser", 2, ["laser b"]], ["記憶體|HBM", 1, ["hbm c"]]]
+        hs, sn = P.compact(hits)
+        self.assertEqual([x[0] for x in sn], ["光通訊/CPO|optical", "記憶體|HBM", "光通訊/CPO|laser"])   # 通用詞最後
+
     def test_day_file_size_cap(self):
         items = [{"ticker": "T%d" % i, "cik": i, "acc": "x%05d" % i, "url": "u", "status": "ok",
                   "hits": [["g|w%d" % k, 3] for k in range(5)], "sn": [["g|w0", "y" * 200], ["g|w1", "y" * 200]]}

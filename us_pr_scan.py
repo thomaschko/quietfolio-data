@@ -28,7 +28,11 @@ import edgar_http as eh
 import us_transcripts as ut
 
 CFG = {"max_bytes": 2 * 1024 * 1024, "time_budget_min": 25, "keep_days": 90, "first_run_days": 7,
-       "max_snippets": 3, "snippet_len": 200, "snippets_per_filing": 2, "tickers_per_term": 15}
+       "max_snippets": 3, "snippet_len": 200, "snippets_per_filing": 3, "tickers_per_term": 15}
+# 2026-11-09:片段優先取「專有詞」且不同詞組(通用詞如 capital expenditure、capacity 只在沒有專有詞時才取),
+# 給趨勢題材頁的 AI 三句話草稿用;單日檔超過字數時仍先縮成 1 段(fit_day)
+GENERIC_WORDS = {"supply chain", "capacity", "yield", "memory", "data center", "datacenter",
+                 "capital expenditure", "capex", "Taiwan"}
 OUT = "us_pr_hits.json"
 DAY_DIR = "us_pr"
 STATE = "us_pr_state.json"
@@ -131,8 +135,20 @@ def _write(path, text):
 def compact(hits):
     """match_text 結果 → (hits [[詞, 次數]], sn [[詞, 片段]] ≤ snippets_per_filing,取次數最多的不同詞各 1 段)"""
     hs = sorted(hits, key=lambda h: (-h[1], h[0]))
-    sn = [[h[0], h[2][0][:CFG["snippet_len"]]] for h in hs if h[2]][:CFG["snippets_per_filing"]]
-    return [[h[0], h[1]] for h in hs], sn
+    word = lambda t: t.split("|", 1)[-1]
+    group = lambda t: t.split("|", 1)[0]
+    ordered = [h for h in hs if h[2] and word(h[0]) not in GENERIC_WORDS] + [h for h in hs if h[2] and word(h[0]) in GENERIC_WORDS]
+    sn, groups = [], set()
+    for h in ordered:                                   # 先每個詞組各取 1 段(只取專有詞)
+        if word(h[0]) not in GENERIC_WORDS and group(h[0]) not in groups:
+            groups.add(group(h[0]))
+            sn.append([h[0], h[2][0][:CFG["snippet_len"]]])
+    for h in ordered:                                   # 不足再補其他詞
+        if len(sn) >= CFG["snippets_per_filing"]:
+            break
+        if all(h[0] != x[0] for x in sn):
+            sn.append([h[0], h[2][0][:CFG["snippet_len"]]])
+    return [[h[0], h[1]] for h in hs], sn[:CFG["snippets_per_filing"]]
 
 
 def _dumps(o):
