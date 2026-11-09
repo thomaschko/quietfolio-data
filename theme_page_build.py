@@ -97,7 +97,15 @@ def _write(path, obj):
 
 
 def theme_stocks(theme, base="."):
-    """→ [(code, 來源說明)](依序去重)"""
+    """→ [(code, 來源說明)](依序去重);Sheet 有這個題材的個股清單時以 Sheet 為準"""
+    if theme.get("_sheet_stocks"):
+        out, seen = [], set()
+        for r in theme["_sheet_stocks"]:
+            c = str(r["code"]).strip()
+            if c and c not in seen and r.get("status") != "移除":
+                seen.add(c)
+                out.append((c, "Sheet theme_stocks"))
+        return out
     cov = (_read(os.path.join(base, "margin_share_themes.json"), {}) or {}).get("themes") or {}
     bas = (_read(os.path.join(base, "intl_theme_baskets.json"), {}) or {}).get("themes") or {}
     out, seen = [], set()
@@ -116,6 +124,65 @@ def theme_stocks(theme, base="."):
             seen.add(c)
             out.append((c, "手動加入"))
     return out
+
+
+THEME_TEXT_FIELDS = ("who_pays", "bottleneck", "revenue_path", "chain", "segment", "supply_note", "source", "edited")
+
+
+def merge_export(themes, export):
+    """Google Sheet theme_notes 匯出(theme_notes_export.json,GAS 每小時推送)併入題材設定:
+    三句話與鏈條等文字;theme_stocks 有該題材的列 → 以 Sheet 為準(狀態「移除」不列入)。Sheet 有、預設沒有的題材也會建立。"""
+    ex_th = (export or {}).get("themes") or {}
+    ex_st = (export or {}).get("theme_stocks") or {}
+    out = []
+    ids = [t["id"] for t in themes] + [i for i in ex_th if i not in {t["id"] for t in themes}]
+    by_id = {t["id"]: t for t in themes}
+    for i in ids:
+        th = dict(by_id.get(i) or {"id": i, "name": (ex_th.get(i) or {}).get("name") or i, "radar_terms": [], "us_groups": []})
+        notes = ex_th.get(i)
+        if notes:
+            th["name"] = notes.get("name") or th["name"]
+            th["notes"] = {k: notes.get(k) for k in THEME_TEXT_FIELDS if notes.get(k)}
+        rows = [r for r in ex_st.get(i) or [] if r.get("code")]
+        if rows:
+            th["_sheet_stocks"] = rows
+        out.append(th)
+    return out
+
+
+def manual_for(code, theme_row, export):
+    """→ build_stock 的 manual:EPS 預估(題 2)、訂單(題 3,取最新)、分層覆寫、四箱 ④、其他手動證據"""
+    ev = [e for e in ((export or {}).get("evidence") or {}).get(code) or []]
+    m = {"eps_estimates": [{"target_year": e.get("target_year"), "date": e.get("date"), "eps": e.get("eps"),
+                            "source": e.get("source")} for e in ev if str(e.get("q")) == "2" and e.get("target_year") and e.get("eps") is not None],
+         "other": [e for e in ev if str(e.get("q")) not in ("2", "3")]}
+    orders = sorted([e for e in ev if str(e.get("q")) == "3"], key=lambda e: e.get("date") or "")
+    if orders:
+        o = orders[-1]
+        m["orders"] = {"content": o.get("content"), "source": o.get("source"), "date": o.get("date"), "ev": o.get("ev"),
+                       "cancel_terms": o.get("cancel_terms"), "delivery": o.get("delivery")}
+    r = theme_row or {}
+    if r.get("tier_override") and r.get("override_reason"):
+        m["tier_override"] = {"tier": r["tier_override"], "reason": r["override_reason"]}
+    if r.get("box4_reason"):
+        m["box4"] = {"reason": r["box4_reason"]}
+    return m
+
+
+def kill_for(code, export, cache, asof):
+    """認錯條件:最新版本逐條檢查(自動條件用快取資料,其他標手動確認);舊版本一併附上"""
+    rows = (export or {}).get("kill") or []
+    cc = T.current_conditions(rows, code)
+    if not cc["current"]:
+        return None
+    q, _, _ = fin_quarters(cache)
+    pe_rows = [(dt.date.fromisoformat(d), v) for d, v in cache.get("pe") or []]
+    cur = []
+    for c in cc["current"]:
+        res = T.evaluate_condition(c, [tuple(r) for r in cache.get("rev") or []], q, pe_rows, asof) \
+            if str(c.get("mode") or "").startswith("自動") else {"status": "manual"}
+        cur.append(dict(c, result=res))
+    return {"current": cur, "history": cc["history"]}
 
 
 def lookup_meta(base="."):
@@ -421,6 +488,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None):
         dd["peak"] = max(win, key=lambda x: x[1])[1]
     crash = T.crash_days(idx_px) if idx_px else []
     manual_all = _read(os.path.join(base, "theme_notes_export.json"), {}) or {}
+    themes = merge_export(themes, manual_all)
     all_codes = {c for th in themes for c, _ in theme_stocks(th, base)}
     name_cache = _read(os.path.join(base, CACHE_DIR, "_names.json"), {}) or {}
     names = dict(name_cache, **{k: v for k, v in names.items() if v})
@@ -450,13 +518,22 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None):
             if st:
                 log["mops"][code] = st
             _write(cp, cache)
-            s = build_stock(code, src, cache, asof, ind.get(code), ev["has"], dd, idx_px,
-                            manual=(manual_all.get("stocks") or {}).get(code))
+            row = next((r for r in th.get("_sheet_stocks") or [] if str(r.get("code")).strip() == code), None)
+            man = manual_for(code, row, manual_all)
+            s = build_stock(code, src, cache, asof, ind.get(code), ev["has"], dd, idx_px, manual=man)
             s["name"] = names.get(code, "")
+            if row:
+                s["sheet"] = {k: row.get(k) for k in ("segment", "added", "status") if row.get(k)}
+            if man.get("other"):
+                s["manual_evidence"] = man["other"][:6]
+            k = kill_for(code, manual_all, cache, asof)
+            if k:
+                s["kill"] = k
             stocks.append(compact_cells(s))
         order = {t: i for i, t in enumerate(T.TIERS)}
         stocks.sort(key=lambda s: (order.get(s["tier"]["tier"], 9), s["code"]))
-        payload = {"generated": now.isoformat(timespec="seconds"), "asof": asof.isoformat(), "theme": th, "evidence": ev,
+        th_pub = {k: v for k, v in th.items() if not k.startswith("_")}
+        payload = {"generated": now.isoformat(timespec="seconds"), "asof": asof.isoformat(), "theme": th_pub, "evidence": ev,
                    "drawdown": {"active": dd.get("active"), "peak_date": dd.get("peak_date") and dd["peak_date"].isoformat(),
                                 "dd": dd.get("dd"), "crash_days": [[d.isoformat(), r] for d, r in crash[-5:]]},
                    "cfg": {k: T.CFG[k] for k in ("version", "note", "flat_note", "box_note", "gm_drop_pp", "pe_hi_pct",
@@ -469,20 +546,27 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None):
                              "月營收、季報、現金流量、本益比、收盤價:FinMind(整理自官方);最新一季損益可能由 MOPS 開放資料補上"],
                    "stocks": stocks}
         try:
-            files = write_theme(th, payload, base)
+            files = write_theme(th_pub, payload, base)
         except ValueError as e:
             log["errors"].append(str(e))
             files = []
         tiers = {}
+        trig = pend = 0
         for s in stocks:
             tiers[s["tier"]["tier"]] = tiers.get(s["tier"]["tier"], 0) + 1
+            trig += sum(1 for c in (s.get("kill") or {}).get("current") or [] if c["result"]["status"] == "triggered")
+            if (s.get("sheet") or {}).get("status") == "追蹤中" and not s.get("kill"):
+                pend += 1
         index.append({"id": th["id"], "name": th["name"], "files": files, "n_stocks": len(stocks), "tiers": tiers,
                       "radar": ev["radar"] if isinstance(ev["radar"], str) else len(ev["radar"]),
                       "us": ev["us"] if isinstance(ev["us"], str) else {"pr_n30": ev["us"]["pr_n30"], "tr_cur": ev["us"]["tr_cur"]},
-                      "kill": {"triggered": 0, "pending": 0, "note": "認錯條件在 Phase 3(Google Sheet)後啟用"},
+                      "kill": {"triggered": trig, "pending": pend},
+                      "notes": (th.get("notes") or {}),
                       "manual_notes": "not_built" if not manual_all else "ok"})
     log["finmind_used"] = fm.used
     doc = {"generated": now.isoformat(timespec="seconds"), "asof": asof.isoformat(), "themes": index,
+           "sheet": {"generated": manual_all.get("generated"), "pending": (manual_all.get("pending") or [])[:30],
+                     "errors": (manual_all.get("errors") or [])[:20]} if manual_all else "not_built",
            "drawdown_active": bool(dd.get("active")), "log": log,
            "notes": ["研究優先順序用途,不是買賣訊號;沒有分數、不依分數排序"]}
     _write(os.path.join(base, OUT_DIR, "index.json"), doc)
