@@ -1,0 +1,17 @@
+{
+  "_note": "題材頁面(趨勢檢視版)試做題材的預設設定(2026-11-09)。個股預設從 My-TW-Coverage(coverage)與題材籃子 intl_theme_baskets.json(baskets)帶入;Phase 3 起以 Google Sheet theme_notes 的 theme_stocks 為準(增刪由使用者決定)。radar_terms 用來比對雷達 daily_digest.json 的題材名;us_groups 對應 src6 詞組(美股新聞稿 / 法說)。",
+  "themes": [
+    {"id": "hvdc800", "name": "800V HVDC 供電",
+     "radar_terms": ["800V", "HVDC", "BBU", "電源", "高壓直流"],
+     "us_groups": ["AI電源/散熱", "資料中心電源"],
+     "coverage": [], "baskets": ["電源/散熱"], "extra": []},
+    {"id": "cpo", "name": "CPO 共同封裝光學",
+     "radar_terms": ["CPO", "矽光子", "光通訊", "共同封裝光學", "Silicon Photonics"],
+     "us_groups": ["光通訊/CPO", "先進封裝/光互連"],
+     "coverage": ["CPO", "矽光子"], "baskets": ["光通訊/CPO"], "extra": []},
+    {"id": "asic", "name": "ASIC 客製晶片",
+     "radar_terms": ["ASIC", "客製化晶片", "客製晶片", "SerDes", "矽智財"],
+     "us_groups": ["IC設計架構", "客戶capex/需求"],
+     "coverage": [], "baskets": ["ASIC/客製晶片", "矽智財/EDA"], "extra": []}
+  ]
+}

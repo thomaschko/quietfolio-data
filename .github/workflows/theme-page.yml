@@ -1,0 +1,41 @@
+name: Theme Page (題材頁面 趨勢檢視)
+
+# 2026-11-09:theme_page_build.py。FinMind(Secret FINMIND_TOKEN)+ MOPS opendata 最新一季;快取在 theme_page/cache。
+# 每次最多 400 次 FinMind 請求;超量就用快取繼續。只讀其他模組的輸出,不修改。
+on:
+  schedule:
+    - cron: '47 13 * * 1-5'   # 台北週一~五 21:47(盤後本益比、收盤價更新之後)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: theme-page
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Build
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python theme_page_build.py
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          [ -e theme_page ] && git add theme_page
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "Theme page update"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
