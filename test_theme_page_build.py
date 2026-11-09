@@ -57,6 +57,8 @@ class FakeFM:
             raise B.Quota("FinMind 超過每小時額度(402)")
         self.used += 1
         self.calls.append((ds, code, start))
+        if ds == "TaiwanStockInfo":
+            return [{"stock_id": "4979", "stock_name": "華星光"}]
         rows = fake_rows(code, self.cum)[ds]
         k = "date" if ds in ("TaiwanStockPER", "TaiwanStockPrice") else None
         return [r for r in rows if not k or r[k] >= start]
@@ -102,6 +104,7 @@ class TestBuild(unittest.TestCase):
         self.assertTrue(s["2884"]["checks"]["q4"]["alt"])
         self.assertEqual(s["3081"]["tier"]["tier"], "已證明")
         self.assertIsNotNone(s["3081"]["pos"])
+        self.assertEqual(s["4979"]["name"], "華星光")                               # 籌碼檔沒有 → FinMind 清單補名稱
         self.assertEqual(t["evidence"]["edgar_capex"], "not_built")
         self.assertEqual(t["evidence"]["us"], "not_built")                          # 沒有 us_tw_resonance.json
         self.assertTrue(t["evidence"]["has"])                                       # 雷達命中 CPO
@@ -151,6 +154,11 @@ class TestBuild(unittest.TestCase):
         finally:
             if old is not None:
                 os.environ["FINMIND_TOKEN"] = old
+
+    def test_semiannual_note(self):
+        cache = {"fin": [[2025, 2, 1, 1, 1, 1, "finmind"], [2025, 4, 1, 1, 1, 1, "finmind"]]}
+        s = B.build_stock("9999", "x", cache, NOW.date(), None, True, {"active": False}, [])
+        self.assertIn("半年報", s["note"])
 
     def test_paging(self):
         big = {"id": "x", "name": "x"}

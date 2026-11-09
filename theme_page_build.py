@@ -62,7 +62,12 @@ class FinMind:
         if self.used:
             self.sleep(BUILD_CFG["finmind_gap"])
         self.used += 1
-        r = self.s.get(FINMIND, params={"dataset": dataset, "data_id": data_id, "start_date": start},
+        params = {"dataset": dataset}
+        if data_id:
+            params["data_id"] = data_id
+        if start:
+            params["start_date"] = start
+        r = self.s.get(FINMIND, params=params,
                        headers={"Authorization": "Bearer " + self.token}, timeout=60)
         if r.status_code == 402:
             self.stopped = "FinMind 超過每小時額度(402)"
@@ -341,6 +346,9 @@ def build_stock(code, src, cache, asof, industry, has_evidence, dd, idx_px, manu
         out["box"] = T.four_box(q1, q4, q5, q9, T.stock_drawdown(px), manual_box4=manual.get("box4")) if dd.get("active") else None
     if q6.get("state") == "n" and not cache.get("cf"):
         q6["reason"] = "現金流量表不可得"
+    qs = {r[1] for r in cache.get("fin") or []}
+    if qs and qs <= {2, 4}:
+        out["note"] = "只有半年報(Q2、Q4,常見於興櫃公司),季度判定多為資料不足"
     return out
 
 
@@ -413,6 +421,18 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None):
         dd["peak"] = max(win, key=lambda x: x[1])[1]
     crash = T.crash_days(idx_px) if idx_px else []
     manual_all = _read(os.path.join(base, "theme_notes_export.json"), {}) or {}
+    all_codes = {c for th in themes for c, _ in theme_stocks(th, base)}
+    name_cache = _read(os.path.join(base, CACHE_DIR, "_names.json"), {}) or {}
+    names = dict(name_cache, **{k: v for k, v in names.items() if v})
+    if any(not names.get(c) for c in all_codes) and name_cache.get("_try") != asof.isoformat():
+        try:                                           # 籌碼檔沒有的代號(例如興櫃)→ FinMind 股票清單補名稱(1 次請求)
+            rows = fm.get("TaiwanStockInfo", "", "") or []
+            name_cache = {r["stock_id"]: r.get("stock_name") or "" for r in rows if r.get("stock_id") in all_codes}
+            name_cache["_try"] = asof.isoformat()
+            _write(os.path.join(base, CACHE_DIR, "_names.json"), name_cache)
+            names.update({k: v for k, v in name_cache.items() if k != "_try" and v and not names.get(k)})
+        except Quota as e:
+            log["stopped"] = str(e)
     index = []
     for th in themes:
         ev = theme_evidence(th, base)
