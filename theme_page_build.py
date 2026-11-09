@@ -359,7 +359,7 @@ def fin_quarters(cache):
 
 
 def position(px):
-    rows = [(d, c) for d, c in px][-250:]
+    rows = [(d, c) for d, c in px if c][-250:]
     if not rows:
         return None
     hi = max(c for _, c in rows)
@@ -528,7 +528,11 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
             _write(cp, cache)
             row = next((r for r in th.get("_sheet_stocks") or [] if str(r.get("code")).strip() == code), None)
             man = manual_for(code, row, manual_all)
-            s = build_stock(code, src, cache, asof, ind.get(code), ev["has"], dd, idx_px, manual=man)
+            try:
+                s = build_stock(code, src, cache, asof, ind.get(code), ev["has"], dd, idx_px, manual=man)
+            except (ArithmeticError, ValueError, TypeError, KeyError, IndexError) as e:   # 單檔資料異常不中斷整次
+                log["errors"].append("%s build: %s" % (code, type(e).__name__))
+                continue
             s["name"] = names.get(code, "")
             if row:
                 s["sheet"] = {k: row.get(k) for k in ("segment", "added", "status") if row.get(k)}

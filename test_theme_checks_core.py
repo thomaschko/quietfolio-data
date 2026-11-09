@@ -179,6 +179,12 @@ class TestCrash(unittest.TestCase):
         rec = idx + [(idx[-1][0] + dt.timedelta(days=1), 98)]
         self.assertFalse(T.drawdown_state(rec)["active"])                           # 回到 97% 以上 → 結束
 
+    def test_zero_close_is_missing(self):
+        idx = self.series([100.0] * 5)
+        stk = self.series([0.0] + [50.0] * 4)                               # 起點停牌(收盤 0)
+        self.assertEqual(T.relative_strength(stk, idx, idx[0][0])["state"], "n")
+        self.assertAlmostEqual(T.stock_drawdown(stk), 0.0)
+
     def test_crash_days(self):
         closes = [100 * (1.001 ** k) for k in range(100)] + [95]
         days = T.crash_days(self.series(closes))

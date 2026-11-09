@@ -338,10 +338,10 @@ def drawdown_state(index_rows, cfg=CFG):
 
 def relative_strength(stock_rows, index_rows, since, cfg=CFG):
     """自 since(指數峰值日)起:個股報酬 − 指數報酬(百分點)。起點或終點缺 → ○"""
-    s = dict(stock_rows)
-    i = dict(index_rows)
+    s = {d: v for d, v in stock_rows if v}          # 收盤價 0 / 缺(停牌、無成交)視為沒有資料
+    i = {d: v for d, v in index_rows if v}
     if since not in s or since not in i:
-        return cell("n", reason="起點當天沒有收盤價")
+        return cell("n", reason="起點當天沒有收盤價(停牌或無成交)")
     end = max(d for d in s if d in i)
     rs = (s[end] / s[since] - 1 - (i[end] / i[since] - 1)) * 100
     ev = dict(ev="事實", source="收盤價(證交所 / 櫃買)", period="%s–%s" % (since.isoformat(), end.isoformat()),
@@ -367,7 +367,7 @@ def crash_days(index_rows, cfg=CFG):
 
 
 def stock_drawdown(close_rows, cfg=CFG):
-    rows = sorted(close_rows)[-cfg["high_window"]:]
+    rows = [(d, c) for d, c in sorted(close_rows) if c][-cfg["high_window"]:]
     if not rows:
         return None
     hi = max(c for _, c in rows)
