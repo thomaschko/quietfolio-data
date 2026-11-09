@@ -9,7 +9,7 @@ theme_auto.py — 建議關注趨勢題材:自動選題材與個股、共振熱�
   台股籌碼:題材個股中「集保大戶增 + 外資自營商買超(或共識頁融資+法人同向買)」≥ 2 檔且多於反向(同 us_tw_resonance 規則)
   共振熱度 = 以上 6 個來源中有幾個成立(0–6,逐項列出,不是加權分數;只用來排序題材與熱力圖上色)。
   固定題材(800V HVDC、CPO、ASIC)一定保留;其他需至少 1 個雷達或美股來源,依熱度、暴增倍數排序,總數 ≤ max_themes。
-  個股:My-TW-Coverage → 雷達點名 → 題材籃子,去重後最多 max_stocks_per_theme 檔。
+  個股:題材籃子 → My-TW-Coverage → 雷達點名,去重後最多 max_stocks_per_theme 檔。
   連續天數:auto_state.json 記錄每個題材有雷達 / 美股訊號的日期。
 二、AI 三句話草稿(draft_notes):沿用 llm_client(Gemini → Groq → OpenRouter,免費額度);
   只給本頁已整理的資料(命中詞、個股名稱、美股詞組詞),不讓模型上網補數字;頁面標「AI 草稿,需人工核對」。
@@ -114,7 +114,14 @@ def select_themes(base=".", asof=None):
     cap = int(cfg.get("max_stocks_per_theme", 12))
     cands = []
     for tid, d in tmap.items():
+        # 2026-11-09:順序改為 題材籃子(人工挑的核心公司)→ My-TW-Coverage → 雷達點名。
+        # My-TW-Coverage 的分類常偏下游(例如 HBM 分類多為伺服器組裝廠),放前面會把核心公司擠出 12 檔上限
         stocks, seen = [], set()
+        for name in d.get("baskets") or []:
+            for c in (bas.get(name) or {}).get("tw") or []:
+                if c not in seen:
+                    seen.add(c)
+                    stocks.append((c, "題材籃子 " + name))
         for name in d.get("coverage") or []:
             for c in cov.get(name) or []:
                 if c not in seen:
@@ -124,11 +131,6 @@ def select_themes(base=".", asof=None):
             if c not in seen:
                 seen.add(c)
                 stocks.append((c, "雷達點名"))
-        for name in d.get("baskets") or []:
-            for c in (bas.get(name) or {}).get("tw") or []:
-                if c not in seen:
-                    seen.add(c)
-                    stocks.append((c, "題材籃子 " + name))
         stocks = stocks[:cap]
         sig = {k: v for k, v in (hits.get(tid) or {}).items()}
         ug = [groups[g] for g in d.get("us_groups") or [] if g in groups]
@@ -190,8 +192,11 @@ def load_prompt(base="."):
         return None
 
 
-NOTE_VERSION = "v2"           # 2026-11-09:改帶更多美股新聞稿片段 → 版本變了會重寫一次草稿
+NOTE_VERSION = "v3"           # 2026-11-09:片段排除通用詞與易誤配詞、加法說逐字稿片段 → 版本變了會重寫一次草稿
 MAX_SNIPPETS = 8
+# 通用詞(幾乎每家財報都有)與易誤配詞(coherent 常是一般英文「一致的」)不當作題材證據片段
+SNIPPET_SKIP_WORDS = {"supply chain", "capacity", "yield", "memory", "data center", "datacenter", "capital expenditure",
+                      "capex", "taiwan", "coherent", "lead time", "analog"}
 
 
 def us_snippets(theme, base=".", days=30, asof=None):
@@ -215,11 +220,24 @@ def us_snippets(theme, base=".", days=30, asof=None):
                 term = terms[t] if terms is not None and isinstance(t, int) else t
                 g, _, w = str(term).partition("|")
                 txt = str(s)
-                if g in groups or any(p.search(w) or p.search(txt) for p in pats):
+                if w.lower() in SNIPPET_SKIP_WORDS:
+                    continue
+                if g in groups or any(p.search(w) for p in pats):
                     if per.get(x["ticker"], 0) >= 2 or any(txt == o[2] for o in out):
                         continue
                     per[x["ticker"]] = per.get(x["ticker"], 0) + 1
                     out.append([date, x["ticker"], txt, w])
+    # 法說逐字稿片段(us_transcripts/snippets_<季>.json,有就加;公司陳述 / 分析師問答)
+    for fn in sorted(glob.glob(os.path.join(base, "us_transcripts", "snippets_*.json")), reverse=True)[:1]:
+        q = os.path.basename(fn)[len("snippets_"):-5]
+        for t, lst in ((_read(fn, {}) or {}).get("items") or {}).items():
+            for term, txt in lst:
+                g, _, w = str(term).partition("|")
+                if w.lower() in SNIPPET_SKIP_WORDS or per.get(t, 0) >= 2:
+                    continue
+                if g in groups or any(p.search(w) for p in pats):
+                    per[t] = per.get(t, 0) + 1
+                    out.append(["法說 " + q, t, str(txt), w])
     # 公司分散:先每家 1 段,再補第 2 段
     first = [o for i, o in enumerate(out) if [p[1] for p in out].index(o[1]) == i]
     rest = [o for o in out if o not in first]
