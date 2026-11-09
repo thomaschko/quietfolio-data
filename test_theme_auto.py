@@ -58,7 +58,8 @@ class TestAuto(unittest.TestCase):
         self.assertEqual(t["memory"]["auto"]["heat"], 3)
         self.assertEqual(t["cpo"]["auto"]["heat"], 2)                          # 發酵前 + 美股共振
         self.assertEqual(len(t["cpo"]["_auto_stocks"]), 3)                     # 每題材上限
-        self.assertEqual(t["cpo"]["_auto_stocks"][0][1], "My-TW-Coverage CPO")
+        self.assertEqual(t["cpo"]["_auto_stocks"][0][1], "My-TW-Coverage CPO")     # 沒有籃子 → Coverage 優先
+        self.assertEqual(t["memory"]["_auto_stocks"][0], ("2408", "題材籃子 記憶體"))   # 有籃子 → 核心公司優先
         self.assertIn("金管會", meta["unmatched"])                              # 對不到的詞列出,不發明題材
         self.assertEqual(t["cpo"]["auto"]["streak_days"], 1)
 

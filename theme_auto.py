@@ -9,7 +9,7 @@ theme_auto.py — 建議關注趨勢題材:自動選題材與個股、共振熱�
   台股籌碼:題材個股中「集保大戶增 + 外資自營商買超(或共識頁融資+法人同向買)」≥ 2 檔且多於反向(同 us_tw_resonance 規則)
   共振熱度 = 以上 6 個來源中有幾個成立(0–6,逐項列出,不是加權分數;只用來排序題材與熱力圖上色)。
   固定題材(800V HVDC、CPO、ASIC)一定保留;其他需至少 1 個雷達或美股來源,依熱度、暴增倍數排序,總數 ≤ max_themes。
-  個股:My-TW-Coverage → 雷達點名 → 題材籃子,去重後最多 max_stocks_per_theme 檔。
+  個股:題材籃子 → My-TW-Coverage → 雷達點名,去重後最多 max_stocks_per_theme 檔。
   連續天數:auto_state.json 記錄每個題材有雷達 / 美股訊號的日期。
 二、AI 三句話草稿(draft_notes):沿用 llm_client(Gemini → Groq → OpenRouter,免費額度);
   只給本頁已整理的資料(命中詞、個股名稱、美股詞組詞),不讓模型上網補數字;頁面標「AI 草稿,需人工核對」。
@@ -114,7 +114,14 @@ def select_themes(base=".", asof=None):
     cap = int(cfg.get("max_stocks_per_theme", 12))
     cands = []
     for tid, d in tmap.items():
+        # 2026-11-09:順序改為 題材籃子(人工挑的核心公司)→ My-TW-Coverage → 雷達點名。
+        # My-TW-Coverage 的分類常偏下游(例如 HBM 分類多為伺服器組裝廠),放前面會把核心公司擠出 12 檔上限
         stocks, seen = [], set()
+        for name in d.get("baskets") or []:
+            for c in (bas.get(name) or {}).get("tw") or []:
+                if c not in seen:
+                    seen.add(c)
+                    stocks.append((c, "題材籃子 " + name))
         for name in d.get("coverage") or []:
             for c in cov.get(name) or []:
                 if c not in seen:
@@ -124,11 +131,6 @@ def select_themes(base=".", asof=None):
             if c not in seen:
                 seen.add(c)
                 stocks.append((c, "雷達點名"))
-        for name in d.get("baskets") or []:
-            for c in (bas.get(name) or {}).get("tw") or []:
-                if c not in seen:
-                    seen.add(c)
-                    stocks.append((c, "題材籃子 " + name))
         stocks = stocks[:cap]
         sig = {k: v for k, v in (hits.get(tid) or {}).items()}
         ug = [groups[g] for g in d.get("us_groups") or [] if g in groups]
