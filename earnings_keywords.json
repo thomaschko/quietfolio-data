@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02 08:47:56.778329",
+  "generated_at": "2026-11-09 09:00:40.343599",
   "quarters_queried": [
     "2026Q3",
     "2026Q2"
@@ -61,9 +61,24 @@
     },
     "AMD": {
       "role": "競爭-GPU/ASIC",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.29
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "advanced packaging": 2,
+          "HBM": 2,
+          "memory": 10,
+          "supply chain": 9,
+          "capacity": 8,
+          "optical": 1,
+          "capex": 1,
+          "data center": 58,
+          "accelerator": 2,
+          "training": 1,
+          "inference": 2,
+          "GPU": 7
+        }
       }
     },
     "AVGO": {
@@ -192,16 +207,54 @@
     },
     "AAOI": {
       "role": "光通訊-光模組(AAOI)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.177
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "CPO": 7,
+          "memory": 2,
+          "supply chain": 1,
+          "capacity": 33,
+          "Taiwan": 2,
+          "optical": 2,
+          "laser": 9,
+          "transceiver": 7,
+          "800G": 31,
+          "1.6T": 17,
+          "coherent": 1,
+          "indium phosphide": 6,
+          "DSP": 6,
+          "capex": 4,
+          "data center": 27,
+          "AI infrastructure": 2
+        }
       }
     },
     "TSEM": {
       "role": "矽光子代工(Tower,對應CPO/矽光子研究)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.391
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "CPO": 2,
+          "silicon photonics": 12,
+          "capacity": 38,
+          "yield": 1,
+          "optical": 6,
+          "photonics": 13,
+          "laser": 11,
+          "transceiver": 3,
+          "coherent": 1,
+          "InP": 1,
+          "indium phosphide": 6,
+          "DSP": 1,
+          "capex": 9,
+          "data center": 1,
+          "AI infrastructure": 1,
+          "analog": 2
+        }
       }
     },
     "AAPL": {
@@ -382,9 +435,23 @@
     },
     "ON": {
       "role": "功率半導體-安森美(SiC)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.283
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "memory": 1,
+          "power delivery": 2,
+          "supply chain": 1,
+          "capacity": 14,
+          "capex": 3,
+          "capital expenditure": 1,
+          "data center": 33,
+          "GPU": 2,
+          "GaN": 5,
+          "analog": 2,
+          "power density": 9
+        }
       }
     },
     "AXTI": {
@@ -518,6 +585,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "AMD",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
+      "this_count": 58,
+      "prev_count": 0,
+      "delta": 58,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "TSM",
       "keyword": "capacity",
       "category": "平台/網通/供應鏈",
@@ -558,6 +635,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "TSEM",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 38,
+      "prev_count": 0,
+      "delta": 38,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "COHR",
       "keyword": "CPO",
       "category": "先進封裝/光互連",
@@ -578,9 +665,39 @@
       "prev_q": ""
     },
     {
+      "symbol": "AAOI",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 33,
+      "prev_count": 0,
+      "delta": 33,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "ON",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
+      "this_count": 33,
+      "prev_count": 0,
+      "delta": 33,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "COHR",
       "keyword": "indium phosphide",
       "category": "功率化合物半導體",
+      "this_count": 31,
+      "prev_count": 0,
+      "delta": 31,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "800G",
+      "category": "光通訊/CPO",
       "this_count": 31,
       "prev_count": 0,
       "delta": 31,
@@ -599,6 +716,16 @@
     },
     {
       "symbol": "MRVL",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
+      "this_count": 27,
+      "prev_count": 0,
+      "delta": 27,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
       "keyword": "data center",
       "category": "客戶capex/需求",
       "this_count": 27,
@@ -758,6 +885,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "AAOI",
+      "keyword": "1.6T",
+      "category": "光通訊/CPO",
+      "this_count": 17,
+      "prev_count": 0,
+      "delta": 17,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "QCOM",
       "keyword": "data center",
       "category": "客戶capex/需求",
@@ -898,6 +1035,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "ON",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
+      "this_count": 14,
+      "prev_count": 0,
+      "delta": 14,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "QCOM",
       "keyword": "memory",
       "category": "記憶體",
@@ -938,6 +1085,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "TSEM",
+      "keyword": "photonics",
+      "category": "光通訊/CPO",
+      "this_count": 13,
+      "prev_count": 0,
+      "delta": 13,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AEHR",
       "keyword": "capacity",
       "category": "平台/網通/供應鏈",
@@ -961,6 +1118,16 @@
       "symbol": "LITE",
       "keyword": "transceiver",
       "category": "光通訊/CPO",
+      "this_count": 12,
+      "prev_count": 0,
+      "delta": 12,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSEM",
+      "keyword": "silicon photonics",
+      "category": "先進封裝/光互連",
       "this_count": 12,
       "prev_count": 0,
       "delta": 12,
@@ -1018,6 +1185,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "TSEM",
+      "keyword": "laser",
+      "category": "光通訊/CPO",
+      "this_count": 11,
+      "prev_count": 0,
+      "delta": 11,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "GOOGL",
       "keyword": "capacity",
       "category": "平台/網通/供應鏈",
@@ -1041,6 +1218,16 @@
       "symbol": "NVDA",
       "keyword": "GPU",
       "category": "客戶capex/需求",
+      "this_count": 10,
+      "prev_count": 0,
+      "delta": 10,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "memory",
+      "category": "記憶體",
       "this_count": 10,
       "prev_count": 0,
       "delta": 10,
@@ -1078,6 +1265,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "AMD",
+      "keyword": "supply chain",
+      "category": "平台/網通/供應鏈",
+      "this_count": 9,
+      "prev_count": 0,
+      "delta": 9,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AVGO",
       "keyword": "capacity",
       "category": "平台/網通/供應鏈",
@@ -1091,6 +1288,26 @@
       "symbol": "COHR",
       "keyword": "EML",
       "category": "光通訊/CPO",
+      "this_count": 9,
+      "prev_count": 0,
+      "delta": 9,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "laser",
+      "category": "光通訊/CPO",
+      "this_count": 9,
+      "prev_count": 0,
+      "delta": 9,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSEM",
+      "keyword": "capex",
+      "category": "客戶capex/需求",
       "this_count": 9,
       "prev_count": 0,
       "delta": 9,
@@ -1138,6 +1355,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "ON",
+      "keyword": "power density",
+      "category": "資料中心電源",
+      "this_count": 9,
+      "prev_count": 0,
+      "delta": 9,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AXTI",
       "keyword": "laser",
       "category": "光通訊/CPO",
@@ -1150,6 +1377,16 @@
     {
       "symbol": "NVDA",
       "keyword": "NVLink",
+      "category": "平台/網通/供應鏈",
+      "this_count": 8,
+      "prev_count": 0,
+      "delta": 8,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "capacity",
       "category": "平台/網通/供應鏈",
       "this_count": 8,
       "prev_count": 0,
@@ -1238,6 +1475,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "AMD",
+      "keyword": "GPU",
+      "category": "客戶capex/需求",
+      "this_count": 7,
+      "prev_count": 0,
+      "delta": 7,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "MRVL",
       "keyword": "chiplet",
       "category": "先進封裝/光互連",
@@ -1250,6 +1497,26 @@
     {
       "symbol": "LITE",
       "keyword": "optical",
+      "category": "光通訊/CPO",
+      "this_count": 7,
+      "prev_count": 0,
+      "delta": 7,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "CPO",
+      "category": "先進封裝/光互連",
+      "this_count": 7,
+      "prev_count": 0,
+      "delta": 7,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "transceiver",
       "category": "光通訊/CPO",
       "this_count": 7,
       "prev_count": 0,
@@ -1371,6 +1638,46 @@
       "symbol": "COHR",
       "keyword": "photonics",
       "category": "光通訊/CPO",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "indium phosphide",
+      "category": "功率化合物半導體",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "DSP",
+      "category": "光通訊/CPO",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSEM",
+      "keyword": "optical",
+      "category": "光通訊/CPO",
+      "this_count": 6,
+      "prev_count": 0,
+      "delta": 6,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSEM",
+      "keyword": "indium phosphide",
+      "category": "功率化合物半導體",
       "this_count": 6,
       "prev_count": 0,
       "delta": 6,
@@ -1518,6 +1825,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "ON",
+      "keyword": "GaN",
+      "category": "功率化合物半導體",
+      "this_count": 5,
+      "prev_count": 0,
+      "delta": 5,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AXTI",
       "keyword": "data center",
       "category": "客戶capex/需求",
@@ -1620,6 +1937,16 @@
     {
       "symbol": "COHR",
       "keyword": "datacenter",
+      "category": "客戶capex/需求",
+      "this_count": 4,
+      "prev_count": 0,
+      "delta": 4,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "capex",
       "category": "客戶capex/需求",
       "this_count": 4,
       "prev_count": 0,
@@ -1848,6 +2175,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "TSEM",
+      "keyword": "transceiver",
+      "category": "光通訊/CPO",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "GOOGL",
       "keyword": "AI infrastructure",
       "category": "客戶capex/需求",
@@ -1920,6 +2257,16 @@
     {
       "symbol": "AMAT",
       "keyword": "AI infrastructure",
+      "category": "客戶capex/需求",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "ON",
+      "keyword": "capex",
       "category": "客戶capex/需求",
       "this_count": 3,
       "prev_count": 0,
@@ -2010,6 +2357,46 @@
     {
       "symbol": "NVDA",
       "keyword": "capex",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "advanced packaging",
+      "category": "先進封裝/光互連",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "HBM",
+      "category": "記憶體",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "accelerator",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AMD",
+      "keyword": "inference",
       "category": "客戶capex/需求",
       "this_count": 2,
       "prev_count": 0,
@@ -2151,6 +2538,66 @@
       "symbol": "COHR",
       "keyword": "capex",
       "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "memory",
+      "category": "記憶體",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "Taiwan",
+      "category": "台廠點名",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "optical",
+      "category": "光通訊/CPO",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "AAOI",
+      "keyword": "AI infrastructure",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSEM",
+      "keyword": "CPO",
+      "category": "先進封裝/光互連",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "TSEM",
+      "keyword": "analog",
+      "category": "IC設計架構",
       "this_count": 2,
       "prev_count": 0,
       "delta": 2,
@@ -2318,6 +2765,36 @@
       "prev_q": ""
     },
     {
+      "symbol": "ON",
+      "keyword": "power delivery",
+      "category": "AI電源/散熱",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "ON",
+      "keyword": "GPU",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "ON",
+      "keyword": "analog",
+      "category": "IC設計架構",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AXTI",
       "keyword": "HBM",
       "category": "記憶體",
@@ -2460,9 +2937,14 @@
   ],
   "intl_news_heat": [
     {
-      "keyword": "capex",
+      "keyword": "data center",
       "category": "客戶capex/需求",
-      "count": 3
+      "count": 7
+    },
+    {
+      "keyword": "yield",
+      "category": "平台/網通/供應鏈",
+      "count": 2
     },
     {
       "keyword": "TSMC",
@@ -2470,18 +2952,18 @@
       "count": 2
     },
     {
-      "keyword": "data center",
-      "category": "客戶capex/需求",
+      "keyword": "yield",
+      "category": "測試設備",
       "count": 2
     },
     {
-      "keyword": "DRAM",
-      "category": "記憶體",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
       "count": 1
     },
     {
-      "keyword": "memory",
-      "category": "記憶體",
+      "keyword": "optical",
+      "category": "光通訊/CPO",
       "count": 1
     },
     {
