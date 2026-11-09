@@ -155,6 +155,37 @@ class TestBuild(unittest.TestCase):
             if old is not None:
                 os.environ["FINMIND_TOKEN"] = old
 
+    def test_sheet_export(self):
+        self.w("theme_notes_export.json", {
+            "generated": "2026-11-09T10:00:00+08:00",
+            "themes": {"cpo": {"name": "CPO 共同封裝光學", "who_pays": "雲端業者 AI 資本支出", "edited": "2026-11-09"},
+                       "newt": {"name": "新題材"}},
+            "theme_stocks": {"cpo": [{"code": "3081", "status": "追蹤中", "tier_override": "開始出現", "override_reason": "等 Q4 財報"},
+                                     {"code": "4979", "status": "追蹤中"}, {"code": "3163", "status": "移除"}]},
+            "evidence": {"3081": [{"q": "2", "target_year": 2027, "date": "2026-10-01", "eps": 10, "source": "券商A"},
+                                  {"q": "2", "target_year": 2027, "date": "2026-11-01", "eps": 12, "source": "券商B"},
+                                  {"q": "8", "content": "產能吃緊", "source": "法說", "date": "2026-11-01"}]},
+            "kill": [{"code": "3081", "version": 1, "idx": 1, "created": "2026-11-09", "condition": "月營收年增連 2 月 < 0",
+                      "metric": "rev_yoy_neg", "threshold": 2, "check": "每月 10 日", "mode": "自動"},
+                     {"code": "3081", "version": 1, "idx": 2, "created": "2026-11-09", "condition": "主要客戶下修資本支出",
+                      "check": "財報季", "mode": "手動"}],
+            "pending": [["theme_notes_kill", 5, "缺 門檻"]]})
+        doc = self.run_()
+        t = self.theme()
+        self.assertEqual(t["theme"]["notes"]["who_pays"], "雲端業者 AI 資本支出")
+        self.assertNotIn("_sheet_stocks", t["theme"])
+        s = {x["code"]: x for x in t["stocks"]}
+        self.assertEqual(sorted(s), ["3081", "4979"])                       # Sheet 為準;移除不列入
+        self.assertEqual(s["3081"]["checks"]["q2"]["state"], "g")             # 同年度兩個日期的預估上修
+        self.assertEqual((s["3081"]["tier"]["tier"], s["3081"]["tier"]["mech_tier"]), ("開始出現", "已證明"))
+        self.assertEqual(s["3081"]["manual_evidence"][0]["content"], "產能吃緊")
+        res = [c["result"]["status"] for c in s["3081"]["kill"]["current"]]
+        self.assertEqual(res, ["not_triggered", "manual"])
+        idx = {x["id"]: x for x in doc["themes"]}
+        self.assertEqual(idx["cpo"]["kill"], {"triggered": 0, "pending": 1})   # 4979 追蹤中但沒寫認錯條件
+        self.assertIn("newt", idx)
+        self.assertEqual(doc["sheet"]["pending"][0][2], "缺 門檻")
+
     def test_semiannual_note(self):
         cache = {"fin": [[2025, 2, 1, 1, 1, 1, "finmind"], [2025, 4, 1, 1, 1, 1, "finmind"]]}
         s = B.build_stock("9999", "x", cache, NOW.date(), None, True, {"active": False}, [])
