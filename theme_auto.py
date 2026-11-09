@@ -192,11 +192,12 @@ def load_prompt(base="."):
         return None
 
 
-NOTE_VERSION = "v3"           # 2026-11-09:片段排除通用詞與易誤配詞、加法說逐字稿片段 → 版本變了會重寫一次草稿
+NOTE_VERSION = "v4"           # 2026-11-09:片段排除通用詞與易誤配詞、加法說逐字稿片段 → 版本變了會重寫一次草稿
 MAX_SNIPPETS = 8
 # 通用詞(幾乎每家財報都有)與易誤配詞(coherent 常是一般英文「一致的」)不當作題材證據片段
 SNIPPET_SKIP_WORDS = {"supply chain", "capacity", "yield", "memory", "data center", "datacenter", "capital expenditure",
                       "capex", "taiwan", "coherent", "lead time", "analog"}
+THEME_CORE_WORDS = {"memory": ("memory",), "ai_server": ("data center", "datacenter")}   # 這些題材的核心詞,不排除
 
 
 def us_snippets(theme, base=".", days=30, asof=None):
@@ -208,6 +209,10 @@ def us_snippets(theme, base=".", days=30, asof=None):
     pats = [re.compile(r"(?<![A-Za-z0-9])" + re.escape(a) + r"(?![A-Za-z0-9])", re.I)
             for a in theme.get("radar_terms") or [] if len(a) >= 3]       # 完整單字才算(避免 OCS 配到 focus)
     cutoff = (asof - dt.timedelta(days=days)).isoformat()
+    # 題材自己的核心詞不算通用詞(例如記憶體題材的 memory、AI 伺服器題材的 data center)
+    own = {a.lower() for a in theme.get("radar_terms") or []} | {str(theme.get("name") or "").lower()}
+    own |= set(THEME_CORE_WORDS.get(theme.get("id"), ()))
+    skip = SNIPPET_SKIP_WORDS - own
     out, per = [], {}
     for fn in sorted(glob.glob(os.path.join(base, "us_pr", "*.json")), reverse=True):
         date = os.path.basename(fn)[:-5]
@@ -220,7 +225,7 @@ def us_snippets(theme, base=".", days=30, asof=None):
                 term = terms[t] if terms is not None and isinstance(t, int) else t
                 g, _, w = str(term).partition("|")
                 txt = str(s)
-                if w.lower() in SNIPPET_SKIP_WORDS:
+                if w.lower() in skip:
                     continue
                 if g in groups or any(p.search(w) for p in pats):
                     if per.get(x["ticker"], 0) >= 2 or any(txt == o[2] for o in out):
@@ -233,7 +238,7 @@ def us_snippets(theme, base=".", days=30, asof=None):
         for t, lst in ((_read(fn, {}) or {}).get("items") or {}).items():
             for term, txt in lst:
                 g, _, w = str(term).partition("|")
-                if w.lower() in SNIPPET_SKIP_WORDS or per.get(t, 0) >= 2:
+                if w.lower() in skip or per.get(t, 0) >= 2:
                     continue
                 if g in groups or any(p.search(w) for p in pats):
                     per[t] = per.get(t, 0) + 1
