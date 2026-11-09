@@ -1,7 +1,8 @@
 name: Theme Page (題材頁面 趨勢檢視)
 
 # 2026-11-09:theme_page_build.py。FinMind(Secret FINMIND_TOKEN)+ MOPS opendata 最新一季;快取在 theme_page/cache。
-# 每次最多 400 次 FinMind 請求;超量就用快取繼續。只讀其他模組的輸出,不修改。
+# 每次最多 550 次 FinMind 請求;超量就用快取繼續。只讀其他模組的輸出,不修改。
+# 2026-11-09:題材改為自動選(theme_auto.py + theme_auto_map.json,最多 15 個),三句話由 AI 寫草稿。
 on:
   schedule:
     - cron: '47 13 * * 1-5'   # 台北週一~五 21:47(盤後本益比、收盤價更新之後)
@@ -25,6 +26,9 @@ jobs:
       - name: Build
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}       # 三句話 AI 草稿(llm_client 依序備援)
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python theme_page_build.py
       - name: Commit
         if: always()

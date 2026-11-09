@@ -26,10 +26,11 @@ import time
 
 import requests
 
+import theme_auto as A
 import theme_checks_core as T
 
 BUILD_CFG = {
-    "finmind_budget": 400, "finmind_gap": 1.0, "years_back": 3,
+    "finmind_budget": 550, "finmind_gap": 1.0, "years_back": 3,
     "refetch_quarter_days": 7,          # 應有新季報但 FinMind 還沒有 → 最多每 7 天重抓一次
     "size_limit": 45000, "page_size": 18,
     "mops_unit_check": (0.9, 1.1),      # MOPS 營收 ×1000 ÷ 同季月營收合計 必須落在此區間才採用
@@ -98,6 +99,8 @@ def _write(path, obj):
 
 def theme_stocks(theme, base="."):
     """→ [(code, 來源說明)](依序去重);Sheet 有這個題材的個股清單時以 Sheet 為準"""
+    if theme.get("_auto_stocks") and not theme.get("_sheet_stocks"):
+        return list(theme["_auto_stocks"])
     if theme.get("_sheet_stocks"):
         out, seen = [], set()
         for r in theme["_sheet_stocks"]:
@@ -451,11 +454,14 @@ def write_theme(theme, payload, base="."):
     return names
 
 
-def run(base=".", fm=None, now=None, mops=None, idx_px=None):
+def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
     now = now or dt.datetime.now(TPE)
     asof = now.date()
-    cfg = _read(os.path.join(base, "theme_page_themes.json"), {}) or {}
-    themes = cfg.get("themes") or []
+    auto_meta = None
+    if os.path.exists(os.path.join(base, "theme_auto_map.json")):
+        themes, auto_meta = A.select_themes(base, asof)        # 建議關注趨勢題材(自動選)
+    else:
+        themes = (_read(os.path.join(base, "theme_page_themes.json"), {}) or {}).get("themes") or []
     names, ind = lookup_meta(base)
     os.makedirs(os.path.join(base, CACHE_DIR), exist_ok=True)
     log = {"started": now.isoformat(timespec="seconds"), "finmind_used": 0, "stopped": None, "mops": {}, "errors": []}
@@ -501,6 +507,8 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None):
             names.update({k: v for k, v in name_cache.items() if k != "_try" and v and not names.get(k)})
         except Quota as e:
             log["stopped"] = str(e)
+    ai_notes = A.draft_notes(themes, names, base, asof, chain=llm)
+    kill_auto = _read(os.path.join(base, OUT_DIR, "kill_auto.json"), []) or []
     index = []
     for th in themes:
         ev = theme_evidence(th, base)
@@ -526,13 +534,16 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None):
                 s["sheet"] = {k: row.get(k) for k in ("segment", "added", "status") if row.get(k)}
             if man.get("other"):
                 s["manual_evidence"] = man["other"][:6]
-            k = kill_for(code, manual_all, cache, asof)
+            kill_auto = A.auto_kill({code: s["tier"]["mech_tier"]}, base, asof)
+            k = kill_for(code, dict(manual_all, kill=kill_auto + list(manual_all.get("kill") or [])), cache, asof)
             if k:
                 s["kill"] = k
             stocks.append(compact_cells(s))
         order = {t: i for i, t in enumerate(T.TIERS)}
         stocks.sort(key=lambda s: (order.get(s["tier"]["tier"], 9), s["code"]))
         th_pub = {k: v for k, v in th.items() if not k.startswith("_")}
+        if not th_pub.get("notes") and ai_notes.get(th["id"]):
+            th_pub["ai_notes"] = dict(ai_notes[th["id"]], label="AI 草稿,需人工核對(只用本頁資料產生)")
         payload = {"generated": now.isoformat(timespec="seconds"), "asof": asof.isoformat(), "theme": th_pub, "evidence": ev,
                    "drawdown": {"active": dd.get("active"), "peak_date": dd.get("peak_date") and dd["peak_date"].isoformat(),
                                 "dd": dd.get("dd"), "crash_days": [[d.isoformat(), r] for d, r in crash[-5:]]},
@@ -555,19 +566,22 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None):
         for s in stocks:
             tiers[s["tier"]["tier"]] = tiers.get(s["tier"]["tier"], 0) + 1
             trig += sum(1 for c in (s.get("kill") or {}).get("current") or [] if c["result"]["status"] == "triggered")
-            if (s.get("sheet") or {}).get("status") == "追蹤中" and not s.get("kill"):
+            own = [c for c in (s.get("kill") or {}).get("current") or [] if c.get("source") != "系統預設"]
+            if (s.get("sheet") or {}).get("status") == "追蹤中" and not own:     # 只有系統預設 → 仍算待填(使用者還沒寫)
                 pend += 1
         index.append({"id": th["id"], "name": th["name"], "files": files, "n_stocks": len(stocks), "tiers": tiers,
                       "radar": ev["radar"] if isinstance(ev["radar"], str) else len(ev["radar"]),
                       "us": ev["us"] if isinstance(ev["us"], str) else {"pr_n30": ev["us"]["pr_n30"], "tr_cur": ev["us"]["tr_cur"]},
                       "kill": {"triggered": trig, "pending": pend},
                       "notes": (th.get("notes") or {}),
+                      "ai_notes": bool(th_pub.get("ai_notes")),
+                      "auto": th.get("auto"),
                       "manual_notes": "not_built" if not manual_all else "ok"})
     log["finmind_used"] = fm.used
     doc = {"generated": now.isoformat(timespec="seconds"), "asof": asof.isoformat(), "themes": index,
            "sheet": {"generated": manual_all.get("generated"), "pending": (manual_all.get("pending") or [])[:30],
                      "errors": (manual_all.get("errors") or [])[:20]} if manual_all else "not_built",
-           "drawdown_active": bool(dd.get("active")), "log": log,
+           "drawdown_active": bool(dd.get("active")), "log": log, "auto_meta": auto_meta,
            "notes": ["研究優先順序用途,不是買賣訊號;沒有分數、不依分數排序"]}
     _write(os.path.join(base, OUT_DIR, "index.json"), doc)
     print(json.dumps({k: v for k, v in log.items()}, ensure_ascii=False))
