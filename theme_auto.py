@@ -192,8 +192,11 @@ def load_prompt(base="."):
         return None
 
 
-NOTE_VERSION = "v2"           # 2026-11-09:改帶更多美股新聞稿片段 → 版本變了會重寫一次草稿
+NOTE_VERSION = "v3"           # 2026-11-09:片段排除通用詞與易誤配詞、加法說逐字稿片段 → 版本變了會重寫一次草稿
 MAX_SNIPPETS = 8
+# 通用詞(幾乎每家財報都有)與易誤配詞(coherent 常是一般英文「一致的」)不當作題材證據片段
+SNIPPET_SKIP_WORDS = {"supply chain", "capacity", "yield", "memory", "data center", "datacenter", "capital expenditure",
+                      "capex", "taiwan", "coherent", "lead time", "analog"}
 
 
 def us_snippets(theme, base=".", days=30, asof=None):
@@ -217,11 +220,24 @@ def us_snippets(theme, base=".", days=30, asof=None):
                 term = terms[t] if terms is not None and isinstance(t, int) else t
                 g, _, w = str(term).partition("|")
                 txt = str(s)
-                if g in groups or any(p.search(w) or p.search(txt) for p in pats):
+                if w.lower() in SNIPPET_SKIP_WORDS:
+                    continue
+                if g in groups or any(p.search(w) for p in pats):
                     if per.get(x["ticker"], 0) >= 2 or any(txt == o[2] for o in out):
                         continue
                     per[x["ticker"]] = per.get(x["ticker"], 0) + 1
                     out.append([date, x["ticker"], txt, w])
+    # 法說逐字稿片段(us_transcripts/snippets_<季>.json,有就加;公司陳述 / 分析師問答)
+    for fn in sorted(glob.glob(os.path.join(base, "us_transcripts", "snippets_*.json")), reverse=True)[:1]:
+        q = os.path.basename(fn)[len("snippets_"):-5]
+        for t, lst in ((_read(fn, {}) or {}).get("items") or {}).items():
+            for term, txt in lst:
+                g, _, w = str(term).partition("|")
+                if w.lower() in SNIPPET_SKIP_WORDS or per.get(t, 0) >= 2:
+                    continue
+                if g in groups or any(p.search(w) for p in pats):
+                    per[t] = per.get(t, 0) + 1
+                    out.append(["法說 " + q, t, str(txt), w])
     # 公司分散:先每家 1 段,再補第 2 段
     first = [o for i, o in enumerate(out) if [p[1] for p in out].index(o[1]) == i]
     rest = [o for o in out if o not in first]
