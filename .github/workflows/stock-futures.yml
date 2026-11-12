@@ -1,0 +1,39 @@
+name: Stock Futures OI (個股期貨未平倉)
+
+# 2026-11-12:stock_futures.py。期交所 futDataDown(commodity_id=all)每月一次請求,依標的股票加總未平倉股數。
+# 第一次執行回補 2024-08 起;之後每天只重抓當月與上月。間隔 ≥ 3 秒、先讀 robots.txt。
+on:
+  schedule:
+    - cron: '43 8 * * 1-5'    # 台北週一~五 16:43(期交所盤後資料約 15:00 後公布)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: stock-futures
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Fetch
+        run: python stock_futures.py
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          [ -e stock_futures ] && git add stock_futures
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "Stock futures OI update"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1

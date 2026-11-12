@@ -256,6 +256,39 @@ def theme_margin_crowd(codes_by_theme, base=".", min_days=120):
     return out
 
 
+def theme_futures_crowd(codes_by_theme, base=".", min_days=120):
+    """個股期貨未平倉擁擠度(stock_futures/oi.csv.gz,stock_futures.py 產生):
+    每檔有股票期貨的股票,最新一天的未平倉股數在自己歷史(不含當天)的分位;題材取中位數。只描述。"""
+    import bisect
+    import gzip
+    p = os.path.join(base, "stock_futures", "oi.csv.gz")
+    if not os.path.exists(p):
+        return "not_built"
+    want = {c for cs in codes_by_theme.values() for c in cs}
+    ser = {}
+    with gzip.open(p, "rt", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["code"] in want:
+                ser.setdefault(r["code"], {})[r["date"]] = float(r["oi_shares"])
+    last = max((max(v) for v in ser.values() if v), default=None)
+    per = {}
+    for c, h in ser.items():
+        ds = sorted(h)
+        if ds and ds[-1] == last and len(ds) - 1 >= min_days:
+            vals = sorted(h[x] for x in ds[:-1])
+            x = h[ds[-1]]
+            per[c] = round((bisect.bisect_left(vals, x) + bisect.bisect_right(vals, x)) / 2 / len(vals) * 100, 1)
+    out = {}
+    for tid, cs in codes_by_theme.items():
+        ps = sorted(per[c] for c in cs if c in per)
+        if not ps:
+            out[tid] = {"asof": last, "stock_n": 0}
+            continue
+        med = ps[len(ps) // 2] if len(ps) % 2 else round((ps[len(ps) // 2 - 1] + ps[len(ps) // 2]) / 2, 1)
+        out[tid] = {"asof": last, "stock_n": len(ps), "pctile_median": med, "hi_n": sum(1 for x in ps if x >= 90)}
+    return out
+
+
 def theme_herd(codes, base="."):
     """散戶羊群(描述):集保週資料(chip_structure_full.json)與共識頁(consensus.json)。
     → 散戶比重週變化平均、股東人數週變化、「散戶比重增 + 大戶比重減」檔數、「融資增 + 法人賣」檔數"""
@@ -619,6 +652,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
     ai_notes = A.draft_notes(themes, names, base, asof, chain=llm)
     # 2026-11-12:擁擠度改用題材自己的個股(趨勢題材頁列出的那幾檔)計算,不再借 My-TW-Coverage 分類
     crowd = theme_margin_crowd({th["id"]: [c for c, _ in theme_stocks(th, base)] for th in themes}, base)
+    fut = theme_futures_crowd({th["id"]: [c for c, _ in theme_stocks(th, base)] for th in themes}, base)
     st_all = _read(os.path.join(base, OUT_DIR, "auto_state.json"), {}) or {}
     firsts = [v.get("first") for v in st_all.values() if v.get("first")]
     tracking_start = min(firsts) if firsts else None
@@ -668,6 +702,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
             th_pub["lifecycle"] = A.lifecycle(th["auto"], px_by_code, idx_px or [], mc.get("stock_lots_pctile_median"), tracking_start)
             th_pub["lifecycle"]["margin"] = mc
             th_pub["lifecycle"]["herd"] = theme_herd(list(px_by_code), base)
+            th_pub["lifecycle"]["futures"] = fut if isinstance(fut, str) else (fut.get(th["id"]) or {"stock_n": 0})
             th_pub["auto"] = {k: v for k, v in th["auto"].items() if k != "heat_hist"}
         if not th_pub.get("notes") and ai_notes.get(th["id"]):
             th_pub["ai_notes"] = dict(ai_notes[th["id"]], label="AI 草稿,需人工核對(只用本頁資料產生)")
