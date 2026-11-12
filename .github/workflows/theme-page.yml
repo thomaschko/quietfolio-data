@@ -23,6 +23,12 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install requests
+      - name: My-TW-Coverage 個股業務簡介(git 淺層 sparse clone,只讀 markdown;失敗就沿用舊檔)
+        continue-on-error: true
+        run: |
+          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/Timeverse/My-TW-Coverage /tmp/twcov
+          git -C /tmp/twcov sparse-checkout set Pilot_Reports
+          TW_COVERAGE_REPORTS=/tmp/twcov/Pilot_Reports TW_COVERAGE_SHA=$(git -C /tmp/twcov rev-parse HEAD) python coverage_business.py
       - name: Build
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
@@ -36,6 +42,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           [ -e theme_page ] && git add theme_page
+          [ -e coverage_business.json ] && git add coverage_business.json
           if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
           git commit -q -m "Theme page update"
           for i in 1 2 3 4; do

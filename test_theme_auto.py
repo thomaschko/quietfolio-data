@@ -142,13 +142,24 @@ class TestLifecycle(unittest.TestCase):
                               {"code": "2454", "pos": "核心", "link": "x", "what": "y"},              # pos 不合法 → 丟掉
                               {"code": "3661", "pos": "上游", "link": "IP", "what": "營收占 40% 來自 ASIC"},   # 含百分比 → 丟掉
                               {"code": "3443", "pos": "未判斷", "link": "", "what": "", "core": True}]}
-            th = [{"id": "asic", "name": "ASIC", "_auto_stocks": [("2330", "a"), ("2454", "b"), ("3661", "c"), ("3443", "d")]}]
+            biz = {"stocks": {c: {"name": c, "industry": "Semiconductors", "biz": "業務 " + c} for c in ("2330", "2454", "3661", "3443")}}
+            with open(os.path.join(d, "coverage_business.json"), "w", encoding="utf-8") as f:
+                json.dump(biz, f)
+            th = [{"id": "asic", "name": "ASIC", "_auto_stocks": [("2330", "a"), ("2454", "b"), ("3661", "c"), ("3443", "d"), ("8888", "e")]}]
             fc = FakeChain(out)
-            r = A.draft_roles(th, {}, {"asic": {"chain": "雲端 → ASIC → 晶圓代工"}}, None, d, dt.date(2026, 11, 12), chain=fc)
+            r = A.draft_roles(th, {}, {"asic": {"chain": "雲端 → ASIC → 晶圓代工"}}, None, d, dt.date(2026, 11, 12), chain=fc, pause=0)
             self.assertEqual(sorted(r["asic"]["roles"]), ["2330", "3443"])
             self.assertEqual((r["asic"]["roles"]["2330"]["core"], r["asic"]["roles"]["3443"]["core"]), (True, False))
-            A.draft_roles(th, {}, {"asic": {"chain": "雲端 → ASIC → 晶圓代工"}}, None, d, dt.date(2026, 11, 13), chain=fc)
+            A.draft_roles(th, {}, {"asic": {"chain": "雲端 → ASIC → 晶圓代工"}}, None, d, dt.date(2026, 11, 13), chain=fc, pause=0)
             self.assertEqual(fc.calls, 1)                                       # 輸入沒變、7 天內 → 用快取
+            with open(os.path.join(d, "theme_page", "ai_roles.json"), "w", encoding="utf-8") as f:
+                json.dump({"old": {"date": "2026-11-12", "hash": "x", "roles": {"1": {}}}}, f)
+            A.draft_roles([], {}, {}, None, d, dt.date(2026, 11, 12), chain=fc, pause=0)
+            with open(os.path.join(d, "theme_page", "ai_roles.json"), encoding="utf-8") as f:
+                self.assertEqual(json.load(f), {})                              # 沒有版本號的舊分類 → 丟掉
+            fc2 = FakeChain({"stocks": [{"code": "8888", "pos": "上游", "link": "x", "what": "y"}]})
+            r = A.draft_roles([{"id": "z", "name": "Z", "_auto_stocks": [("8888", "e")]}], {}, {}, None, d, dt.date(2026, 11, 12), chain=fc2, pause=0)
+            self.assertEqual((fc2.calls, r), (0, {}))                           # 沒有業務簡介 → 不問 AI
         finally:
             shutil.rmtree(d)
 

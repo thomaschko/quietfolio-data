@@ -675,7 +675,8 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
         cov_seg[th["id"]] = m
     notes_for = {th["id"]: th.get("notes") or ai_notes.get(th["id"]) or {} for th in themes}
     ai_roles = A.draft_roles([dict(th, _auto_stocks=theme_stocks(th, base)) for th in themes], names, notes_for,
-                             {k: {c: v.split(":")[-1] for c, v in m.items()} for k, m in cov_seg.items()}, base, asof, chain=llm)
+                             {k: {c: v.split(":")[-1] for c, v in m.items()} for k, m in cov_seg.items()}, base, asof, chain=llm,
+                             pause=0 if llm is not None else 20.0, log=log.setdefault("ai_roles", []))
     # 2026-11-12:擁擠度改用題材自己的個股(趨勢題材頁列出的那幾檔)計算,不再借 My-TW-Coverage 分類
     crowd = theme_margin_crowd({th["id"]: [c for c, _ in theme_stocks(th, base)] for th in themes}, base)
     fut = theme_futures_crowd({th["id"]: [c for c, _ in theme_stocks(th, base)] for th in themes}, base)

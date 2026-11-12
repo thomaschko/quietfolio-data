@@ -23,6 +23,7 @@ import hashlib
 import json
 import os
 import re
+import time
 
 FORBIDDEN = ("買進", "賣出", "推薦", "目標價", "主力", "必漲", "加碼", "減碼")
 SIGNALS = [("preferment", "發酵前"), ("surge", "關鍵字暴增"), ("dual", "雙邊確認"), ("new", "新題材"),
@@ -319,7 +320,7 @@ def draft_notes(themes, names, base=".", asof=None, chain=None, max_calls=15):
 
 
 # ------------------------------------------------------------------ 個股在題材鏈條中的位置(AI 草稿,2026-11-12)
-ROLE_VERSION = "r1"
+ROLE_VERSION = "r2"           # 2026-11-12:r1 憑公司名稱猜,錯誤多 → 改為只依 My-TW-Coverage 業務簡介判斷
 ROLE_POS = ("上游", "中游", "下游", "周邊", "未判斷")
 
 
@@ -342,12 +343,12 @@ def valid_roles(o, codes):
     return out
 
 
-def draft_roles(themes, names, notes, cov_seg=None, base=".", asof=None, chain=None, max_calls=15):
+def draft_roles(themes, names, notes, cov_seg=None, base=".", asof=None, chain=None, max_calls=15, pause=20.0, log=None):
     """themes:select_themes 的題材(含 _auto_stocks);notes:{tid: 三句話(含 chain / bottleneck)};
     cov_seg:{tid: {code: My-TW-Coverage 分段}} → {tid: {"date", "provider", "roles": {code: {...}}}};快取 theme_page/ai_roles.json"""
     asof = asof or dt.date.today()
     cp = os.path.join(base, AUTO_DIR, "ai_roles.json")
-    cache = _read(cp, {}) or {}
+    cache = {k: v for k, v in (_read(cp, {}) or {}).items() if v.get("v") == ROLE_VERSION}   # 舊版(r1 憑名稱猜)一律丟掉
     try:
         with open(os.path.join(base, "prompts", "theme_stock_roles.md"), encoding="utf-8") as f:
             prompt = f.read()
@@ -359,26 +360,39 @@ def draft_roles(themes, names, notes, cov_seg=None, base=".", asof=None, chain=N
             chain = llm_client.LLMChain()
         except Exception:
             chain = None
-    calls = 0
+    calls, biz = 0, None
     for th in themes:
         codes = [c for c, _ in th.get("_auto_stocks") or []]
         if not codes:
             continue
         n = (notes or {}).get(th["id"]) or {}
         seg = (cov_seg or {}).get(th["id"]) or {}
+        biz = _read(os.path.join(base, "coverage_business.json"), {}) if biz is None else biz
+        bs = (biz or {}).get("stocks") or {}
+        known = [c for c in codes if (bs.get(c) or {}).get("biz")]          # 沒有業務簡介 → 不交給 AI,顯示「未判斷」
+        if not known:
+            continue
         inp = {"題材": th["name"], "題材關鍵詞": (th.get("radar_terms") or [])[:12],
                "資金下流鏈條": n.get("chain") or "資料不足", "bottleneck": n.get("bottleneck") or "",
-               "台股個股": [{"code": c, "name": names.get(c, ""), "My-TW-Coverage 分段": seg.get(c, "")} for c in codes]}
+               "台股個股": [{"code": c, "name": names.get(c, "") or bs[c].get("name", ""), "產業": bs[c].get("industry", ""),
+                            "業務簡介": bs[c]["biz"][:120], "供應鏈位置": bs[c].get("supply", "")[:90],
+                            "My-TW-Coverage 題材分段": seg.get(c, "")} for c in known]}
         h = hashlib.sha1(json.dumps({"v": ROLE_VERSION, "in": inp}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:12]
         old = cache.get(th["id"])
         fresh = old and old.get("hash") == h and (asof - dt.date.fromisoformat(old["date"])).days < AI_REFRESH_DAYS
         if fresh or not prompt or chain is None or not getattr(chain, "available", None) or calls >= max_calls:
             continue
+        if pause:
+            time.sleep(pause)          # Groq 每分鐘 8,000 tokens;個股業務簡介讓輸入變長,間隔避免整個 provider 被標成失敗
         calls += 1
         out, provider = chain.ask_json(prompt, json.dumps(inp, ensure_ascii=False))
-        roles = valid_roles(out, set(codes))
+        roles = valid_roles(out, set(known))
         if roles:
-            cache[th["id"]] = {"date": asof.isoformat(), "hash": h, "provider": provider, "roles": roles}
+            cache[th["id"]] = {"v": ROLE_VERSION, "date": asof.isoformat(), "hash": h, "provider": provider, "roles": roles}
+        if log is not None:
+            log.append([th["id"], provider, len(roles), len(known)])
+    if log is not None and chain is not None and getattr(chain, "log", None):
+        log.append(["_llm"] + list(chain.log)[-8:])
     os.makedirs(os.path.join(base, AUTO_DIR), exist_ok=True)
     _write(cp, cache)
     return {k: v for k, v in cache.items() if k in {t["id"] for t in themes}}
