@@ -127,6 +127,10 @@ class TestLifecycle(unittest.TestCase):
         self.assertEqual(lc["above20"], 0.0)
         self.assertEqual(A.lifecycle(auto, {"A": flat["A"]}, idx)["stage"], "資料不足")
         self.assertEqual(A.lifecycle(auto, down, idx, None, "2026-09-20")["stage"], "回檔中")   # 訊號沒減少、價格回落
+        idx_down = self.px([100.0] * 40 + [100 - 1.5 * i for i in range(1, 21)])               # 大盤近 20 日 −30%
+        lc = A.lifecycle(auto, down, idx_down, None, "2026-09-20")
+        self.assertEqual((lc["rel_label"], round(lc["rel20"], 1)), ("抗跌", 10.0))               # 題材 −20% vs 大盤 −30%
+        self.assertEqual(A.lifecycle(auto, down, idx, None, "2026-09-20")["rel_label"], "弱於大盤")
 
     def test_heat_history_saved(self):
         d = tempfile.mkdtemp()
