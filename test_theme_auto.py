@@ -180,6 +180,22 @@ class TestLifecycle(unittest.TestCase):
         finally:
             shutil.rmtree(d)
 
+    def test_exclude_extra(self):
+        d = tempfile.mkdtemp()
+        try:
+            mp = json.loads(json.dumps(MAP))
+            mp["themes"]["cpo"].update(exclude=["2"], extra=["9"])
+            for f, o in (("theme_auto_map.json", mp), ("daily_digest.json", {"date": "20261109", "D_surge_themes": [{"theme": "CPO", "ratio": 2}]}),
+                         ("margin_share_themes.json", {"themes": {"CPO": ["1", "2"]}}), ("intl_theme_baskets.json", {"themes": {}}),
+                         ("us_tw_resonance.json", {}), ("chip_structure_full.json", {"stocks": {}}), ("consensus.json", {})):
+                with open(os.path.join(d, f), "w", encoding="utf-8") as fh:
+                    json.dump(o, fh, ensure_ascii=False)
+            th, _ = A.select_themes(d, dt.date(2026, 11, 9))
+            cpo = [x for x in th if x["id"] == "cpo"][0]
+            self.assertEqual([list(x) for x in cpo["_auto_stocks"]], [["9", "對照表指定"], ["1", "My-TW-Coverage CPO"]])
+        finally:
+            shutil.rmtree(d)
+
     def test_heat_history_saved(self):
         d = tempfile.mkdtemp()
         try:

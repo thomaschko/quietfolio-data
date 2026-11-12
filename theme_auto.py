@@ -118,12 +118,18 @@ def select_themes(base=".", asof=None):
     for tid, d in tmap.items():
         # 2026-11-09:順序改為 題材籃子(人工挑的核心公司)→ My-TW-Coverage → 雷達點名。
         # My-TW-Coverage 的分類常偏下游(例如 HBM 分類多為伺服器組裝廠),放前面會把核心公司擠出 12 檔上限
-        stocks, seen = [], set()
+        # 2026-11-12:對照表可加 exclude(不列入本題材)與 extra(人工指定,排在題材籃子之後),例如定穎投控歸 PCB 不歸 ASIC
+        stocks, seen = [], {str(c) for c in d.get("exclude") or []}
         for name in d.get("baskets") or []:
             for c in (bas.get(name) or {}).get("tw") or []:
                 if c not in seen:
                     seen.add(c)
                     stocks.append((c, "題材籃子 " + name))
+        for c in d.get("extra") or []:
+            c = str(c)
+            if c not in seen:
+                seen.add(c)
+                stocks.append((c, "對照表指定"))
         for name in d.get("coverage") or []:
             for c in cov.get(name) or []:
                 if c not in seen:
@@ -143,7 +149,7 @@ def select_themes(base=".", asof=None):
         if chip_on:
             sig["tw_chip"] = ["同向 %d / 反向 %d" % (up, dn)]
         cands.append({"id": tid, "name": d["name"], "radar_terms": d.get("aliases") or [], "us_groups": d.get("us_groups") or [],
-                      "coverage": d.get("coverage") or [], "baskets": d.get("baskets") or [], "extra": [],
+                      "coverage": d.get("coverage") or [], "baskets": d.get("baskets") or [], "extra": [str(c) for c in d.get("extra") or []],
                       "_auto_stocks": stocks,
                       "auto": {"signals": {k: sig[k][:6] for k, _ in SIGNALS if k in sig}, "heat": sum(1 for k, _ in SIGNALS if k in sig),
                                "max_ratio": ratio.get(tid), "tw_up": up, "tw_down": dn, "n_stocks": len(stocks),
