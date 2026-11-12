@@ -188,6 +188,17 @@ def kill_for(code, export, cache, asof):
     return {"current": cur, "history": cc["history"]}
 
 
+def radar_verification(base="."):
+    """雷達驗證台帳(verification_ledger.py → daily_digest.json H_verification_summary)原樣帶出,頁面顯示用"""
+    dg = _read(os.path.join(base, "daily_digest.json"), {}) or {}
+    h = dg.get("H_verification_summary")
+    if not h:
+        return "not_built"
+    return {"by_type": h.get("by_detection_type"), "pending": h.get("pending_count"), "total": h.get("total_claims"),
+            "rule": "標記後 30 天,收盤價較標記日漲 ≥ +10% 算印證,否則算反駁(反駁不代表下跌);沒有和隨機挑股比較",
+            "asof": dg.get("date")}
+
+
 def lookup_meta(base="."):
     names, ind = {}, {}
     for c, s in ((_read(os.path.join(base, "chip_structure_full.json"), {}) or {}).get("stocks") or {}).items():
@@ -508,11 +519,22 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
         except Quota as e:
             log["stopped"] = str(e)
     ai_notes = A.draft_notes(themes, names, base, asof, chain=llm)
+    # 擁擠度:融資占比各題材(My-TW-Coverage 名稱)的歷史分位,取題材對應名稱中最高者
+    crowd = {}
+    msj = _read(os.path.join(base, "margin_share.json"), {}) or {}
+    for mk in ("twse", "tpex"):
+        for r in (((msj.get("markets") or {}).get(mk) or {}).get("theme") or []):
+            if r.get("share_pctile") is not None:
+                crowd[r["name"]] = max(crowd.get(r["name"], 0), r["share_pctile"])
+    st_all = _read(os.path.join(base, OUT_DIR, "auto_state.json"), {}) or {}
+    firsts = [v.get("first") for v in st_all.values() if v.get("first")]
+    tracking_start = min(firsts) if firsts else None
     kill_auto = _read(os.path.join(base, OUT_DIR, "kill_auto.json"), []) or []
     index = []
     for th in themes:
         ev = theme_evidence(th, base)
         stocks = []
+        px_by_code = {}
         for code, src in theme_stocks(th, base):
             cp = os.path.join(base, CACHE_DIR, "%s.json" % code)
             cache = _read(cp, {}) or {}
@@ -526,6 +548,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
             if st:
                 log["mops"][code] = st
             _write(cp, cache)
+            px_by_code[code] = [(dt.date.fromisoformat(d), v) for d, v in cache.get("px") or []]
             row = next((r for r in th.get("_sheet_stocks") or [] if str(r.get("code")).strip() == code), None)
             man = manual_for(code, row, manual_all)
             try:
@@ -546,6 +569,10 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
         order = {t: i for i, t in enumerate(T.TIERS)}
         stocks.sort(key=lambda s: (order.get(s["tier"]["tier"], 9), s["code"]))
         th_pub = {k: v for k, v in th.items() if not k.startswith("_")}
+        if th.get("auto"):
+            cp_ = [crowd[n] for n in th.get("coverage") or [] if n in crowd]
+            th_pub["lifecycle"] = A.lifecycle(th["auto"], px_by_code, idx_px or [], max(cp_) if cp_ else None, tracking_start)
+            th_pub["auto"] = {k: v for k, v in th["auto"].items() if k != "heat_hist"}
         if not th_pub.get("notes") and ai_notes.get(th["id"]):
             th_pub["ai_notes"] = dict(ai_notes[th["id"]], label="AI 草稿,需人工核對(只用本頁資料產生)")
         payload = {"generated": now.isoformat(timespec="seconds"), "asof": asof.isoformat(), "theme": th_pub, "evidence": ev,
@@ -579,13 +606,16 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
                       "kill": {"triggered": trig, "pending": pend},
                       "notes": (th.get("notes") or {}),
                       "ai_notes": bool(th_pub.get("ai_notes")),
-                      "auto": th.get("auto"),
+                      "auto": th_pub.get("auto"),
+                      "lifecycle": th_pub.get("lifecycle"),
                       "manual_notes": "not_built" if not manual_all else "ok"})
     log["finmind_used"] = fm.used
     doc = {"generated": now.isoformat(timespec="seconds"), "asof": asof.isoformat(), "themes": index,
            "sheet": {"generated": manual_all.get("generated"), "pending": (manual_all.get("pending") or [])[:30],
                      "errors": (manual_all.get("errors") or [])[:20]} if manual_all else "not_built",
            "drawdown_active": bool(dd.get("active")), "log": log, "auto_meta": auto_meta,
+           "lifecycle_cfg": A.LIFECYCLE_CFG, "stages": A.STAGES, "tracking_start": tracking_start,
+           "radar_verification": radar_verification(base),
            "notes": ["研究優先順序用途,不是買賣訊號;沒有分數、不依分數排序"]}
     _write(os.path.join(base, OUT_DIR, "index.json"), doc)
     print(json.dumps({k: v for k, v in log.items()}, ensure_ascii=False))
