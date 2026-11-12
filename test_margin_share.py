@@ -68,6 +68,8 @@ class TestParse(unittest.TestCase):
     def test_theme_md(self):
         t = "## 上游\n- **2330 台積電** (x)\n- **3661 世芯-KY** (y)\n- **2330 台積電** again"
         self.assertEqual(M.parse_theme_md(t), ["2330", "3661"])
+        t2 = "**相關主題:** x\n## 上游 (1)\n- **7711 永擎** (a)\n## 中游 (2)\n- **6239 力成** (b)\n## 相關公司 (1)\n- **2382 廣達** (c)\n## 其他\n- **9999 某** (d)"
+        self.assertEqual(M.parse_theme_segments(t2), {"7711": "上游", "6239": "中游", "2382": "相關公司"})
 
 
 class TestIngest(unittest.TestCase):

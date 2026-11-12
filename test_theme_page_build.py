@@ -203,6 +203,14 @@ class TestBuild(unittest.TestCase):
         self.assertEqual(out["stock_lots_hi_n"], 1)                 # A 在自己歷史高檔、B 在低檔
         self.assertEqual(out["stock_lots_pctile_median"], round((100 - 0.4 + 0.4) / 2, 1))
 
+    def test_chain_pos(self):
+        ai = {"date": "2026-11-12", "roles": {"2330": {"pos": "中游", "link": "晶圓代工", "what": "代工", "core": True}}}
+        self.assertEqual(B.chain_pos("2330", None, ai, {"2330": "CoWoS:上游"}),
+                         {"pos": "中游", "link": "晶圓代工", "what": "代工", "core": True, "src": "AI 草稿", "date": "2026-11-12", "cov": "CoWoS:上游"})
+        self.assertEqual(B.chain_pos("2330", {"segment": "下游 伺服器"}, ai, {})["src"], "手動")       # Sheet 手動優先
+        self.assertEqual(B.chain_pos("2330", {"segment": "下游 伺服器"}, ai, {})["pos"], "下游")
+        self.assertEqual(B.chain_pos("1111", None, ai, {}), {})
+
     def test_herd(self):
         self.w("chip_structure_full.json", {"tdcc_asof": "2026-11-06", "stocks": {
             "A": {"d1": [-0.5, 0.8, 100], "w": [["11-06", 50, 40, 1100]]},

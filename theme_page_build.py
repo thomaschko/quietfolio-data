@@ -129,6 +129,20 @@ def theme_stocks(theme, base="."):
     return out
 
 
+def chain_pos(code, sheet_row, ai, cov):
+    """→ {pos, link, what, core, src, cov} 或 {}。Sheet theme_stocks.segment(手動)優先,其次 AI 草稿"""
+    out = {}
+    seg = str((sheet_row or {}).get("segment") or "").strip()
+    if seg:
+        pos = next((p for p in ("上游", "中游", "下游", "周邊") if p in seg), "手動")
+        out = {"pos": pos, "link": seg[:20], "src": "手動"}
+    elif ai and code in (ai.get("roles") or {}):
+        out = dict(ai["roles"][code], src="AI 草稿", date=ai.get("date"))
+    if (cov or {}).get(code):
+        out["cov"] = cov[code]
+    return out
+
+
 THEME_TEXT_FIELDS = ("who_pays", "bottleneck", "revenue_path", "chain", "segment", "supply_note", "source", "edited")
 
 
@@ -650,6 +664,18 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
         except Quota as e:
             log["stopped"] = str(e)
     ai_notes = A.draft_notes(themes, names, base, asof, chain=llm)
+    # 2026-11-12:個股在題材鏈條中的位置 —— Sheet 手動 > AI 草稿;My-TW-Coverage 分段只當參考(常與本題材定義不同)
+    cov_all = (_read(os.path.join(base, "margin_share_themes.json"), {}) or {}).get("segments") or {}
+    cov_seg = {}
+    for th in themes:
+        m = {}
+        for name in th.get("coverage") or []:
+            for c, sg in (cov_all.get(name) or {}).items():
+                m.setdefault(c, "%s:%s" % (name, sg))
+        cov_seg[th["id"]] = m
+    notes_for = {th["id"]: th.get("notes") or ai_notes.get(th["id"]) or {} for th in themes}
+    ai_roles = A.draft_roles([dict(th, _auto_stocks=theme_stocks(th, base)) for th in themes], names, notes_for,
+                             {k: {c: v.split(":")[-1] for c, v in m.items()} for k, m in cov_seg.items()}, base, asof, chain=llm)
     # 2026-11-12:擁擠度改用題材自己的個股(趨勢題材頁列出的那幾檔)計算,不再借 My-TW-Coverage 分類
     crowd = theme_margin_crowd({th["id"]: [c for c, _ in theme_stocks(th, base)] for th in themes}, base)
     fut = theme_futures_crowd({th["id"]: [c for c, _ in theme_stocks(th, base)] for th in themes}, base)
@@ -688,6 +714,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
                 s["sheet"] = {k: row.get(k) for k in ("segment", "added", "status") if row.get(k)}
             if man.get("other"):
                 s["manual_evidence"] = man["other"][:6]
+            s["chain_pos"] = chain_pos(code, row, ai_roles.get(th["id"]), cov_seg.get(th["id"]))
             kill_auto = A.auto_kill({code: s["tier"]["mech_tier"]}, base, asof)
             k = kill_for(code, dict(manual_all, kill=kill_auto + list(manual_all.get("kill") or [])), cache, asof)
             if k:
@@ -703,6 +730,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
             th_pub["lifecycle"]["margin"] = mc
             th_pub["lifecycle"]["herd"] = theme_herd(list(px_by_code), base)
             th_pub["lifecycle"]["futures"] = fut if isinstance(fut, str) else (fut.get(th["id"]) or {"stock_n": 0})
+            th_pub["exit"] = A.theme_exit(th["id"], th["auto"], th_pub["lifecycle"], base, asof)
             th_pub["auto"] = {k: v for k, v in th["auto"].items() if k != "heat_hist"}
         if not th_pub.get("notes") and ai_notes.get(th["id"]):
             th_pub["ai_notes"] = dict(ai_notes[th["id"]], label="AI 草稿,需人工核對(只用本頁資料產生)")
@@ -739,6 +767,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
                       "ai_notes": bool(th_pub.get("ai_notes")),
                       "auto": th_pub.get("auto"),
                       "lifecycle": th_pub.get("lifecycle"),
+                      "exit": th_pub.get("exit"),
                       "manual_notes": "not_built" if not manual_all else "ok"})
     log["finmind_used"] = fm.used
     doc = {"generated": now.isoformat(timespec="seconds"), "asof": asof.isoformat(), "themes": index,
