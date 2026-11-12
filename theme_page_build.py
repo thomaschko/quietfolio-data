@@ -188,6 +188,104 @@ def kill_for(code, export, cache, asof):
     return {"current": cur, "history": cc["history"]}
 
 
+def theme_margin_crowd(codes_by_theme, base=".", min_days=120):
+    """題材自己的個股算融資擁擠度(margin_hist/*.csv.gz:每日每檔融資張數與收盤價)。
+    占比 = Σ 題材個股(融資張數 × 1000 × 收盤價)÷ 上市 + 上櫃全部股票同日總和;張數 = Σ 題材個股融資張數。
+    另算等權指標:每檔融資張數在自己歷史的分位,題材取中位數(擁擠判斷用這個,避免台積電這類大型股主導、也不受股價影響)。
+    分位 = 今天在自己過去可得歷史(不含今天)中的百分位;歷史 < min_days 天不給。
+    → {theme_id: {share_pct, share_pctile, lots, lots_pctile, n_days, asof}}"""
+    import bisect
+    import glob
+    import gzip
+    files = sorted(glob.glob(os.path.join(base, "margin_hist", "*.csv.gz")))
+    if not files:
+        return {}
+    want = {}
+    for tid, codes in codes_by_theme.items():
+        for c in codes:
+            want.setdefault(c, []).append(tid)
+    total, ev, lots, per = {}, {}, {}, {}
+    for fn in files:
+        with gzip.open(fn, "rt", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                try:
+                    l, p = float(r["margin_lots"] or 0), float(r["close"] or 0)
+                except ValueError:
+                    continue
+                if not p:
+                    continue
+                d = r["date"]
+                v = l * 1000 * p
+                total[d] = total.get(d, 0) + v
+                if r["code"] in want:
+                    per.setdefault(r["code"], {})[d] = l
+                for tid in want.get(r["code"], ()):
+                    ev.setdefault(tid, {})
+                    ev[tid][d] = ev[tid].get(d, 0) + v
+                    lots.setdefault(tid, {})
+                    lots[tid][d] = lots[tid].get(d, 0) + l
+
+    def pct(vals, x):
+        vals = sorted(vals)
+        lo, hi = bisect.bisect_left(vals, x), bisect.bisect_right(vals, x)
+        return round((lo + hi) / 2 / len(vals) * 100, 1)
+    out = {}
+    for tid in codes_by_theme:
+        days = sorted(d for d in (ev.get(tid) or {}) if total.get(d))
+        if not days:
+            continue
+        share = [ev[tid][d] / total[d] for d in days]
+        lt = [lots[tid][d] for d in days]
+        o = {"asof": days[-1], "n_days": len(days), "share_pct": round(share[-1] * 100, 3), "lots": int(lt[-1])}
+        if len(days) - 1 >= min_days:
+            o["share_pctile"] = pct(share[:-1], share[-1])
+            o["lots_pctile"] = pct(lt[:-1], lt[-1])
+        # 等權:每檔先跟自己過去的融資張數比(不受股價影響、不被大型股主導),題材取中位數
+        ps = []
+        for c in codes_by_theme[tid]:
+            h = per.get(c) or {}
+            ds = sorted(h)
+            if len(ds) - 1 >= min_days and ds[-1] == days[-1] and max(h[x] for x in ds[:-1]) > 0:
+                ps.append(pct([h[x] for x in ds[:-1]], h[ds[-1]]))
+        if ps:
+            ps.sort()
+            o["stock_lots_pctile_median"] = ps[len(ps) // 2] if len(ps) % 2 else round((ps[len(ps) // 2 - 1] + ps[len(ps) // 2]) / 2, 1)
+            o["stock_lots_hi_n"] = sum(1 for x in ps if x >= 90)
+            o["stock_n"] = len(ps)
+        out[tid] = o
+    return out
+
+
+def theme_herd(codes, base="."):
+    """散戶羊群(描述):集保週資料(chip_structure_full.json)與共識頁(consensus.json)。
+    → 散戶比重週變化平均、股東人數週變化、「散戶比重增 + 大戶比重減」檔數、「融資增 + 法人賣」檔數"""
+    chip = _read(os.path.join(base, "chip_structure_full.json"), {}) or {}
+    st = chip.get("stocks") or {}
+    cons = _read(os.path.join(base, "consensus.json"), {}) or {}
+    mu = {str(r[0]) for r in (((cons.get("lev_inst") or {}).get("lists") or {}).get("margin_up_inst_sell") or [])}
+    n = herd = 0
+    retail_pp, holders_now, holders_chg = [], 0, 0
+    for c in codes:
+        s = st.get(c) or {}
+        d1, w = s.get("d1"), s.get("w") or []
+        if not d1 or len(d1) < 3 or d1[0] is None or d1[1] is None:
+            continue
+        n += 1
+        retail_pp.append(d1[1])
+        if d1[1] > 0 and d1[0] < 0:
+            herd += 1
+        if w and w[-1][3] and d1[2] is not None:
+            holders_now += w[-1][3]
+            holders_chg += d1[2]
+    if not n:
+        return {"n": 0}
+    base_h = holders_now - holders_chg
+    return {"n": n, "asof": chip.get("tdcc_asof"), "retail_pp_avg": round(sum(retail_pp) / n, 3),
+            "herd_n": herd, "holders_chg_pct": round(holders_chg / base_h * 100, 2) if base_h else None,
+            "margin_up_inst_sell_n": sum(1 for c in codes if c in mu),
+            "consensus_window": (cons.get("window") or {}).get("t")}
+
+
 def radar_verification(base="."):
     """雷達驗證台帳(verification_ledger.py → daily_digest.json H_verification_summary)原樣帶出,頁面顯示用"""
     dg = _read(os.path.join(base, "daily_digest.json"), {}) or {}
@@ -519,13 +617,8 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
         except Quota as e:
             log["stopped"] = str(e)
     ai_notes = A.draft_notes(themes, names, base, asof, chain=llm)
-    # 擁擠度:融資占比各題材(My-TW-Coverage 名稱)的歷史分位,取題材對應名稱中最高者
-    crowd = {}
-    msj = _read(os.path.join(base, "margin_share.json"), {}) or {}
-    for mk in ("twse", "tpex"):
-        for r in (((msj.get("markets") or {}).get(mk) or {}).get("theme") or []):
-            if r.get("share_pctile") is not None:
-                crowd[r["name"]] = max(crowd.get(r["name"], 0), r["share_pctile"])
+    # 2026-11-12:擁擠度改用題材自己的個股(趨勢題材頁列出的那幾檔)計算,不再借 My-TW-Coverage 分類
+    crowd = theme_margin_crowd({th["id"]: [c for c, _ in theme_stocks(th, base)] for th in themes}, base)
     st_all = _read(os.path.join(base, OUT_DIR, "auto_state.json"), {}) or {}
     firsts = [v.get("first") for v in st_all.values() if v.get("first")]
     tracking_start = min(firsts) if firsts else None
@@ -570,8 +663,11 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
         stocks.sort(key=lambda s: (order.get(s["tier"]["tier"], 9), s["code"]))
         th_pub = {k: v for k, v in th.items() if not k.startswith("_")}
         if th.get("auto"):
-            cp_ = [crowd[n] for n in th.get("coverage") or [] if n in crowd]
-            th_pub["lifecycle"] = A.lifecycle(th["auto"], px_by_code, idx_px or [], max(cp_) if cp_ else None, tracking_start)
+            mc = crowd.get(th["id"]) or {}
+            # 擁擠判斷用「個股融資張數分位的中位數」(等權、不含股價);加權占比分位只顯示
+            th_pub["lifecycle"] = A.lifecycle(th["auto"], px_by_code, idx_px or [], mc.get("stock_lots_pctile_median"), tracking_start)
+            th_pub["lifecycle"]["margin"] = mc
+            th_pub["lifecycle"]["herd"] = theme_herd(list(px_by_code), base)
             th_pub["auto"] = {k: v for k, v in th["auto"].items() if k != "heat_hist"}
         if not th_pub.get("notes") and ai_notes.get(th["id"]):
             th_pub["ai_notes"] = dict(ai_notes[th["id"]], label="AI 草稿,需人工核對(只用本頁資料產生)")

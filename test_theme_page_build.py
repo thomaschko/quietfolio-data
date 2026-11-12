@@ -186,6 +186,32 @@ class TestBuild(unittest.TestCase):
         self.assertIn("newt", idx)
         self.assertEqual(doc["sheet"]["pending"][0][2], "缺 門檻")
 
+    def test_margin_crowd_own_stocks(self):
+        import gzip
+        os.makedirs(os.path.join(self.d, "margin_hist"))
+        rows = ["date,market,code,margin_lots,close"]
+        for i in range(130):
+            day = (dt.date(2026, 1, 1) + dt.timedelta(days=i)).isoformat()
+            big = 1000 if i < 129 else 5000                       # 最後一天 A 融資暴增
+            rows += ["%s,twse,A,%d,10" % (day, big), "%s,twse,B,%d,10" % (day, 1000 - i), "%s,twse,Z,%d,100" % (day, 10000)]
+        with gzip.open(os.path.join(self.d, "margin_hist", "2026.csv.gz"), "wt", encoding="utf-8") as f:
+            f.write("\n".join(rows) + "\n")
+        out = B.theme_margin_crowd({"t": ["A", "B"]}, self.d)["t"]
+        self.assertEqual(out["n_days"], 130)
+        self.assertGreater(out["share_pctile"], 90)
+        self.assertEqual(out["stock_n"], 2)
+        self.assertEqual(out["stock_lots_hi_n"], 1)                 # A 在自己歷史高檔、B 在低檔
+        self.assertEqual(out["stock_lots_pctile_median"], round((100 - 0.4 + 0.4) / 2, 1))
+
+    def test_herd(self):
+        self.w("chip_structure_full.json", {"tdcc_asof": "2026-11-06", "stocks": {
+            "A": {"d1": [-0.5, 0.8, 100], "w": [["11-06", 50, 40, 1100]]},
+            "B": {"d1": [0.3, -0.2, -10], "w": [["11-06", 50, 40, 990]]}}})
+        self.w("consensus.json", {"lev_inst": {"lists": {"margin_up_inst_sell": [["A"]]}}, "window": {"t": "2026-11-11"}})
+        h = B.theme_herd(["A", "B", "C"], self.d)
+        self.assertEqual((h["n"], h["herd_n"], h["margin_up_inst_sell_n"]), (2, 1, 1))
+        self.assertEqual(h["holders_chg_pct"], round(90 / 2000 * 100, 2))
+
     def test_semiannual_note(self):
         cache = {"fin": [[2025, 2, 1, 1, 1, 1, "finmind"], [2025, 4, 1, 1, 1, 1, "finmind"]]}
         s = B.build_stock("9999", "x", cache, NOW.date(), None, True, {"active": False}, [])
