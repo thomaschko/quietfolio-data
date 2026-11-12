@@ -351,6 +351,7 @@ LIFECYCLE_CFG = {
     "cool_above20": 0.40,           # 且站上 20 日均線的個股 < 40% → 降溫
     "pullback_above20": 0.40,       # 訊號沒有減少,但站上 20 日均線的個股 < 40% 且近 20 日等權報酬 < 0 → 回檔中
     "min_stocks": 3,                # 有價格資料的個股 < 3 檔 → 不判斷
+    "rel_pp": 3.0,                  # 近 20 日題材等權報酬 − 大盤 ≥ +3 點 → 抗跌 / 強於大盤;≤ −3 點 → 弱於大盤(2026-11-12)
 }
 STAGES = {"萌芽": "雷達剛出現不久、題材股還沒明顯上漲",
           "發酵": "訊號持續出現,題材股開始反應",
@@ -402,6 +403,13 @@ def lifecycle(auto, px_by_code, idx_px, crowd_pctile=None, tracking_start=None, 
         if fd:
             b = _close_on_or_after(ip, fd)
             out["idx_since_first"] = ip[-1][1] / b - 1 if b else None
+    # 相對大盤強弱(百分點):大跌時用來分辨哪些題材比較抗跌
+    if out.get("idx_ret20") is not None:
+        out["rel20"] = round((out["ret20"] - out["idx_ret20"]) * 100, 1)   # 先四捨五入再比門檻,畫面上的數字與標籤一致
+        out["rel_label"] = ("抗跌" if out["idx_ret20"] < 0 else "強於大盤") if out["rel20"] >= cfg["rel_pp"] else \
+            ("弱於大盤" if out["rel20"] <= -cfg["rel_pp"] else "與大盤同步")
+    if out.get("idx_since_first") is not None and out.get("ret_since_first") is not None:
+        out["rel_since_first"] = (out["ret_since_first"] - out["idx_since_first"]) * 100
     hh = [h for _, h in auto.get("heat_hist") or []]
     out["heat_now"] = auto.get("heat")
     out["heat_prev5"] = avg(hh[-6:-1]) if len(hh) >= 2 else None
@@ -418,7 +426,8 @@ def lifecycle(auto, px_by_code, idx_px, crowd_pctile=None, tracking_start=None, 
     pulling = out["above20"] < cfg["pullback_above20"] and out["ret20"] < 0
     out["stage"] = "擁擠" if crowded else "降溫" if cooling else "萌芽" if early else "回檔中" if pulling else "發酵"
     out["why"] = STAGES[out["stage"]]
-    for k in ("ret_since_first", "ret20", "above20", "near_high", "avg_gap", "idx_ret20", "idx_since_first", "heat_prev5", "heat_trend"):
+    for k in ("ret_since_first", "ret20", "above20", "near_high", "avg_gap", "idx_ret20", "idx_since_first", "heat_prev5", "heat_trend",
+              "rel20", "rel_since_first"):
         if isinstance(out.get(k), float):
             out[k] = round(out[k], 4)
     return out
