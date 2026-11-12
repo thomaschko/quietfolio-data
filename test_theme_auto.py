@@ -105,5 +105,42 @@ class TestAuto(unittest.TestCase):
         self.assertEqual(len(rows2), 4)
 
 
+class TestLifecycle(unittest.TestCase):
+    def px(self, closes, start=dt.date(2026, 8, 1)):
+        return [(start + dt.timedelta(days=i), c) for i, c in enumerate(closes)]
+
+    def test_stages(self):
+        flat = {c: self.px([100.0] * 60) for c in "ABC"}
+        idx = self.px([100.0] * 60)
+        auto = {"first_seen": "2026-09-20", "days_on": 3, "heat": 2, "heat_hist": [["d1", 2], ["d2", 2]]}
+        lc = A.lifecycle(auto, flat, idx, None, tracking_start="2026-09-01")
+        self.assertEqual(lc["stage"], "萌芽")
+        lc = A.lifecycle(auto, flat, idx, None, tracking_start="2026-09-20")     # 追蹤開始當天就有 → 不判萌芽
+        self.assertEqual((lc["stage"], lc["since_tracking_start"]), ("發酵", True))
+        self.assertEqual(A.lifecycle(auto, flat, idx, 95, "2026-09-01")["stage"], "擁擠")
+        up = {c: self.px([100.0] * 40 + [100 + 2.0 * i for i in range(1, 21)]) for c in "ABC"}   # 近 20 日 +40%,貼近高點
+        self.assertEqual(A.lifecycle(auto, up, idx, None, "2026-09-01")["stage"], "擁擠")
+        down = {c: self.px([100.0] * 40 + [100 - 1.0 * i for i in range(1, 21)]) for c in "ABC"}
+        cool = dict(auto, heat=1, heat_hist=[["d%d" % i, 3] for i in range(5)] + [["d9", 1]])
+        lc = A.lifecycle(cool, down, idx, None, "2026-09-01")
+        self.assertEqual((lc["stage"], lc["heat_trend"]), ("降溫", -2.0))
+        self.assertEqual(lc["above20"], 0.0)
+        self.assertEqual(A.lifecycle(auto, {"A": flat["A"]}, idx)["stage"], "資料不足")
+        self.assertEqual(A.lifecycle(auto, down, idx, None, "2026-09-20")["stage"], "回檔中")   # 訊號沒減少、價格回落
+
+    def test_heat_history_saved(self):
+        d = tempfile.mkdtemp()
+        try:
+            for f, o in (("theme_auto_map.json", MAP), ("daily_digest.json", {"date": "20261109", "D_surge_themes": [{"theme": "CPO", "ratio": 2}]}),
+                         ("margin_share_themes.json", {"themes": {"CPO": ["1", "2"]}}), ("intl_theme_baskets.json", {"themes": {}}),
+                         ("us_tw_resonance.json", {}), ("chip_structure_full.json", {"stocks": {}}), ("consensus.json", {})):
+                with open(os.path.join(d, f), "w", encoding="utf-8") as fh:
+                    json.dump(o, fh, ensure_ascii=False)
+            th, _ = A.select_themes(d, dt.date(2026, 11, 9))
+            self.assertEqual(th[0]["auto"]["heat_hist"], [["2026-11-09", 1]] if isinstance(th[0]["auto"]["heat_hist"][0], list) else [("2026-11-09", 1)])
+        finally:
+            shutil.rmtree(d)
+
+
 if __name__ == "__main__":
     unittest.main()

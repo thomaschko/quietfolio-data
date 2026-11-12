@@ -162,6 +162,10 @@ def select_themes(base=".", asof=None):
         if on and day not in s["days"]:
             s["days"] = (s["days"] + [day])[-90:]
             s["first"] = s["first"] or day
+        hh = s.setdefault("heat", {})                       # 每天的訊號來源數(生命週期的熱度趨勢用)
+        hh[day] = c["auto"]["heat"]
+        for k in sorted(hh)[:-60]:
+            del hh[k]
     for c in chosen:
         days = sorted(st.get(c["id"], {}).get("days") or [])
         streak, d0 = 0, dt.date.fromisoformat(day)
@@ -171,6 +175,8 @@ def select_themes(base=".", asof=None):
             d0 -= dt.timedelta(days=1)
         c["auto"]["streak_days"] = streak
         c["auto"]["first_seen"] = st.get(c["id"], {}).get("first")
+        c["auto"]["heat_hist"] = sorted((st.get(c["id"], {}).get("heat") or {}).items())[-20:]
+        c["auto"]["days_on"] = len(st.get(c["id"], {}).get("days") or [])
         c["auto"]["selected"] = "固定" if c["id"] in fixed else "自動"
     os.makedirs(os.path.join(base, AUTO_DIR), exist_ok=True)
     _write(sp, st)
@@ -331,3 +337,88 @@ def auto_kill(tiers_by_code, base=".", asof=None):
     os.makedirs(os.path.join(base, AUTO_DIR), exist_ok=True)
     _write(p, rows)
     return rows
+
+
+# ------------------------------------------------------------------ 題材生命週期(描述用,不是買賣訊號)
+LIFECYCLE_CFG = {
+    "note": "門檻為未經驗證的描述用預設值;登記後不得看結果調整。階段只描述題材目前的狀態,不是買賣訊號",
+    "early_max_days": 10,           # 雷達出現 ≤ 10 天
+    "early_max_ret": 0.10,          # 且自第一次出現以來等權報酬 < +10%
+    "crowd_pctile": 90,             # 融資占比歷史分位 ≥ 90 → 擁擠
+    "crowd_near_high": 0.60,        # 或 ≥ 60% 個股距一年高點 < 10% 且近 20 日等權報酬 ≥ +20%
+    "crowd_ret20": 0.20,
+    "cool_heat_drop": 1.0,          # 訊號來源數比前 5 天平均少 ≥ 1
+    "cool_above20": 0.40,           # 且站上 20 日均線的個股 < 40% → 降溫
+    "pullback_above20": 0.40,       # 訊號沒有減少,但站上 20 日均線的個股 < 40% 且近 20 日等權報酬 < 0 → 回檔中
+    "min_stocks": 3,                # 有價格資料的個股 < 3 檔 → 不判斷
+}
+STAGES = {"萌芽": "雷達剛出現不久、題材股還沒明顯上漲",
+          "發酵": "訊號持續出現,題材股開始反應",
+          "擁擠": "融資堆積在歷史高檔,或多數題材股貼近一年高點且近期漲幅大",
+          "降溫": "訊號來源減少,且多數題材股跌破 20 日均線",
+          "回檔中": "訊號仍在,但多數題材股跌破 20 日均線、近 20 日下跌",
+          "資料不足": "有價格資料的個股太少,不判斷"}
+
+
+def _close_on_or_after(rows, d):
+    for dd, c in rows:
+        if dd >= d and c:
+            return c
+    return None
+
+
+def lifecycle(auto, px_by_code, idx_px, crowd_pctile=None, tracking_start=None, cfg=LIFECYCLE_CFG):
+    """auto:select_themes 的 auto 欄位;px_by_code:{代號: [(date, close)]}(依日期);idx_px:[(date, close)]
+    → 各項描述指標 + 階段(依 LIFECYCLE_CFG 固定門檻)"""
+    first = auto.get("first_seen")
+    rows = {c: [(d, v) for d, v in px if v] for c, px in px_by_code.items()}
+    rows = {c: r for c, r in rows.items() if len(r) >= 21}
+    out = {"first_seen": first, "days_on": auto.get("days_on"), "streak": auto.get("streak_days"),
+           "n_px": len(rows), "crowd_pctile": crowd_pctile}
+    if len(rows) < cfg["min_stocks"]:
+        out["stage"] = "資料不足"
+        return out
+    fd = dt.date.fromisoformat(first) if first else None
+    r_first, r20, above, near, gaps = [], [], [], [], []
+    for c, r in rows.items():
+        last = r[-1][1]
+        if fd:
+            b = _close_on_or_after(r, fd)
+            if b:
+                r_first.append(last / b - 1)
+        r20.append(last / r[-21][1] - 1)
+        ma20 = sum(v for _, v in r[-20:]) / 20
+        above.append(last > ma20)
+        hi = max(v for _, v in r[-250:])
+        g = 1 - last / hi
+        gaps.append(g)
+        near.append(g < 0.10)
+    avg = lambda xs: sum(xs) / len(xs) if xs else None
+    out.update(ret_since_first=avg(r_first), ret20=avg(r20), above20=avg([1.0 if x else 0.0 for x in above]),
+               near_high=avg([1.0 if x else 0.0 for x in near]), avg_gap=avg(gaps))
+    ip = [(d, v) for d, v in idx_px if v]
+    if len(ip) >= 21:
+        out["idx_ret20"] = ip[-1][1] / ip[-21][1] - 1
+        if fd:
+            b = _close_on_or_after(ip, fd)
+            out["idx_since_first"] = ip[-1][1] / b - 1 if b else None
+    hh = [h for _, h in auto.get("heat_hist") or []]
+    out["heat_now"] = auto.get("heat")
+    out["heat_prev5"] = avg(hh[-6:-1]) if len(hh) >= 2 else None
+    out["heat_trend"] = None if out["heat_prev5"] is None else out["heat_now"] - out["heat_prev5"]
+    # 階段(依序判斷)
+    crowded = (crowd_pctile is not None and crowd_pctile >= cfg["crowd_pctile"]) or \
+              (out["near_high"] >= cfg["crowd_near_high"] and out["ret20"] >= cfg["crowd_ret20"])
+    cooling = out["heat_trend"] is not None and out["heat_trend"] <= -cfg["cool_heat_drop"] and out["above20"] < cfg["cool_above20"]
+    # 追蹤開始那天就已經出現的題材,「第一次出現」不是題材真正的起點 → 不判萌芽
+    new_theme = bool(first and tracking_start and first > tracking_start)
+    out["since_tracking_start"] = not new_theme
+    early = new_theme and (out["days_on"] or 0) <= cfg["early_max_days"] and \
+        (out["ret_since_first"] is None or out["ret_since_first"] < cfg["early_max_ret"])
+    pulling = out["above20"] < cfg["pullback_above20"] and out["ret20"] < 0
+    out["stage"] = "擁擠" if crowded else "降溫" if cooling else "萌芽" if early else "回檔中" if pulling else "發酵"
+    out["why"] = STAGES[out["stage"]]
+    for k in ("ret_since_first", "ret20", "above20", "near_high", "avg_gap", "idx_ret20", "idx_since_first", "heat_prev5", "heat_trend"):
+        if isinstance(out.get(k), float):
+            out[k] = round(out[k], 4)
+    return out
