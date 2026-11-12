@@ -117,20 +117,41 @@ def parse_theme_md(text):
     return sorted({m.group(1) for m in re.finditer(r"\*\*(\d{4,6}[A-Z]?)\s+[^\*]+?\*\*", text)})
 
 
+COV_SEGMENTS = ("上游", "中游", "下游", "相關公司")
+
+
+def parse_theme_segments(text):
+    """→ {代號: 上游 / 中游 / 下游 / 相關公司}(My-TW-Coverage 主題檔的「## 上游 (n)」等段落;2026-11-12)"""
+    out, cur = {}, None
+    for line in text.splitlines():
+        if line.startswith("## "):
+            cur = next((x for x in COV_SEGMENTS if line[3:].strip().startswith(x)), None)
+            continue
+        m = re.search(r"\*\*(\d{4,6}[A-Z]?)\s+[^\*]+?\*\*", line)
+        if m and cur:
+            out.setdefault(m.group(1), cur)
+    return out
+
+
 def load_themes(themes_dir, path=THEME_CACHE, sha=None):
     """themes_dir = My-TW-Coverage 的 themes/(git clone);沒有 → 沿用快取"""
     files = sorted(glob.glob(os.path.join(themes_dir, "*.md"))) if themes_dir else []
-    themes = {}
+    themes, segments = {}, {}
     for f in files:
         if os.path.basename(f).lower() == "readme.md":
             continue
         with open(f, encoding="utf-8", errors="replace") as fh:
-            codes = parse_theme_md(fh.read())
+            text = fh.read()
+        codes = parse_theme_md(text)
         if codes:
-            themes[os.path.splitext(os.path.basename(f))[0]] = codes
+            name = os.path.splitext(os.path.basename(f))[0]
+            themes[name] = codes
+            seg = parse_theme_segments(text)
+            if seg:
+                segments[name] = seg
     if len(themes) >= 5:
         out = {"asof": now().date().isoformat(), "source": "github.com/Timeverse/My-TW-Coverage themes/*.md(MIT)",
-               "commit": sha, "themes": themes}
+               "commit": sha, "themes": themes, "segments": segments}
         mb._write_json(path, out)
         return out, "refreshed"
     cache = mb._read_json(path, None)

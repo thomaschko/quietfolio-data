@@ -22,6 +22,7 @@ import datetime as dt
 import hashlib
 import json
 import os
+import re
 
 FORBIDDEN = ("買進", "賣出", "推薦", "目標價", "主力", "必漲", "加碼", "減碼")
 SIGNALS = [("preferment", "發酵前"), ("surge", "關鍵字暴增"), ("dual", "雙邊確認"), ("new", "新題材"),
@@ -317,6 +318,72 @@ def draft_notes(themes, names, base=".", asof=None, chain=None, max_calls=15):
     return {k: v for k, v in cache.items() if k in {t["id"] for t in themes}}
 
 
+# ------------------------------------------------------------------ 個股在題材鏈條中的位置(AI 草稿,2026-11-12)
+ROLE_VERSION = "r1"
+ROLE_POS = ("上游", "中游", "下游", "周邊", "未判斷")
+
+
+def valid_roles(o, codes):
+    """→ {code: {pos, link, what, core}};只收輸入裡的代號、固定的 pos,含禁用字的整筆丟掉"""
+    rows = (o or {}).get("stocks") if isinstance(o, dict) else None
+    out = {}
+    for r in rows if isinstance(rows, list) else []:
+        if not isinstance(r, dict):
+            continue
+        c = str(r.get("code") or "").strip()
+        pos = str(r.get("pos") or "").strip()
+        if c not in codes or pos not in ROLE_POS:
+            continue
+        x = {"pos": pos, "link": str(r.get("link") or "").strip()[:20], "what": str(r.get("what") or "").strip()[:24],
+             "core": bool(r.get("core")) and pos != "未判斷"}
+        if any(w in x["link"] + x["what"] for w in FORBIDDEN) or re.search(r"\d+(\.\d+)?\s*%", x["what"]):
+            continue
+        out[c] = x
+    return out
+
+
+def draft_roles(themes, names, notes, cov_seg=None, base=".", asof=None, chain=None, max_calls=15):
+    """themes:select_themes 的題材(含 _auto_stocks);notes:{tid: 三句話(含 chain / bottleneck)};
+    cov_seg:{tid: {code: My-TW-Coverage 分段}} → {tid: {"date", "provider", "roles": {code: {...}}}};快取 theme_page/ai_roles.json"""
+    asof = asof or dt.date.today()
+    cp = os.path.join(base, AUTO_DIR, "ai_roles.json")
+    cache = _read(cp, {}) or {}
+    try:
+        with open(os.path.join(base, "prompts", "theme_stock_roles.md"), encoding="utf-8") as f:
+            prompt = f.read()
+    except OSError:
+        prompt = None
+    if chain is None:
+        try:
+            import llm_client
+            chain = llm_client.LLMChain()
+        except Exception:
+            chain = None
+    calls = 0
+    for th in themes:
+        codes = [c for c, _ in th.get("_auto_stocks") or []]
+        if not codes:
+            continue
+        n = (notes or {}).get(th["id"]) or {}
+        seg = (cov_seg or {}).get(th["id"]) or {}
+        inp = {"題材": th["name"], "題材關鍵詞": (th.get("radar_terms") or [])[:12],
+               "資金下流鏈條": n.get("chain") or "資料不足", "bottleneck": n.get("bottleneck") or "",
+               "台股個股": [{"code": c, "name": names.get(c, ""), "My-TW-Coverage 分段": seg.get(c, "")} for c in codes]}
+        h = hashlib.sha1(json.dumps({"v": ROLE_VERSION, "in": inp}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:12]
+        old = cache.get(th["id"])
+        fresh = old and old.get("hash") == h and (asof - dt.date.fromisoformat(old["date"])).days < AI_REFRESH_DAYS
+        if fresh or not prompt or chain is None or not getattr(chain, "available", None) or calls >= max_calls:
+            continue
+        calls += 1
+        out, provider = chain.ask_json(prompt, json.dumps(inp, ensure_ascii=False))
+        roles = valid_roles(out, set(codes))
+        if roles:
+            cache[th["id"]] = {"date": asof.isoformat(), "hash": h, "provider": provider, "roles": roles}
+    os.makedirs(os.path.join(base, AUTO_DIR), exist_ok=True)
+    _write(cp, cache)
+    return {k: v for k, v in cache.items() if k in {t["id"] for t in themes}}
+
+
 # ------------------------------------------------------------------ 系統預設認錯條件
 DEFAULT_KILL = [("月營收年增率連續 2 個月 < 0", "rev_yoy_neg", 2, "每月 10 日後"),
                 ("毛利率連續 2 季下降", "gm_down", 2, "每季財報後")]
@@ -337,6 +404,51 @@ def auto_kill(tiers_by_code, base=".", asof=None):
     os.makedirs(os.path.join(base, AUTO_DIR), exist_ok=True)
     _write(p, rows)
     return rows
+
+
+# ------------------------------------------------------------------ 題材層級退場警示(2026-11-12)
+# 個股認錯條件只看基本面;題材交易常是題材先退燒。三條系統預設(版本 0,只新增不修改),門檻登記後不看結果調整。
+THEME_EXIT = [
+    ("heat_fall", "訊號來源數連續 5 天沒有增加,且 5 天內合計減少", "近 6 天訊號來源數紀錄", 5),
+    ("below20", "題材股超過半數跌破 20 日均線", "站上 20 日均線的個股比例 < 50%", 0.5),
+    ("crowd", "題材股融資張數分位(各自和自己歷史比的中位數)≥ 90", "融資張數分位中位數", 90),
+]
+
+
+def theme_exit(tid, auto, lc, base=".", asof=None):
+    """→ {"version": 0, "source": "系統預設", "created", "conds": [{key, condition, check, status, value, since}], "triggered"}
+    status:triggered / not_triggered / insufficient;since = 這次連續觸發的第一天(theme_page/theme_exit_state.json)"""
+    asof = asof or dt.date.today()
+    p = os.path.join(base, AUTO_DIR, "theme_exit_state.json")
+    st = _read(p, {}) or {}
+    me = st.setdefault(tid, {"created": asof.isoformat(), "since": {}})
+    lc = lc or {}
+    conds = []
+    for key, cond, check, th in THEME_EXIT:
+        val, status = None, "insufficient"
+        if key == "heat_fall":
+            hh = [h for _, h in (auto or {}).get("heat_hist") or []][-(th + 1):]
+            if len(hh) >= th + 1:
+                val = hh
+                status = "triggered" if all(b <= a for a, b in zip(hh, hh[1:])) and hh[-1] < hh[0] else "not_triggered"
+        elif key == "below20":
+            if lc.get("above20") is not None:
+                val = lc["above20"]
+                status = "triggered" if val < th else "not_triggered"
+        elif key == "crowd":
+            if lc.get("crowd_pctile") is not None:
+                val = lc["crowd_pctile"]
+                status = "triggered" if val >= th else "not_triggered"
+        if status == "triggered":
+            me["since"].setdefault(key, asof.isoformat())
+        elif status == "not_triggered":
+            me["since"].pop(key, None)
+        conds.append({"key": key, "condition": cond, "check": check, "status": status, "value": val,
+                      "since": me["since"].get(key) if status == "triggered" else None})
+    os.makedirs(os.path.join(base, AUTO_DIR), exist_ok=True)
+    _write(p, st)
+    return {"version": 0, "source": "系統預設", "created": me["created"], "conds": conds,
+            "triggered": sum(1 for c in conds if c["status"] == "triggered")}
 
 
 # ------------------------------------------------------------------ 題材生命週期(描述用,不是買賣訊號)

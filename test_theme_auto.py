@@ -132,6 +132,43 @@ class TestLifecycle(unittest.TestCase):
         self.assertEqual((lc["rel_label"], round(lc["rel20"], 1)), ("抗跌", 10.0))               # 題材 −20% vs 大盤 −30%
         self.assertEqual(A.lifecycle(auto, down, idx, None, "2026-09-20")["rel_label"], "弱於大盤")
 
+    def test_roles(self):
+        d = tempfile.mkdtemp()
+        try:
+            os.makedirs(os.path.join(d, "prompts"))
+            shutil.copy(os.path.join(os.path.dirname(os.path.abspath(A.__file__)), "prompts", "theme_stock_roles.md"), os.path.join(d, "prompts"))
+            out = {"stocks": [{"code": "2330", "pos": "中游", "link": "晶圓代工", "what": "先進製程代工", "core": True},
+                              {"code": "9999", "pos": "上游", "link": "x", "what": "y"},              # 不在清單 → 丟掉
+                              {"code": "2454", "pos": "核心", "link": "x", "what": "y"},              # pos 不合法 → 丟掉
+                              {"code": "3661", "pos": "上游", "link": "IP", "what": "營收占 40% 來自 ASIC"},   # 含百分比 → 丟掉
+                              {"code": "3443", "pos": "未判斷", "link": "", "what": "", "core": True}]}
+            th = [{"id": "asic", "name": "ASIC", "_auto_stocks": [("2330", "a"), ("2454", "b"), ("3661", "c"), ("3443", "d")]}]
+            fc = FakeChain(out)
+            r = A.draft_roles(th, {}, {"asic": {"chain": "雲端 → ASIC → 晶圓代工"}}, None, d, dt.date(2026, 11, 12), chain=fc)
+            self.assertEqual(sorted(r["asic"]["roles"]), ["2330", "3443"])
+            self.assertEqual((r["asic"]["roles"]["2330"]["core"], r["asic"]["roles"]["3443"]["core"]), (True, False))
+            A.draft_roles(th, {}, {"asic": {"chain": "雲端 → ASIC → 晶圓代工"}}, None, d, dt.date(2026, 11, 13), chain=fc)
+            self.assertEqual(fc.calls, 1)                                       # 輸入沒變、7 天內 → 用快取
+        finally:
+            shutil.rmtree(d)
+
+    def test_theme_exit(self):
+        d = tempfile.mkdtemp()
+        try:
+            hh = lambda xs: {"heat_hist": [["d%d" % i, x] for i, x in enumerate(xs)]}
+            r = A.theme_exit("cpo", hh([4, 4, 3, 3, 2, 2]), {"above20": 0.3, "crowd_pctile": 95}, d, dt.date(2026, 11, 12))
+            self.assertEqual([c["status"] for c in r["conds"]], ["triggered"] * 3)
+            self.assertEqual((r["triggered"], r["conds"][0]["since"], r["version"]), (3, "2026-11-12", 0))
+            r = A.theme_exit("cpo", hh([4, 4, 3, 3, 2, 2]), {"above20": 0.6, "crowd_pctile": 50}, d, dt.date(2026, 11, 13))
+            self.assertEqual(r["conds"][0]["since"], "2026-11-12")          # 連續觸發 → 起始日不變
+            self.assertEqual([c["status"] for c in r["conds"][1:]], ["not_triggered"] * 2)
+            self.assertEqual(r["created"], "2026-11-12")
+            r = A.theme_exit("x", hh([2, 3, 3, 3, 3, 3]), {}, d)            # 有增加、或持平 → 不觸發;沒有資料 → 資料不足
+            self.assertEqual([c["status"] for c in r["conds"]], ["not_triggered", "insufficient", "insufficient"])
+            self.assertEqual(A.theme_exit("y", hh([3, 2]), {}, d)["conds"][0]["status"], "insufficient")
+        finally:
+            shutil.rmtree(d)
+
     def test_heat_history_saved(self):
         d = tempfile.mkdtemp()
         try:
