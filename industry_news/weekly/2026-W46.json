@@ -4,15 +4,15 @@
   "2026-11-08",
   "2026-11-14"
  ],
- "generated_at": "2026-11-14 01:37:10",
- "n_daily": 13,
+ "generated_at": "2026-11-14 17:59:14",
+ "n_daily": 14,
  "n_items": 300,
- "provider": "gemini",
- "overview": "本週台灣科技產業聚焦於半導體先進製程與記憶體市場的最新動態。市場傳出輝達要求台積電評估建廠並規劃製造3D DRAM，引發業界高度關注；同時，台積電公布十月營收創下歷史新高，展現強勁成長動能。此外，美股與國際科技界則關注輝達高層人事變動及相關調查，整體AI基礎設施與記憶體供需吃緊議題持續發酵。",
+ "provider": "groq:gpt-oss-120b",
+ "overview": "本週台積電被傳受輝達要求規劃3D DRAM製造，顯示AI記憶體需求持續升溫；AI相關記憶體與先進封裝市場熱度提升，華邦電與群聯等廠商積極擴產；輝達高層醜聞與人事變動持續發酵，影響美股與國際關注；特斯拉AI晶片藍圖曝光，顯示高階製程與HBM結合的趨勢。",
  "themes": [
   {
-   "topic": "記憶體與3D DRAM",
-   "summary": "市場傳出輝達要求台積電評估建廠並規劃製造3D DRAM，引發業界關注。同時，AI浪潮推升記憶體需求，供應鏈指出記憶體缺口與供需吃緊態勢將延續。",
+   "topic": "台積電進軍3D DRAM",
+   "summary": "傳聞輝達要求台積電規劃製造並評估建廠，相關報導持續出現。",
    "items": [
     {
      "date": "2026-11-08",
@@ -271,6 +271,36 @@
      ]
     },
     {
+     "date": "2026-11-10",
+     "headline": "台積電傳進軍3D DRAM市場，輝達要求布局",
+     "titles": [
+      {
+       "title": "台積電傳進軍3D DRAM市場！輝達要求布局、AI記憶體短缺推升擴產需求",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "傳台積電進軍3D DRAM　應輝達要求規劃製造、評估建廠",
+       "sources": [
+        "cna"
+       ]
+      },
+      {
+       "title": "台積電傳評估切入3D DRAM 應輝達要求布局先進記憶體- 科技新聞",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "TSMC is weighing a move into 3D DRAM at Nvidia's request, The Information reports",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ]
+    },
+    {
      "date": "2026-11-11",
      "headline": "傳台積電進軍3D DRAM，應輝達要求規劃製造並評估建廠。",
      "titles": [
@@ -293,19 +323,115 @@
        ]
       }
      ]
-    },
+    }
+   ],
+   "codes": [
     {
-     "date": "2026-11-09",
-     "headline": "華邦電董事長針對台積電跨足 3D DRAM 傳聞提出疑點，揭露記憶體大廠合作隱憂",
+     "code": "2330",
+     "name": "台積電"
+    }
+   ]
+  },
+  {
+   "topic": "AI記憶體需求與擴產",
+   "summary": "華邦電與群聯看好AI需求，積極擴產並強調未來兩年無憂。",
+   "items": [
+    {
+     "date": "2026-11-08",
+     "headline": "華邦電看好明後年AI需求並積極擴產，強調AI建設二年內無虞。",
      "titles": [
       {
-       "title": "台積電跨足 3D DRAM 製造？華邦電董事長：台積電「不會做半吊子」",
+       "title": "【DIGITIMES每日新聞】20261104-E：Marvell購併Lumentum估掀轉單？　台系光通訊廠商機「只多不少」／華邦電731億元擴新廠　精挑10家PLTA客戶鎖2029~2032年產能",
+       "sources": [
+        "ic975"
+       ]
+      },
+      {
+       "title": "華邦電增產 看好明後年AI需求",
+       "sources": [
+        "ctee"
+       ]
+      },
+      {
+       "title": "華邦電：AI建設二年內無虞",
+       "sources": [
+        "iek_news"
+       ]
+      },
+      {
+       "title": "AI資料中心錢已到位！華邦電董座稱2027、2028年無虞，2029年才是關鍵",
+       "sources": [
+        "investor"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-08",
+     "headline": "群聯看好年後AI需求大增，企業級業務動能亮眼。",
+     "titles": [
+      {
+       "title": "〈群聯法說〉潘健成：明年企業級SSD需求看增 維持6成毛利率不合理、追求總額成長",
+       "sources": [
+        "cnyes_intl"
+       ]
+      },
+      {
+       "title": "群聯看年後AI需求大增；企業級業務動能靚- 新聞",
        "sources": [
         "google_news"
        ]
       },
       {
-       "title": "華邦電家庭日｜台積電跨足做DRAM？焦佑鈞點出傳聞疑點 揭記憶體大廠合作隱憂",
+       "title": "重訊 群聯(8299):公告本公司取得營業用設備達新台幣5億元以上",
+       "sources": [
+        "mops"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-08",
+     "headline": "華邦電董座示警 AI 獨旺、百業蕭條，記憶體漲價恐壓抑消費買氣。",
+     "titles": [
+      {
+       "title": "記憶體漲價有極限！華邦電董座示警AI獨旺、百業蕭條，恐壓抑消費買氣",
+       "sources": [
+        "investor"
+       ]
+      },
+      {
+       "title": "焦佑鈞：記憶體漲價已到極限，不希望景氣下行時間太晚來",
+       "sources": [
+        "technews"
+       ]
+      },
+      {
+       "title": "〈華邦電展望〉AI一枝獨秀！擴產效益明年顯現 焦佑鈞示警「擔心下一個不景氣太晚來」",
+       "sources": [
+        "cnyes_intl"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-08",
+     "headline": "群聯第三季營收獲利雙創歷史新高，反駁記憶體低成本庫存左右公司獲利。",
+     "titles": [
+      {
+       "title": "2026.11.07 群聯潘健成再度「迎戰」分析師，反駁記憶體低成本庫存左右公司獲利 群聯第三季合併營收860.76億元，營業毛利高達513億元，單季EPS為138元，營收、獲利雙雙創歷史新高。群聯第三季ASP持平，成長力道主要是靠出貨量增加和產品組合的優化，這意味著群聯的營運成長不需要仰賴NAND Flash漲價帶動。同時，潘健成也表示，雖然消費性市場疲弱，但2026年第四季～2027年第一季價格仍可持穩，看好2027農曆年後中國AI需求會再度爆發（Big Boom）。",
+       "sources": [
+        "jov"
+       ]
+      },
+      {
+       "title": "群聯Q3每股大賺138元，啟動庫藏股自救，估到下季NAND價格持平或小漲",
+       "sources": [
+        "investor"
+       ]
+      },
+      {
+       "title": "EPS衝上138元！不是南亞科、華邦電「這記憶體黑馬」獲AI加持獲利爆發企業級SSD、IC設計服務挹注撐腰",
        "sources": [
         "google_news"
        ]
@@ -315,62 +441,51 @@
    ],
    "codes": [
     {
-     "code": "2330",
-     "name": "台積電"
-    },
-    {
      "code": "2344",
      "name": "華邦電"
+    },
+    {
+     "code": "8299",
+     "name": "群聯"
     }
    ]
   },
   {
-   "topic": "台積電營收與半導體製程",
-   "summary": "台積電十月營收衝破新高，打破成長天花板，受惠於2奈米與CoWoS等先進製程與擴產點火。同時特斯拉AI晶片藍圖曝光，規劃導入HBM並採2奈米製程。",
+   "topic": "先進封裝合作與投資",
+   "summary": "精材與台積電簽署長期產能外包，聯發科與英特爾等也加速先進封裝布局。",
    "items": [
     {
-     "date": "2026-11-11",
-     "headline": "台積電打破成長天花板，十月營收衝破5800億創新高。",
+     "date": "2026-11-14",
+     "headline": "精材與台積電簽逾7年產能外包協議，2029年量產後段先進封裝",
      "titles": [
       {
-       "title": "快新聞／護國神山破紀錄！台積電產能滿載 10月營收衝破5800億創新高",
+       "title": "精材與台積電簽逾7年產能外包協議　2029年量產後段先進封裝",
        "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "台積電打破成長天花板",
-       "sources": [
-        "iek_news"
-       ]
-      },
-      {
-       "title": "TSMC, AI ë°ëì²´ í¸í©ì 10ì ë§¤ì¶ 5869ìµëë§ë¬ë¬â¦ìê° ê¸°ì¤ ì¬ì ìµëì¹",
-       "sources": [
-        "etnews_kr"
-       ]
-      },
-      {
-       "title": "TSMC's October sales jump as global chip boom rolls on",
-       "sources": [
-        "cnbc_yahoo"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "headline": "特斯拉AI晶片藍圖曝光，Dojo D3導入HBM、採2奈米製程",
-     "titles": [
-      {
-       "title": "特斯拉AI晶片藍圖曝光！Dojo D3導入HBM、SI6效能拚提升80倍、採2奈米製程",
-       "sources": [
-        "cnyes_intl",
+        "cna",
         "google_news"
        ]
       },
       {
-       "title": "Tesla's AI Chip Roadmap Revealed: Sixth-Gen SI6 Compute to Hit 80x Current Model, Dojo 3 Shifts to HBM",
+       "title": "台積擴大委外 精材搶進CoWoS",
+       "sources": [
+        "iek_news",
+        "google_news"
+       ]
+      },
+      {
+       "title": "精材牽緊台積簽產能外包協議 衝先進封裝",
+       "sources": [
+        "edn"
+       ]
+      },
+      {
+       "title": "精材攜手台積電搶進CoWoS後段製程首期產線預計2029年量產- 產業",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "TSMC signs seven-year deal with Xintec to expand CoWoS packaging",
        "sources": [
         "google_news_us"
        ]
@@ -378,38 +493,110 @@
      ]
     },
     {
-     "date": "2026-11-10",
-     "headline": "台積電10月營收達5,868億元創新高，2奈米與CoWoS擴產點火",
+     "date": "2026-11-08",
+     "headline": "聯發科挖角英特爾封裝大將，推進雙CoWoS與EMIB策略。",
      "titles": [
       {
-       "title": "台積電10月營收狂飆5,868億創歷史新高！2奈米與CoWoS大擴產點火！",
+       "title": "[News] MediaTek Reportedly Taps Intel Packaging Veteran After TSMC Hire, Advances Dual CoWoS–EMIB Strategy",
        "sources": [
-        "google_news"
+        "google_news_us"
        ]
       },
       {
-       "title": "2奈米產能拉升助攻，台積電10月業績再衝新高",
+       "title": "Exclusive | MediaTek Hires Intel’s Packaging Heavyweight. Can He Rescue EMIB-T?",
        "sources": [
-        "investor"
-       ]
-      },
-      {
-       "title": "台積電 10 月營收 5,868.9 億元年增 59.71%，前十個月年增 43.29% 創高",
-       "sources": [
-        "technews"
+        "gnews_d2"
        ]
       }
      ]
     },
     {
      "date": "2026-11-08",
-     "headline": "特斯拉AI晶片藍圖曝光，Dojo D3導入HBM並採2奈米製程。",
+     "headline": "AI熱潮引爆晶片封裝大戰，傳日月光調高先進封裝報價。",
      "titles": [
       {
-       "title": "特斯拉AI晶片藍圖曝光！Dojo D3導入HBM、SI6效能拚提升80倍、採2奈米製程",
+       "title": "AI 股災燒出「晶片封裝大戰」：台廠搶吃 NVDA 訂單、先進封裝成半導體新金礦",
        "sources": [
-        "cnyes_intl",
         "google_news"
+       ]
+      },
+      {
+       "title": "標題 : AI熱潮引爆晶片封裝戰！TSMC產能吃緊、英偉達出手資助臺廠擴產",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "ASE Reportedly Raises Advanced Packaging Quotes by More Than 20% in Latest AI-Driven Price Hike",
+       "sources": [
+        "trendforce"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-08",
+     "headline": "英特爾大秀 EMIB-T 先進封裝技術，挑戰台積電 CoWoS。",
+     "titles": [
+      {
+       "title": "討論牆 | 英特爾大秀 EMIB-T 先進封裝技術，挑戰台積電 CoWoS 先進封裝技術",
+       "sources": [
+        "google_news",
+        "gnews_d2"
+       ]
+      },
+      {
+       "title": "TWA00 加權指數- EMIB-T V.S. CoWoS-L - 股市爆料同學會",
+       "sources": [
+        "gnews_d2"
+       ]
+      },
+      {
+       "title": "Intel’s EMIB-T takes aim at TSMC’s CoWoS-L as AI chip packaging gets crowded",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-08",
+     "headline": "輝達傳提供數十億美元助日月光擴產，CoWoS 吃緊帶動先進封裝投資。",
+     "titles": [
+      {
+       "title": "輝達傳提供數十億美元助日月光擴產 CoWoS吃緊帶動先進封裝投資",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "【即時新聞】輝達(NVDA)砸重金卡位CoWoS！AI先進封裝需求狂飆，產值上看280億美元",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "NVIDIA reportedly to invest billions in additional CoWoS capacity: SPIL becomes a key partner for AI accelerators",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-09",
+     "headline": "台積電與格羅方德合作矽中介層，背後引發市場關注",
+     "titles": [
+      {
+       "title": "台積電為何找上格羅方德？　CoWoS產能佈局成關鍵",
+       "sources": [
+        "eetimes"
+       ]
+      },
+      {
+       "title": "2026.10.13 台積電＋格羅方德 vs 英特爾＋聯電，一樁20億美元的矽中介層合作背後有什麼盤算？",
+       "sources": [
+        "jov"
        ]
       }
      ]
@@ -417,113 +604,19 @@
    ],
    "codes": [
     {
+     "code": "3374",
+     "name": "精材"
+    },
+    {
      "code": "2330",
      "name": "台積電"
     }
    ]
   },
   {
-   "topic": "美股與國際科技高層異動",
-   "summary": "輝達執行長黃仁勳去職及相關調查引發科技界關注創新領導力流失與接班考驗，由財務長克瑞斯暫代執行長並面臨國會關注。",
+   "topic": "輝達高層醜聞與人事變動",
+   "summary": "輝達執行長黃仁勳遭外媒報導調查，後續傳出辭職與臨時執行長任命。",
    "items": [
-    {
-     "date": "2026-11-14",
-     "headline": "黃仁勳辭去輝達執行長職務，科技界關注創新領導力流失與後續接班考驗",
-     "titles": [
-      {
-       "title": "黃仁勳辭輝達執行長　科技界憂創新領導力流失",
-       "sources": [
-        "cna",
-        "iek_news"
-       ]
-      },
-      {
-       "title": "Nvidia and the World Without Jensen",
-       "sources": [
-        "semianalysis"
-       ]
-      },
-      {
-       "title": "黃仁勳辭輝達執行長 川普喊話：庫克應接任",
-       "sources": [
-        "iek_news"
-       ]
-      },
-      {
-       "title": "NVIDIA創業者のJensen Huang氏が辞任、33年間の経営に幕",
-       "sources": [
-        "eetimes_jp"
-       ]
-      },
-      {
-       "title": "Jensen Huang Resigns: NVIDIA's Succession Crisis and the Fate of the AI Supply Chain",
-       "sources": [
-        "the_circuit_podcast"
-       ]
-      },
-      {
-       "title": "Nvidia CEO Jensen Huang resigns in the wake of multiple affairs, Chinese spy allegations",
-       "sources": [
-        "tomshardware"
-       ]
-      },
-      {
-       "title": "Apple, Alphabet and Uber survived major founder transitions. Nvidia will be a harder test",
-       "sources": [
-        "cnbc_yahoo"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-14",
-     "headline": "美國參議員要求輝達執行長黃仁勳赴參議院作證，中國間諜與走私疑雲成焦點",
-     "titles": [
-      {
-       "title": "Lutnick should ban Chinese memory maker CXMT from U.S., Sen. Cotton says",
-       "sources": [
-        "google_news_us",
-        "cnbc_yahoo"
-       ]
-      },
-      {
-       "title": "黃仁勳間諜疑雲成變數 三星、SK海力士HBM長約保障受檢視",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "BBC：美國會議員要求黃仁勳 12/3 赴參議院作證",
-       "sources": [
-        "technews"
-       ]
-      },
-      {
-       "title": "ä¸­ ì¤íì´ ìí¹ìë ì  ì¨ í© ì±ê¸´ í¸ë¼íâ¦ì¬ì ì§ì  ì í ê±¸ì´ âëê¹ì§ ì¸ì ìë¦¬ ì§ì¼ë¼â",
-       "sources": [
-        "etnews_kr"
-       ]
-      },
-      {
-       "title": "âì  ì¨ í© ë¶ë¥ë ì¨ë¦¬ì¤ í©, ä¸­ êµ­ê°ìì ë¶  'ì¹© í' ììââ¦ì ë³´ìì¥ì´ ì§ì  ì§í",
-       "sources": [
-        "etnews_kr"
-       ]
-      },
-      {
-       "title": "Mass smuggling of up to 1.5 million Nvidia AI GPUs could be the underlying cause of Jensen Huang's departure, analysts claim",
-       "sources": [
-        "tomshardware"
-       ]
-      },
-      {
-       "title": "Congress could issue subpoena to Nvidia CEO Jensen Huang if he doesn’t respond by today to request for a ‘joint, closed-door briefing’",
-       "sources": [
-        "tomshardware"
-       ]
-      }
-     ]
-    },
     {
      "date": "2026-11-09",
      "headline": "輝達執行長黃仁勳遭外媒報導相關調查與國會關注",
@@ -579,6 +672,125 @@
      ]
     },
     {
+     "date": "2026-11-10",
+     "headline": "輝達捲入醜聞，黃仁勳陷桃色風暴遭美國會徹查",
+     "titles": [
+      {
+       "title": "輝達捲入醜聞 AMD、ASIC反搶商機",
+       "sources": [
+        "ctee",
+        "iek_news"
+       ]
+      },
+      {
+       "title": "黃仁勳陷桃色風暴 美國會徹查",
+       "sources": [
+        "ctee",
+        "iek_news"
+       ]
+      },
+      {
+       "title": "Nvidia CEO Jensen Huang summoned to Congress over affair with alleged Chinese spy",
+       "sources": [
+        "tomshardware"
+       ]
+      },
+      {
+       "title": "Nvidia CEO Jensen Huang admits to having an affair with suspected Chinese spy",
+       "sources": [
+        "tomshardware"
+       ]
+      },
+      {
+       "title": "Nvidia's Jensen Huang officially called to Congress due to reports of a Chinese spy plot",
+       "sources": [
+        "tomshardware"
+       ]
+      },
+      {
+       "title": "Nvidia CEO Jensen Huang faces bipartisan congressional scrutiny over reported China spy link",
+       "sources": [
+        "cnbc_yahoo"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-13",
+     "headline": "馬斯克手腳這麼快？網傳Terafab急徵CEO立即上任條件為黃仁勳量身打造",
+     "titles": [
+      {
+       "title": "馬斯克手腳這麼快？網傳Terafab急徵CEO「立即上任」條件為黃仁勳量身打造",
+       "sources": [
+        "cnyes_intl",
+        "google_news"
+       ]
+      },
+      {
+       "title": "Musk’s TeraFab Lands First Major Hire as 18-Year Intel Veteran With 18A Experience Joins as Director",
+       "sources": [
+        "trendforce"
+       ]
+      },
+      {
+       "title": "Intel signs on to Elon Musk’s Terafab chips project",
+       "sources": [
+        "techcrunch_semi"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-11",
+     "headline": "輝達桃色風波續燒，美AI晶片禁中法案過關在望。",
+     "titles": [
+      {
+       "title": "輝達桃色風波續燒 美AI晶片禁中法案 過關在望",
+       "sources": [
+        "ctee",
+        "iek_news"
+       ]
+      },
+      {
+       "title": "President Trump says the FBI is investigating Jensen Huang’s affair",
+       "sources": [
+        "tomshardware"
+       ]
+      },
+      {
+       "title": "Nvidia CEO Jensen Huang summoned to Congress over affair with alleged Chinese spy",
+       "sources": [
+        "tomshardware"
+       ]
+      },
+      {
+       "title": "Nvidia CEO Jensen Huang admits to having an affair with suspected Chinese spy",
+       "sources": [
+        "tomshardware"
+       ]
+      }
+     ]
+    },
+    {
+     "date": "2026-11-13",
+     "headline": "黃仁勳辭輝達執行長，川普喊話庫克應接任",
+     "titles": [
+      {
+       "title": "黃仁勳辭輝達執行長　川普喊話：庫克應接任",
+       "sources": [
+        "cna",
+        "iek_news"
+       ]
+      },
+      {
+       "title": "President Trump says Apple’s Tim Cook is the only man to replace Jensen Huang as Nvidia CEO",
+       "sources": [
+        "tomshardware"
+       ]
+      }
+     ]
+    },
+    {
      "date": "2026-11-13",
      "headline": "輝達財務長克瑞斯任臨時執行長，矢言推進AI領導者工作",
      "titles": [
@@ -599,37 +811,20 @@
     },
     {
      "date": "2026-11-13",
-     "headline": "黃仁勳確定去職，美國會續追輝達晶片流向、白宮是否知情",
+     "headline": "黃仁勳辭輝達執行長，科技界憂創新領導力流失",
      "titles": [
       {
-       "title": "黃仁勳去職，美國會續追輝達晶片流向、白宮是否知情",
+       "title": "黃仁勳辭輝達執行長　科技界憂創新領導力流失",
        "sources": [
-        "technews"
+        "cna",
+        "iek_news"
        ]
       },
       {
-       "title": "Congress could issue subpoena to Nvidia CEO Jensen Huang if he doesn’t respond by today to request for a ‘joint, closed-door briefing’",
-       "sources": [
-        "tomshardware"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-13",
-     "headline": "黃仁勳捲間諜疑雲落馬，財務長接任輝達代理執行長",
-     "titles": [
-      {
-       "title": "黃仁勳捲間諜疑雲落馬 財務長接任輝達代理執行長",
+       "title": "輝達董事會傳討論撤換黃仁勳 市場憂長期戰略與接班風險升高",
        "sources": [
         "technice"
        ]
-      },
-      {
-       "title": "AMD’s Venice-X maxes out family at 5.3 GHz, returning 3D V-Cache to data center after four years",
-       "sources": [
-        "tomshardware"
-       ]
       }
      ]
     }
@@ -637,39 +832,22 @@
    "codes": []
   },
   {
-   "topic": "先進封裝與CoWoS擴產",
-   "summary": "AI熱潮引爆晶片封裝大戰，精材與台積電簽署產能外包協議預計量產後段先進封裝，日月光等封裝大廠也因應需求調高先進封裝報價與擴產。",
+   "topic": "特斯拉AI晶片藍圖曝光",
+   "summary": "特斯拉Dojo D3晶片將導入HBM並採用2奈米製程。",
    "items": [
     {
-     "date": "2026-11-14",
-     "headline": "精材與台積電簽署逾7年產能外包協議，預計2029年量產後段先進封裝CoWoS",
+     "date": "2026-11-09",
+     "headline": "特斯拉AI晶片藍圖曝光，Dojo D3導入HBM、採2奈米製程",
      "titles": [
       {
-       "title": "精材與台積電簽逾7年產能外包協議　2029年量產後段先進封裝",
+       "title": "特斯拉AI晶片藍圖曝光！Dojo D3導入HBM、SI6效能拚提升80倍、採2奈米製程",
        "sources": [
-        "cna"
-       ]
-      },
-      {
-       "title": "精材牽緊台積簽產能外包協議 衝先進封裝",
-       "sources": [
-        "edn"
-       ]
-      },
-      {
-       "title": "精材攜手台積電搶進CoWoS後段製程首期產線預計2029年量產- 產業",
-       "sources": [
+        "cnyes_intl",
         "google_news"
        ]
       },
       {
-       "title": "精材與台積電簽逾7年產能外包協議2029年量產後段先進封裝| 科技產業| 產經",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "TSMC signs seven-year deal with Xintec to expand CoWoS packaging",
+       "title": "Tesla's AI Chip Roadmap Revealed: Sixth-Gen SI6 Compute to Hit 80x Current Model, Dojo 3 Shifts to HBM",
        "sources": [
         "google_news_us"
        ]
@@ -678,559 +856,13 @@
     },
     {
      "date": "2026-11-08",
-     "headline": "AI熱潮引爆晶片封裝大戰，傳日月光調高先進封裝報價。",
+     "headline": "特斯拉AI晶片藍圖曝光，Dojo D3導入HBM並採2奈米製程。",
      "titles": [
       {
-       "title": "AI 股災燒出「晶片封裝大戰」：台廠搶吃 NVDA 訂單、先進封裝成半導體新金礦",
+       "title": "特斯拉AI晶片藍圖曝光！Dojo D3導入HBM、SI6效能拚提升80倍、採2奈米製程",
        "sources": [
+        "cnyes_intl",
         "google_news"
-       ]
-      },
-      {
-       "title": "標題 : AI熱潮引爆晶片封裝戰！TSMC產能吃緊、英偉達出手資助臺廠擴產",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "ASE Reportedly Raises Advanced Packaging Quotes by More Than 20% in Latest AI-Driven Price Hike",
-       "sources": [
-        "trendforce"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-08",
-     "headline": "輝達傳提供數十億美元助日月光擴產，CoWoS 吃緊帶動先進封裝投資。",
-     "titles": [
-      {
-       "title": "輝達傳提供數十億美元助日月光擴產 CoWoS吃緊帶動先進封裝投資",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "【即時新聞】輝達(NVDA)砸重金卡位CoWoS！AI先進封裝需求狂飆，產值上看280億美元",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "NVIDIA reportedly to invest billions in additional CoWoS capacity: SPIL becomes a key partner for AI accelerators",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "headline": "輝達傳提供數十億美元助日月光擴產 CoWoS，緩解先進封裝吃緊",
-     "titles": [
-      {
-       "title": "輝達傳提供數十億美元助日月光擴產 CoWoS吃緊帶動先進封裝投資 | 優分析",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "討論牆 | 輝達傳提供數十億美元助日月光擴產 CoWoS吃緊帶動先進封裝投資",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "NVIDIA reportedly to invest billions in additional CoWoS capacity: SPIL becomes a key partner for AI accelerators",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Nvidia Said to Finance SPIL’s CoWoS Expansion With Billions",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-14",
-     "headline": "日月光投控成長加速中，旗下矽品CoWoS與CPO背後共同貴人為輝達",
-     "titles": [
-      {
-       "title": "日月光投控成長加速中，旗下矽品CoWoS、CPO背後共同貴人：輝達！研發大將還原10年布局新賽道點滴",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "【DIGITIMES每日新聞】20261110-E：資料中心Scale-Out需求先行　NVIDIA、矽品2027拚CPO放量 / NVIDIA國安風險牽動台灣供應鏈　訂單配置、出貨節奏成觀察重點",
-       "sources": [
-        "ic975"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "headline": "傳日月光因應最新 AI 需求，大幅調漲先進封裝報價超過 20%",
-     "titles": [
-      {
-       "title": "ASE Reportedly Raises Advanced Packaging Quotes by More Than 20% in Latest AI-Driven Price Hike",
-       "sources": [
-        "trendforce"
-       ]
-      }
-     ]
-    }
-   ],
-   "codes": [
-    {
-     "code": "3374",
-     "name": "精材"
-    },
-    {
-     "code": "2330",
-     "name": "台積電"
-    },
-    {
-     "code": "3711",
-     "name": "日月光投控"
-    }
-   ]
-  },
-  {
-   "topic": "車用功率與碳化矽技術",
-   "summary": "英特爾與英飛凌分別達成以12吋碳化矽晶圓製作功率元件的重要技術里程碑。車用功率與碳化矽相關應用持續受到國際大廠布局與重視。",
-   "items": [
-    {
-     "date": "2026-11-13",
-     "headline": "英特爾完成12吋碳化矽晶圓製作功率元件里程碑，持續市場領先地位",
-     "titles": [
-      {
-       "title": "英飛凌首度成功以12吋碳化矽晶圓製造功率元件",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "英飛凌完成 12 吋碳化矽晶圓製作功率元件里程碑，持續市場領先地位",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "300mm SiCウエハーでパワー半導体、Infineonが実物を初公開",
-       "sources": [
-        "eetimes_jp"
-       ]
-      },
-      {
-       "title": "「世界初」300mm SiCウエハーでパワー半導体製造　Infineon",
-       "sources": [
-        "eetimes_jp"
-       ]
-      },
-      {
-       "title": "Infineon Unveils World's First 12-Inch SiC Power Semiconductor Wafer; Mass Production Timing Undisclosed",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon processes 300 mm SiC wafers into functional power devices",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-14",
-     "headline": "英飛凌首度成功以12吋碳化矽晶圓製造功率元件，達成重要技術里程碑",
-     "titles": [
-      {
-       "title": "英飛凌首度成功以12吋碳化矽晶圓製造功率元件",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "英飛凌完成 12 吋碳化矽晶圓製作功率元件里程碑，持續市場領先地位",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "300mm SiCウエハーでパワー半導体、Infineonが実物を初公開",
-       "sources": [
-        "eetimes_jp"
-       ]
-      },
-      {
-       "title": "Infineon Unveils World's First 12-Inch SiC Power Semiconductor Wafer; Mass Production Timing Undisclosed",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon Achieves World-First 300mm SiC Wafer Milestone - I",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-10",
-     "headline": "英特爾展示全球首款300毫米碳化矽功率半導體晶圓",
-     "titles": [
-      {
-       "title": "「世界初」300mm SiCウエハーでパワー半導体製造　Infineon",
-       "sources": [
-        "eetimes_jp"
-       ]
-      },
-      {
-       "title": "Infineon presents first functional power devices on 300mm SiC wafers",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon Starts World's First 300-Millimeter Power Silicon Carbide (SiC) Wafer Production",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Functional Power Semiconductors on 300-mm SiC - All-About",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon's First 300mm SiC Wafers Cap a Week of AI Power Deals and a Fresh JPMorgan Target - ad-hoc",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon Marks Innovation Milestone With World’s First 300-millimeter Power Silicon Carbide (SiC) Wafer",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-10",
-     "headline": "英飛凌處理首批300毫米碳化矽晶圓並製成功率元件",
-     "titles": [
-      {
-       "title": "The first 300-millimeter power silicon carbide (SiC) wafer",
-       "sources": [
-        "hackernews"
-       ]
-      },
-      {
-       "title": "Infineon processes first 300 mm SiC wafers into working power devices",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon processes 300 mm SiC wafers into functional power devices",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon achieves power devices using 300mm SiC wafers",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-11",
-     "headline": "英飛凌在300毫米碳化矽晶圓上製造出首批功率元件。",
-     "titles": [
-      {
-       "title": "「世界初」300mm SiCウエハーでパワー半導体製造　Infineon",
-       "sources": [
-        "eetimes_jp"
-       ]
-      },
-      {
-       "title": "Infineon presents first functional power devices on 300mm SiC wafers",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon processes SiC on 300 mm wafers for the first time",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Functional Power Semiconductors on 300-mm SiC - All-About",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon Starts World's First 300-Millimeter Power Silicon Carbide (SiC) Wafer Production",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Infineon's First 300mm SiC Wafers Cap a Week of AI Power Deals and a Fresh JPMorgan Target - ad-hoc",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-12",
-     "headline": "英特爾成功以12吋碳化矽晶圓製造功率元件",
-     "titles": [
-      {
-       "title": "英飛凌首度成功以12吋碳化矽晶圓製造功率元件",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "英飛凌完成 12 吋碳化矽晶圓製作功率元件里程碑，持續市場領先地位",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "英飛凌成功打造全球首片12吋碳化矽晶圓",
-       "sources": [
-        "wapeople"
-       ]
-      }
-     ]
-    }
-   ],
-   "codes": []
-  },
-  {
-   "topic": "光通訊與矽光子",
-   "summary": "矽光子與CPO商機持續發酵，聯電奪下矽光子大單，立碁等光通訊廠商積極推進1.6T LPO光收發模組與次世代規格研發。",
-   "items": [
-    {
-     "date": "2026-11-08",
-     "headline": "聯電奪矽光子大單，中際旭創、賽麗等都上門，單價是傳統 CMOS 製程七倍。",
-     "titles": [
-      {
-       "title": "【個股分析】聯電：矽光子及先進封裝成為新舞台",
-       "sources": [
-        "fugle_blog"
-       ]
-      },
-      {
-       "title": "聯電奪矽光子大單 中際旭創、賽麗等都上門 單價是傳統 CMOS 製程七倍",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-11",
-     "headline": "立碁攜手夥伴展示1.6T LPO光收發模組並攻上漲停。",
-     "titles": [
-      {
-       "title": "立碁攜手夥伴展示1.6T LPO光收發模組- 產業",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "【09:32 即時新聞】立碁(8111)攻上漲停，矽光子與政府工程題材受關注",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-12",
-     "headline": "立碁端出1.6T LPO 四大關鍵技術 鋪路 CPO 與3.2T 次世代規格",
-     "titles": [
-      {
-       "title": "立碁端出1.6T LPO 四大關鍵技術 鋪路 CPO 與3.2T 次世代規格｜新聞快訊｜豐雲學堂",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "立碁攜手夥伴展示1.6T LPO光收發模組- 產業",
-       "sources": [
-        "gnews_d2"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-13",
-     "headline": "立碁攜手夥伴展示1.6T LPO光收發模組",
-     "titles": [
-      {
-       "title": "立碁攜手夥伴展示1.6T LPO光收發模組- 產業",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "立碁矽光子小量出貨，1.6T設備拚明年Q1前到位",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "立碁1.6T光模組研發有成，2027拚放量 | MoneyDJ理財網",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "headline": "聯電奪矽光子大單，單價是傳統 CMOS 製程七倍",
-     "titles": [
-      {
-       "title": "討論牆 | 瞄準矽光子爆發力！宏遠證主辦聯電 40 億 CB 競價拍賣 8/19 競標",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
-       "title": "聯電奪矽光子大單 中際旭創、賽麗等都上門 單價是傳統 CMOS 製程七倍",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ]
-    }
-   ],
-   "codes": [
-    {
-     "code": "2303",
-     "name": "聯電"
-    },
-    {
-     "code": "8111",
-     "name": "立碁"
-    }
-   ]
-  },
-  {
-   "topic": "被動元件與AI伺服器",
-   "summary": "AI伺服器需求帶動被動元件大廠調漲消費性規格MLCC報價，並將產線轉向AI伺服器高容值產品，三星電機也再度拿下AI伺服器MLCC合約。",
-   "items": [
-    {
-     "date": "2026-11-14",
-     "headline": "村田製作所與SEMCO等被動元件大廠調漲消費性規格MLCC報價，並將產線轉向AI伺服器",
-     "titles": [
-      {
-       "title": "最近SEMCO大幅調漲消費性規格MLCC的報價，Murata直接公佈消費性、部份車用規格MLCC停產，強迫客戶轉單，順勢將產線轉作AI伺服器高容值MLCC，而這",
-       "sources": [
-        "telegram"
-       ]
-      },
-      {
-       "title": "【芯资讯】NXP新一轮涨价，高容MLCC紧缺延续，Marvell宣布收购Lumentum",
-       "sources": [
-        "etime_cn"
-       ]
-      },
-      {
-       "title": "三星电机MLCC交期拉长至52周：全品类供需收紧下的产业逻辑转向",
-       "sources": [
-        "etime_cn"
-       ]
-      },
-      {
-       "title": "村田製作所 26年度、2度目の通期上方修正、DC需要の伸長続く",
-       "sources": [
-        "sangyo_times"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-08",
-     "headline": "三星電機再拿下AI伺服器MLCC合約，累計長約規模龐大。",
-     "titles": [
-      {
-       "title": "【DIGITIMES每日新聞】20261103-E：聯發科、Marvell、博通ASIC延長賽拚2028　供應鏈「固樁成效」定勝負 /  三星電機再拿下AI伺服器MLCC合約　2026年LTA累計逾5兆韓元",
-       "sources": [
-        "ic975"
-       ]
-      },
-      {
-       "title": "Samsung Electro-Mechanics Lands KRW 450B 1-Year MLCC Contract as AI Spurs Long-Term Agreements",
-       "sources": [
-        "trendforce"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "headline": "三星電機再拿下AI伺服器MLCC合約，LTA累計逾5兆韓元",
-     "titles": [
-      {
-       "title": "【DIGITIMES每日新聞】20261103-E：聯發科、Marvell、博通ASIC延長賽拚2028　供應鏈「固樁成效」定勝負 /  三星電機再拿下AI伺服器MLCC合約　2026年LTA累計逾5兆韓元",
-       "sources": [
-        "ic975"
-       ]
-      },
-      {
-       "title": "Samsung Electro-Mechanics Lands KRW 450B 1-Year MLCC Contract as AI Spurs Long-Term Agreements",
-       "sources": [
-        "trendforce"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-10",
-     "headline": "三星電機再拿下AI伺服器MLCC合約",
-     "titles": [
-      {
-       "title": "【DIGITIMES每日新聞】20261103-E：聯發科、Marvell、博通ASIC延長賽拚2028　供應鏈「固樁成效」定勝負 /  三星電機再拿下AI伺服器MLCC合約　2026年LTA累計逾5兆韓元",
-       "sources": [
-        "ic975"
-       ]
-      },
-      {
-       "title": "Samsung Electro-Mechanics Lands KRW 450B 1-Year MLCC Contract as AI Spurs Long-Term Agreements",
-       "sources": [
-        "trendforce"
-       ]
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "headline": "MLCC大廠大幅調漲消費性規格並停產，順勢將產線轉作AI伺服器高容值MLCC",
-     "titles": [
-      {
-       "title": "最近SEMCO大幅調漲消費性規格MLCC的報價，Murata直接公佈消費性、部份車用規格MLCC停產，強迫客戶轉單，順勢將產線轉作AI伺服器高容值MLCC，而這",
-       "sources": [
-        "telegram"
        ]
       }
      ]
@@ -1246,7 +878,7 @@
   "url": "https://www.sangyo-times.jp/scn/headindex.aspx",
   "top": {
    "ja": "DRAM各社、HBM4で勢力図に変化",
-   "zh": "各DRAM廠：HBM4勢力圖出現變化"
+   "zh": "DRAM各社，HBM4導致勢力圖變化"
   },
   "sections": [
    {
@@ -1254,15 +886,15 @@
     "items": [
      {
       "ja": "BYDセミコン、車載SiCを発表、1000Vに対応",
-      "zh": "比亞迪半導體發表車載SiC，支援1000V"
+      "zh": "比亞迪半導體，發表車載SiC，支援1000V"
      },
      {
       "ja": "名古屋大学、CEATECで車載講演、日本勢の結集に向け活動",
-      "zh": "名古屋大學在CEATEC發表車載演講，為凝聚日本勢力展開活動"
+      "zh": "名古屋大學於CEATEC舉行車載演講，致力於日本勢力的結集活動"
      },
      {
       "ja": "デンソー 4～9月期、販売伸長も営業減益、メモリー価格高騰が影響",
-      "zh": "電綜4至9月期營收成長但營業利益減少，記憶體價格飆漲造成影響"
+      "zh": "電裝 4～9月期，銷售成長但營業虧損，記憶體價格高漲影響"
      }
     ]
    },
@@ -1271,19 +903,19 @@
     "items": [
      {
       "ja": "キオクシア 10～12月期、売上・利益とも微増、出荷前倒しなど影響",
-      "zh": "鎧俠10至12月期營收與利潤雙雙微增，出貨提前等因素造成影響"
+      "zh": "京瓷 10～12月期，營收與獲利皆微幅上升，出貨提前等因素影響"
      },
      {
       "ja": "ルネサス、AI向け能力2.5倍に、自社工場で増産投資",
-      "zh": "瑞薩電子：AI相關能力提升至2.5倍，將於自家工廠進行增產投資"
+      "zh": "瑞薩，AI用能效提升2.5倍，自有工廠增產投資"
      },
      {
       "ja": "三菱地所ら、千歳市に半導体拠点、研究や人材育成を加速",
-      "zh": "三菱地所等企業於千歲市設立半導體據點，加速研究與人才培育"
+      "zh": "三菱地所等於千歲市設立半導體基地，加速研究與人才培育"
      },
      {
       "ja": "SKハイニックス 7～9月期、売上100兆ウォン超に、29年までDRAM、HBM完売",
-      "zh": "SK海力士7至9月期營收突破100兆韓元，DRAM與HBM訂單已滿至2029年"
+      "zh": "SK海力士 7～9月期，營收突破100兆韓元，預計至2029年DRAM、HBM全部售罄"
      }
     ]
    },
@@ -1292,15 +924,15 @@
     "items": [
      {
       "ja": "村田製作所 26年度、2度目の通期上方修正、DC需要の伸長続く",
-      "zh": "村田製作所2026年度第二次上修全年財測，資料中心需求持續成長"
+      "zh": "村田製作所 2026年度，第二次全年度上修，DC需求持續成長"
      },
      {
       "ja": "日本航空電子工業 26年度、通期予想を上方修正、車載や産機が寄与",
-      "zh": "日本航空電子工業2026年度上修全年財測，車載及產機業務有所貢獻"
+      "zh": "日本航空電子工業 2026年度，上修全年度預測，車載與產業機械貢獻"
      },
      {
       "ja": "TDK、センサーを多用途展開、非破壊検査や予知保全",
-      "zh": "TDK推動感測器多用途發展，應用於非破壞性檢測與預知保養"
+      "zh": "TDK，多用途展開感測器，應用於非破壞檢測與預知保全"
      }
     ]
    },
@@ -1309,15 +941,15 @@
     "items": [
      {
       "ja": "TTMテクノロジーズ 7～9月期、60%増収で過去最高、AIサーバー用など寄与",
-      "zh": "TTM Technologies 7至9月期營收大增60%創歷史新高，AI伺服器用產品等有所貢獻"
+      "zh": "TTM科技 7～9月期，營收成長60%創歷史新高，AI伺服器等貢獻"
      },
      {
       "ja": "パナソニック インダストリー、基板材料など増産、AI中心に920億円投資",
-      "zh": "Panasonic Industry增產基板材料等，將投資920億日圓聚焦AI領域"
+      "zh": "松下工業，基板材料等增產，聚焦AI投資920億日圓"
      },
      {
       "ja": "メイコー、ユニマイクロンの基板子会社買収へ",
-      "zh": "梅科將收購欣興電子的基板子公司"
+      "zh": "美光，計畫收購美光的基板子公司"
      }
     ]
    },
@@ -1326,15 +958,15 @@
     "items": [
      {
       "ja": "LGD、7～9月は減収減益、有機ELは増加",
-      "zh": "LGD 7至9月期營收與獲利雙減，惟OLED有所增加"
+      "zh": "LGD，7～9月營收與獲利下滑，有機EL增長"
      },
      {
       "ja": "エヌ・ピー・シー、中期経営計画を策定、5年間で売上高1.6倍規模",
-      "zh": "NPC擬定中期經營計畫，5年間營收規模擴大至1.6倍"
+      "zh": "N.P.C，制定中期經營計畫，五年內營收規模提升1.6倍"
      },
      {
       "ja": "岐阜大学、PSCで効率19%超、新構造で電子輸送を改善",
-      "zh": "岐阜大學PSC效率突破19%，透過新結構改善電子傳輸"
+      "zh": "岐阜大學，PSC效率超過19%，新結構改善電子傳輸"
      }
     ]
    },
@@ -1343,35 +975,35 @@
     "items": [
      {
       "ja": "Holoway、計測検査の事業化加速、半導体プロセスに組み込み",
-      "zh": "Holoway加速量測檢測業務商用化，嵌入半導體製程中"
+      "zh": "Holoway，加速測量檢測事業化，嵌入半導體製程"
      },
      {
       "ja": "台湾政府、3カ所で海水淡水化、半導体製造や飲料水向け",
-      "zh": "台灣政府於三處推動海水淡化，供半導體製造與飲用水使用"
+      "zh": "台灣政府，於三處推動海水淡化，供半導體製造與飲用水使用"
      },
      {
       "ja": "晶盛機電、300mmSiCを供給、200mmの量産さらに拡大へ",
-      "zh": "晶盛機電供應300mm SiC，200mm量產將進一步擴大"
+      "zh": "晶盛機電，供應300mm SiC，200mm量產規模進一步擴大"
      },
      {
       "ja": "信越化学工業 電子材料事業、7～9月は7%増収、ウエハーはフル生産対応",
-      "zh": "信越化學工業電子材料事業7至9月營收增加7%，晶圓產能全面滿載"
+      "zh": "信越化學電子材料事業部，7～9月營收成長7%，晶圓全產能投入生產"
      },
      {
       "ja": "大日本印刷、ガラスコアの量産化視野、光電融合の事業性を探索",
-      "zh": "大日本印刷將玻璃核心量產化納入視野，探索光電融合的事業性"
+      "zh": "大日本印刷，探索玻璃核量產化與光電融合商業化可能性"
      },
      {
       "ja": "日立製作所、GPU冷却用コールドプレート、電力を3割削減",
-      "zh": "日立製作所推出GPU冷卻用冷板，電力消耗削減三成"
+      "zh": "日立，GPU散熱用冷板，可降低電力消耗30%"
      },
      {
       "ja": "東京エレクトロン 26年度、売上高3.7兆円に、新規装置売上は6割増",
-      "zh": "東京威力科創2026年度營收將達3.7兆日圓，新設備銷售大增六成"
+      "zh": "東京電子 2026年度，營收達3.7兆日圓，新設備營收成長60%"
      },
      {
       "ja": "アドバンテスト、2度目の上方修正、26年度売上は1.8兆円",
-      "zh": "愛德萬測試第二次上修財測，2026年度營收將達1.8兆日圓"
+      "zh": "Advantest，第二次上修，2026年度營收預計1.8兆日圓"
      }
     ]
    }
