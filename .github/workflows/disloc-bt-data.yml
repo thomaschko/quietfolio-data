@@ -1,0 +1,49 @@
+name: Dislocation Backtest Data (錯殺回檔回測資料)
+
+# 2026-11-15:錯殺回檔路徑 A / B 回測(docs/prereg_dislocation_path_b.md)的基本面資料管線。
+# 每晚台北 00:10 跑最多 330 分鐘(FinMind 約 450 次/小時,和 GAS 共用額度,避開白天與 21:47 題材頁);
+# 進度存在 bt_disloc/progress.json,全部抓完後每晚的執行會直接結束(之後可把排程拿掉)。
+on:
+  schedule:
+    - cron: '10 16 * * *'   # UTC 16:10 = 台北 00:10
+  workflow_dispatch:
+    inputs:
+      max_minutes:
+        description: '最多執行幾分鐘'
+        default: '330'
+      gap:
+        description: '每次 FinMind 請求間隔秒數'
+        default: '8'
+
+permissions:
+  contents: write
+
+concurrency: disloc-bt-data
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Fetch
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python disloc_bt_data.py --max-minutes "${{ github.event.inputs.max_minutes || '330' }}" --gap "${{ github.event.inputs.gap || '8' }}"
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          [ -e bt_disloc ] && git add bt_disloc
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "Dislocation backtest data"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
