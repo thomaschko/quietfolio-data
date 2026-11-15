@@ -11,7 +11,8 @@ FinMind 還原價資料集(TaiwanStockPriceAdj)在目前方案取不到 → 改�
 輸出 adj_factors.json:{"asof","source","stocks":{代號:[[起日, 係數], ...]}},係數只在除權息日改變;
   使用:找起日 ≤ 該日的最後一段;早於第一段用第一段;晚於最後一段用最後一段(通常是 1)。
 股票池:bt_disloc/universe.csv.gz(上市 → .TW、上櫃 → .TWO)。
-係數不合理(< 0.15 或 > 1.05)的個股不輸出(使用端當作未還原)。
+係數不合理(< 0.15 或 > 5)的個股不輸出(使用端當作未還原)。減資時舊價格要往上調,係數會 > 1(2026-11-15 修正原本 1.05 上限)。
+第一次下載失敗的(多半是上市 / 上櫃轉板,後綴對不上)改用另一個後綴再試一次。
 """
 import csv
 import datetime as dt
@@ -56,15 +57,15 @@ def segments(dates, adj, close, splits):
 
 
 def sane(seg):
-    return bool(seg) and all(0.15 <= f <= 1.05 for _, f in seg)
+    return bool(seg) and all(0.15 <= f <= 5.0 for _, f in seg)
 
 
-def run(code_suffix, today=None):
+def run(code_suffix, today=None, retry_other_suffix=True):
     import yfinance as yf
     import pandas as pd
     today = today or dt.date.today()
     start = (today - dt.timedelta(days=365 * YEARS + 30)).isoformat()
-    stocks, failed, dropped = {}, 0, []
+    stocks, failed, dropped, failed_codes = {}, 0, [], []
     items = sorted(code_suffix.items())
     for i in range(0, len(items), CHUNK):
         part = items[i:i + CHUNK]
@@ -75,6 +76,7 @@ def run(code_suffix, today=None):
         except Exception as e:
             print("  ⚠ 批次 %d: %s" % (i, e))
             failed += len(part)
+            failed_codes += [c for c, _ in part]
             continue
         for c, s in part:
             try:
@@ -82,6 +84,7 @@ def run(code_suffix, today=None):
                 h = h.dropna(subset=["Close", "Adj Close"])
                 if len(h) < 20:
                     failed += 1
+                    failed_codes.append(c)
                     continue
                 sp = h["Stock Splits"].fillna(0).tolist() if "Stock Splits" in h else [0] * len(h)
                 dates = [d.strftime("%Y-%m-%d") for d in pd.to_datetime(h.index)]
@@ -92,8 +95,16 @@ def run(code_suffix, today=None):
                     dropped.append(c)
             except Exception:
                 failed += 1
+                failed_codes.append(c)
         print("  %d/%d,可用 %d" % (min(i + CHUNK, len(items)), len(items), len(stocks)))
         time.sleep(1.5)
+    if retry_other_suffix and failed_codes:
+        other = {c: (".TWO" if code_suffix[c] == ".TW" else ".TW") for c in failed_codes}
+        s2, f2, d2 = run(other, today, retry_other_suffix=False)
+        print("  換後綴重試 %d 檔,補到 %d 檔" % (len(other), len(s2)))
+        stocks.update(s2)
+        dropped += d2
+        failed = f2
     return stocks, failed, dropped
 
 
@@ -110,7 +121,8 @@ def main():
         json.dump(doc, f, ensure_ascii=False, separators=(",", ":"))
     os.replace(tmp, OUT)
     sample = {c: stocks.get(c) for c in ("2330", "2454", "3081", "3665", "3026")}
-    print(json.dumps({"status": "ok", "n": len(stocks), "universe": len(cs), "failed": failed, "dropped": dropped[:20],
+    print(json.dumps({"status": "ok", "n": len(stocks), "universe": len(cs), "failed": failed, "n_dropped": len(dropped), "dropped": dropped[:20],
+                      "n_up": sum(1 for v in stocks.values() if any(f > 1.0001 for _, f in v)),
                       "with_events": sum(1 for v in stocks.values() if len(v) > 1), "sample": sample}, ensure_ascii=False)[:3000])
     return 0
 

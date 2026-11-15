@@ -19,7 +19,8 @@ class T(unittest.TestCase):
 
     def test_sane(self):
         self.assertTrue(A.sane([["d", 0.5], ["e", 1.0]]))
-        self.assertFalse(A.sane([["d", 1.3]]))
+        self.assertTrue(A.sane([["d", 2.0], ["e", 1.0]]))                       # 減資(股本減半)→ 舊價格 × 2
+        self.assertFalse(A.sane([["d", 6.0]]))
         self.assertFalse(A.sane([]))
 
 
