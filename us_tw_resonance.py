@@ -185,7 +185,7 @@ def build(base=".", now=None):
         elif us_hot:
             label = "美股升溫"
         elif n_up >= cfg["tw_min_n"] and n_up > n_dn:
-            label = "台股先動"
+            label = "僅台股籌碼同向"   # 2026-11-13 審查 E1:原名「台股先動」暗示時間先後,但程式沒有比較時間
         else:
             label = ""
         top = sorted(a["n30"], key=lambda k: (-a["n30"][k], k))[:cfg["tickers_max"]]
@@ -197,7 +197,7 @@ def build(base=".", now=None):
                      "tr_cur": len(b["cur"]), "tr_cur_both": len(b["cur_both"]) if tr_cmp else None,
                      "tr_prev_both": len(b["prev_both"]) if tr_cmp else None,
                      "tw_n": len(codes), "tw_up": n_up, "tw_down": n_dn, "tw": codes})
-    order = {"共振": 0, "背離": 1, "美股升溫": 2, "台股先動": 3, "": 4, "僅美股": 5}
+    order = {"共振": 0, "背離": 1, "美股升溫": 2, "僅台股籌碼同向": 3, "": 4, "僅美股": 5}
     rows.sort(key=lambda r: (order[r["label"]], -r["pr_n30"], -r["tr_cur"]))
     terms = []
     for t in set(t_pr) | set(t_tr):
@@ -218,7 +218,7 @@ def build(base=".", now=None):
            "labels": {"共振": "美股升溫,且對應台股有 ≥2 檔大戶增 + 外資自營商買超(或共識頁融資+法人同向買),多於反向",
                       "背離": "美股升溫,但對應台股反向(大戶減 + 外資自營商賣超)的檔數較多",
                       "美股升溫": "美股升溫,台股籌碼沒有明顯同向",
-                      "台股先動": "台股籌碼同向,美股法說 / 新聞稿尚未升溫",
+                      "僅台股籌碼同向": "台股籌碼同向,美股法說 / 新聞稿沒有升溫(只比較兩邊目前的狀態,沒有量測誰先誰後)",
                       "僅美股": "這個詞組沒有對應的台股題材籃子"},
            "notes": ["美股新聞稿與法說內容為公司陳述,未經查證;詞命中不等於題材成立",
                      "集保大戶為週資料,不分身分;外資+自營商與大戶同向只是印證,不是因果",

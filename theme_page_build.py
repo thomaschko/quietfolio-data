@@ -341,6 +341,9 @@ def radar_verification(base="."):
         return "not_built"
     return {"by_type": h.get("by_detection_type"), "pending": h.get("pending_count"), "total": h.get("total_claims"),
             "rule": "標記後 30 天,收盤價較標記日漲 ≥ +10% 算印證,否則算反駁(反駁不代表下跌);沒有和隨機挑股比較",
+            # 2026-11-13 審查 Q1:原始命中率受大盤影響;另附超額報酬(相對加權指數,市值加權)與標記日數
+            "excess_note": "超額＝個股 30 天報酬 − 加權指數同期報酬(百分點);依標記日等權＝先算每個標記日的平均,再平均各日。"
+                           "加權指數是市值加權,雷達個股多為中小型股,兩者口徑不同,只能當參考",
             "asof": dg.get("date")}
 
 
