@@ -1,0 +1,41 @@
+name: Adjustment Factors (還原價係數 Yahoo)
+
+# 2026-11-15:FinMind 還原價資料集取不到 → 用 yfinance(Yahoo)算每檔還原係數 adj_factors.json,
+# 題材頁與 GAS(錯殺回檔、糾結突破、創新高 bootstrap)把 FinMind 原始價乘上係數。
+# 台北 15:20(GAS 錯殺回檔 17:00、糾結突破 20:00 之前)與 21:20(題材頁 21:47 之前)各跑一次。
+on:
+  schedule:
+    - cron: '20 7 * * 1-5'
+    - cron: '20 13 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: adj-factors
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install yfinance pandas
+      - name: Build
+        run: python adj_factors.py
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          [ -e adj_factors.json ] && git add adj_factors.json
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "Adjustment factors"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
