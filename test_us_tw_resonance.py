@@ -56,7 +56,7 @@ class TestResonance(unittest.TestCase):
         shutil.rmtree(os.path.join(self.d, P.DAY_DIR))
         doc, _ = R.build(self.d, now=NOW)
         g = {r["g"]: r for r in doc["groups"]}
-        self.assertEqual(g["光通訊/CPO"]["label"], "台股先動")
+        self.assertEqual(g["光通訊/CPO"]["label"], "僅台股籌碼同向")
         self.assertEqual(doc["recent"], [])
 
 

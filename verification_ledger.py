@@ -36,11 +36,30 @@ DIGEST_FILE = "daily_digest.json"
 JUDGE_DAYS = 30          # 標記後N天做裁決
 DEDUPE_DAYS = 7          # 同一檔股票+同一題材,N天內不重複記claim
 WIN_THRESHOLD_PCT = 10.0  # 報酬率>=此門檻判✅印證,否則❌反駁
+# 2026-11-13 審查 Q1:原始報酬受大盤影響很大(9/22–10/15 標記的 568 筆遇上急跌,各類平均 −16% 以上),
+#   另記「加權指數同期報酬」與「超額報酬」,並依標記日分群統計;印證/反駁的判定規則不變。
+#   指數用 theme_page 已快取的 FinMind TAIEX(不新增來源);快取還沒涵蓋裁決日時先留空,之後的執行再補。
+TAIEX_CACHE = "theme_page/cache/_TAIEX.json"
+
+
+def _row_date(row):
+    """openapi 列的資料日期 → YYYYMMDD(民國 1151113 / 115/11/13 / 西元 20261113 都接受);沒有就 None"""
+    v = str(row.get("Date") or row.get("date") or "").replace("/", "").replace("-", "").strip()
+    if re.fullmatch(r"\d{7}", v):                       # 民國年 3 碼
+        return "%04d%s" % (int(v[:3]) + 1911, v[3:])
+    if re.fullmatch(r"\d{8}", v):
+        return v
+    return None
+
+
+PRICE_DATES = {}   # {code: 收盤價的資料日期 YYYYMMDD};fetch_all_close_prices 填入
 
 
 def fetch_all_close_prices():
-    """回傳 {code: close_price(float)},上市+上櫃合併,單一失敗不擋另一邊。"""
+    """回傳 {code: close_price(float)},上市+上櫃合併,單一失敗不擋另一邊。
+    2026-11-13:同時把每檔收盤價的資料日期記在 PRICE_DATES(證交所 STOCK_DAY_ALL 曾落後一天)。"""
     prices = {}
+    PRICE_DATES.clear()
     try:
         r = requests.get("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL",
                           headers=UA, timeout=20)
@@ -52,6 +71,7 @@ def fetch_all_close_prices():
             if code and close_str:
                 try:
                     prices[code] = float(close_str)
+                    PRICE_DATES[code] = _row_date(row)
                 except ValueError:
                     pass
         print(f"  TWSE收盤價: {len(prices)} 檔")
@@ -70,6 +90,7 @@ def fetch_all_close_prices():
             if code and close_str and re.match(r"^\d{4,6}$", code):
                 try:
                     prices[code] = float(close_str)
+                    PRICE_DATES[code] = _row_date(row)
                 except ValueError:
                     pass
         print(f"  TPEx收盤價: +{len(prices)-before} 檔")
@@ -113,6 +134,7 @@ def judge_pending_claims(ledger, prices, today_str):
         return_pct = round((judged_price - flagged_price) / flagged_price * 100, 2)
         claim["judged_date"] = today_str
         claim["judged_price"] = judged_price
+        claim["judged_price_date"] = PRICE_DATES.get(code)
         claim["return_pct"] = return_pct
         claim["status"] = "confirmed" if return_pct >= WIN_THRESHOLD_PCT else "refuted"
         judged_count += 1
@@ -150,7 +172,7 @@ def log_new_claims(ledger, digest, prices, today, today_str):
         ledger.append({
             "code": code, "name": r.get("name", ""), "theme": theme,
             "region": "A", "detection_type": detection_type,
-            "flagged_date": today_str, "flagged_price": price,
+            "flagged_date": today_str, "flagged_price": price, "flagged_price_date": PRICE_DATES.get(code),
             "judge_date": judge_date, "status": "pending",
         })
         new_count += 1
@@ -169,12 +191,71 @@ def log_new_claims(ledger, digest, prices, today, today_str):
             ledger.append({
                 "code": code, "name": names.get(code, ""), "theme": theme,
                 "region": "D", "detection_type": "keyword_surge",
-                "flagged_date": today_str, "flagged_price": price,
+                "flagged_date": today_str, "flagged_price": price, "flagged_price_date": PRICE_DATES.get(code),
                 "judge_date": judge_date, "status": "pending",
             })
             new_count += 1
 
     return new_count
+
+
+def load_index(path=TAIEX_CACHE):
+    """→ [(YYYYMMDD, close)] 依日期排序;讀不到 → []"""
+    try:
+        with open(path, encoding="utf-8") as f:
+            d = json.load(f)
+    except Exception:
+        return []
+    rows = d.get("px") if isinstance(d, dict) else d
+    out = []
+    for r in rows or []:
+        try:
+            out.append((str(r[0]).replace("-", ""), float(r[1])))
+        except (TypeError, ValueError, IndexError):
+            continue
+    return sorted(out)
+
+
+def _idx_on_or_before(idx, d8):
+    best = None
+    for d, v in idx:
+        if d <= d8:
+            best = v
+        else:
+            break
+    return best
+
+
+def add_index_returns(ledger, idx):
+    """已裁決、還沒有指數報酬的 claim → 補 idx_return_pct / excess_pct(百分點)。
+    起點用 flagged_price_date(沒有就用 flagged_date),終點用 judged_price_date(沒有就用 judged_date);
+    指數快取最新日期還沒到終點 → 先不填。回傳補了幾筆。"""
+    if not idx:
+        return 0
+    last = idx[-1][0]
+    n = 0
+    for c in ledger:
+        if c.get("status") not in ("confirmed", "refuted") or c.get("idx_return_pct") is not None or c.get("return_pct") is None:
+            continue
+        a = c.get("flagged_price_date") or c.get("flagged_date")
+        b = c.get("judged_price_date") or c.get("judged_date")
+        if not a or not b or b > last:
+            continue
+        i0, i1 = _idx_on_or_before(idx, a), _idx_on_or_before(idx, b)
+        if not i0 or not i1:
+            continue
+        c["idx_return_pct"] = round((i1 / i0 - 1) * 100, 2)
+        c["excess_pct"] = round(c["return_pct"] - c["idx_return_pct"], 2)
+        n += 1
+    return n
+
+
+def _median(xs):
+    xs = sorted(xs)
+    if not xs:
+        return None
+    m = len(xs) // 2
+    return xs[m] if len(xs) % 2 else (xs[m - 1] + xs[m]) / 2
 
 
 def build_summary(ledger):
@@ -190,9 +271,21 @@ def build_summary(ledger):
     summary = {}
     for k, v in by_type.items():
         total = v["confirmed"] + v["refuted"]
+        judged = [c for c in ledger if c["status"] in ("confirmed", "refuted") and c["detection_type"] == k]
+        ex = [c for c in judged if c.get("excess_pct") is not None]
+        by_day = {}
+        for c in ex:
+            by_day.setdefault(c["flagged_date"], []).append(c["excess_pct"])
+        day_means = [sum(x) / len(x) for x in by_day.values()]
         summary[k] = {
             "confirmed": v["confirmed"], "refuted": v["refuted"], "total_judged": total,
             "win_rate_pct": round(v["confirmed"] / total * 100, 1) if total else None,
+            # 2026-11-13 審查 Q1:標記日數、超額報酬(相對加權指數)中位數與「依標記日等權」平均
+            "n_dates": len({c["flagged_date"] for c in judged}),
+            "n_excess": len(ex),
+            "raw_median_pct": round(_median([c["return_pct"] for c in judged]), 2) if judged else None,
+            "excess_median_pct": round(_median([c["excess_pct"] for c in ex]), 2) if ex else None,
+            "excess_date_mean_pct": round(sum(day_means) / len(day_means), 2) if day_means else None,
         }
     pending_count = sum(1 for c in ledger if c["status"] == "pending")
     return {"by_detection_type": summary, "pending_count": pending_count,
@@ -216,6 +309,8 @@ def main():
 
     judged = judge_pending_claims(ledger, prices, today_str)
     print(f"[裁決] 本次到期並裁決: {judged} 筆")
+    filled = add_index_returns(ledger, load_index())
+    print(f"[超額報酬] 補上加權指數同期報酬: {filled} 筆")
 
     try:
         with open(DIGEST_FILE, "r", encoding="utf-8") as f:
