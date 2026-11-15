@@ -28,6 +28,16 @@ import time
 FORBIDDEN = ("買進", "賣出", "推薦", "目標價", "主力", "必漲", "加碼", "減碼")
 SIGNALS = [("preferment", "發酵前"), ("surge", "關鍵字暴增"), ("dual", "雙邊確認"), ("new", "新題材"),
            ("us", "美股升溫"), ("tw_chip", "台股籌碼同向")]
+# 2026-11-15 審查 T1(使用者核准):前 4 項都來自同一份雷達摘要(daily_digest.json),不是獨立來源 →
+#   熱度改成 3 類:雷達(4 項任一)/ 美股 / 台股籌碼,0–3。6 項訊號仍逐項顯示。
+#   熱度歷史改存 auto_state 的 heat3(舊的 0–6 紀錄 heat 保留不動,不混用)。
+HEAT_GROUPS = [("radar", "雷達", ("preferment", "surge", "dual", "new")), ("us", "美股", ("us",)), ("tw_chip", "台股籌碼", ("tw_chip",))]
+
+
+def heat_of(signals):
+    """→ (熱度 0–3, 命中的類別名稱)"""
+    hit = [name for _, name, keys in HEAT_GROUPS if any(k in signals for k in keys)]
+    return len(hit), hit
 AI_REFRESH_DAYS = 7
 AUTO_DIR = "theme_page"
 
@@ -151,7 +161,7 @@ def select_themes(base=".", asof=None):
         cands.append({"id": tid, "name": d["name"], "radar_terms": d.get("aliases") or [], "us_groups": d.get("us_groups") or [],
                       "coverage": d.get("coverage") or [], "baskets": d.get("baskets") or [], "extra": [str(c) for c in d.get("extra") or []],
                       "_auto_stocks": stocks,
-                      "auto": {"signals": {k: sig[k][:6] for k, _ in SIGNALS if k in sig}, "heat": sum(1 for k, _ in SIGNALS if k in sig),
+                      "auto": {"signals": {k: sig[k][:6] for k, _ in SIGNALS if k in sig}, "heat": heat_of(sig)[0], "heat_groups": heat_of(sig)[1],
                                "max_ratio": ratio.get(tid), "tw_up": up, "tw_down": dn, "n_stocks": len(stocks),
                                "us": [[g["g"], g.get("pr_n30"), g.get("tr_cur"), g.get("label")] for g in ug]}})
     fixed = cfg.get("fixed") or []
@@ -170,7 +180,7 @@ def select_themes(base=".", asof=None):
         if on and day not in s["days"]:
             s["days"] = (s["days"] + [day])[-90:]
             s["first"] = s["first"] or day
-        hh = s.setdefault("heat", {})                       # 每天的訊號來源數(生命週期的熱度趨勢用)
+        hh = s.setdefault("heat3", {})                      # 每天的熱度(3 類,生命週期的熱度趨勢用;2026-11-15 起)
         hh[day] = c["auto"]["heat"]
         for k in sorted(hh)[:-60]:
             del hh[k]
@@ -183,13 +193,13 @@ def select_themes(base=".", asof=None):
             d0 -= dt.timedelta(days=1)
         c["auto"]["streak_days"] = streak
         c["auto"]["first_seen"] = st.get(c["id"], {}).get("first")
-        c["auto"]["heat_hist"] = sorted((st.get(c["id"], {}).get("heat") or {}).items())[-20:]
+        c["auto"]["heat_hist"] = sorted((st.get(c["id"], {}).get("heat3") or {}).items())[-20:]
         c["auto"]["days_on"] = len(st.get(c["id"], {}).get("days") or [])
         c["auto"]["selected"] = "固定" if c["id"] in fixed else "自動"
     os.makedirs(os.path.join(base, AUTO_DIR), exist_ok=True)
     _write(sp, st)
     meta = {"digest_date": day, "unmatched": unmatched[:40], "n_candidates": len(cands),
-            "signals": [list(s) for s in SIGNALS]}
+            "signals": [list(s) for s in SIGNALS], "heat_groups": [[g, n, list(k)] for g, n, k in HEAT_GROUPS]}
     return chosen, meta
 
 
@@ -429,7 +439,7 @@ def auto_kill(tiers_by_code, base=".", asof=None):
 # ------------------------------------------------------------------ 題材層級退場警示(2026-11-12)
 # 個股認錯條件只看基本面;題材交易常是題材先退燒。三條系統預設(版本 0,只新增不修改),門檻登記後不看結果調整。
 THEME_EXIT = [
-    ("heat_fall", "訊號來源數連續 5 天沒有增加,且 5 天內合計減少", "近 6 天訊號來源數紀錄", 5),
+    ("heat_fall", "熱度(雷達 / 美股 / 台股籌碼 3 類)連續 5 天沒有增加,且 5 天內合計減少", "近 6 天熱度紀錄", 5),
     ("below20", "題材股超過半數跌破 20 日均線", "站上 20 日均線的個股比例 < 50%", 0.5),
     ("crowd", "題材股融資張數分位(各自和自己歷史比的中位數)≥ 90", "融資張數分位中位數", 90),
 ]
@@ -479,11 +489,11 @@ LIFECYCLE_CFG = {
     "crowd_pctile": 90,             # 題材個股「融資張數歷史分位」的中位數 ≥ 90 → 擁擠(2026-11-12 改為等權、不含股價)
     "crowd_near_high": 0.60,        # 或 ≥ 60% 個股距一年高點 < 10% 且近 20 日等權報酬 ≥ +20%
     "crowd_ret20": 0.20,
-    "cool_heat_drop": 1.0,          # 訊號來源數比前 5 天平均少 ≥ 1
+    "cool_heat_drop": 1.0,          # 熱度(3 類)比前 5 天平均少 ≥ 1(2026-11-15 起熱度改 3 類,這個門檻沒動)
     "cool_above20": 0.40,           # 且站上 20 日均線的個股 < 40% → 降溫
     "pullback_above20": 0.40,       # 訊號沒有減少,但站上 20 日均線的個股 < 40% 且近 20 日等權報酬 < 0 → 回檔中
     "min_stocks": 3,                # 有價格資料的個股 < 3 檔 → 不判斷
-    "rel_pp": 3.0,                  # 近 20 日題材等權報酬 − 大盤 ≥ +3 點 → 抗跌 / 強於大盤;≤ −3 點 → 弱於大盤(2026-11-12)
+    "rel_pp": 3.0,                  # 近 20 日題材等權報酬 − 基準 ≥ +3 點 → 抗跌 / 較強;≤ −3 點 → 較弱(2026-11-12;11-15 基準改全部題材股等權)
 }
 STAGES = {"萌芽": "雷達剛出現不久、題材股還沒明顯上漲",
           "發酵": "訊號持續出現,題材股開始反應",
@@ -500,7 +510,7 @@ def _close_on_or_after(rows, d):
     return None
 
 
-def lifecycle(auto, px_by_code, idx_px, crowd_pctile=None, tracking_start=None, cfg=LIFECYCLE_CFG):
+def lifecycle(auto, px_by_code, idx_px, crowd_pctile=None, tracking_start=None, cfg=LIFECYCLE_CFG, ref_px=None, bench="加權指數"):
     """auto:select_themes 的 auto 欄位;px_by_code:{代號: [(date, close)]}(依日期);idx_px:[(date, close)]
     → 各項描述指標 + 階段(依 LIFECYCLE_CFG 固定門檻)"""
     first = auto.get("first_seen")
@@ -535,11 +545,16 @@ def lifecycle(auto, px_by_code, idx_px, crowd_pctile=None, tracking_start=None, 
         if fd:
             b = _close_on_or_after(ip, fd)
             out["idx_since_first"] = ip[-1][1] / b - 1 if b else None
-    # 相對大盤強弱(百分點):大跌時用來分辨哪些題材比較抗跌
+    # 相對強弱(百分點):大跌時用來分辨哪些題材比較抗跌。
+    # 2026-11-15 審查 Q3:idx_px 改傳「全部題材股等權」(bench);加權指數改放 ref_px,只輸出 taiex_ret20 當參考
+    out["bench"] = bench
+    rp = [(d, v) for d, v in ref_px or [] if v]
+    if len(rp) >= 21:
+        out["taiex_ret20"] = round(rp[-1][1] / rp[-21][1] - 1, 4)
     if out.get("idx_ret20") is not None:
         out["rel20"] = round((out["ret20"] - out["idx_ret20"]) * 100, 1)   # 先四捨五入再比門檻,畫面上的數字與標籤一致
-        out["rel_label"] = ("抗跌" if out["idx_ret20"] < 0 else "強於大盤") if out["rel20"] >= cfg["rel_pp"] else \
-            ("弱於大盤" if out["rel20"] <= -cfg["rel_pp"] else "與大盤同步")
+        out["rel_label"] = ("抗跌" if out["idx_ret20"] < 0 else "較強") if out["rel20"] >= cfg["rel_pp"] else \
+            ("較弱" if out["rel20"] <= -cfg["rel_pp"] else "同步")
     if out.get("idx_since_first") is not None and out.get("ret_since_first") is not None:
         out["rel_since_first"] = (out["ret_since_first"] - out["idx_since_first"]) * 100
     hh = [h for _, h in auto.get("heat_hist") or []]

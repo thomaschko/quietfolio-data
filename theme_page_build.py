@@ -344,7 +344,11 @@ def radar_verification(base="."):
             # 2026-11-13 審查 Q1:原始命中率受大盤影響;另附超額報酬(相對加權指數,市值加權)與標記日數
             "excess_note": "超額＝個股 30 天報酬 − 加權指數同期報酬(百分點);依標記日等權＝先算每個標記日的平均,再平均各日。"
                            "加權指數是市值加權,雷達個股多為中小型股,兩者口徑不同,只能當參考",
-            "asof": dg.get("date")}
+            "asof": dg.get("date"),
+            # 2026-11-15:預先登記評估(radar_eval.py)只帶狀態與配對標記日數,樣本不足時不顯示差值
+            "eval": {k: {"status": v.get("status"), "paired_dates": v.get("paired_dates"), "min_dates": v.get("min_dates"),
+                         **({"ci95_pp": v.get("ci95_pp"), "mean_diff_pp": v.get("mean_diff_pp")} if v.get("ci95_pp") else {})}
+                     for k, v in ((_read(os.path.join(base, "radar_eval.json"), {}) or {}).get("rules") or {}).items()}}
 
 
 def lookup_meta(base="."):
@@ -418,6 +422,17 @@ def refresh_cache(code, fm, asof, cache):
                 elif r["type"] == "PropertyAndPlantAndEquipment":
                     q.setdefault(k, {})["capex"] = r.get("value")
             cache["cf"] = [[y, qq, v.get("ocf"), v.get("capex")] for (y, qq), v in sorted(q.items())]
+    # 2026-11-15 審查 Q2(使用者核准):收盤價改用還原價 TaiwanStockPriceAdj,每天整段重抓(除權息後過去的還原價會變);
+    #   這次執行第一次取不到(非 200 / 欄位不符)→ 整次改回未還原 TaiwanStockPrice 增量抓,meta["px_basis"] 記錄用了哪一種。
+    if meta.get("px_try") != asof.isoformat() and getattr(fm, "adj_ok", None) is not False:
+        rows = fm.get("TaiwanStockPriceAdj", code, (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat())
+        if rows is None or (rows and rows[0].get("close") is None):
+            fm.adj_ok = False
+        elif rows:
+            fm.adj_ok = True
+            cache["px"] = sorted([r["date"], r["close"]] for r in rows if r.get("close"))
+            meta["px_try"] = asof.isoformat()
+            meta["px_basis"] = "adj"
     for key, ds, field in (("pe", "TaiwanStockPER", "PER"), ("px", "TaiwanStockPrice", "close")):
         cur = cache.get(key) or []
         last = cur[-1][0] if cur else None
@@ -429,6 +444,8 @@ def refresh_cache(code, fm, asof, cache):
             (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat()
         rows = fm.get(ds, code, s)
         meta[key + "_try"] = asof.isoformat()
+        if key == "px":                                    # 走到這裡 = 這次沒拿到還原價
+            meta["px_basis"] = "adj+raw" if meta.get("px_basis") in ("adj", "adj+raw") else "raw"
         if rows:
             add = [[r["date"], r.get(field)] for r in rows if r.get(field) is not None]
             cutoff = (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat()
@@ -552,6 +569,32 @@ def theme_evidence(theme, base="."):
     has = bool(radar) or bool(us and (us["pr_n30"] or us["tr_cur"]))
     return {"radar": radar[:8] if dg else "not_built", "radar_date": dg and dg.get("date"),
             "us": us if res else "not_built", "edgar_capex": "not_built", "has": has}
+
+
+def eq_weight_index(px_by_code, min_n=5, max_abs_ret=0.11):
+    """全部題材股的等權報酬指數(2026-11-15 審查 Q3,使用者核准):
+    每天取各股「和自己前一筆收盤比」的報酬做簡單平均,連乘成指數(起點 100)。
+    單日報酬絕對值 > 11%(台股漲跌幅 10%)視為除權息、減資等股本變動,當天不計入那一檔;
+    當天可計算的股票 < min_n 檔就略過那天。→ [(date, index)]"""
+    by_day = {}
+    for rows in px_by_code.values():
+        prev = None
+        for d, v in rows:
+            if not v:
+                continue
+            if prev:
+                r = v / prev - 1
+                if abs(r) <= max_abs_ret:
+                    by_day.setdefault(d, []).append(r)
+            prev = v
+    out, lvl = [], 100.0
+    for d in sorted(by_day):
+        rs = by_day[d]
+        if len(rs) < min_n:
+            continue
+        lvl *= 1 + sum(rs) / len(rs)
+        out.append((d, round(lvl, 4)))
+    return out
 
 
 def build_stock(code, src, cache, asof, industry, has_evidence, dd, idx_px, manual=None):
@@ -687,7 +730,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
     firsts = [v.get("first") for v in st_all.values() if v.get("first")]
     tracking_start = min(firsts) if firsts else None
     kill_auto = _read(os.path.join(base, OUT_DIR, "kill_auto.json"), []) or []
-    index = []
+    index, built = [], []
     for th in themes:
         ev = theme_evidence(th, base)
         stocks = []
@@ -706,6 +749,8 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
                 log["mops"][code] = st
             _write(cp, cache)
             px_by_code[code] = [(dt.date.fromisoformat(d), v) for d, v in cache.get("px") or []]
+            pb = (cache.get("meta") or {}).get("px_basis") or "raw"
+            log.setdefault("px_basis", {})[pb] = log.setdefault("px_basis", {}).get(pb, 0) + 1
             row = next((r for r in th.get("_sheet_stocks") or [] if str(r.get("code")).strip() == code), None)
             man = manual_for(code, row, manual_all)
             try:
@@ -724,13 +769,22 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
             if k:
                 s["kill"] = k
             stocks.append(compact_cells(s))
+        built.append((th, ev, stocks, px_by_code))
+    # 2026-11-15 審查 Q3:相對強弱的基準改成「全部題材股等權」(和題材同口徑);加權指數只當參考
+    union = {}
+    for _, _, _, pbc in built:
+        union.update(pbc)
+    bench_px = eq_weight_index(union)
+    log["bench"] = {"n_stocks": len(union), "n_days": len(bench_px)}
+    for th, ev, stocks, px_by_code in built:
         order = {t: i for i, t in enumerate(T.TIERS)}
         stocks.sort(key=lambda s: (order.get(s["tier"]["tier"], 9), s["code"]))
         th_pub = {k: v for k, v in th.items() if not k.startswith("_")}
         if th.get("auto"):
             mc = crowd.get(th["id"]) or {}
             # 擁擠判斷用「個股融資張數分位的中位數」(等權、不含股價);加權占比分位只顯示
-            th_pub["lifecycle"] = A.lifecycle(th["auto"], px_by_code, idx_px or [], mc.get("stock_lots_pctile_median"), tracking_start)
+            th_pub["lifecycle"] = A.lifecycle(th["auto"], px_by_code, bench_px or idx_px or [], mc.get("stock_lots_pctile_median"),
+                                              tracking_start, ref_px=idx_px or [], bench="題材股等權" if bench_px else "加權指數")
             th_pub["lifecycle"]["margin"] = mc
             th_pub["lifecycle"]["herd"] = theme_herd(list(px_by_code), base)
             th_pub["lifecycle"]["futures"] = fut if isinstance(fut, str) else (fut.get(th["id"]) or {"stock_n": 0})
@@ -780,6 +834,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
            "drawdown_active": bool(dd.get("active")), "log": log, "auto_meta": auto_meta,
            "lifecycle_cfg": A.LIFECYCLE_CFG, "stages": A.STAGES, "tracking_start": tracking_start,
            "radar_verification": radar_verification(base),
+           "px_basis": log.get("px_basis"),
            "notes": ["研究優先順序用途,不是買賣訊號;沒有分數、不依分數排序"]}
     _write(os.path.join(base, OUT_DIR, "index.json"), doc)
     print(json.dumps({k: v for k, v in log.items()}, ensure_ascii=False))
