@@ -146,6 +146,11 @@ jobs:
         continue-on-error: true
         run: python verification_ledger.py
 
+      # 2026-11-15:雷達規則的預先登記評估(docs/prereg_radar_theme_cluster.md),只描述,不改收錄
+      - name: Radar rule evaluation
+        continue-on-error: true
+        run: python radar_eval.py
+
 
       - name: Commit and push
         run: |
@@ -159,6 +164,7 @@ jobs:
           git add theme_history/ 2>/dev/null || true
           git add price_history/ 2>/dev/null || true
           [ -f price_stage.json ] && git add price_stage.json || true
+          [ -f radar_eval.json ] && git add radar_eval.json || true
           [ -f investor_day_signals.json ] && git add investor_day_signals.json || true
           [ -f investor_calendar.json ] && git add investor_calendar.json || true
           git add company_history/ 2>/dev/null || true

@@ -59,7 +59,13 @@ class FakeFM:
         self.calls.append((ds, code, start))
         if ds == "TaiwanStockInfo":
             return [{"stock_id": "4979", "stock_name": "華星光"}]
-        rows = fake_rows(code, self.cum)[ds]
+        if ds == "TaiwanStockPriceAdj":                                 # 還原價:預設當作沒有權限(真實 API 回非 200 → None)
+            if not getattr(self, "adj", False):
+                return None
+            ds = "TaiwanStockPrice"
+        rows = fake_rows(code, self.cum).get(ds)
+        if rows is None:
+            return None
         k = "date" if ds in ("TaiwanStockPER", "TaiwanStockPrice") else None
         return [r for r in rows if not k or r[k] >= start]
 
@@ -202,6 +208,32 @@ class TestBuild(unittest.TestCase):
         self.assertEqual(out["stock_n"], 2)
         self.assertEqual(out["stock_lots_hi_n"], 1)                 # A 在自己歷史高檔、B 在低檔
         self.assertEqual(out["stock_lots_pctile_median"], round((100 - 0.4 + 0.4) / 2, 1))
+
+    def test_px_adjusted_fallback(self):
+        fm = FakeFM()
+        cache = {}
+        B.refresh_cache("3081", fm, dt.date(2026, 11, 9), cache)
+        self.assertEqual((cache["meta"]["px_basis"], fm.adj_ok), ("raw", False))
+        n = len([c for c in fm.calls if c[0] == "TaiwanStockPriceAdj"])
+        B.refresh_cache("4979", fm, dt.date(2026, 11, 9), {})
+        self.assertEqual(len([c for c in fm.calls if c[0] == "TaiwanStockPriceAdj"]), n)    # 取不到後整次不再試
+        fm2 = FakeFM()
+        fm2.adj = True
+        c2 = {}
+        B.refresh_cache("3081", fm2, dt.date(2026, 11, 9), c2)
+        self.assertEqual(c2["meta"]["px_basis"], "adj")
+        self.assertTrue(c2["px"])
+        self.assertFalse([c for c in fm2.calls if c[0] == "TaiwanStockPrice"])            # 有還原價就不抓未還原
+
+    def test_eq_weight_index(self):
+        d = [dt.date(2026, 11, i) for i in range(2, 6)]
+        px = {"A": list(zip(d, [100, 110, 110, 99])), "B": list(zip(d, [50, 50, 55, 55])),
+              "C": list(zip(d, [10, 10, 5, 5]))}                                  # C 第 3 天 −50%:股本變動,不計入
+        idx = B.eq_weight_index(px, min_n=2)
+        self.assertEqual([x[0] for x in idx], d[1:])
+        self.assertAlmostEqual(idx[0][1], 100 * (1 + (0.10 + 0 + 0) / 3), places=3)
+        self.assertAlmostEqual(idx[1][1], idx[0][1] * (1 + (0 + 0.10) / 2), places=3)   # C 那天排除
+        self.assertEqual(B.eq_weight_index(px, min_n=4), [])
 
     def test_chain_pos(self):
         ai = {"date": "2026-11-12", "roles": {"2330": {"pos": "中游", "link": "晶圓代工", "what": "代工", "core": True}}}

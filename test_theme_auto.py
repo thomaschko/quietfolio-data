@@ -55,8 +55,10 @@ class TestAuto(unittest.TestCase):
         self.assertEqual(ids, ["cpo", "memory", "robot"])                     # 固定 + 依熱度;沒有訊號的不選
         t = {x["id"]: x for x in th}
         self.assertEqual(set(t["memory"]["auto"]["signals"]), {"surge", "dual", "new"})
-        self.assertEqual(t["memory"]["auto"]["heat"], 3)
-        self.assertEqual(t["cpo"]["auto"]["heat"], 2)                          # 發酵前 + 美股共振
+        self.assertEqual(t["memory"]["auto"]["heat"], 1)                       # 暴增 + 雙邊 + 新題材 都屬雷達 → 1 類(2026-11-15)
+        self.assertEqual(t["memory"]["auto"]["heat_groups"], ["雷達"])
+        self.assertEqual(t["cpo"]["auto"]["heat"], 2)                          # 雷達(發酵前)+ 美股共振
+        self.assertEqual(t["cpo"]["auto"]["heat_groups"], ["雷達", "美股"])
         self.assertEqual(len(t["cpo"]["_auto_stocks"]), 3)                     # 每題材上限
         self.assertEqual(t["cpo"]["_auto_stocks"][0][1], "My-TW-Coverage CPO")     # 沒有籃子 → Coverage 優先
         self.assertEqual(t["memory"]["_auto_stocks"][0], ("2408", "題材籃子 記憶體"))   # 有籃子 → 核心公司優先
@@ -130,7 +132,9 @@ class TestLifecycle(unittest.TestCase):
         idx_down = self.px([100.0] * 40 + [100 - 1.5 * i for i in range(1, 21)])               # 大盤近 20 日 −30%
         lc = A.lifecycle(auto, down, idx_down, None, "2026-09-20")
         self.assertEqual((lc["rel_label"], round(lc["rel20"], 1)), ("抗跌", 10.0))               # 題材 −20% vs 大盤 −30%
-        self.assertEqual(A.lifecycle(auto, down, idx, None, "2026-09-20")["rel_label"], "弱於大盤")
+        self.assertEqual(A.lifecycle(auto, down, idx, None, "2026-09-20")["rel_label"], "較弱")
+        lc = A.lifecycle(auto, down, idx, None, "2026-09-20", ref_px=idx_down, bench="題材股等權")
+        self.assertEqual((lc["bench"], lc["taiex_ret20"]), ("題材股等權", -0.3))               # 加權指數只當參考
 
     def test_roles(self):
         d = tempfile.mkdtemp()
