@@ -422,17 +422,8 @@ def refresh_cache(code, fm, asof, cache):
                 elif r["type"] == "PropertyAndPlantAndEquipment":
                     q.setdefault(k, {})["capex"] = r.get("value")
             cache["cf"] = [[y, qq, v.get("ocf"), v.get("capex")] for (y, qq), v in sorted(q.items())]
-    # 2026-11-15 審查 Q2(使用者核准):收盤價改用還原價 TaiwanStockPriceAdj,每天整段重抓(除權息後過去的還原價會變);
-    #   這次執行第一次取不到(非 200 / 欄位不符)→ 整次改回未還原 TaiwanStockPrice 增量抓,meta["px_basis"] 記錄用了哪一種。
-    if meta.get("px_try") != asof.isoformat() and getattr(fm, "adj_ok", None) is not False:
-        rows = fm.get("TaiwanStockPriceAdj", code, (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat())
-        if rows is None or (rows and rows[0].get("close") is None):
-            fm.adj_ok = False
-        elif rows:
-            fm.adj_ok = True
-            cache["px"] = sorted([r["date"], r["close"]] for r in rows if r.get("close"))
-            meta["px_try"] = asof.isoformat()
-            meta["px_basis"] = "adj"
+    # 2026-11-15:快取存交易所原始收盤價(TaiwanStockPrice,增量);還原在使用時乘上 adj_factors.json(Yahoo)的係數。
+    #   (FinMind TaiwanStockPriceAdj 在目前方案取不到,11-15 實測 151 檔全數失敗)
     for key, ds, field in (("pe", "TaiwanStockPER", "PER"), ("px", "TaiwanStockPrice", "close")):
         cur = cache.get(key) or []
         last = cur[-1][0] if cur else None
@@ -444,8 +435,6 @@ def refresh_cache(code, fm, asof, cache):
             (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat()
         rows = fm.get(ds, code, s)
         meta[key + "_try"] = asof.isoformat()
-        if key == "px":                                    # 走到這裡 = 這次沒拿到還原價
-            meta["px_basis"] = "adj+raw" if meta.get("px_basis") in ("adj", "adj+raw") else "raw"
         if rows:
             add = [[r["date"], r.get(field)] for r in rows if r.get(field) is not None]
             cutoff = (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat()
@@ -569,6 +558,24 @@ def theme_evidence(theme, base="."):
     has = bool(radar) or bool(us and (us["pr_n30"] or us["tr_cur"]))
     return {"radar": radar[:8] if dg else "not_built", "radar_date": dg and dg.get("date"),
             "us": us if res else "not_built", "edgar_capex": "not_built", "has": has}
+
+
+def load_adj_factors(base="."):
+    """adj_factors.json(adj_factors.py,Yahoo)→ {代號: [(起日, 係數)]};沒有檔案 → {}"""
+    d = _read(os.path.join(base, "adj_factors.json"), {}) or {}
+    return {c: [(dt.date.fromisoformat(a), f) for a, f in seg] for c, seg in (d.get("stocks") or {}).items()}
+
+
+def adjust_px(rows, seg):
+    """[(date, 原始收盤)] × 係數 → 還原價;seg 空 → 原樣。早於第一段用第一段、晚於最後一段用最後一段"""
+    if not seg:
+        return rows
+    out, j = [], 0
+    for d, v in rows:
+        while j + 1 < len(seg) and seg[j + 1][0] <= d:
+            j += 1
+        out.append((d, v * seg[j][1] if v else v))
+    return out
 
 
 def eq_weight_index(px_by_code, min_n=5, max_abs_ret=0.11):
@@ -731,6 +738,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
     tracking_start = min(firsts) if firsts else None
     kill_auto = _read(os.path.join(base, OUT_DIR, "kill_auto.json"), []) or []
     index, built = [], []
+    adj = load_adj_factors(base)                                   # Yahoo 還原係數(2026-11-15)
     for th in themes:
         ev = theme_evidence(th, base)
         stocks = []
@@ -748,13 +756,15 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
             if st:
                 log["mops"][code] = st
             _write(cp, cache)
-            px_by_code[code] = [(dt.date.fromisoformat(d), v) for d, v in cache.get("px") or []]
-            pb = (cache.get("meta") or {}).get("px_basis") or "raw"
+            seg = adj.get(code)
+            px_by_code[code] = adjust_px([(dt.date.fromisoformat(d), v) for d, v in cache.get("px") or []], seg)
+            pb = "adj" if seg else "raw"
             log.setdefault("px_basis", {})[pb] = log.setdefault("px_basis", {}).get(pb, 0) + 1
+            cache_used = dict(cache, px=[[d.isoformat(), v] for d, v in px_by_code[code]]) if seg else cache
             row = next((r for r in th.get("_sheet_stocks") or [] if str(r.get("code")).strip() == code), None)
             man = manual_for(code, row, manual_all)
             try:
-                s = build_stock(code, src, cache, asof, ind.get(code), ev["has"], dd, idx_px, manual=man)
+                s = build_stock(code, src, cache_used, asof, ind.get(code), ev["has"], dd, idx_px, manual=man)
             except (ArithmeticError, ValueError, TypeError, KeyError, IndexError) as e:   # 單檔資料異常不中斷整次
                 log["errors"].append("%s build: %s" % (code, type(e).__name__))
                 continue

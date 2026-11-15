@@ -209,21 +209,14 @@ class TestBuild(unittest.TestCase):
         self.assertEqual(out["stock_lots_hi_n"], 1)                 # A 在自己歷史高檔、B 在低檔
         self.assertEqual(out["stock_lots_pctile_median"], round((100 - 0.4 + 0.4) / 2, 1))
 
-    def test_px_adjusted_fallback(self):
-        fm = FakeFM()
-        cache = {}
-        B.refresh_cache("3081", fm, dt.date(2026, 11, 9), cache)
-        self.assertEqual((cache["meta"]["px_basis"], fm.adj_ok), ("raw", False))
-        n = len([c for c in fm.calls if c[0] == "TaiwanStockPriceAdj"])
-        B.refresh_cache("4979", fm, dt.date(2026, 11, 9), {})
-        self.assertEqual(len([c for c in fm.calls if c[0] == "TaiwanStockPriceAdj"]), n)    # 取不到後整次不再試
-        fm2 = FakeFM()
-        fm2.adj = True
-        c2 = {}
-        B.refresh_cache("3081", fm2, dt.date(2026, 11, 9), c2)
-        self.assertEqual(c2["meta"]["px_basis"], "adj")
-        self.assertTrue(c2["px"])
-        self.assertFalse([c for c in fm2.calls if c[0] == "TaiwanStockPrice"])            # 有還原價就不抓未還原
+    def test_adjust_px(self):
+        d = [dt.date(2026, 7, i) for i in range(1, 6)]
+        rows = list(zip(d, [110.0, 110.0, 100.0, 100.0, 101.0]))
+        seg = [(dt.date(2026, 6, 1), 0.9), (dt.date(2026, 7, 3), 1.0)]           # 7/3 除權
+        self.assertEqual([round(v, 2) for _, v in B.adjust_px(rows, seg)], [99.0, 99.0, 100.0, 100.0, 101.0])
+        self.assertEqual(B.adjust_px(rows, None), rows)
+        late = [(dt.date(2026, 8, 1), 1.0)]                                      # 早於第一段 → 用第一段
+        self.assertEqual(B.adjust_px(rows, late)[0][1], 110.0)
 
     def test_eq_weight_index(self):
         d = [dt.date(2026, 11, i) for i in range(2, 6)]
