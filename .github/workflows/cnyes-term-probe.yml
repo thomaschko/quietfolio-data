@@ -1,0 +1,25 @@
+name: Cnyes Term Probe (題材詞命中探測)
+
+# 2026-11-16:太空算力候選詞的鉅亨近 20 日命中數(一次性,只印 job log,不 commit)。
+# 在 PR 修改 cnyes_term_probe.py 時自動跑(PR 的 checks 可看結果),也可手動觸發。
+on:
+  pull_request:
+    paths:
+      - cnyes_term_probe.py
+      - .github/workflows/cnyes-term-probe.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - run: python cnyes_term_probe.py
