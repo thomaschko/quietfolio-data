@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09 09:00:40.343599",
+  "generated_at": "2026-11-16 08:57:01.647216",
   "quarters_queried": [
     "2026Q3",
     "2026Q2"
@@ -486,9 +486,25 @@
     },
     "LWLG": {
       "role": "矽光子材料-Lightwave Logic(電光聚合物)",
-      "sentiments": {},
+      "sentiments": {
+        "2026Q3": 0.183
+      },
       "keyword_counts": {
-        "2026Q3": {}
+        "2026Q3": {
+          "silicon photonics": 10,
+          "advanced packaging": 1,
+          "supply chain": 2,
+          "foundry": 22,
+          "capacity": 3,
+          "yield": 2,
+          "optical": 16,
+          "photonics": 11,
+          "transceiver": 10,
+          "optical engine": 5,
+          "indium phosphide": 1,
+          "capex": 1,
+          "AI infrastructure": 2
+        }
       }
     },
     "QCOM": {
@@ -815,6 +831,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "LWLG",
+      "keyword": "foundry",
+      "category": "平台/網通/供應鏈",
+      "this_count": 22,
+      "prev_count": 0,
+      "delta": 22,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "AMZN",
       "keyword": "capacity",
       "category": "平台/網通/供應鏈",
@@ -958,6 +984,16 @@
       "symbol": "AEHR",
       "keyword": "memory",
       "category": "記憶體",
+      "this_count": 16,
+      "prev_count": 0,
+      "delta": 16,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "LWLG",
+      "keyword": "optical",
+      "category": "光通訊/CPO",
       "this_count": 16,
       "prev_count": 0,
       "delta": 16,
@@ -1205,6 +1241,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "LWLG",
+      "keyword": "photonics",
+      "category": "光通訊/CPO",
+      "this_count": 11,
+      "prev_count": 0,
+      "delta": 11,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "VRT",
       "keyword": "data center",
       "category": "客戶capex/需求",
@@ -1258,6 +1304,26 @@
       "symbol": "TER",
       "keyword": "DRAM",
       "category": "記憶體",
+      "this_count": 10,
+      "prev_count": 0,
+      "delta": 10,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "LWLG",
+      "keyword": "silicon photonics",
+      "category": "先進封裝/光互連",
+      "this_count": 10,
+      "prev_count": 0,
+      "delta": 10,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "LWLG",
+      "keyword": "transceiver",
+      "category": "光通訊/CPO",
       "this_count": 10,
       "prev_count": 0,
       "delta": 10,
@@ -1845,6 +1911,16 @@
       "prev_q": ""
     },
     {
+      "symbol": "LWLG",
+      "keyword": "optical engine",
+      "category": "光通訊/CPO",
+      "this_count": 5,
+      "prev_count": 0,
+      "delta": 5,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "ADI",
       "keyword": "capex",
       "category": "客戶capex/需求",
@@ -2278,6 +2354,16 @@
       "symbol": "AXTI",
       "keyword": "AI infrastructure",
       "category": "客戶capex/需求",
+      "this_count": 3,
+      "prev_count": 0,
+      "delta": 3,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "LWLG",
+      "keyword": "capacity",
+      "category": "平台/網通/供應鏈",
       "this_count": 3,
       "prev_count": 0,
       "delta": 3,
@@ -2835,6 +2921,36 @@
       "prev_q": ""
     },
     {
+      "symbol": "LWLG",
+      "keyword": "supply chain",
+      "category": "平台/網通/供應鏈",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "LWLG",
+      "keyword": "yield",
+      "category": "測試設備",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
+      "symbol": "LWLG",
+      "keyword": "AI infrastructure",
+      "category": "客戶capex/需求",
+      "this_count": 2,
+      "prev_count": 0,
+      "delta": 2,
+      "this_q": "2026Q3",
+      "prev_q": ""
+    },
+    {
       "symbol": "QCOM",
       "keyword": "advanced packaging",
       "category": "先進封裝/光互連",
@@ -2937,18 +3053,13 @@
   ],
   "intl_news_heat": [
     {
-      "keyword": "data center",
-      "category": "客戶capex/需求",
-      "count": 7
-    },
-    {
       "keyword": "yield",
       "category": "平台/網通/供應鏈",
       "count": 2
     },
     {
-      "keyword": "TSMC",
-      "category": "台廠點名",
+      "keyword": "data center",
+      "category": "客戶capex/需求",
       "count": 2
     },
     {
@@ -2957,23 +3068,8 @@
       "count": 2
     },
     {
-      "keyword": "capacity",
-      "category": "平台/網通/供應鏈",
-      "count": 1
-    },
-    {
-      "keyword": "optical",
-      "category": "光通訊/CPO",
-      "count": 1
-    },
-    {
-      "keyword": "coherent",
-      "category": "光通訊/CPO",
-      "count": 1
-    },
-    {
-      "keyword": "AI infrastructure",
-      "category": "客戶capex/需求",
+      "keyword": "TSMC",
+      "category": "台廠點名",
       "count": 1
     }
   ]
