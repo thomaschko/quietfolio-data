@@ -58,18 +58,20 @@ def _write(path, obj):
 
 
 def match_terms(term, tmap):
-    """雷達詞 → 題材 id 列表:完全相同(不分大小寫),或別名(≥ 3 字元)包含在詞中"""
+    """雷達詞 → 題材 id 列表:完全相同(不分大小寫),或別名(≥ 3 字元)包含在詞中。
+    v2026-11-16-space:詞若完全等於某題材的名稱/別名,只歸那些題材,不再以子字串另歸其他題材
+    (例:「太空資料中心」歸 space_compute,不因含「資料中心」也算 ai_server)。"""
     t = str(term or "").strip().lower()
     if not t:
         return []
-    out = []
+    exact, out = [], []
     for tid, d in tmap.items():
-        for a in [d["name"]] + d.get("aliases", []):
-            al = a.lower()
-            if t == al or (len(al) >= 3 and al in t):
-                out.append(tid)
-                break
-    return out
+        als = [a.lower() for a in [d["name"]] + d.get("aliases", [])]
+        if t in als:
+            exact.append(tid)
+        elif any(len(al) >= 3 and al in t for al in als):
+            out.append(tid)
+    return exact or out
 
 
 def radar_hits(digest, tmap):

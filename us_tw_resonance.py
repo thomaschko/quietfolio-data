@@ -39,6 +39,7 @@ GROUP_TO_THEMES = {
     "測試設備": ["半導體設備"],
     "功率化合物半導體": ["功率/化合物半導體"],
     "IC設計架構": ["ASIC/客製晶片", "矽智財/EDA"],
+    "太空算力": [],   # 2026-11-16:無對應題材籃子;台股端由 theme_auto_map 的 space_compute.extra 處理
 }
 GENERIC_TERMS = {"supply chain", "capacity", "yield", "memory", "data center", "datacenter",
                  "capital expenditure", "capex", "Taiwan"}

@@ -79,6 +79,22 @@ class TestAuto(unittest.TestCase):
         self.assertEqual(A.match_terms("cpo", tmap), ["cpo"])
         self.assertEqual(A.match_terms("HBM4E 供應", tmap), ["memory"])
         self.assertEqual(A.match_terms("IC", tmap), [])
+        # 完全等於別名者優先,不再以子字串另歸其他題材
+        tm = {"ai_server": {"name": "AI 伺服器", "aliases": ["資料中心", "data center"]},
+              "space_compute": {"name": "太空算力", "aliases": ["太空資料中心", "orbital data center"]}}
+        self.assertEqual(A.match_terms("太空資料中心", tm), ["space_compute"])
+        self.assertEqual(A.match_terms("orbital data center", tm), ["space_compute"])
+        self.assertEqual(A.match_terms("AI 資料中心需求", tm), ["ai_server"])
+
+    def test_real_map_space_terms(self):
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "theme_auto_map.json"), encoding="utf-8") as f:
+            tmap = json.load(f)["themes"]
+        for term, want in [("太空資料中心", ["space_compute"]), ("軌道資料中心", ["space_compute"]), ("Kessel", ["pcb"]),
+                           ("中板", ["pcb"]), ("快接頭", ["liquid_cool"]), ("HJT", ["solar"]), ("砷化鎵太陽能", ["solar"]),
+                           ("星間雷射", ["space_compute"])]:
+            self.assertEqual(A.match_terms(term, tmap), want, term)
+        for tid, d in tmap.items():
+            self.assertLessEqual(len(d.get("extra") or []), 12, tid)
 
     def test_ai_notes_validate_and_cache(self):
         os.makedirs(os.path.join(self.d, "prompts"))
