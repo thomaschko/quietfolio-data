@@ -42,7 +42,7 @@ def fake_rows(code, cumulative=False):
     while day <= dt.date(2026, 11, 9):
         if day.weekday() < 5:
             pe.append({"date": day.isoformat(), "PER": 15 + (day.toordinal() % 30) / 3})
-            px.append({"date": day.isoformat(), "close": 100 + (day.toordinal() % 50)})
+            px.append({"date": day.isoformat(), "close": 100 + (day.toordinal() % 50), "Trading_Volume": 1000000 + day.toordinal() % 7 * 1000})
         day += dt.timedelta(days=1)
     return {"TaiwanStockMonthRevenue": rev, "TaiwanStockFinancialStatements": fs, "TaiwanStockCashFlowsStatement": cf,
             "TaiwanStockPER": pe, "TaiwanStockPrice": px}
@@ -217,6 +217,38 @@ class TestBuild(unittest.TestCase):
         self.assertEqual(B.adjust_px(rows, None), rows)
         late = [(dt.date(2026, 8, 1), 1.0)]                                      # 早於第一段 → 用第一段
         self.assertEqual(B.adjust_px(rows, late)[0][1], 110.0)
+
+    def test_volume_cache(self):
+        fm = FakeFM()
+        cache = {"px": [["2026-11-06", 100.0]], "meta": {}}                       # 舊快取:有收盤價、沒有成交量
+        B.refresh_cache("3081", fm, dt.date(2026, 11, 9), cache)
+        px_call = [c for c in fm.calls if c[0] == "TaiwanStockPrice"][0]
+        self.assertLess(px_call[2], "2024-01-01")                                 # 整段重抓一次
+        self.assertGreater(len(cache["vol"]), 500)
+        self.assertEqual(cache["vol"][-1][1], round((1000000 + dt.date.fromisoformat(cache["vol"][-1][0]).toordinal() % 7 * 1000) / 1000))
+        fm2 = FakeFM()
+        B.refresh_cache("3081", fm2, dt.date(2026, 11, 10), cache)
+        self.assertGreater([c for c in fm2.calls if c[0] == "TaiwanStockPrice"][0][2], "2026-11-01")   # 之後增量
+
+    def test_tech_state(self):
+        d0 = dt.date(2026, 1, 1)
+        days = [d0 + dt.timedelta(days=i) for i in range(130)]
+        up = [(d, 100 + i) for i, d in enumerate(days)]                              # 一路上漲 → 多頭排列
+        vol = [(d, 1000 if i < 125 else 2000) for i, d in enumerate(days)]           # 最後 5 天量加倍 → 量增
+        t = B.tech_state(up, vol)
+        self.assertEqual((t["trend"], t["vol_label"], t["ma_above"]), ("多頭排列", "量增", [True, True, True]))
+        self.assertGreater(t["vol_ratio"], 1.5)
+        down = [(d, 300 - i) for i, d in enumerate(days)]
+        self.assertEqual(B.tech_state(down, vol)["trend"], "空頭排列")
+        zig = [(d, 100 + (5 if i % 2 else -5) + (2000 if False else 0)) for i, d in enumerate(days)]
+        zvol = [(d, 3000 if i % 2 else 1000) for i, d in enumerate(days)]           # 漲的日子量大
+        tz = B.tech_state(zig, zvol)
+        self.assertEqual(tz["trend"], "整理")
+        self.assertEqual(tz["updown"], 3.0)
+        self.assertIsNone(B.tech_state(up[:50], vol))                                 # 資料不足 120 日
+        self.assertNotIn("vol_ratio", B.tech_state(up, []))                           # 沒有成交量 → 只有均線
+        agg = B.theme_tech([{"tech": t}, {"tech": B.tech_state(down, vol)}, {}])
+        self.assertEqual((agg["n"], agg["bull"], agg["bear"], agg["vol_up"]), (2, 1, 1, 2))
 
     def test_eq_weight_index(self):
         d = [dt.date(2026, 11, i) for i in range(2, 6)]
