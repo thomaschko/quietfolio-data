@@ -29,7 +29,8 @@ CONTEXT = ["SpaceX", "Starlink", "星鏈", "太空", "衛星", "軌道", "伺服
 
 
 def norm(s):
-    return unicodedata.normalize("NFKC", s or "").lower()
+    # 去掉鉅亨標示命中字的 <mark> 等 HTML 標籤,否則「<mark>中</mark>板」會被當成不含「中板」
+    return unicodedata.normalize("NFKC", re.sub(r"<[^>]+>", "", s or "")).lower()
 
 
 def search(term, start_ts, max_pages=10):
@@ -67,7 +68,8 @@ def main():
             exact = [n for n in news if k in norm(n["t"] + " " + n["s"])]
             ctx = [n for n in exact if any(norm(c) in norm(n["t"] + " " + n["s"]) for c in CONTEXT if norm(c) != k)]
             rows.append({"tier": tier, "term": term, "status": st, "raw": len(news), "exact": len(exact), "ctx": len(ctx),
-                         "titles": [n["t"][:60] for n in exact[:3]]})
+                         "titles": [norm(n["t"])[:60] for n in exact[:3]],
+                         "raw_titles": [norm(n["t"])[:60] for n in news[:3] if n not in exact]})
             print(json.dumps(rows[-1], ensure_ascii=False))
             time.sleep(1.0)
     print("===TABLE===")
