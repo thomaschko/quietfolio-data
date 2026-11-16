@@ -157,6 +157,13 @@ KEYWORDS = {
         "HVDC", "800V", "power shelf", "liquid cooling", "immersion cooling",
         "power density", "thermal management", "UPS",
     ],
+    # 2026-11-16新增:太空算力(SpaceX Kessel/Starmind 軌道資料中心題材,使用者核准規格任務3)。
+    # 裸詞 radiator 太泛(汽車散熱器、法說比喻),改用 deployable radiator;
+    # Kessel/Starmind 為專有名詞,純英文字母詞照 keyword_regex 加單字邊界。
+    "太空算力": [
+        "orbital data center", "space-based data center", "Starmind", "Kessel",
+        "Space-1", "inter-satellite link", "deployable radiator",
+    ],
 }
 # 攤平成單一 list 供統計,同時保留分類供輸出
 FLAT_KEYWORDS = [(cat, kw) for cat, kws in KEYWORDS.items() for kw in kws]
