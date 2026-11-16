@@ -431,15 +431,20 @@ def refresh_cache(code, fm, asof, cache):
             continue
         if meta.get(key + "_try") == asof.isoformat():
             continue
-        s = (dt.date.fromisoformat(last) + dt.timedelta(days=1)).isoformat() if last else \
-            (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat()
+        full = (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat()
+        # 2026-11-16:收盤價快取同時存成交量(張);舊快取還沒有成交量 → 這次整段重抓一次(仍是 1 次請求)
+        need_vol = key == "px" and not cache.get("vol")
+        s = full if (need_vol or not last) else (dt.date.fromisoformat(last) + dt.timedelta(days=1)).isoformat()
         rows = fm.get(ds, code, s)
         meta[key + "_try"] = asof.isoformat()
         if rows:
             add = [[r["date"], r.get(field)] for r in rows if r.get(field) is not None]
-            cutoff = (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat()
-            merged = {d: v for d, v in cur + add if d >= cutoff}
+            merged = {d: v for d, v in cur + add if d >= full}
             cache[key] = sorted([d, v] for d, v in merged.items())
+            if key == "px":
+                vadd = [[r["date"], round(r["Trading_Volume"] / 1000)] for r in rows if r.get("Trading_Volume") is not None]
+                vm = {d: v for d, v in (cache.get("vol") or []) + vadd if d >= full}
+                cache["vol"] = sorted([d, v] for d, v in vm.items())
     return cache
 
 
@@ -576,6 +581,53 @@ def adjust_px(rows, seg):
             j += 1
         out.append((d, v * seg[j][1] if v else v))
     return out
+
+
+# 2026-11-16:技術型態與量價(描述用,不影響分層、階段與收錄;門檻登記後不看結果調整)
+TECH_CFG = {"note": "描述用、未經驗證;不影響分層、階段與收錄",
+            "ma": (20, 60, 120), "vol_short": 5, "vol_long": 60, "vol_up": 1.5, "vol_down": 0.7, "updown_days": 20}
+
+
+def tech_state(px, vol, cfg=TECH_CFG):
+    """px:[(date, 還原收盤)];vol:[(date, 張)] → {trend, ma_above, vol_ratio, vol_label, updown, asof} 或 None"""
+    rows = [(d, v) for d, v in px if v]
+    if len(rows) < max(cfg["ma"]) + 1:
+        return None
+    closes = [v for _, v in rows]
+    last = closes[-1]
+    ma = {n: sum(closes[-n:]) / n for n in cfg["ma"]}
+    m1, m2, m3 = (ma[n] for n in cfg["ma"])
+    trend = "多頭排列" if last > m1 > m2 > m3 else "空頭排列" if last < m1 < m2 < m3 else "整理"
+    out = {"asof": rows[-1][0].isoformat() if hasattr(rows[-1][0], "isoformat") else rows[-1][0], "trend": trend,
+           "ma_above": [last > ma[n] for n in cfg["ma"]]}
+    vd = {(d.isoformat() if hasattr(d, "isoformat") else d): v for d, v in vol or [] if v is not None}
+    vs = [vd.get(d.isoformat() if hasattr(d, "isoformat") else d) for d, _ in rows]
+    tail = [v for v in vs[-cfg["vol_long"]:] if v is not None]
+    short = [v for v in vs[-cfg["vol_short"]:] if v is not None]
+    if len(tail) >= cfg["vol_long"] * 0.8 and short and sum(tail) > 0:
+        r = (sum(short) / len(short)) / (sum(tail) / len(tail))
+        out["vol_ratio"] = round(r, 2)
+        out["vol_label"] = "量增" if r >= cfg["vol_up"] else "量縮" if r <= cfg["vol_down"] else "量平"
+    up, dn = [], []
+    n = cfg["updown_days"]
+    for i in range(len(rows) - n, len(rows)):
+        if i < 1 or vs[i] is None:
+            continue
+        (up if closes[i] > closes[i - 1] else dn if closes[i] < closes[i - 1] else []).append(vs[i])
+    if up and dn and sum(dn) > 0:
+        out["updown"] = round((sum(up) / len(up)) / (sum(dn) / len(dn)), 2)   # > 1 漲時量大;< 1 跌時量大
+    return out
+
+
+def theme_tech(stocks):
+    """題材層級:多頭 / 空頭排列、量增檔數、量價比中位數"""
+    ts = [s["tech"] for s in stocks if s.get("tech")]
+    if not ts:
+        return None
+    ud = sorted(t["updown"] for t in ts if t.get("updown") is not None)
+    return {"n": len(ts), "bull": sum(1 for t in ts if t["trend"] == "多頭排列"), "bear": sum(1 for t in ts if t["trend"] == "空頭排列"),
+            "vol_up": sum(1 for t in ts if t.get("vol_label") == "量增"), "vol_down": sum(1 for t in ts if t.get("vol_label") == "量縮"),
+            "updown_median": ud[len(ud) // 2] if ud else None}
 
 
 def eq_weight_index(px_by_code, min_n=5, max_abs_ret=0.11):
@@ -769,6 +821,12 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
                 log["errors"].append("%s build: %s" % (code, type(e).__name__))
                 continue
             s["name"] = names.get(code, "")
+            try:
+                tch = tech_state(px_by_code[code], [(dt.date.fromisoformat(d), v) for d, v in cache.get("vol") or []])
+            except (ArithmeticError, ValueError, TypeError):
+                tch = None
+            if tch:
+                s["tech"] = tch
             if row:
                 s["sheet"] = {k: row.get(k) for k in ("segment", "added", "status") if row.get(k)}
             if man.get("other"):
@@ -798,6 +856,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
             th_pub["lifecycle"]["margin"] = mc
             th_pub["lifecycle"]["herd"] = theme_herd(list(px_by_code), base)
             th_pub["lifecycle"]["futures"] = fut if isinstance(fut, str) else (fut.get(th["id"]) or {"stock_n": 0})
+            th_pub["lifecycle"]["tech"] = theme_tech(stocks)
             th_pub["exit"] = A.theme_exit(th["id"], th["auto"], th_pub["lifecycle"], base, asof)
             th_pub["auto"] = {k: v for k, v in th["auto"].items() if k != "heat_hist"}
         if not th_pub.get("notes") and ai_notes.get(th["id"]):
@@ -844,7 +903,7 @@ def run(base=".", fm=None, now=None, mops=None, idx_px=None, llm=None):
            "drawdown_active": bool(dd.get("active")), "log": log, "auto_meta": auto_meta,
            "lifecycle_cfg": A.LIFECYCLE_CFG, "stages": A.STAGES, "tracking_start": tracking_start,
            "radar_verification": radar_verification(base),
-           "px_basis": log.get("px_basis"),
+           "px_basis": log.get("px_basis"), "tech_cfg": TECH_CFG,
            "notes": ["研究優先順序用途,不是買賣訊號;沒有分數、不依分數排序"]}
     _write(os.path.join(base, OUT_DIR, "index.json"), doc)
     print(json.dumps({k: v for k, v in log.items()}, ensure_ascii=False))
