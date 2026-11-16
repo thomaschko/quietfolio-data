@@ -200,6 +200,24 @@ class TestLifecycle(unittest.TestCase):
         finally:
             shutil.rmtree(d)
 
+    def test_industries(self):
+        d = tempfile.mkdtemp()
+        try:
+            mp = json.loads(json.dumps(MAP))
+            mp["themes"]["cpo"].update(industries=["Solar"], coverage=[])
+            for f, o in (("theme_auto_map.json", mp), ("daily_digest.json", {"date": "20261109", "D_surge_themes": [{"theme": "CPO", "ratio": 2}]}),
+                         ("margin_share_themes.json", {"themes": {}}), ("intl_theme_baskets.json", {"themes": {}}),
+                         ("coverage_business.json", {"stocks": {"6443": {"industry": "Solar"}, "3576": {"industry": "Solar"}, "2330": {"industry": "Semiconductors"}}}),
+                         ("us_tw_resonance.json", {}), ("chip_structure_full.json", {"stocks": {}}), ("consensus.json", {})):
+                with open(os.path.join(d, f), "w", encoding="utf-8") as fh:
+                    json.dump(o, fh, ensure_ascii=False)
+            th, _ = A.select_themes(d, dt.date(2026, 11, 9))
+            cpo = [x for x in th if x["id"] == "cpo"][0]
+            self.assertEqual([c for c, _ in cpo["_auto_stocks"]], ["3576", "6443"])
+            self.assertEqual(cpo["_auto_stocks"][0][1], "My-TW-Coverage 產業 Solar")
+        finally:
+            shutil.rmtree(d)
+
     def test_heat_history_saved(self):
         d = tempfile.mkdtemp()
         try:

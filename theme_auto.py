@@ -120,6 +120,7 @@ def select_themes(base=".", asof=None):
     digest = _read(os.path.join(base, "daily_digest.json"))
     cov = (_read(os.path.join(base, "margin_share_themes.json"), {}) or {}).get("themes") or {}
     bas = (_read(os.path.join(base, "intl_theme_baskets.json"), {}) or {}).get("themes") or {}
+    biz = (_read(os.path.join(base, "coverage_business.json"), {}) or {}).get("stocks") or {}
     res = _read(os.path.join(base, "us_tw_resonance.json"), {}) or {}
     groups = {g["g"]: g for g in res.get("groups") or []}
     hits, rcodes, ratio, unmatched = radar_hits(digest, tmap)
@@ -140,6 +141,12 @@ def select_themes(base=".", asof=None):
             if c not in seen:
                 seen.add(c)
                 stocks.append((c, "對照表指定"))
+        # 2026-11-16:industries = My-TW-Coverage 公司報告的產業別(coverage_business.json),例如太陽能 "Solar"
+        for ind in d.get("industries") or []:
+            for c in sorted(k for k, v in biz.items() if v.get("industry") == ind):
+                if c not in seen:
+                    seen.add(c)
+                    stocks.append((c, "My-TW-Coverage 產業 " + ind))
         for name in d.get("coverage") or []:
             for c in cov.get(name) or []:
                 if c not in seen:
