@@ -76,6 +76,9 @@ class FinMind:
         if r.status_code != 200:
             return None
         j = r.json()
+        if j.get("status") == 402:                    # 2026-11-16:額度用完也可能以 HTTP 200 + JSON status 402 回來
+            self.stopped = "FinMind 超過每小時額度(402)"
+            raise Quota(self.stopped)
         return j.get("data") if j.get("status") == 200 else None
 
 
@@ -380,15 +383,36 @@ def latest_available_quarter(asof):
     return None
 
 
+TRY_MAX_FAILS = 2   # 同一天同一資料集最多失敗幾次就不再重試(避免下市/無資料代號每次重跑都浪費額度)
+
+
+def _tried_today(meta, key, asof):
+    """v2026-11-16-retry:只有成功拿到回應才記 <key>_try;沒拿到(None)記 <key>_fail,同日失敗達上限才跳過"""
+    d = asof.isoformat()
+    f = meta.get(key + "_fail") or []
+    return meta.get(key + "_try") == d or (len(f) == 2 and f[0] == d and f[1] >= TRY_MAX_FAILS)
+
+
+def _mark_try(meta, key, asof, ok):
+    d = asof.isoformat()
+    if ok:
+        meta[key + "_try"] = d
+        meta.pop(key + "_fail", None)
+    else:
+        f = meta.get(key + "_fail") or []
+        meta[key + "_fail"] = [d, (f[1] + 1) if len(f) == 2 and f[0] == d else 1]
+
+
 def refresh_cache(code, fm, asof, cache):
-    """依需要重抓;遇 Quota 往外丟。cache 結構見檔頭。"""
+    """依需要重抓;遇 Quota 往外丟。cache 結構見檔頭。
+    2026-11-16:沒拿到回應(None)不再記成「今天已試過」,同一天重跑會補抓(上午 402 後晚上補跑整批被跳過的問題)。"""
     start = (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 400)).isoformat()
     meta = cache.setdefault("meta", {})
     lm = latest_available_month(asof)
     have_m = {(r[0], r[1]) for r in cache.get("rev") or []}
-    if lm and lm not in have_m and meta.get("rev_try") != asof.isoformat():
+    if lm and lm not in have_m and not _tried_today(meta, "rev", asof):
         rows = fm.get("TaiwanStockMonthRevenue", code, start)
-        meta["rev_try"] = asof.isoformat()
+        _mark_try(meta, "rev", asof, rows is not None)
         if rows is not None:
             cache["rev"] = sorted({(int(r["revenue_year"]), int(r["revenue_month"])): float(r["revenue"]) for r in rows
                                    if r.get("revenue") is not None}.items())
@@ -397,10 +421,10 @@ def refresh_cache(code, fm, asof, cache):
     have_q = {(r[0], r[1]) for r in cache.get("fin") or [] if r[6] == "finmind"}
     last_try = meta.get("fin_try")
     stale = not last_try or (asof - dt.date.fromisoformat(last_try)).days >= BUILD_CFG["refetch_quarter_days"]
-    if lq and lq not in have_q and stale:
-        meta["fin_try"] = asof.isoformat()
+    if lq and lq not in have_q and stale and not _tried_today(meta, "fin", asof):
         fs = fm.get("TaiwanStockFinancialStatements", code, start)
         cf = fm.get("TaiwanStockCashFlowsStatement", code, start)
+        _mark_try(meta, "fin", asof, fs is not None)
         if fs is not None:
             q = {}
             for r in fs:
@@ -427,16 +451,14 @@ def refresh_cache(code, fm, asof, cache):
     for key, ds, field in (("pe", "TaiwanStockPER", "PER"), ("px", "TaiwanStockPrice", "close")):
         cur = cache.get(key) or []
         last = cur[-1][0] if cur else None
-        if last and last >= (asof - dt.timedelta(days=1)).isoformat() and meta.get(key + "_try") == asof.isoformat():
-            continue
-        if meta.get(key + "_try") == asof.isoformat():
+        if _tried_today(meta, key, asof):
             continue
         full = (asof - dt.timedelta(days=365 * BUILD_CFG["years_back"] + 10)).isoformat()
         # 2026-11-16:收盤價快取同時存成交量(張);舊快取還沒有成交量 → 這次整段重抓一次(仍是 1 次請求)
         need_vol = key == "px" and not cache.get("vol")
         s = full if (need_vol or not last) else (dt.date.fromisoformat(last) + dt.timedelta(days=1)).isoformat()
         rows = fm.get(ds, code, s)
-        meta[key + "_try"] = asof.isoformat()
+        _mark_try(meta, key, asof, rows is not None)
         if rows:
             add = [[r["date"], r.get(field)] for r in rows if r.get(field) is not None]
             merged = {d: v for d, v in cur + add if d >= full}

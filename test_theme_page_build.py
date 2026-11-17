@@ -230,6 +230,29 @@ class TestBuild(unittest.TestCase):
         B.refresh_cache("3081", fm2, dt.date(2026, 11, 10), cache)
         self.assertGreater([c for c in fm2.calls if c[0] == "TaiwanStockPrice"][0][2], "2026-11-01")   # 之後增量
 
+    def test_failed_fetch_retried_same_day(self):
+        class NoneFM(FakeFM):
+            def get(self, ds, code, start):
+                self.calls.append((ds, code, start))
+                return None                                                     # 沒拿到回應
+        day = dt.date(2026, 11, 16)
+        cache = {"px": [["2026-11-13", 100.0]], "meta": {}}
+        B.refresh_cache("3081", NoneFM(), day, cache)
+        self.assertNotEqual(cache["meta"].get("px_try"), day.isoformat())       # 不記成「今天已試過」
+        self.assertEqual(cache["meta"]["px_fail"], [day.isoformat(), 1])
+        fm = FakeFM()
+        B.refresh_cache("3081", fm, day, cache)                                 # 同日重跑 → 補抓成功
+        self.assertTrue([c for c in fm.calls if c[0] == "TaiwanStockPrice"])
+        self.assertEqual(cache["meta"]["px_try"], day.isoformat())
+        self.assertNotIn("px_fail", cache["meta"])
+        self.assertTrue(cache.get("vol"))
+        cache2 = {"px": [["2026-11-13", 100.0]], "meta": {}}
+        for _ in range(B.TRY_MAX_FAILS):
+            B.refresh_cache("3081", NoneFM(), day, cache2)
+        fm3 = NoneFM()
+        B.refresh_cache("3081", fm3, day, cache2)                                # 同日失敗達上限 → 不再浪費額度
+        self.assertFalse([c for c in fm3.calls if c[0] == "TaiwanStockPrice"])
+
     def test_tech_state(self):
         d0 = dt.date(2026, 1, 1)
         days = [d0 + dt.timedelta(days=i) for i in range(130)]
