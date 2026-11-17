@@ -11,6 +11,7 @@ cnyes_term_probe.py — 太空算力 / SpaceX Kessel 候選題材詞的鉅亨命
 結果只印到 job log(含每詞前 3 則標題),不存檔、不 commit。v2026-11-16-space
 """
 import json
+import os
 import re
 import sys
 import time
@@ -58,10 +59,18 @@ def search(term, start_ts, max_pages=10):
     return out, "ok"
 
 
+def term_sets(argv, env):
+    """2026-11-17(v2026-11-17-space2):可傳入候選詞(命令列或環境變數 PROBE_TERMS,逗號分隔,詞可含空格);
+    沒傳就用 20261116 的 Tier A / B 清單"""
+    raw = ",".join(argv) if argv else (env.get("PROBE_TERMS") or "")
+    terms = [t.strip() for t in raw.split(",") if t.strip()]
+    return [("X", terms)] if terms else [("A", TERMS_A), ("B", TERMS_B)]
+
+
 def main():
     start = int(time.time()) - DAYS * 86400
     rows = []
-    for tier, terms in (("A", TERMS_A), ("B", TERMS_B)):
+    for tier, terms in term_sets(sys.argv[1:], os.environ):
         for term in terms:
             news, st = search(term, start)
             k = norm(term)

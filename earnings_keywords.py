@@ -80,10 +80,16 @@ COMPANIES = {
     "ADI":  "IC設計-亞德諾(類比/訊號鏈)",
     # ── 資料中心電源(對應HVDC題材)──
     "VRT":  "資料中心電源-Vertiv(HVDC)",
-    # 註:SpaceX 未上市無法說,無法納入
+    # ── 太空算力(2026-11-17新增,使用者選定補滿 2 個空位)──
+    # SpaceX 已於 2026-06 上市(代號 SPCX),舊註解「未上市無法納入」已過時。
+    # 2026-11-17 av_spcx_probe 實測:AV 有 SPCX 2026Q3 逐字稿(38 段、44,985 字元),Starmind 命中 3 次。
+    "SPCX": "太空算力-SpaceX(Starmind/Kessel 第一手說法)",
+    # Amphenol:Paladin 連接器,Kessel 84 層 M10 中板的核心零件(大型股,AV 一般有收錄;首次週一實跑再確認)
+    "APH":  "連接器-Amphenol(Paladin,Kessel 中板)",
 }
 
-# 額度控制:免費 AV 25次/天。目前23家 × 1季 = 23次(2026-09-22移除POET後更新;
+# 額度控制:免費 AV 25次/天。目前25家 × 1季 = 25次(2026-11-17 加 SPCX、APH 後補滿,已無餘裕;
+# 再加公司必須先移除一家。2026-09-22移除POET後為23家;
 # 之前這行寫16家已經跟實際清單脫節很久,新增/移除公司時記得同步更新這裡)。
 QUARTERS_PER_COMPANY = 1
 
@@ -163,6 +169,19 @@ KEYWORDS = {
     "太空算力": [
         "orbital data center", "space-based data center", "Starmind", "Kessel",
         "Space-1", "inter-satellite link", "deployable radiator",
+        # 2026-11-17新增:SpaceX 以外三條太空運算路線(使用者規格「太空算力競品三條線」任務1)。
+        # Google Project Suncatcher(2026-10-01 原型衛星上軌,4 顆 TPU;2027 再發兩顆測星間雷射)、
+        # Amazon/Blue Origin Project Sunrise(2026-03 向 FCC 申請 51,600 顆運算衛星,骨幹為 TeraWave)、
+        # AWS 經由 Starcloud(Outposts 上 Starcloud-2,另申請 88,000 顆)。
+        # 不加裸詞 Sunrise(產品名、比喻「sunrise industry」都會誤中),只用 Project Sunrise;
+        # Suncatcher/TeraWave/Starcloud 為專有名詞,純英文字母詞照 keyword_regex 自動加單字邊界。
+        # keyword_regex 是整詞比對、不處理複數變化:"data centers in space" 只命中複數原句,
+        # "orbital compute" 不會命中 "orbital computing"。
+        "Project Suncatcher", "Suncatcher", "Project Sunrise", "TeraWave",
+        "Starcloud", "orbital compute", "data centers in space",
+        # space-based solar power = Meta/Overview Energy 路線:買太空太陽能電力,不是把算力搬上太空。
+        # 現有架構一個詞只屬一個詞組、命中不另標子類,故放同組,解讀時視為「太空電力」而非「太空運算」。
+        "space-based solar power",
     ],
 }
 # 攤平成單一 list 供統計,同時保留分類供輸出
