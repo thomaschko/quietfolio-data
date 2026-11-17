@@ -163,6 +163,19 @@ KEYWORDS = {
     "太空算力": [
         "orbital data center", "space-based data center", "Starmind", "Kessel",
         "Space-1", "inter-satellite link", "deployable radiator",
+        # 2026-11-17新增:SpaceX 以外三條太空運算路線(使用者規格「太空算力競品三條線」任務1)。
+        # Google Project Suncatcher(2026-10-01 原型衛星上軌,4 顆 TPU;2027 再發兩顆測星間雷射)、
+        # Amazon/Blue Origin Project Sunrise(2026-03 向 FCC 申請 51,600 顆運算衛星,骨幹為 TeraWave)、
+        # AWS 經由 Starcloud(Outposts 上 Starcloud-2,另申請 88,000 顆)。
+        # 不加裸詞 Sunrise(產品名、比喻「sunrise industry」都會誤中),只用 Project Sunrise;
+        # Suncatcher/TeraWave/Starcloud 為專有名詞,純英文字母詞照 keyword_regex 自動加單字邊界。
+        # keyword_regex 是整詞比對、不處理複數變化:"data centers in space" 只命中複數原句,
+        # "orbital compute" 不會命中 "orbital computing"。
+        "Project Suncatcher", "Suncatcher", "Project Sunrise", "TeraWave",
+        "Starcloud", "orbital compute", "data centers in space",
+        # space-based solar power = Meta/Overview Energy 路線:買太空太陽能電力,不是把算力搬上太空。
+        # 現有架構一個詞只屬一個詞組、命中不另標子類,故放同組,解讀時視為「太空電力」而非「太空運算」。
+        "space-based solar power",
     ],
 }
 # 攤平成單一 list 供統計,同時保留分類供輸出

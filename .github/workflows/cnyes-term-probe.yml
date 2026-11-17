@@ -8,6 +8,10 @@ on:
       - cnyes_term_probe.py
       - .github/workflows/cnyes-term-probe.yml
   workflow_dispatch:
+    inputs:
+      terms:
+        description: '候選詞(逗號分隔;空白 = 預設清單)'
+        required: false
 
 permissions:
   contents: read
@@ -22,4 +26,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install requests
+      # 2026-11-17:太空算力競品三條線(Google Suncatcher / Amazon Sunrise / Starcloud)候選詞
       - run: python cnyes_term_probe.py
+        env:
+          PROBE_TERMS: ${{ inputs.terms || 'Suncatcher,Starcloud,TeraWave,Project Sunrise,Amazon Leo' }}

@@ -91,7 +91,8 @@ class TestAuto(unittest.TestCase):
             tmap = json.load(f)["themes"]
         for term, want in [("太空資料中心", ["space_compute"]), ("軌道資料中心", ["space_compute"]), ("Kessel", ["pcb"]),
                            ("中板", ["pcb"]), ("快接頭", ["liquid_cool"]), ("HJT", ["solar"]), ("砷化鎵太陽能", ["solar"]),
-                           ("星間雷射", ["space_compute"])]:
+                           ("星間雷射", ["space_compute"]), ("TeraWave", ["space_compute"]), ("Project Sunrise", ["space_compute"]),
+                           ("Starcloud", ["space_compute"]), ("Amazon Leo", ["leo_sat"])]:
             self.assertEqual(A.match_terms(term, tmap), want, term)
         for tid, d in tmap.items():
             self.assertLessEqual(len(d.get("extra") or []), 12, tid)
