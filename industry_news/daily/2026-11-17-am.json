@@ -2,35 +2,141 @@
  "date": "2026-11-17",
  "edition": "am",
  "label": "早報",
- "n_excluded": 14,
- "generated_at": "2026-11-17 06:59:01",
- "n_sources": 47,
+ "n_excluded": 16,
+ "generated_at": "2026-11-17 09:59:55",
+ "n_sources": 50,
  "n_sources_total": 53,
- "n_titles": 2130,
+ "n_titles": 2242,
  "n_relevant": 750,
  "provider": "gemini",
  "fallback": false,
- "overview": "國科會發布科技白皮書聚焦主權AI與矽光子等議題；美擴大AI晶片管制並防堵遠端存取漏洞； SK海力士與三星等記憶體大廠產能吃緊並面臨反壟斷訴訟與擴產計畫。",
+ "overview": "今日產業重點聚焦於記憶體價格與反壟斷案、AI晶片與先進封裝技術的擴產布局，以及輝達領導層變動引發的供應鏈與地緣政治震盪。同時，光通訊、功率元件與資料中心電源升級也成為市場關注焦點。",
  "sections": [
   {
-   "topic": "半導體製程",
+   "topic": "記憶體",
    "items": [
     {
-     "headline": "國科會發布2027至2030科技白皮書聚焦主權AI與矽光子等九大科技議題",
+     "headline": "NAND現貨價重挫20%，美銀示警2027年首季恐跌價、DRAM漲勢延續",
      "titles": [
       {
-       "title": "國科會發布「2027-2030科技白皮書」聚焦主權AI、矽光子等九大科技議題",
+       "title": "NAND現貨價重挫20%！美銀示警2027年首季恐跌價、DRAM漲勢延續",
        "sources": [
         "cnyes_intl",
         "google_news"
        ]
+      },
+      {
+       "title": "NAND現貨價跌勢擴大 美銀示警2027年首季議價轉弱 DRAM漲勢仍看旺",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "美銀示警：NAND快閃記憶體現貨價一個月重挫20%，記憶體晶片漲勢現裂痕",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "BofA Warns: NAND Flash Spot Prices Plunge 20% in a Month, Cracks Appear in Memory Chip Rally",
+       "sources": [
+        "google_news_us"
+       ]
       }
      ],
-     "n_sources": 2,
+     "n_sources": 3,
      "codes": []
     },
     {
-     "headline": "SK海力士加速HBM4擴產並展開設備採購洽談目標明年上半年量產",
+     "headline": "美法院駁回三星、SK海力士與美光撤訴動議，DRAM反壟斷案續審",
+     "titles": [
+      {
+       "title": "美法院駁回三星、SK海力士與美光撤訴動議 DRAM反壟斷案續審",
+       "sources": [
+        "cnyes_intl",
+        "google_news"
+       ]
+      },
+      {
+       "title": "DRAM漲價疑聯手 美法官准告三巨頭",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "Samsung, SK hynix, Micron Face U.S. Class-Action Lawsuit Over Alleged DRAM Supply Manipulation",
+       "sources": [
+        "trendforce"
+       ]
+      },
+      {
+       "title": "三星、SK 海力士、美光被控聯手壓 DRAM 供給，法官駁回撤案",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "DRAM 三大廠聯合壟斷訴訟撤案申請遭駁回，法官指行為如老鷹成群尋找獵物",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "Federal Judge Lets DRAM Price-Fixing Suit Against Micron, Samsung and SK hynix Proceed",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ],
+     "n_sources": 4,
+     "codes": []
+    },
+    {
+     "headline": "HBM排擠傳統DRAM產能，記憶體供應鏈迎結構性變局",
+     "titles": [
+      {
+       "title": "HBM排擠傳統DRAM產能 記憶體供應鏈迎結構性變局",
+       "sources": [
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "三星傳開發Meta客製化HBM、擬採自家2奈米，同步為NVIDIA導入台積電製程",
+     "titles": [
+      {
+       "title": "三星傳開發Meta客製化HBM、擬採自家2奈米 同步為NVIDIA導入台積電製程",
+       "sources": [
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "台積電3奈米進入HBM，NVHBM架構讓競爭延伸Base Die製造",
+     "titles": [
+      {
+       "title": "台積電3奈米進入HBM NVHBM架構讓競爭延伸Base Die製造",
+       "sources": [
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2330",
+       "name": "台積電"
+      }
+     ]
+    },
+    {
+     "headline": "SK Hynix加速HBM4擴產，展開設備採購洽談，目標明年上半年量產",
      "titles": [
       {
        "title": "SK Hynix Accelerates HBM4 Expansion, Enters Equipment Procurement Talks, Targets Mass Production in First Half of Next Year",
@@ -43,7 +149,7 @@
      "codes": []
     },
     {
-     "headline": "SK海力士表示2027至2029年DRAM與HBM產能幾乎已被客戶需求鎖定",
+     "headline": "AI半導體與關鍵零組件供需持續吃緊，SK海力士表示2027至2029年產能已被鎖定",
      "titles": [
       {
        "title": "台股產業快報 2026/11/1① AI半導體與關鍵零組件供需持續吃緊SK海力士表示，2027～2029年DRAM、HBM產能幾乎已被客戶需求鎖定，AI伺服器與",
@@ -56,7 +162,51 @@
      "codes": []
     },
     {
-     "headline": "中國兆易創新指出利基型記憶體供應偏緊格局延續且DRAM價格將維持高檔",
+     "headline": "Amazon上修2026資本支出至2200億美元，主要受記憶體漲價因素影響",
+     "titles": [
+      {
+       "title": "Amazon也上修了2026資本支出從2000億上修到2200億，主要也是記憶體漲價因素。Q2的自由現金流也轉負。AWS的營收成長加速至年增37%，營業利潤年增",
+       "sources": [
+        "telegram"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "鈺創科技深度解析：AI邊緣運算與利基型記憶體雙引擎迎來爆發性成長",
+     "titles": [
+      {
+       "title": "鈺創科技 (5351) 深度解析：AI 邊緣運算與利基型記憶體雙引擎，迎來爆發性成長",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "最新外資報告大降評，旺宏因利基型記憶體需求疲軟目標價下修",
+     "titles": [
+      {
+       "title": "【即時新聞】最新外資報告大降評，旺宏因利基型記憶體需求疲軟，目標價下修59%至90元！",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2337",
+       "name": "旺宏"
+      }
+     ]
+    },
+    {
+     "headline": "中國兆易創新：利基型記憶體供應偏緊格局延續，DRAM價格將維持高檔",
      "titles": [
       {
        "title": "中國兆易創新：利基型記憶體供應偏緊格局延續，DRAM價格將維持高檔",
@@ -69,7 +219,7 @@
      "codes": []
     },
     {
-     "headline": "旺宏第三季毛利率達70%且未來新產能將全力攻eMMC產品",
+     "headline": "旺宏第三季毛利率70%超越台積電，未來新產能全力攻eMMC產品",
      "titles": [
       {
        "title": "2026.10.27 旺宏第三季毛利率70%，超越台積電！未來新產能全力攻eMMC產品",
@@ -83,11 +233,15 @@
       {
        "code": "2337",
        "name": "旺宏"
+      },
+      {
+       "code": "2330",
+       "name": "台積電"
       }
      ]
     },
     {
-     "headline": "南亞科第三季毛利率逼近86%並預期第四季會再成長",
+     "headline": "南亞科3Q毛利率逼近86%且4Q會再成長，破除年底DRAM價格反轉迷思",
      "titles": [
       {
        "title": "2026.10.12 南亞科3Q毛利率逼近86%，4Q會再成長，破除市場認為年底DRAM價格反轉迷思",
@@ -105,16 +259,35 @@
      ]
     },
     {
-     "headline": "美銀指出記憶體市場正在分化其中DRAM依然堅挺而NAND已悄然走弱",
+     "headline": "長鑫存儲HBM3E良率僅兩成？華為昇騰960DT傳改採韓廠記憶體",
      "titles": [
       {
-       "title": "存储正在分化，美银：DRAM依然坚挺，NAND已悄然走弱",
+       "title": "長鑫存儲 HBM3E 良率僅兩成？華為昇騰 960DT 傳改採韓廠記憶體",
        "sources": [
-        "wallstreetcn"
+        "google_news"
        ]
       }
      ],
      "n_sources": 1,
+     "codes": []
+    }
+   ]
+  },
+  {
+   "topic": "半導體製程",
+   "items": [
+    {
+     "headline": "國科會發布2027-2030科技白皮書，聚焦主權AI、矽光子等九大科技議題",
+     "titles": [
+      {
+       "title": "國科會發布「2027-2030科技白皮書」聚焦主權AI、矽光子等九大科技議題",
+       "sources": [
+        "cnyes_intl",
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 2,
      "codes": []
     },
     {
@@ -125,78 +298,9 @@
        "sources": [
         "gnews_d2"
        ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "AI排擠效應持續發酵使MLCC產業邁入結構性重組",
-     "titles": [
-      {
-       "title": "AI排擠效應持續發酵　MLCC產業邁入結構性重組",
-       "sources": [
-        "eetimes"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "美法院駁回三星、SK海力士與美光撤訴動議使DRAM反壟斷案續審",
-     "titles": [
-      {
-       "title": "美法院駁回三星、SK海力士與美光撤訴動議 DRAM反壟斷案續審",
-       "sources": [
-        "cnyes_intl"
-       ]
       },
       {
-       "title": "Judge denies motion to dismiss DRAM price-fixing lawsuit against Micron, Samsung, and SK hynix, finds evidence of DRAM collusion plausible after 500% price surge",
-       "sources": [
-        "tomshardware"
-       ]
-      },
-      {
-       "title": "Federal Judge Lets DRAM Price-Fixing Suit Against Micron, Samsung and SK hynix Proceed",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Judge denies motion to dismiss DRAM price-fixing lawsuit against Micron, Samsung, and SK hynix, finds evidence of DRAM collusion plausible after 500% price surge — says chipmakers acted like ‘hawks flying in formation",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "DRAM Price-Fixing Lawsuit Survives: 697% Claim, 3 Chipmakers",
-       "sources": [
-        "google_news_us"
-       ]
-      },
-      {
-       "title": "Federal Judge Rejects Memory Makers’ Defense To Advance Class-Action Antitrust Lawsuit; Samsung, Micron & SK hynix Must Face The Music Over Artificial DRAM Shortage",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ],
-     "n_sources": 3,
-     "codes": []
-    },
-    {
-     "headline": "NAND Flash現價單月急跌20%顯示記憶體漲勢出現裂痕",
-     "titles": [
-      {
-       "title": "顯卡價格跳水？秋葉原RTX 5090出現22%急速降價 NAND也見價格下修",
-       "sources": [
-        "cnyes_intl"
-       ]
-      },
-      {
-       "title": "BofA Warns: NAND Flash Spot Prices Plunge 20% in a Month, Cracks Appear in Memory Chip Rally",
+       "title": "Infineon achieves 300-millimeter power SiC wafer milestone",
        "sources": [
         "google_news_us"
        ]
@@ -206,25 +310,7 @@
      "codes": []
     },
     {
-     "headline": "群聯潘健成反駁記憶體低成本庫存左右公司獲利",
-     "titles": [
-      {
-       "title": "2026.11.07 群聯潘健成再度「迎戰」分析師，反駁記憶體低成本庫存左右公司獲利",
-       "sources": [
-        "jov"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "8299",
-       "name": "群聯"
-      }
-     ]
-    },
-    {
-     "headline": "台積電熊本二廠拍板3奈米且張曉強表示AI晶片需求永無止境",
+     "headline": "台積電熊本二廠拍板3奈米，張曉強稱AI晶片需求永無止境",
      "titles": [
       {
        "title": "台積電熊本二廠拍板3奈米 張曉強：AI晶片需求「永無止境」",
@@ -242,10 +328,41 @@
      ]
     },
     {
-     "headline": "台積電10月營收創新高且外資估2、3奈米供不應求與2027年美元營收暴增40%",
+     "headline": "台積電10月營收創新高，外資估2、3奈米供不應求，2027年美元營收暴增40%",
      "titles": [
       {
        "title": "目標價喊到3300元！台積電10月營收創新高外資估「2、3奈米供不應求」、2027年美元營收暴增40%",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2330",
+       "name": "台積電"
+      }
+     ]
+    },
+    {
+     "headline": "華虹宏力產能滿載、AI訂單供不應求，第一上海仍降目標價至125港幣",
+     "titles": [
+      {
+       "title": "華虹宏力產能滿載、AI訂單供不應求，第一上海仍降目標價至125港幣",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "台積電產能滿載助攻，三星晶圓代工傳連2季拿美國CSP新單",
+     "titles": [
+      {
+       "title": "台積電產能滿載助攻 三星晶圓代工傳連2季拿美國CSP新單",
        "sources": [
         "gnews_d2"
        ]
@@ -265,7 +382,21 @@
    "topic": "先進封裝",
    "items": [
     {
-     "headline": "帶您一次看懂台積電CoWoS-S、CoWoS-R與CoWoS-L三大王牌的應用利基與供應鏈版圖",
+     "headline": "Anritsu PCIe 6.0量測方案獲鎧俠採用，驗證次世代SSD",
+     "titles": [
+      {
+       "title": "Anritsu PCIe 6.0量測方案獲鎧俠採用　驗證次世代SSD",
+       "sources": [
+        "wapeople",
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 2,
+     "codes": []
+    },
+    {
+     "headline": "一次看懂台積電CoWoS-S、CoWoS-R與CoWoS-L三大王牌封裝",
      "titles": [
       {
        "title": "CoWoS 不只有一種！一次看懂台積電 CoWoS-S、CoWoS-R 與 CoWoS-L 三大王牌：應用利基、奈米製程密碼與供應鏈版圖",
@@ -289,78 +420,18 @@
      ]
     },
     {
-     "headline": "力成在晶片大型化下具備面板級封裝機會",
+     "headline": "精材CoWoS合作利多出盡股價重摔跌停，法人揭3大隱憂",
      "titles": [
       {
-       "title": "【個股分析】力成：晶片大型化下的面板級封裝機會",
+       "title": "焦點股／攜手搶攻CoWoS商機！精材利多出盡摔跌停 台積電也跌逾3%",
        "sources": [
-        "fugle_blog"
+        "google_news"
        ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "6239",
-       "name": "力成"
-      }
-     ]
-    },
-    {
-     "headline": "台積電與格羅方德對上英特爾與聯電的20億美元矽中介層合作盤算",
-     "titles": [
-      {
-       "title": "2026.10.13 台積電＋格羅方德 vs 英特爾＋聯電，一樁20億美元的矽中介層合作背後有什麼盤算？",
-       "sources": [
-        "jov"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "2330",
-       "name": "台積電"
       },
       {
-       "code": "2303",
-       "name": "聯電"
-      }
-     ]
-    },
-    {
-     "headline": "台積電與欣銓簽署七年先進封裝協議以擴充CoWoS產能至2033年",
-     "titles": [
-      {
-       "title": "TSMC signs a seven-year advanced packaging deal with Xintec to expand CoWoS capacity through 2033",
+       "title": "精材CoWoS合作利多出盡？股價重摔跌停法人揭3大隱憂- 證券",
        "sources": [
-        "google_news_us"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "日月光據傳在最新AI驅動的價格調漲中將先進封裝報價調高逾20%",
-     "titles": [
-      {
-       "title": "ASE Reportedly Raises Advanced Packaging Quotes by More Than 20% in Latest AI-Driven Price Hike",
-       "sources": [
-        "trendforce"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "精材上月每股盈餘1.07元",
-     "titles": [
-      {
-       "title": "精材上月 EPS 1.07元",
-       "sources": [
-        "edn"
+        "google_news"
        ]
       }
      ],
@@ -369,21 +440,89 @@
       {
        "code": "3374",
        "name": "精材"
+      },
+      {
+       "code": "2330",
+       "name": "台積電"
+      }
+     ]
+    },
+    {
+     "headline": "台積電擴大先進封裝布局，轉投資精材產線將於2029量產",
+     "titles": [
+      {
+       "title": "【即時新聞】最新宣布！台積電擴大先進封裝布局，轉投資精材產線將於2029量產",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "《半導體》台積擴大委外 精材搶進CoWoS",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "TSMC signs a seven-year advanced packaging deal with Xintec to expand CoWoS capacity through 2033",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ],
+     "n_sources": 2,
+     "codes": [
+      {
+       "code": "2330",
+       "name": "台積電"
+      },
+      {
+       "code": "3374",
+       "name": "精材"
+      }
+     ]
+    },
+    {
+     "headline": "台積電大單找上門，封測廠砸150億搶進CoWoS藏大布局",
+     "titles": [
+      {
+       "title": "台積電大單找上門！「這檔封測廠」單周狂飆38.4% 砸150億搶進CoWoS背後藏大布局",
+       "sources": [
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2330",
+       "name": "台積電"
       }
      ]
     }
    ]
   },
   {
-   "topic": "光通訊",
+   "topic": "設備材料",
    "items": [
     {
-     "headline": "漢測攜手德廠衝刺矽光子測試並打通CPO測試最後一哩路",
+     "headline": "漢測攜手德廠ficonTEC衝刺矽光子與CPO測試布局",
      "titles": [
       {
        "title": "漢測攜德廠 衝矽光子測試",
        "sources": [
         "edn",
+        "google_news"
+       ]
+      },
+      {
+       "title": "旺矽搶CPO商機 漢測擴大矽光子布局",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "矽光子量產商機來了！漢測攜德商ficonTEC 擴大CPO測試布局",
+       "sources": [
         "google_news"
        ]
       },
@@ -394,13 +533,31 @@
        ]
       },
       {
+       "title": "漢測攜手德國ficonTEC，擴大矽光子測試布局",
+       "sources": [
+        "investor"
+       ]
+      },
+      {
        "title": "漢測攜手德商擴大矽光子晶圓布局- 日報",
        "sources": [
         "google_news"
        ]
       },
       {
+       "title": "漢測攜ficonTEC深化矽光子布局明後年成長添動能- 新聞",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
        "title": "漢測攜手德商 擴大矽光子晶圓布局",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "漢測與德國設備大廠 ficonTEC 深化合作，搶攻矽光子測試商機",
        "sources": [
         "google_news"
        ]
@@ -418,12 +575,6 @@
        ]
       },
       {
-       "title": "漢測與德國設備大廠 ficonTEC 深化合作，搶攻矽光子測試商機",
-       "sources": [
-        "google_news"
-       ]
-      },
-      {
        "title": "漢測深化合作ficonTEC　擴大布局矽光子測試",
        "sources": [
         "google_news"
@@ -436,71 +587,7 @@
        ]
       }
      ],
-     "n_sources": 2,
-     "codes": []
-    },
-    {
-     "headline": "CPO少了黃仁勳去留與Lumentum併購兩個推手受益的是NPO、Coherent與ASIC",
-     "titles": [
-      {
-       "title": "CPO 少了兩個推手：黃仁勳去留與 Lumentum 併購，受益的是 NPO、Coherent 與 ASIC",
-       "sources": [
-        "simpletechtrend"
-       ]
-      },
-      {
-       "title": "CPO Loses Two Drivers: Jensen Huang's Future and the Lumentum Deal Favor NPO, Coherent and ASICs",
-       "sources": [
-        "simpletechtrend"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "光速革命2026由矽光子與CPO領航AI下半場",
-     "titles": [
-      {
-       "title": "光速革命 2026：矽光子與 CPO 領航 AI 下半場",
-       "sources": [
-        "technews"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "思科表示光學是最大瓶頸且缺少的不是模組而是InP、DSP與光纖",
-     "titles": [
-      {
-       "title": "Cisco Says Optics Is the Biggest Bottleneck: The Shortage Is InP, DSP and Fiber, Not Modules — 2026 W46 Industry Review",
-       "sources": [
-        "simpletechtrend"
-       ]
-      },
-      {
-       "title": "Cisco 說最大瓶頸是光學：缺的不是模組，是 InP、DSP 與光纖——2026 W46 產業週評",
-       "sources": [
-        "simpletechtrend"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "旺矽搶攻CPO商機而漢測擴大矽光子布局",
-     "titles": [
-      {
-       "title": "旺矽搶CPO商機 漢測擴大矽光子布局",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ],
-     "n_sources": 1,
+     "n_sources": 3,
      "codes": [
       {
        "code": "6223",
@@ -509,16 +596,16 @@
      ]
     },
     {
-     "headline": "璦司柏11月17日登興櫃並以每股188元搶攻矽光子與CPO封裝商機",
+     "headline": "璦司柏今日登錄興櫃，每股188元搶攻高速光通訊及矽光子先進封裝商機",
      "titles": [
       {
-       "title": "璦司柏11月17日登興櫃、每股188元 搶攻矽光子、CPO 封裝商機",
+       "title": "興櫃：璦司柏(7966)今日登錄興櫃，搶攻高速光通訊及矽光子先進封裝應用商機",
        "sources": [
         "google_news"
        ]
       },
       {
-       "title": "璦司柏11月17日登興櫃、每股188元搶攻矽光子、CPO 封裝商機| 個股情報| 股市",
+       "title": "璦司柏11月17日登興櫃、每股188元 搶攻矽光子、CPO 封裝商機",
        "sources": [
         "google_news"
        ]
@@ -534,62 +621,7 @@
      "codes": []
     },
     {
-     "headline": "穩懋光通訊出貨增加且明年將導入6吋氮化鎵",
-     "titles": [
-      {
-       "title": "穩懋光通訊出貨增，6吋氮化鎵明年導入",
-       "sources": [
-        "gnews_d2"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "3105",
-       "name": "穩懋"
-      }
-     ]
-    },
-    {
-     "headline": "旺矽CPO設備2028年營收貢獻拚雙位數且2027年先迎量產機訂單",
-     "titles": [
-      {
-       "title": "旺矽CPO設備2028年營收貢獻拚雙位數！2027年先迎量產機訂單",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "6223",
-       "name": "旺矽"
-      }
-     ]
-    },
-    {
-     "headline": "看懂NPO近封裝光學需要先理解雷射外置還是內置以及PD整合還是獨立",
-     "titles": [
-      {
-       "title": "Understanding NPO: Two Choices That Shape the Module, External vs Internal Laser and Integrated vs Discrete PD",
-       "sources": [
-        "simpletechtrend"
-       ]
-      },
-      {
-       "title": "看懂 NPO 近封裝光學，先看懂這兩件事：雷射外置還是內置、PD 整合還是獨立",
-       "sources": [
-        "simpletechtrend"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "旺矽樂觀看待AI與高效能運算並預估明年營收最少成長五成",
+     "headline": "旺矽樂觀AI與高效能運算，明年營收最少成長五成",
      "titles": [
       {
        "title": "旺矽樂觀 AI、高效能運算 明年營收最少成長五成",
@@ -611,134 +643,9 @@
        "name": "旺矽"
       }
      ]
-    }
-   ]
-  },
-  {
-   "topic": "AI伺服器",
-   "items": [
-    {
-     "headline": "Marvell對未來兩年成長預期再度明顯上修且AI成長動能已從光通訊擴大到交換器與客製化晶片",
-     "titles": [
-      {
-       "title": "Marvell 對未來兩年的成長預期再度明顯上修，而且 AI 成長動能已經從光通訊 DSP，擴大到交換器、scale-up optics、CXL 與客製化晶片。",
-       "sources": [
-        "telegram"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
     },
     {
-     "headline": "Amazon上修2026年資本支出至2200億美元且記憶體漲價造成自由現金流轉負",
-     "titles": [
-      {
-       "title": "Amazon也上修了2026資本支出從2000億上修到2200億，主要也是記憶體漲價因素。Q2的自由現金流也轉負。AWS的營收成長加速至年增37%，營業利潤年增",
-       "sources": [
-        "telegram"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "Penguin Solutions推出業界首款基於光學的HBM級記憶體設備",
-     "titles": [
-      {
-       "title": "Penguin Solutions Unveils Industry's First Photonics-Based HBM-Class Memory Appliance",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "ASIC客製化晶片接棒大漲包含世芯-KY與智原等7檔IP股同步走強",
-     "titles": [
-      {
-       "title": "【最新消息】ASIC客製化晶片接棒大漲，世芯-KY、智原等7檔IP股同步走強-起漲K線",
-       "sources": [
-        "gnews_d2"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "3661",
-       "name": "世芯-KY"
-      },
-      {
-       "code": "3035",
-       "name": "智原"
-      }
-     ]
-    },
-    {
-     "headline": "世芯10月每股賺10.11元而創意賺3.73元",
-     "titles": [
-      {
-       "title": "世芯10月每股賺10.11元 創意3.73元",
-       "sources": [
-        "edn"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "3443",
-       "name": "創意"
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "topic": "設備材料",
-   "items": [
-    {
-     "headline": "迎被動元件擴產使勤凱明年出貨價量雙增且營收成長目標上看30%",
-     "titles": [
-      {
-       "title": "迎被動元件擴產，勤凱明年出貨價量雙增，營收成長目標上看30%",
-       "sources": [
-        "investor"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "4760",
-       "name": "勤凱科技"
-      }
-     ]
-    },
-    {
-     "headline": "嘉晶深度解析聚焦AI電力心臟與矽光子雙引擎引爆第三代半導體轉機",
-     "titles": [
-      {
-       "title": "嘉晶 (3016) 深度解析：AI 電力心臟與矽光子雙引擎，引爆第三代半導體轉機",
-       "sources": [
-        "gnews_d2"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "3016",
-       "name": "嘉晶"
-      }
-     ]
-    },
-    {
-     "headline": "新產品量產與擴產效益顯現使達興材料2027年營收拚雙位數以上成長",
+     "headline": "達興材料2027年營收拚雙位數以上成長，多項先進製程材料將驗證量產",
      "titles": [
       {
        "title": "新產品量產＋擴產效益顯現，達興材料2027年營收拚雙位數以上成長",
@@ -766,27 +673,203 @@
        "name": "達興材料"
       }
      ]
-    },
+    }
+   ]
+  },
+  {
+   "topic": "光通訊",
+   "items": [
     {
-     "headline": "臺慶科明年AI佔比上看18%且營收挑戰百億元",
+     "headline": "Marvell對未來兩年成長預期上修，AI動能擴大至光通訊DSP與交換器",
      "titles": [
       {
-       "title": "GPU＋ASIC帶頭衝，臺慶科明年AI佔比上看18%，營收挑戰百億元",
+       "title": "Marvell 對未來兩年的成長預期再度明顯上修，而且 AI 成長動能已經從光通訊 DSP，擴大到交換器、scale-up optics、CXL 與客製化晶片。",
        "sources": [
-        "investor"
+        "telegram"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "CPO少了黃仁勳去留與Lumentum併購兩個推手，受益的是NPO、Coherent與ASIC",
+     "titles": [
+      {
+       "title": "CPO 少了兩個推手：黃仁勳去留與 Lumentum 併購，受益的是 NPO、Coherent 與 ASIC",
+       "sources": [
+        "simpletechtrend"
+       ]
+      },
+      {
+       "title": "CPO Loses Two Drivers: Jensen Huang's Future and the Lumentum Deal Favor NPO, Coherent and ASICs",
+       "sources": [
+        "simpletechtrend"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "Cisco指出光學最大瓶頸是InP、DSP與光纖，缺的不是模組",
+     "titles": [
+      {
+       "title": "Cisco Says Optics Is the Biggest Bottleneck: The Shortage Is InP, DSP and Fiber, Not Modules — 2026 W46 Industry Review",
+       "sources": [
+        "simpletechtrend"
+       ]
+      },
+      {
+       "title": "Cisco 說最大瓶頸是光學：缺的不是模組，是 InP、DSP 與光纖——2026 W46 產業週評",
+       "sources": [
+        "simpletechtrend"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "看懂NPO近封裝光學：雷射外置還是內置、PD整合還是獨立",
+     "titles": [
+      {
+       "title": "Understanding NPO: Two Choices That Shape the Module, External vs Internal Laser and Integrated vs Discrete PD",
+       "sources": [
+        "simpletechtrend"
+       ]
+      },
+      {
+       "title": "看懂 NPO 近封裝光學，先看懂這兩件事：雷射外置還是內置、PD 整合還是獨立",
+       "sources": [
+        "simpletechtrend"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    }
+   ]
+  },
+  {
+   "topic": "電源散熱",
+   "items": [
+    {
+     "headline": "揭密800V HVDC與固態變壓器SST：台達電、光寶科與高壓BBU供應鏈的黃金戰場",
+     "titles": [
+      {
+       "title": "揭密「800V HVDC 與固態變壓器 SST」：台達電、光寶科與高壓 BBU 供應鏈的十年黃金戰場",
+       "sources": [
+        "aminext"
+       ]
+      },
+      {
+       "title": "Decoding 800V HVDC and Solid-State Transformers (SST)—The Trillion-Dollar Rewiring of AI Data Centers",
+       "sources": [
+        "aminext"
+       ]
+      },
+      {
+       "title": "HVDC 關鍵技術與供應鏈全解析",
+       "sources": [
+        "technews"
+       ]
+      },
+      {
+       "title": "HVDC 電力時代開啟！±400 V 和 800 V 一次看懂",
+       "sources": [
+        "technews"
+       ]
+      },
+      {
+       "title": "800 VDC 是開端！台達揭密 AI 資料中心電力革命",
+       "sources": [
+        "technews"
+       ]
+      },
+      {
+       "title": "SST 崛起！AI 資料中心下一代供電技術解析",
+       "sources": [
+        "technews"
+       ]
+      }
+     ],
+     "n_sources": 2,
+     "codes": [
+      {
+       "code": "2308",
+       "name": "台達電"
+      },
+      {
+       "code": "2301",
+       "name": "光寶科"
+      }
+     ]
+    },
+    {
+     "headline": "800V DC架構有望帶動GaN功率元件需求，SiC競爭成潛在變數",
+     "titles": [
+      {
+       "title": "800V DC架構有望帶動GaN功率元件需求 SiC競爭成潛在變數",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "康舒SC26秀液冷電源技術，搶攻AI資料中心商機",
+     "titles": [
+      {
+       "title": "康舒 SC26 秀液冷電源技術，搶攻 AI 資料中心商機",
+       "sources": [
+        "technews"
        ]
       }
      ],
      "n_sources": 1,
      "codes": [
       {
-       "code": "3357",
-       "name": "臺慶科"
+       "code": "6282",
+       "name": "康舒"
       }
      ]
     },
     {
-     "headline": "金居高階銅箔漲價週期帶動2027年成長加速",
+     "headline": "AI搧風功率元件爆火，4檔個股周漲2成起跳",
+     "titles": [
+      {
+       "title": "〈熱門股〉AI搧風功率元件爆火 4檔個股周漲2成起跳",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    }
+   ]
+  },
+  {
+   "topic": "PCB載板",
+   "items": [
+    {
+     "headline": "全面拆解半導體與低軌衛星四大高階基板：ABF、BT、特種陶瓷與鐵氟龍材料",
+     "titles": [
+      {
+       "title": "絕非普通綠色電路板！全面拆解半導體與低軌衛星「四大高階基板」：ABF、BT、特種陶瓷與鐵氟龍材料的利基戰場與缺貨真相",
+       "sources": [
+        "aminext"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "金居高階銅箔漲價週期，2027年成長加速",
      "titles": [
       {
        "title": "【個股近況更新】金居：高階銅箔漲價週期，2027 年成長加速！",
@@ -822,50 +905,10 @@
      ]
     },
     {
-     "headline": "達興材拚明年績增雙位數且多項先進製程材料將驗證完成進入量產",
+     "headline": "輝達Vera CPU放量且報價逐季漲15%，載板大廠營運看旺",
      "titles": [
       {
-       "title": "達興材拚明年績增雙位數 多項先進製程材料將驗證完成進入量產",
-       "sources": [
-        "edn"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    }
-   ]
-  },
-  {
-   "topic": "電源散熱",
-   "items": [
-    {
-     "headline": "揭密800V HVDC與固態變壓器SST為台達電、光寶科與高壓BBU供應鏈的黃金戰場",
-     "titles": [
-      {
-       "title": "揭密「800V HVDC 與固態變壓器 SST」：台達電、光寶科與高壓 BBU 供應鏈的十年黃金戰場",
-       "sources": [
-        "aminext"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "2308",
-       "name": "台達電"
-      },
-      {
-       "code": "2301",
-       "name": "光寶科"
-      }
-     ]
-    },
-    {
-     "headline": "800V DC架構有望帶動GaN功率元件需求並使SiC競爭成為潛在變數",
-     "titles": [
-      {
-       "title": "800V DC架構有望帶動GaN功率元件需求 SiC競爭成潛在變數",
+       "title": "目標價900元！「載板大廠」EPS上看29元 輝達Vera CPU放量＋報價逐季漲15%營運看旺",
        "sources": [
         "gnews_d2"
        ]
@@ -873,68 +916,6 @@
      ],
      "n_sources": 1,
      "codes": []
-    },
-    {
-     "headline": "台達揭密AI資料中心電力革命並指出800 VDC是開端",
-     "titles": [
-      {
-       "title": "800 VDC 是開端！台達揭密 AI 資料中心電力革命",
-       "sources": [
-        "technews"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "SST崛起成為AI資料中心下一代供電技術解析",
-     "titles": [
-      {
-       "title": "SST 崛起！AI 資料中心下一代供電技術解析",
-       "sources": [
-        "technews"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    }
-   ]
-  },
-  {
-   "topic": "PCB載板",
-   "items": [
-    {
-     "headline": "AI伺服器帶動PCB規格推升以及泰國布局重塑與材料升級",
-     "titles": [
-      {
-       "title": "AI 伺服器帶動 PCB 規格推升，泰國布局重塑與材料升級",
-       "sources": [
-        "technews"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "嘉澤QD產能滿載拚倍增且2027年營收佔比近1成",
-     "titles": [
-      {
-       "title": "嘉澤QD產能滿載拚倍增 2027年營收佔比近1成",
-       "sources": [
-        "gnews_d2"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "3533",
-       "name": "嘉澤"
-      }
-     ]
     }
    ]
   },
@@ -942,48 +923,51 @@
    "topic": "車用功率",
    "items": [
     {
-     "headline": "AI搧風功率元件爆火帶動4檔個股周漲2成起跳",
+     "headline": "帳面重疊降低7成，日本發布ROHM之SiC與三菱之Si混載的inverter技術",
      "titles": [
       {
-       "title": "〈熱門股〉AI搧風功率元件爆火 4檔個股周漲2成起跳",
+       "title": "ロームのSiCと三菱のSiを混載「重さ7割減」日本発インバーター技術に迫る",
        "sources": [
-        "gnews_d2"
+        "eetimes_jp"
        ]
       }
      ],
      "n_sources": 1,
      "codes": []
-    }
-   ]
-  },
-  {
-   "topic": "消費電子",
-   "items": [
+    },
     {
-     "headline": "鈺創科技深度解析主打AI邊緣運算與利基型記憶體雙引擎迎來爆發性成長",
+     "headline": "安森美推出1200V縱型GaN之800V至6V的20kW級電源方案",
      "titles": [
       {
-       "title": "鈺創科技 (5351) 深度解析：AI 邊緣運算與利基型記憶體雙引擎，迎來爆發性成長",
+       "title": "1200V縦型GaNで800V→6Vの20kW級電源、onsemi",
        "sources": [
-        "gnews_d2"
+        "eetimes_jp"
        ]
       }
      ],
      "n_sources": 1,
-     "codes": [
-      {
-       "code": "5351",
-       "name": "鈺創"
-      }
-     ]
+     "codes": []
     },
     {
-     "headline": "GENTLE MONSTER智慧眼鏡16款曝光包含三星加持與Google AI續航72小時",
+     "headline": "TDK推出時隔22年刷新、採用SiC使體積減少6成的650W電源",
      "titles": [
       {
-       "title": "GENTLE MONSTER智慧眼鏡16款曝光！三星加持僅41克、Google AI續航72小時",
+       "title": "22年ぶり刷新、SiC採用で体積6割減　TDKの650W電源",
        "sources": [
-        "gnews_d2"
+        "edn_jp"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "SemiQ發表750V與1200V之第4世代SiC MOSFET",
+     "titles": [
+      {
+       "title": "SemiQが750V／1200Vの第4世代SiC MOSFET発表",
+       "sources": [
+        "edn_jp"
        ]
       }
      ],
@@ -996,7 +980,81 @@
    "topic": "日韓產業",
    "items": [
     {
-     "headline": "SK Hynix設備投資至今年第3季達31兆韓元創下史上最大規模",
+     "headline": "三星擴產為SpaceX造晶片，叫陣台積電",
+     "titles": [
+      {
+       "title": "三星擴產 為SpaceX造晶片",
+       "sources": [
+        "iek_news"
+       ]
+      },
+      {
+       "title": "SpaceX may spend up to $119B on ‘Terafab’ chip factory in Texas",
+       "sources": [
+        "techcrunch_semi"
+       ]
+      },
+      {
+       "title": "Intel signs on to Elon Musk’s Terafab chips project",
+       "sources": [
+        "techcrunch_semi"
+       ]
+      },
+      {
+       "title": "老馬證實真的有跟台積電在聊德州Terafab",
+       "sources": [
+        "telegram"
+       ]
+      },
+      {
+       "title": "馬斯克、三星深化合作，傳三星德州廠將為 SpaceX 生產晶片",
+       "sources": [
+        "technews"
+       ]
+      },
+      {
+       "title": "三星搶星鏈訂單 叫陣台積",
+       "sources": [
+        "iek_news"
+       ]
+      }
+     ],
+     "n_sources": 4,
+     "codes": [
+      {
+       "code": "2330",
+       "name": "台積電"
+      }
+     ]
+    },
+    {
+     "headline": "日立運用AI基盤技術，將晶片設計候選縮減九成",
+     "titles": [
+      {
+       "title": "チップレット設計候補を9割絞り込み　日立がAI基盤技術",
+       "sources": [
+        "eetimes_jp"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "JDI預期27年度實現黑字化，並對玻璃基板新事業抱持手感",
+     "titles": [
+      {
+       "title": "27年度の黒字化目指すJDI、ガラス基板に新事業の手応え",
+       "sources": [
+        "eetimes_jp"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "SK海力士設備投資截至今年第3季達31兆韓元創歷史新高",
      "titles": [
       {
        "title": "SKíì´ëì¤ ì¤ë¹í¬ì ì¬í´ 3ë¶ê¸°ê¹ì§ 31ì¡°ìâ¦ì¬ì ìµë ê·ëª¨",
@@ -1009,35 +1067,16 @@
      "codes": []
     },
     {
-     "headline": "南韓記憶體雙雄在9個月內已填滿去年全年90%產能",
+     "headline": "SK海力士在美國完成歷史最大規模外國IPO籌集265億美元，並被敦促在美建廠",
      "titles": [
       {
-       "title": "K메모리 빅2, 9개월 만에 지난해 연간 생산 90% 채워",
+       "title": "SK Hynix raises $26.5B in the biggest foreign IPO in US history, is urged to build new US fabs",
        "sources": [
-        "digitaltoday_kr"
+        "techcrunch_semi"
        ]
       }
      ],
      "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "三星與SK海力士在美國面臨DRAM供應壟斷集體訴訟",
-     "titles": [
-      {
-       "title": "Samsung, SK hynix, Micron Face U.S. Class-Action Lawsuit Over Alleged DRAM Supply Manipulation",
-       "sources": [
-        "trendforce"
-       ]
-      },
-      {
-       "title": "삼성전자·SK하이닉스, D램 담합소송 美서 본격화",
-       "sources": [
-        "digitaltoday_kr"
-       ]
-      }
-     ],
-     "n_sources": 2,
      "codes": []
     }
    ]
@@ -1046,17 +1085,55 @@
    "topic": "美股與國際",
    "items": [
     {
-     "headline": "美擴大AI晶片管制並防堵遠端存取漏洞",
+     "headline": "Nvidia領導層異動牽動AI產業發展與供應鏈",
      "titles": [
       {
-       "title": "美擴大AI晶片管制 防堵遠端存取漏洞",
+       "title": "Nvidia領導層異動牽動AI產業發展",
        "sources": [
-        "ctee",
-        "iek_news"
+        "eetimes",
+        "google_news"
        ]
       },
       {
-       "title": "美祭新規 限制遠端存取算力",
+       "title": "NVIDIA創業者のJensen Huang氏が辞任、33年間の経営に幕",
+       "sources": [
+        "eetimes_jp"
+       ]
+      }
+     ],
+     "n_sources": 3,
+     "codes": []
+    },
+    {
+     "headline": "輝達發布專為科學計算設計的Vera CPU機架級平台",
+     "titles": [
+      {
+       "title": "英偉達推出面向高性能計算的Vera CPU機架級平台",
+       "sources": [
+        "gnews_d2"
+       ]
+      },
+      {
+       "title": "英偉達發布Vera CPU平台，專為科學計算而設計 作者 Investing.com - Investing.com 香港",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "美國擴大對中國AI晶片管制，防堵遠端存取漏洞並將多國列高風險",
+     "titles": [
+      {
+       "title": "美國升級對中國 AI 晶片管制，新加坡、泰國、馬來西亞、印尼與巴西列高風險國家",
+       "sources": [
+        "technews"
+       ]
+      },
+      {
+       "title": "美擴大AI晶片管制 防堵遠端存取漏洞",
        "sources": [
         "iek_news"
        ]
@@ -1072,86 +1149,23 @@
      "codes": []
     },
     {
-     "headline": "SpaceX傳出可能在德州斥資高達1190億美元建立Terafab晶片工廠",
-     "titles": [
-      {
-       "title": "SpaceX may spend up to $119B on ‘Terafab’ chip factory in Texas",
-       "sources": [
-        "techcrunch_semi"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "英特爾簽署加入馬斯克的Terafab晶片專案",
-     "titles": [
-      {
-       "title": "Intel signs on to Elon Musk’s Terafab chips project",
-       "sources": [
-        "techcrunch_semi"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "馬斯克證實確實有跟台積電在討論德州Terafab",
-     "titles": [
-      {
-       "title": "老馬證實真的有跟台積電在聊德州Terafab",
-       "sources": [
-        "telegram"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "2330",
-       "name": "台積電"
-      }
-     ]
-    },
-    {
-     "headline": "研究員從權重找出晶片指紋並指中國六款AI模型使用Blackwell",
-     "titles": [
-      {
-       "title": "黃仁勳辭職後中國AI模型爆出Blackwell晶片指紋，美國封鎖高階算力為何仍有漏洞？",
-       "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "研究員從權重找出晶片指紋，指中國六款 AI 模型用 Blackwell",
-       "sources": [
-        "gnews_d2"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "SK海力士在美國完成歷史最大規模外國IPO並被敦促在美國建新廠",
-     "titles": [
-      {
-       "title": "SK Hynix raises $26.5B in the biggest foreign IPO in US history, is urged to build new US fabs",
-       "sources": [
-        "techcrunch_semi"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "OpenAI揭曉由博通打造的首款自研晶片",
+     "headline": "OpenAI推出首款由博通打造的客製化晶片",
      "titles": [
       {
        "title": "OpenAI unveils its first custom chip, built by Broadcom",
+       "sources": [
+        "techcrunch_semi"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "美國政府據傳正討論取得英特爾股權",
+     "titles": [
+      {
+       "title": "US government is reportedly in discussions to take stake in Intel",
        "sources": [
         "techcrunch_semi"
        ]
@@ -1166,8 +1180,14 @@
    "topic": "總經政策",
    "items": [
     {
-     "headline": "台股重挫2635點創史上第二大跌點且金管會與證交所表示必要時將出手救市",
+     "headline": "台股重挫迎來史上第二大跌點，金管會與證交所表示必要時出手救市",
      "titles": [
+      {
+       "title": "手亂下單就是下流！游庭皓喊台股史上第二大跌點要做風流投資人",
+       "sources": [
+        "technews"
+       ]
+      },
       {
        "title": "恐慌賣壓出籠！台股遭血洗 跌點史上第二大 專家：止跌盯四訊號",
        "sources": [
@@ -1181,38 +1201,18 @@
        ]
       }
      ],
-     "n_sources": 1,
+     "n_sources": 2,
      "codes": []
     },
     {
-     "headline": "後黃仁勳時代焦慮擴大使得AI股遭到無差別血洗",
-     "titles": [
-      {
-       "title": "「後黃仁勳時代焦慮」擴大 AI 股遭無差別血洗",
-       "sources": [
-        "edn"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "台灣上市櫃公司第三季獲利創新高且前三季達5.84兆元賺贏去年全年",
+     "headline": "上市櫃Q3獲利創新高，前三季賺贏去年全年，台積電包辦獲利王與現金王",
      "titles": [
       {
        "title": "上市櫃報喜 Q3 獲利創新高 前三季 5.84 兆元賺贏去年全年 Q4 有望再創高",
        "sources": [
         "edn"
        ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "上市櫃季報六天王中由台積電包辦獲利王與現金王",
-     "titles": [
+      },
       {
        "title": "上市櫃季報六天王打聚光燈 台積電包辦「獲利王」、「現金王」",
        "sources": [
@@ -1227,19 +1227,14 @@
        "name": "台積電"
       }
      ]
-    }
-   ]
-  },
-  {
-   "topic": "其他",
-   "items": [
+    },
     {
-     "headline": "反無人機與低軌衛星齊揚",
+     "headline": "IMD數位與AI競爭力台灣排名第13，4指標奪全球第1",
      "titles": [
       {
-       "title": "反無人機與低軌衛星齊揚，買盤熱度能否撐到營收認列？-雅筑股期理財術",
+       "title": "IMD 數位與 AI 競爭力台灣排名 13，4 指標奪全球第 1",
        "sources": [
-        "gnews_d2"
+        "technews"
        ]
       }
      ],
@@ -1247,79 +1242,25 @@
      "codes": []
     },
     {
-     "headline": "台美合作深化由L3Harris攜手台廠進行多領域能力展示會",
+     "headline": "台股失守4萬2，短線波動升溫致AI供應鏈承壓",
      "titles": [
       {
-       "title": "台美合作深化！L3Harris攜手台廠進行多領域能力展示會 每個單兵都是反無人機節點",
+       "title": "台股失守4萬2 國泰投信：短線波動升溫 AI 供應鏈承壓",
        "sources": [
-        "gnews_d2"
+        "edn"
        ]
       }
      ],
      "n_sources": 1,
      "codes": []
-    },
-    {
-     "headline": "事欣科前三季每股盈餘6.95元且第四季再拚新高",
-     "titles": [
-      {
-       "title": "軍工/航太/低軌衛星業務爆發，事欣科前三季EPS 6.95元，Q4再拚新高",
-       "sources": [
-        "investor"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "4916",
-       "name": "事欣科"
-      }
-     ]
-    },
-    {
-     "headline": "騰雲今年前三季每股大賺4.41元並結盟東南亞Grab與打入日本零售",
-     "titles": [
-      {
-       "title": "騰雲今年前三季每股大賺 4.41 元！結盟東南亞 Grab、打入日本零售",
-       "sources": [
-        "technews"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "6870",
-       "name": "騰雲"
-      }
-     ]
-    },
-    {
-     "headline": "騏億鑫上櫃掛牌首日盤中飆近2成並宣示稱霸國際廠務工程跨系統整合",
-     "titles": [
-      {
-       "title": "騏億鑫上櫃掛牌首日盤中飆近 2 成！宣示稱霸國際廠務工程跨系統整合",
-       "sources": [
-        "technews"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "7848",
-       "name": "騏億鑫"
-      }
-     ]
     }
    ]
   }
  ],
  "stats": {
-  "items_kept": 70,
+  "items_kept": 59,
   "items_dropped": 0,
-  "titles_used": 97,
+  "titles_used": 109,
   "titles_sent": 750
  },
  "coverage": [
@@ -1343,15 +1284,15 @@
   },
   {
    "source": "wapeople",
-   "fetched": 0,
-   "sent": 0,
-   "cited": 0
+   "fetched": 28,
+   "sent": 27,
+   "cited": 1
   },
   {
    "source": "technews",
-   "fetched": 55,
-   "sent": 54,
-   "cited": 6
+   "fetched": 46,
+   "sent": 46,
+   "cited": 9
   },
   {
    "source": "eetimes",
@@ -1363,25 +1304,25 @@
    "source": "trendforce",
    "fetched": 20,
    "sent": 20,
-   "cited": 2
+   "cited": 1
   },
   {
    "source": "cnyes_intl",
-   "fetched": 154,
-   "sent": 3,
+   "fetched": 95,
+   "sent": 5,
    "cited": 3
   },
   {
    "source": "ctee",
    "fetched": 15,
-   "sent": 1,
-   "cited": 1
+   "sent": 0,
+   "cited": 0
   },
   {
    "source": "edn",
    "fetched": 20,
    "sent": 20,
-   "cited": 11
+   "cited": 8
   },
   {
    "source": "stockrice",
@@ -1399,7 +1340,7 @@
    "source": "aminext",
    "fetched": 20,
    "sent": 9,
-   "cited": 3
+   "cited": 5
   },
   {
    "source": "ic975",
@@ -1435,13 +1376,13 @@
    "source": "fugle_blog",
    "fetched": 5,
    "sent": 3,
-   "cited": 3
+   "cited": 2
   },
   {
    "source": "jov",
    "fetched": 7,
    "sent": 7,
-   "cited": 4
+   "cited": 2
   },
   {
    "source": "etime_cn",
@@ -1451,21 +1392,21 @@
   },
   {
    "source": "cyclesinvest",
-   "fetched": 0,
-   "sent": 0,
+   "fetched": 10,
+   "sent": 3,
    "cited": 0
   },
   {
    "source": "iek_news",
    "fetched": 10,
    "sent": 10,
-   "cited": 4
+   "cited": 5
   },
   {
    "source": "investor",
-   "fetched": 52,
-   "sent": 4,
-   "cited": 4
+   "fetched": 56,
+   "sent": 3,
+   "cited": 2
   },
   {
    "source": "technice",
@@ -1475,27 +1416,27 @@
   },
   {
    "source": "newtalk_finance",
-   "fetched": 27,
+   "fetched": 30,
    "sent": 1,
    "cited": 0
   },
   {
    "source": "wallstreetcn",
-   "fetched": 50,
-   "sent": 1,
-   "cited": 1
+   "fetched": 55,
+   "sent": 0,
+   "cited": 0
   },
   {
    "source": "eetimes_jp",
    "fetched": 20,
    "sent": 20,
-   "cited": 0
+   "cited": 5
   },
   {
    "source": "edn_jp",
    "fetched": 20,
    "sent": 20,
-   "cited": 0
+   "cited": 2
   },
   {
    "source": "sangyo_times",
@@ -1525,7 +1466,7 @@
    "source": "digitaltoday_kr",
    "fetched": 50,
    "sent": 50,
-   "cited": 2
+   "cited": 0
   },
   {
    "source": "simpletechtrend",
@@ -1537,13 +1478,13 @@
    "source": "tomshardware",
    "fetched": 50,
    "sent": 50,
-   "cited": 2
+   "cited": 1
   },
   {
    "source": "techcrunch_semi",
    "fetched": 20,
    "sent": 20,
-   "cited": 4
+   "cited": 5
   },
   {
    "source": "invest_like_the_best",
@@ -1577,19 +1518,19 @@
   },
   {
    "source": "google_news",
-   "fetched": 122,
-   "sent": 29,
-   "cited": 15
+   "fetched": 160,
+   "sent": 53,
+   "cited": 33
   },
   {
    "source": "google_news_us",
-   "fetched": 69,
-   "sent": 18,
-   "cited": 8
+   "fetched": 121,
+   "sent": 16,
+   "cited": 5
   },
   {
    "source": "google_news_jp",
-   "fetched": 0,
+   "fetched": 42,
    "sent": 0,
    "cited": 0
   },
@@ -1602,7 +1543,7 @@
   {
    "source": "cnbc_yahoo",
    "fetched": 94,
-   "sent": 54,
+   "sent": 14,
    "cited": 0
   },
   {
@@ -1627,7 +1568,7 @@
    "source": "gnews_d2",
    "fetched": 78,
    "sent": 73,
-   "cited": 16
+   "cited": 14
   },
   {
    "source": "fsemi",
@@ -1637,7 +1578,7 @@
   },
   {
    "source": "eccn",
-   "fetched": 15,
+   "fetched": 23,
    "sent": 0,
    "cited": 0
   }
@@ -1649,7 +1590,7 @@
   },
   "eccn": {
    "status": "ok",
-   "n": 15
+   "n": 23
   }
  }
 }
