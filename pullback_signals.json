@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-18 23:58:10",
+ "generated_at": "2026-11-19 00:23:40",
  "data_date": "2026-11-18",
  "universe": "前200大(前60日平均成交值)",
  "universe_size": 200,
@@ -34,11 +34,31 @@
  },
  "backtest_note": "回測(2019–2026,前200大成交值股票池):扣成本後平均報酬為正,但與同一天在池內隨機買股、持有相同天數相比沒有顯著差異(樣本外 −0.42%,95% 信賴區間 −1.48%~+0.74%),報酬主要來自大盤急殺後的反彈。",
  "counts": {
-  "confirm": 0,
+  "confirm": 1,
   "noconfirm": 4,
   "watch": 5
  },
- "confirm": [],
+ "confirm": [
+  {
+   "code": "3044",
+   "name": "健鼎",
+   "market": "上市",
+   "signal_date": "2026-11-18",
+   "turnover_rank": 112,
+   "close": 481.5,
+   "chg_today": 0.0993,
+   "drawdown_3d_max": 0.2487,
+   "drawdown_today": 0.1741,
+   "vol_mult_max_3d": 2.13,
+   "cap_dates": [
+    "2026-11-17"
+   ],
+   "ref_high": 583.0,
+   "trough_3d": 438.0,
+   "target": 525.0,
+   "stop": 408.1
+  }
+ ],
  "noconfirm": [
   {
    "code": "3693",
@@ -204,7 +224,7 @@
    "chg_today": -0.0011,
    "drawdown_3d_max": 0.1611,
    "drawdown_today": 0.1611,
-   "vol_mult_max_3d": 2.25,
+   "vol_mult_max_3d": 2.3,
    "cap_dates": [
     "2026-11-17"
    ],
@@ -227,16 +247,15 @@
   },
   "yahoo_last_dates": {
    "上市": {
-    "2026-11-18": 865,
-    "2026-11-17": 222
+    "2026-11-17": 1087
    },
    "上櫃": {
-    "2026-11-18": 616,
-    "2026-11-17": 277
+    "2026-11-17": 888,
+    "2026-11-18": 5
    }
   },
-  "official_replaced": 1481,
-  "official_appended": 473,
+  "official_replaced": 5,
+  "official_appended": 1949,
   "official_inserted": 0
  }
 }
