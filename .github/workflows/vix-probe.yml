@@ -1,0 +1,26 @@
+name: VIX Probe (臺指VIX 資料來源探測)
+
+# 2026-11-19:一次性探測期交所 VIXTWN 歷史 / 當月檔格式(只印 log,不 commit)。
+on:
+  pull_request:
+    paths:
+      - vix_probe.py
+      - .github/workflows/vix-probe.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - run: python vix_probe.py
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
