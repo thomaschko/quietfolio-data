@@ -1,58 +1,151 @@
 {
-  "generated_at": "2026-11-22 10:05:38.105645",
+  "generated_at": "2026-11-22 16:39:44.248934",
   "candidates": [
     {
-      "term": "液冷散熱",
-      "reason": "AI資料中心液冷與散熱升級",
+      "term": "CoWoS/先進封裝",
+      "reason": "先進封裝產能排擠、設備技術發展",
       "confidence": "high",
       "sources": [
-        "cnyes"
+        "cnyes",
+        "google_news",
+        "trendforce"
       ],
       "stocks": [
-        "3017"
+        "3711"
       ],
       "names": {
-        "3017": "奇鋐"
+        "3711": "日月光投控"
       },
       "recent_hits": 5
     },
     {
-      "term": "記憶體",
-      "reason": "DRAM/NAND記憶體價格與供需",
+      "term": "矽光子/CPO",
+      "reason": "AI光互連與CPO檢測需求增溫",
+      "confidence": "high",
+      "sources": [
+        "google_news",
+        "google_news_us",
+        "simpletechtrend",
+        "technews",
+        "the_circuit_podcast"
+      ],
+      "stocks": [
+        "3587"
+      ],
+      "names": {
+        "3587": "閎康"
+      },
+      "recent_hits": 15
+    },
+    {
+      "term": "HBM記憶體",
+      "reason": "HBM世代升級與供需短缺",
       "confidence": "high",
       "sources": [
         "cnyes",
         "google_news",
         "google_news_us",
-        "trendforce"
+        "technews"
       ],
-      "stocks": [],
-      "names": {},
-      "recent_hits": 16
+      "stocks": [
+        "4923"
+      ],
+      "names": {
+        "4923": "力士"
+      },
+      "recent_hits": 17
     },
     {
-      "term": "資安防護",
-      "reason": "AI攻擊推升企業資安需求",
+      "term": "AI伺服器電源與散熱",
+      "reason": "高功耗推升液冷與電源升級",
       "confidence": "high",
       "sources": [
-        "cna",
         "cnyes",
-        "cnyes_intl",
-        "digitaltoday_kr",
+        "eetimes",
+        "eetimes_jp",
         "google_news",
-        "tomshardware"
+        "invest_like_the_best",
+        "technews",
+        "wapeople"
+      ],
+      "stocks": [
+        "3017",
+        "3026",
+        "3090",
+        "2308"
+      ],
+      "names": {
+        "3017": "奇鋐",
+        "3026": "禾伸堂",
+        "3090": "日電貿",
+        "2308": "台達電"
+      },
+      "recent_hits": 17
+    },
+    {
+      "term": "高階銅箔/玻纖布",
+      "reason": "AI伺服器帶動CCL與材料升級",
+      "confidence": "medium",
+      "sources": [
+        "cnyes",
+        "fugle_blog",
+        "technews",
+        "trendforce",
+        "youxian"
       ],
       "stocks": [],
       "names": {},
       "recent_hits": 7
     },
     {
-      "term": "銅箔基板",
-      "reason": "AI伺服器推升CCL高頻高速材料",
+      "term": "自研ASIC晶片",
+      "reason": "雲端大廠轉向客製化ASIC晶片",
+      "confidence": "high",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "edn",
+        "google_news",
+        "wallstreetcn"
+      ],
+      "stocks": [
+        "2454",
+        "1459",
+        "3017",
+        "2356",
+        "2382"
+      ],
+      "names": {
+        "2454": "聯發科",
+        "1459": "聯發",
+        "3017": "奇鋐",
+        "2356": "英業達",
+        "2382": "廣達"
+      },
+      "recent_hits": 7
+    },
+    {
+      "term": "網安資安升級",
+      "reason": "AI攻擊推升企業資安防護需求",
+      "confidence": "high",
+      "sources": [
+        "cna",
+        "cnbc_yahoo",
+        "cnyes",
+        "cnyes_intl",
+        "wallstreetcn"
+      ],
+      "stocks": [],
+      "names": {},
+      "recent_hits": 7
+    },
+    {
+      "term": "低軌衛星供應鏈",
+      "reason": "LEO衛星通訊與基礎設施擴充",
       "confidence": "medium",
       "sources": [
         "cnyes",
-        "fugle_blog",
+        "cnyes_intl",
         "technews"
       ],
       "stocks": [],
@@ -62,42 +155,150 @@
   ],
   "multi_source": [
     {
-      "term": "記憶體",
-      "reason": "DRAM/NAND記憶體價格與供需",
+      "term": "CoWoS/先進封裝",
+      "reason": "先進封裝產能排擠、設備技術發展",
+      "confidence": "high",
+      "sources": [
+        "cnyes",
+        "google_news",
+        "trendforce"
+      ],
+      "stocks": [
+        "3711"
+      ],
+      "names": {
+        "3711": "日月光投控"
+      },
+      "recent_hits": 5
+    },
+    {
+      "term": "矽光子/CPO",
+      "reason": "AI光互連與CPO檢測需求增溫",
+      "confidence": "high",
+      "sources": [
+        "google_news",
+        "google_news_us",
+        "simpletechtrend",
+        "technews",
+        "the_circuit_podcast"
+      ],
+      "stocks": [
+        "3587"
+      ],
+      "names": {
+        "3587": "閎康"
+      },
+      "recent_hits": 15
+    },
+    {
+      "term": "HBM記憶體",
+      "reason": "HBM世代升級與供需短缺",
       "confidence": "high",
       "sources": [
         "cnyes",
         "google_news",
         "google_news_us",
-        "trendforce"
+        "technews"
       ],
-      "stocks": [],
-      "names": {},
-      "recent_hits": 16
+      "stocks": [
+        "4923"
+      ],
+      "names": {
+        "4923": "力士"
+      },
+      "recent_hits": 17
     },
     {
-      "term": "資安防護",
-      "reason": "AI攻擊推升企業資安需求",
+      "term": "AI伺服器電源與散熱",
+      "reason": "高功耗推升液冷與電源升級",
       "confidence": "high",
       "sources": [
-        "cna",
         "cnyes",
-        "cnyes_intl",
-        "digitaltoday_kr",
+        "eetimes",
+        "eetimes_jp",
         "google_news",
-        "tomshardware"
+        "invest_like_the_best",
+        "technews",
+        "wapeople"
+      ],
+      "stocks": [
+        "3017",
+        "3026",
+        "3090",
+        "2308"
+      ],
+      "names": {
+        "3017": "奇鋐",
+        "3026": "禾伸堂",
+        "3090": "日電貿",
+        "2308": "台達電"
+      },
+      "recent_hits": 17
+    },
+    {
+      "term": "高階銅箔/玻纖布",
+      "reason": "AI伺服器帶動CCL與材料升級",
+      "confidence": "medium",
+      "sources": [
+        "cnyes",
+        "fugle_blog",
+        "technews",
+        "trendforce",
+        "youxian"
       ],
       "stocks": [],
       "names": {},
       "recent_hits": 7
     },
     {
-      "term": "銅箔基板",
-      "reason": "AI伺服器推升CCL高頻高速材料",
+      "term": "自研ASIC晶片",
+      "reason": "雲端大廠轉向客製化ASIC晶片",
+      "confidence": "high",
+      "sources": [
+        "cnyes",
+        "cnyes_intl",
+        "edn",
+        "google_news",
+        "wallstreetcn"
+      ],
+      "stocks": [
+        "2454",
+        "1459",
+        "3017",
+        "2356",
+        "2382"
+      ],
+      "names": {
+        "2454": "聯發科",
+        "1459": "聯發",
+        "3017": "奇鋐",
+        "2356": "英業達",
+        "2382": "廣達"
+      },
+      "recent_hits": 7
+    },
+    {
+      "term": "網安資安升級",
+      "reason": "AI攻擊推升企業資安防護需求",
+      "confidence": "high",
+      "sources": [
+        "cna",
+        "cnbc_yahoo",
+        "cnyes",
+        "cnyes_intl",
+        "wallstreetcn"
+      ],
+      "stocks": [],
+      "names": {},
+      "recent_hits": 7
+    },
+    {
+      "term": "低軌衛星供應鏈",
+      "reason": "LEO衛星通訊與基礎設施擴充",
       "confidence": "medium",
       "sources": [
         "cnyes",
-        "fugle_blog",
+        "cnyes_intl",
         "technews"
       ],
       "stocks": [],
@@ -106,5 +307,5 @@
     }
   ],
   "method": "gemini-semantic",
-  "titles_analyzed": 2902
+  "titles_analyzed": 2849
 }
