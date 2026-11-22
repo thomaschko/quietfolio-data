@@ -523,7 +523,8 @@ def main():
             rs = {}
             picks = screen_day(t, codes, fund, px, rs)
             print(f"[smoke] {t.date()} 收錄 A {sum(p == 'A' for _, p, _ in picks)} / B {sum(p == 'B' for _, p, _ in picks)};",
-                  json.dumps(rs, ensure_ascii=False), "池", int(member.loc[t].sum()))
+                  json.dumps(rs, ensure_ascii=False), "池", int(member.loc[t].sum()),
+                  "代號", " ".join(c + p for c, p, _ in picks))
         return
     rng = np.random.default_rng(SEED)
     tr, reasons = run(days, [c for c in codes if c in px or c in fund], fund, px, member, fwd_net, rng)
