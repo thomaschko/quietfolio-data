@@ -1,0 +1,54 @@
+name: Disloc Backtest (錯殺回檔 A/B 回測)
+
+# 2026-11-22:docs/prereg_dislocation_path_b.md 的回測(disloc_backtest.py)。
+# PR 上自動跑:單元測試 + 依 disloc_bt_mode.txt 執行
+#   smoke = 冒煙測試(只印各關淘汰數與收錄檔數,不算報酬)
+#   full  = 正式回測一次,結果寫進 backtest_out/disloc/ 並推回 PR 分支
+# 合併到 main 之後也可手動觸發(workflow_dispatch)。
+on:
+  pull_request:
+    paths:
+      - disloc_backtest.py
+      - test_disloc_backtest.py
+      - disloc_bt_mode.txt
+      - .github/workflows/disloc-backtest.yml
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'smoke 或 full'
+        default: 'smoke'
+
+permissions:
+  contents: write
+
+concurrency: disloc-backtest
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install yfinance pandas numpy requests
+      - name: Unit tests
+        run: python -m unittest test_disloc_backtest -v
+      - name: Backtest
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          [ -z "$MODE" ] && MODE="$(cat disloc_bt_mode.txt 2>/dev/null | tr -d '[:space:]')"
+          echo "mode=$MODE"
+          if [ "$MODE" = "full" ]; then python disloc_backtest.py; else python disloc_backtest.py --smoke; fi
+          echo "MODE=$MODE" >> "$GITHUB_ENV"
+      - name: Commit results (full only)
+        if: env.MODE == 'full'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backtest_out/disloc
+          git commit -m "Disloc backtest results" || exit 0
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}

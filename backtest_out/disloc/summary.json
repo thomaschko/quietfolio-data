@@ -1,0 +1,214 @@
+{
+ "meta": {
+  "version": "v2026-11-22-disloc-bt",
+  "generated_at": "2026-11-23 02:01",
+  "prereg": "docs/prereg_dislocation_path_b.md",
+  "params": {
+   "DRAWDOWN_MIN": 20,
+   "DRAWDOWN_MAX": 50,
+   "TREND_MA": 120,
+   "MUST_ABOVE_TREND": true,
+   "TREND_TOLERANCE": -1,
+   "MOMENTUM_MIN_TREND_GAP": 10,
+   "MOMENTUM_MIN_RETURN_10D": 5,
+   "REQUIRE_MOMENTUM": true,
+   "MIN_REV_YOY": 0,
+   "MIN_CUM_REV_YOY": 0,
+   "MIN_GROSS_MARGIN": 0,
+   "MIN_GROSS_MARGIN_LEVEL": 15,
+   "MIN_GROW_STREAK": 3,
+   "REQUIRE_SUSTAINED_OR_HIGH": true,
+   "REV_HIGH_MONTHS": 12,
+   "GM_HIGH_QUARTERS": 4,
+   "MIN_GM_GROWTH_RATE": 0,
+   "CAPEX_QUARTERS_REQUIRED": 2,
+   "CAPEX_MIN_YOY": 0,
+   "MIN_AVG_VOL_5D": 500,
+   "MIN_AVG_TURNOVER_5D": 25000000,
+   "MAX_CANDIDATES": 120
+  },
+  "hold": 20,
+  "cost_rt": 0.00585,
+  "top": 200,
+  "in_sample_end": "2023-12-31",
+  "out_of_sample_start": "2024-01-01",
+  "boot": 2000,
+  "seed": 20261115,
+  "signal_days": 94,
+  "first_signal": "2019-01-02",
+  "last_signal": "2026-10-01",
+  "codes": 1981,
+  "price_ok": 1968,
+  "price_failed": 13,
+  "reject_reasons": {
+   "stage1": 72931,
+   "candidates": 11280,
+   "belowTrend": 1982,
+   "momentumWeak": 4252,
+   "volLow": 666,
+   "ddOut": 258,
+   "capexNotExpanding": 1160,
+   "pass_B": 506,
+   "revNotSustained": 343,
+   "pass_A": 253,
+   "gmTooLow": 477,
+   "gmNotGrowing": 861,
+   "dataShort": 274,
+   "capexDataShort": 188,
+   "revDecline": 60
+  },
+  "trades": 759,
+  "survivorship_bias": "只用今天仍上市的股票"
+ },
+ "results": {
+  "in_sample": {
+   "A": {
+    "net": {
+     "n": 161,
+     "dates": 50,
+     "mean": -0.00303,
+     "ci": [
+      -0.04183,
+      0.03761
+     ],
+     "date_eq": 0.01389
+    },
+    "ex_pool": {
+     "n": 161,
+     "dates": 50,
+     "mean": 0.00516,
+     "ci": [
+      -0.01845,
+      0.03095
+     ],
+     "date_eq": 0.00922
+    },
+    "ex_rand": {
+     "n": 161,
+     "dates": 50,
+     "mean": 0.01665,
+     "ci": [
+      -0.00927,
+      0.04608
+     ],
+     "date_eq": 0.02497
+    }
+   },
+   "B": {
+    "net": {
+     "n": 309,
+     "dates": 57,
+     "mean": 0.0326,
+     "ci": [
+      -0.00657,
+      0.06656
+     ],
+     "date_eq": 0.01652
+    },
+    "ex_pool": {
+     "n": 309,
+     "dates": 57,
+     "mean": 0.02797,
+     "ci": [
+      -0.00036,
+      0.05328
+     ],
+     "date_eq": 0.01323
+    },
+    "ex_rand": {
+     "n": 309,
+     "dates": 57,
+     "mean": 0.02879,
+     "ci": [
+      -0.00341,
+      0.0585
+     ],
+     "date_eq": 0.00742
+    }
+   },
+   "B_minus_A_same_day": {
+    "dates": 47,
+    "mean": 0.0101,
+    "ci": [
+     -0.0282,
+     0.0476
+    ]
+   }
+  },
+  "out_of_sample": {
+   "A": {
+    "net": {
+     "n": 92,
+     "dates": 30,
+     "mean": -0.00259,
+     "ci": [
+      -0.05712,
+      0.04502
+     ],
+     "date_eq": -0.01279
+    },
+    "ex_pool": {
+     "n": 92,
+     "dates": 30,
+     "mean": -0.0125,
+     "ci": [
+      -0.04918,
+      0.02169
+     ],
+     "date_eq": -0.02848
+    },
+    "ex_rand": {
+     "n": 92,
+     "dates": 30,
+     "mean": -0.02106,
+     "ci": [
+      -0.06349,
+      0.01962
+     ],
+     "date_eq": -0.03253
+    }
+   },
+   "B": {
+    "net": {
+     "n": 197,
+     "dates": 32,
+     "mean": 0.03526,
+     "ci": [
+      -0.00448,
+      0.08019
+     ],
+     "date_eq": 0.05621
+    },
+    "ex_pool": {
+     "n": 197,
+     "dates": 32,
+     "mean": 0.02034,
+     "ci": [
+      -0.0018,
+      0.04488
+     ],
+     "date_eq": 0.03765
+    },
+    "ex_rand": {
+     "n": 197,
+     "dates": 32,
+     "mean": 0.01125,
+     "ci": [
+      -0.01771,
+      0.0403
+     ],
+     "date_eq": 0.01973
+    }
+   },
+   "B_minus_A_same_day": {
+    "dates": 28,
+    "mean": 0.0745,
+    "ci": [
+     0.00593,
+     0.13828
+    ]
+   }
+  },
+  "verdict_path_B": "未經驗證(信賴區間含 0)"
+ }
+}
