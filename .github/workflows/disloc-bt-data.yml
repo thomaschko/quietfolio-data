@@ -3,9 +3,8 @@ name: Dislocation Backtest Data (錯殺回檔回測資料)
 # 2026-11-15:錯殺回檔路徑 A / B 回測(docs/prereg_dislocation_path_b.md)的基本面資料管線。
 # 每晚台北 00:10 跑最多 330 分鐘(FinMind 約 450 次/小時,和 GAS 共用額度,避開白天與 21:47 題材頁);
 # 進度存在 bt_disloc/progress.json,全部抓完後每晚的執行會直接結束(之後可把排程拿掉)。
+# 2026-11-23:2,151 檔已全部抓完,拿掉每晚排程(時段讓給 af-fin-data);需要時可手動觸發。
 on:
-  schedule:
-    - cron: '10 16 * * *'   # UTC 16:10 = 台北 00:10
   workflow_dispatch:
     inputs:
       max_minutes:
