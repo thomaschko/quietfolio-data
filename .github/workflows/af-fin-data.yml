@@ -1,0 +1,54 @@
+name: Antifragile Fin Data (反脆弱 財報 / 估值歷史)
+
+# 2026-11-23:反脆弱選股模組 §2。FinMind 逐檔回補財報(損益 / 資產負債 / 現金流量)與 5 年估值,
+# 之後只在新季報法定期限過後重抓。每晚台北 00:10 跑最多 330 分鐘(接手已抓完的錯殺回檔資料管線時段),
+# 和 GAS 共用 FinMind 額度,請求間隔 8 秒。PR 上只跑 3 分鐘試抓(不 commit)。
+on:
+  schedule:
+    - cron: '10 16 * * *'   # UTC 16:10 = 台北 00:10
+  pull_request:
+    paths:
+      - af_fin_data.py
+      - .github/workflows/af-fin-data.yml
+  workflow_dispatch:
+    inputs:
+      max_minutes:
+        description: '最多執行幾分鐘'
+        default: '330'
+
+permissions:
+  contents: write
+
+concurrency: af-fin-data
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Fetch
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: |
+          MAXM="${{ github.event.inputs.max_minutes || '330' }}"
+          [ "${{ github.event_name }}" = "pull_request" ] && MAXM=3
+          python af_fin_data.py --max-minutes "$MAXM"
+          python -c "import json;p=json.load(open('af_data/progress.json'));print(json.dumps(p.get('types_seen'),ensure_ascii=False)[:3000])"
+      - name: Commit
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add af_data/is.csv.gz af_data/bs.csv.gz af_data/cf.csv.gz af_data/per.csv.gz af_data/progress.json 2>/dev/null
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "Antifragile fin data"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1

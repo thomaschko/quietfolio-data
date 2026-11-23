@@ -1,0 +1,51 @@
+name: Antifragile Daily (反脆弱 每日累積 + 體質分數)
+
+# 2026-11-23:反脆弱選股模組。每個交易日台北 18:40:
+#   af_daily.py                   累積董監持股月表、內部人轉讓申報、庫藏股公告、每日估值、公司基本資料(官方 OpenAPI)
+#   antifragile_fundamentals.py   脆弱旗標 + 體質分數 → antifragile_fundamentals.json(GAS Antifragile.js 每日讀取)
+# PR 上只跑不 commit。
+on:
+  schedule:
+    - cron: '40 10 * * 1-5'   # UTC 10:40 = 台北 18:40
+  pull_request:
+    paths:
+      - af_daily.py
+      - antifragile_fundamentals.py
+      - test_antifragile.py
+      - .github/workflows/af-daily.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: af-daily
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Unit tests
+        run: python -m unittest test_antifragile -v
+      - name: Accumulate + score
+        run: |
+          python af_daily.py
+          python antifragile_fundamentals.py
+      - name: Commit
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add af_data/insider_monthly.csv.gz af_data/insider_transfer.csv.gz af_data/buyback.csv.gz af_data/company.csv.gz af_data/per_daily.csv.gz af_data/daily_meta.json antifragile_fundamentals.json 2>/dev/null
+          if git diff --cached --quiet; then echo "沒有變更"; exit 0; fi
+          git commit -q -m "Antifragile daily"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2**i))
+          done
+          exit 1
