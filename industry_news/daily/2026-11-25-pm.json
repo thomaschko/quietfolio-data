@@ -1,0 +1,607 @@
+{
+ "date": "2026-11-25",
+ "edition": "pm",
+ "label": "晚報",
+ "n_excluded": 17,
+ "generated_at": "2026-11-25 04:34:20",
+ "n_sources": 49,
+ "n_sources_total": 53,
+ "n_titles": 2448,
+ "n_relevant": 750,
+ "provider": "groq:qwen3.8-27b",
+ "fallback": false,
+ "overview": "記憶體市場出現多空分歧，高盛預警2028年價格下跌，但三星與SK海力士合約價明年恐漲四成。AI基建持續推動光通訊瓶頸，InP雷射與DSP成為1.6T光模組缺貨關鍵。先進封裝與HBM產能布局加速，美光提前下單設備，群創搶攻CoWoS人才。",
+ "sections": [
+  {
+   "topic": "記憶體",
+   "items": [
+    {
+     "headline": "高盛預警2028年DRAM、NAND、HBM價格恐全面下跌兩成",
+     "titles": [
+      {
+       "title": "記憶體超級循環迎轉折？高盛預警2028年DRAM、NAND、HBM價格恐全面下跌兩成",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "高盛大幅下修2028年記憶體價格目標：供需趨於平衡，DRAM、NAND、HBM或齊跌兩成",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "高盛預警2028年DRAM、NAND、HBM價格全線下跌約20%",
+       "sources": [
+        "eccn"
+       ]
+      }
+     ],
+     "n_sources": 2,
+     "codes": []
+    },
+    {
+     "headline": "三星、SK海力士DRAM合約價2027恐漲4成，供需趨於平衡",
+     "titles": [
+      {
+       "title": "DRAM僅能滿足7成 三星、SK海力士DRAM合約價2027恐漲4成",
+       "sources": [
+        "gnews_d2"
+       ]
+      },
+      {
+       "title": "KB證券：三星電子、SK海力士明年DRAM合約價看漲40%，記憶體榮景正式啟動",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "記憶體多頭全面反攻，DRAM、封測、HBM設備齊亮燈",
+     "titles": [
+      {
+       "title": "記憶體多頭全面反攻！DRAM、封測、HBM設備齊亮燈",
+       "sources": [
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "HBM佔DRAM晶圓比例達23%，2027年將逼近30%",
+     "titles": [
+      {
+       "title": "HBM Takes 23% of DRAM Wafers, Nears 30% by 2027",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "SK海力士表示2027～2029年DRAM、HBM產能幾乎已被鎖定",
+     "titles": [
+      {
+       "title": "台股產業快報 2026/11/1① AI半導體與關鍵零組件供需持續吃緊SK海力士表示，2027～2029年DRAM、HBM產能幾乎已被客戶需求鎖定，AI伺服器與",
+       "sources": [
+        "telegram"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "集邦：本季PC DRAM合約價季增13-18%，漲幅縮減",
+     "titles": [
+      {
+       "title": "集邦：本季PC DRAM合約價季增13-18% 漲幅縮減- 新聞",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "旺宏因利基型記憶體需求疲軟，外資下修目標價59%至90元",
+     "titles": [
+      {
+       "title": "【即時新聞】最新外資報告大降評，旺宏因利基型記憶體需求疲軟，目標價下修59%至90元！",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2337",
+       "name": "旺宏"
+      }
+     ]
+    },
+    {
+     "headline": "旺宏第三季毛利率70%超越台積電，新產能全力攻eMMC",
+     "titles": [
+      {
+       "title": "2026.10.27 旺宏第三季毛利率70%，超越台積電！未來新產能全力攻eMMC產品",
+       "sources": [
+        "jov"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2337",
+       "name": "旺宏"
+      }
+     ]
+    },
+    {
+     "headline": "南亞科3Q毛利率逼近86%，4Q再成長，破除年底價格反轉迷思",
+     "titles": [
+      {
+       "title": "2026.10.12 南亞科3Q毛利率逼近86%，4Q會再成長，破除市場認為年底DRAM價格反轉迷思",
+       "sources": [
+        "jov"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2408",
+       "name": "南亞科"
+      }
+     ]
+    },
+    {
+     "headline": "DRAM現貨價低密度DDR4與DDR3上漲，市場橫盤",
+     "titles": [
+      {
+       "title": "Memory Spot Price Update: DRAM Spot Prices See Gains in Low-Density DDR4 and DDR3 Amid Sideways Market",
+       "sources": [
+        "trendforce"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "DDR4比DDR5貴三成，主導這輪存储涨价",
+     "titles": [
+      {
+       "title": "DDR4比DDR5贵三成：谁在主导这轮存储涨价？",
+       "sources": [
+        "etime_cn"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "記憶體漲價衝擊印度手機市場，銷量暴跌22%",
+     "titles": [
+      {
+       "title": "記憶體漲價衝擊印手機市場，銷量暴跌 22%",
+       "sources": [
+        "technews"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "Jedec更新LPDDR6規格，針對行動與AI記憶體效能",
+     "titles": [
+      {
+       "title": "Jedec updates LPDDR6 to address mobile and AI memory performance",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "鈺創亮燈漲停，利基型記憶體族群買盤升溫",
+     "titles": [
+      {
+       "title": "【12:02 即時新聞】鈺創(5351)亮燈漲停，利基型記憶體族群買盤升溫",
+       "sources": [
+        "gnews_d2"
+       ]
+      },
+      {
+       "title": "【11:55 即時新聞】鈺創(5351)股價走強，利基型記憶體營收動能獲關注",
+       "sources": [
+        "gnews_d2"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "5351",
+       "name": "鈺創"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "topic": "光通訊",
+   "items": [
+    {
+     "headline": "Cisco稱最大瓶頸是光學，缺InP、DSP與光纖而非模組",
+     "titles": [
+      {
+       "title": "Cisco Says Optics Is the Biggest Bottleneck: The Shortage Is InP, DSP and Fiber, Not Modules — 2026 W46 Industry Review",
+       "sources": [
+        "simpletechtrend"
+       ]
+      },
+      {
+       "title": "Cisco 說最大瓶頸是光學：缺的不是模組，是 InP、DSP 與光纖——2026 W46 產業週評",
+       "sources": [
+        "simpletechtrend"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    }
+   ]
+  }
+ ],
+ "stats": {
+  "items_kept": 15,
+  "items_dropped": 0,
+  "titles_used": 20,
+  "titles_sent": 60
+ },
+ "coverage": [
+  {
+   "source": "cna",
+   "fetched": 40,
+   "sent": 1,
+   "cited": 0
+  },
+  {
+   "source": "moneydj",
+   "fetched": 22,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "wealth",
+   "fetched": 30,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "wapeople",
+   "fetched": 28,
+   "sent": 1,
+   "cited": 0
+  },
+  {
+   "source": "technews",
+   "fetched": 54,
+   "sent": 2,
+   "cited": 1
+  },
+  {
+   "source": "eetimes",
+   "fetched": 12,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "trendforce",
+   "fetched": 20,
+   "sent": 1,
+   "cited": 1
+  },
+  {
+   "source": "cnyes_intl",
+   "fetched": 148,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "ctee",
+   "fetched": 15,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "edn",
+   "fetched": 20,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "stockrice",
+   "fetched": 1,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "semianalysis",
+   "fetched": 0,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "aminext",
+   "fetched": 4,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "ic975",
+   "fetched": 17,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "statementdog_pod",
+   "fetched": 3,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "techorange",
+   "fetched": 6,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "hackernews",
+   "fetched": 30,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "wapeople_pod",
+   "fetched": 1,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "fugle_blog",
+   "fetched": 5,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "jov",
+   "fetched": 7,
+   "sent": 2,
+   "cited": 2
+  },
+  {
+   "source": "etime_cn",
+   "fetched": 20,
+   "sent": 2,
+   "cited": 1
+  },
+  {
+   "source": "cyclesinvest",
+   "fetched": 10,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "iek_news",
+   "fetched": 10,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "investor",
+   "fetched": 42,
+   "sent": 1,
+   "cited": 0
+  },
+  {
+   "source": "technice",
+   "fetched": 10,
+   "sent": 1,
+   "cited": 0
+  },
+  {
+   "source": "newtalk_finance",
+   "fetched": 55,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "wallstreetcn",
+   "fetched": 68,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "eetimes_jp",
+   "fetched": 20,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "edn_jp",
+   "fetched": 20,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "sangyo_times",
+   "fetched": 0,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "etnews_kr",
+   "fetched": 30,
+   "sent": 1,
+   "cited": 0
+  },
+  {
+   "source": "the_circuit_podcast",
+   "fetched": 195,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "bg2_pod",
+   "fetched": 45,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "digitaltoday_kr",
+   "fetched": 50,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "simpletechtrend",
+   "fetched": 20,
+   "sent": 5,
+   "cited": 2
+  },
+  {
+   "source": "tomshardware",
+   "fetched": 50,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "techcrunch_semi",
+   "fetched": 20,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "invest_like_the_best",
+   "fetched": 608,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "google_trends_tw",
+   "fetched": 10,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "youxian",
+   "fetched": 1,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "gs_exchanges",
+   "fetched": 2,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "moneydj_pod",
+   "fetched": 2,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "google_news",
+   "fetched": 233,
+   "sent": 13,
+   "cited": 3
+  },
+  {
+   "source": "google_news_us",
+   "fetched": 132,
+   "sent": 4,
+   "cited": 1
+  },
+  {
+   "source": "google_news_jp",
+   "fetched": 58,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "telegram",
+   "fetched": 82,
+   "sent": 2,
+   "cited": 1
+  },
+  {
+   "source": "cnbc_yahoo",
+   "fetched": 96,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "mops",
+   "fetched": 21,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "us_8k",
+   "fetched": 12,
+   "sent": 1,
+   "cited": 0
+  },
+  {
+   "source": "investor_events",
+   "fetched": 0,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "gnews_d2",
+   "fetched": 99,
+   "sent": 25,
+   "cited": 7
+  },
+  {
+   "source": "fsemi",
+   "fetched": 0,
+   "sent": 0,
+   "cited": 0
+  },
+  {
+   "source": "eccn",
+   "fetched": 16,
+   "sent": 1,
+   "cited": 1
+  }
+ ],
+ "extra_sources": {
+  "fsemi": {
+   "status": "ok",
+   "n": 0
+  },
+  "eccn": {
+   "status": "ok",
+   "n": 16
+  }
+ }
+}
