@@ -226,9 +226,33 @@ def votes(macd_block, today, cfg=MOOD_INTL_CFG):
 
 
 # ------------------------------------------------------------------ 抓取
+SHORT_RANGE = {"1d": "1mo", "1wk": "3mo", "1mo": "1y"}
+
+
 def fetch_chart(session, sym, interval, sleep=time.sleep):
-    """→ ([(yyyy-mm-dd, close)], gmtoffset 秒);失敗回 (None, 錯誤字串)"""
-    path = "/v8/finance/chart/%s?interval=%s&range=10y&includePrePost=false" % (urllib.parse.quote(sym), interval)
+    """10 年 K 棒 + 短範圍補最新幾根(2026-11-25 PR 檢查:range=10y 的日線常缺最新 1~2 天,
+    例如 ^TWII 週線已到 11/24、日線只到 11/23)→ ([(yyyy-mm-dd, close)], gmtoffset 秒);失敗回 (None, 錯誤字串)"""
+    long_rows, info = _fetch_range(session, sym, interval, "10y", sleep)
+    if long_rows is None:
+        return None, info
+    short_rows, _ = _fetch_range(session, sym, interval, SHORT_RANGE[interval], sleep)
+    merged = dict(long_rows)
+    for d, c in short_rows or []:
+        merged[d] = c                                   # 新資料覆蓋
+    return normalize_dates(dedupe_period(sorted(merged.items()), interval), interval), info
+
+
+def normalize_dates(rows, interval):
+    """週線日期統一為該週週一、月線為該月 1 日(Yahoo 遇假日會給週二等日期)"""
+    if interval == "1wk":
+        return [((dt.date.fromisoformat(d) - dt.timedelta(days=dt.date.fromisoformat(d).weekday())).isoformat(), c) for d, c in rows]
+    if interval == "1mo":
+        return [(d[:8] + "01", c) for d, c in rows]
+    return rows
+
+
+def _fetch_range(session, sym, interval, rng, sleep=time.sleep):
+    path = "/v8/finance/chart/%s?interval=%s&range=%s&includePrePost=false" % (urllib.parse.quote(sym), interval, rng)
     err = None
     for h in HOSTS:
         try:
@@ -251,7 +275,7 @@ def fetch_chart(session, sym, interval, sleep=time.sleep):
                     continue
                 d = dt.datetime.fromtimestamp(t + off, dt.timezone.utc).date().isoformat()
                 rows[d] = float(c)            # 同一天多筆(盤中更新)取最後一筆
-            return dedupe_period(sorted(rows.items()), interval), off
+            return sorted(rows.items()), off
         except Exception as e:                # noqa: BLE001 — 網路 / 解析錯誤一律記下、換主機
             err = type(e).__name__
             sleep(1)

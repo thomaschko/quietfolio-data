@@ -31,11 +31,16 @@ class FakeSession:
         iv = url.split("interval=")[1].split("&")[0]
         if (sym, iv) in self.fail:
             return Resp(503, {})
+        rng = url.split("range=")[1].split("&")[0]
         step = {"1d": 1, "1wk": 7, "1mo": 30}[iv]
         n = {"1d": 600, "1wk": 520, "1mo": 120}[iv]
         t0 = int(dt.datetime(2016, 1, 4, tzinfo=dt.timezone.utc).timestamp())
         ts = [t0 + i * step * 86400 for i in range(n)]
         cl = [100 + 10 * math.sin(i / 9.0) + (5 if sym == "^SOX" else 0) for i in range(n)]
+        if rng != "10y":                     # 短範圍:多一根最新的(模擬 10 年查詢缺最新一天)
+            ts, cl = ts[-3:] + [ts[-1] + step * 86400], cl[-3:] + [cl[-1] + 1]
+        elif iv == "1d":
+            ts, cl = ts, cl
         return Resp(200, {"chart": {"result": [{"meta": {"gmtoffset": 28800}, "timestamp": ts,
                                                 "indicators": {"quote": [{"close": cl}]}}]}})
 
@@ -59,6 +64,15 @@ class TestCalc(unittest.TestCase):
         self.assertEqual(M.dedupe_period(rows, "1wk"), [("2026-11-09", 1.0), ("2026-11-16", 2.0), ("2026-11-23", 4.0)])
         self.assertEqual(M.dedupe_period([("2026-10-01", 1.0), ("2026-11-01", 2.0), ("2026-11-25", 3.0)], "1mo"),
                          [("2026-10-01", 1.0), ("2026-11-01", 3.0)])
+
+    def test_normalize_dates(self):
+        self.assertEqual(M.normalize_dates([("2026-11-24", 1.0)], "1wk"), [("2026-11-23", 1.0)])   # 週二 → 週一
+        self.assertEqual(M.normalize_dates([("2026-11-24", 1.0)], "1mo"), [("2026-11-01", 1.0)])
+
+    def test_short_range_adds_latest_bar(self):
+        rows, _ = M.fetch_chart(FakeSession(), "^TWII", "1d", sleep=lambda s: None)
+        self.assertEqual(len(rows), 601)
+        self.assertEqual(rows[-1][0], (dt.date(2016, 1, 4) + dt.timedelta(days=600)).isoformat())
 
     def test_rolling_zone_no_lookahead(self):
         dp = [0.0] * 35 + [float(i % 10) for i in range(150)] + [50.0]
