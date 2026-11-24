@@ -74,6 +74,18 @@ class TestCalc(unittest.TestCase):
         self.assertEqual(len(rows), 601)
         self.assertEqual(rows[-1][0], (dt.date(2016, 1, 4) + dt.timedelta(days=600)).isoformat())
 
+    def test_latest_from_meta_when_close_null(self):
+        class S:
+            def get(self, url, headers=None, timeout=None):
+                t0 = int(dt.datetime(2026, 11, 20, 0, 0, tzinfo=dt.timezone.utc).timestamp())
+                return Resp(200, {"chart": {"result": [{"meta": {"gmtoffset": 32400, "regularMarketPrice": 5006.03,
+                                                                  "regularMarketTime": t0 + 4 * 86400 + 6 * 3600},
+                                                         "timestamp": [t0, t0 + 3 * 86400, t0 + 4 * 86400],
+                                                         "indicators": {"quote": [{"close": [4800.0, 4708.54, None]}]}}]}})
+        rows, _ = M._fetch_range(S(), "^KS11", "1d", "1mo", sleep=lambda s: None)
+        self.assertEqual(rows[-1], ("2026-11-24", 5006.03))
+        self.assertEqual(rows[-2], ("2026-11-23", 4708.54))
+
     def test_rolling_zone_no_lookahead(self):
         dp = [0.0] * 35 + [float(i % 10) for i in range(150)] + [50.0]
         z = M.rolling_zones(dp, "1wk")

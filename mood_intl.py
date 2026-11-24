@@ -275,6 +275,14 @@ def _fetch_range(session, sym, interval, rng, sleep=time.sleep):
                     continue
                 d = dt.datetime.fromtimestamp(t + off, dt.timezone.utc).date().isoformat()
                 rows[d] = float(c)            # 同一天多筆(盤中更新)取最後一筆
+            # 2026-11-25:Yahoo 常把最新一根的 close 給 null,最新價只在 meta.regularMarketPrice
+            #   (PR 檢查:^KS11 週線已是 11/24 的 5006、日線只到 11/23 的 4708)→ 最新成交時間晚於最後一根就補上
+            meta = res.get("meta") or {}
+            px, pt = meta.get("regularMarketPrice"), meta.get("regularMarketTime")
+            if px and pt:
+                d = dt.datetime.fromtimestamp(pt + off, dt.timezone.utc).date().isoformat()
+                if not rows or d >= max(rows):
+                    rows[d] = float(px)
             return sorted(rows.items()), off
         except Exception as e:                # noqa: BLE001 — 網路 / 解析錯誤一律記下、換主機
             err = type(e).__name__
