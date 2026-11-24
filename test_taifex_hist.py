@@ -108,12 +108,12 @@ class TestRun(unittest.TestCase):
         h = self.http(ok_routes())
         code, log = T.run(http=h, out_dir=self.d, today=dt.date(2024, 9, 10))
         self.assertEqual(code, 0)
-        self.assertEqual(log["fetched"], ["2024-08", "2024-09"])
+        self.assertEqual(log["fetched"], ["2024-09", "2024-08"])   # 2026-11-25:本月先抓
         self.assertEqual(len(T.read_csv(os.path.join(self.d, "fut_inst.csv"))), 6)   # 同日同鍵去重:2 列 × 3 商品
         # 下個月再跑:2024-08 已完成且不是最近兩個月 → 不重抓
         h2 = self.http(ok_routes())
         code, log = T.run(http=h2, out_dir=self.d, today=dt.date(2024, 10, 3))
-        self.assertEqual(log["fetched"], ["2024-09", "2024-10"])
+        self.assertEqual(log["fetched"], ["2024-10", "2024-09"])
 
     def test_blocked_stops(self):
         r = ok_routes()
@@ -142,6 +142,32 @@ class TestRun(unittest.TestCase):
         code, log = T.run(http=h, out_dir=self.d, today=dt.date(2024, 8, 20))
         self.assertEqual(code, 4)
         self.assertEqual(h.net_retries, 1)
+
+    def test_server_error_skips_dataset_only(self):
+        # 2026-11-25:大額交易人 HTTP 520(重抓仍 520)→ 只跳過該資料集,其他資料集與月份照常,結束碼 3
+        r = ok_routes()
+        r["largeTraderFutDown"] = Resp(520, "")
+        h = self.http(r)
+        code, log = T.run(http=h, out_dir=self.d, today=dt.date(2024, 9, 10))
+        self.assertEqual(code, 3)
+        self.assertEqual(log["fetched"], ["2024-09", "2024-08"])
+        self.assertEqual(len(log["skipped"]), 2)
+        self.assertEqual(len(T.read_csv(os.path.join(self.d, "fut_inst.csv"))), 6)
+        prog = __import__("json").load(open(os.path.join(self.d, "progress.json"), encoding="utf-8"))
+        self.assertNotIn("2024-08", prog["done"].get("large", []))   # 沒成功 → 不標完成,下次再抓
+
+    def test_server_error_recovers_on_retry(self):
+        r = ok_routes()
+        seq = [Resp(520, ""), Resp(200, LARGE)] * 10
+        r["largeTraderFutDown"] = lambda data: seq.pop(0)
+        code, log = T.run(http=self.http(r), out_dir=self.d, today=dt.date(2024, 8, 20))
+        self.assertEqual(code, 0)
+        self.assertNotIn("skipped", log)
+
+    def test_current_month_first_then_backfill(self):
+        r = ok_routes()
+        code, log = T.run(http=self.http(r), out_dir=self.d, today=dt.date(2024, 11, 10))
+        self.assertEqual(log["fetched"], ["2024-11", "2024-10", "2024-08", "2024-09"])
 
 
 if __name__ == "__main__":
