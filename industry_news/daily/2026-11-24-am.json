@@ -2,24 +2,24 @@
  "date": "2026-11-24",
  "edition": "am",
  "label": "早報",
- "n_excluded": 70,
- "generated_at": "2026-11-24 06:58:57",
- "n_sources": 47,
+ "n_excluded": 60,
+ "generated_at": "2026-11-24 10:01:42",
+ "n_sources": 46,
  "n_sources_total": 53,
- "n_titles": 2270,
+ "n_titles": 2157,
  "n_relevant": 750,
  "provider": "groq:qwen3.8-27b",
  "fallback": false,
- "overview": "記憶體產業出現多空分歧，高盛預警2028年價格下跌，但法說會與券商仍看好2027年漲價；光通訊成為AI基建最大瓶頸，InP雷射與DSP缺貨嚴重；台積電供應鏈與先進封裝持續受關注，矽光子與CPO技術加速發展。",
+ "overview": "黃仁勳重掌輝達引發台股與美股相關供應鏈大漲，記憶體超級循環出現轉折預警與供需失衡討論。光通訊瓶頸聚焦於InP雷射與DSP，先進封裝與玻璃基板題材出現多空分歧。",
  "sections": [
   {
-   "topic": "記憶體",
+   "topic": "AI伺服器",
    "items": [
     {
-     "headline": "高盛預警2028年DRAM、NAND、HBM價格恐全面下跌兩成",
+     "headline": "黃仁勳回歸及伺服器漲價利多，戴爾飆漲逾20%",
      "titles": [
       {
-       "title": "記憶體超級循環迎轉折？高盛預警2028年DRAM、NAND、HBM價格恐全面下跌兩成",
+       "title": "黃仁勳回歸+伺服器漲價添利多！戴爾飆逾20% HPE、美超微同步暴漲",
        "sources": [
         "cnyes_intl",
         "google_news"
@@ -30,17 +30,16 @@
      "codes": []
     },
     {
-     "headline": "記憶體股崩跌，超低本益比恐暗示獲利見頂",
+     "headline": "戴爾PowerRack機架在Nscale大會上線，配備液冷交換機",
      "titles": [
       {
-       "title": "記憶體股崩跌  超低本益比恐暗示獲利恐見頂",
+       "title": "戴爾 PowerRack 網路機架在 Nscale 大會上正式上線，每個機架配備八台液冷式 Spectrum-6 交換機",
        "sources": [
-        "technews",
-        "google_news"
+        "gnews_d2"
        ]
       }
      ],
-     "n_sources": 2,
+     "n_sources": 1,
      "codes": []
     },
     {
@@ -57,36 +56,10 @@
      "codes": []
     },
     {
-     "headline": "SK海力士HBM混合鍵合設備擬敲定Besi",
+     "headline": "Marvell上修成長預期，AI動能擴大至交換器與客製晶片",
      "titles": [
       {
-       "title": "不是韓美也不是韓華 SK海力士HBM混合鍵合設備擬敲定Besi",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "三星電子換將，DRAM與HBM研發主管接掌記憶體事業",
-     "titles": [
-      {
-       "title": "討論牆 | 三星電子換將 DRAM與HBM研發主管接掌記憶體事業",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "SK海力士表示2027～2029年DRAM、HBM產能幾乎已被客戶需求鎖定",
-     "titles": [
-      {
-       "title": "台股產業快報 2026/11/1① AI半導體與關鍵零組件供需持續吃緊SK海力士表示，2027～2029年DRAM、HBM產能幾乎已被客戶需求鎖定，AI伺服器與",
+       "title": "Marvell 對未來兩年的成長預期再度明顯上修，而且 AI 成長動能已經從光通訊 DSP，擴大到交換器、scale-up optics、CXL 與客製化晶片。",
        "sources": [
         "telegram"
        ]
@@ -96,39 +69,145 @@
      "codes": []
     },
     {
-     "headline": "三星、SK海力士DRAM合約價2027恐漲4成，DRAM僅能滿足7成需求",
+     "headline": "聯發科內部資源重心轉移，ASIC事業群漸成決策核心",
      "titles": [
       {
-       "title": "DRAM僅能滿足7成 三星、SK海力士DRAM合約價2027恐漲4成",
+       "title": "【DIGITIMES每日新聞】20261117-E：聯發科內部資源重心轉移　「ASIC事業群」漸成決策核心 / NVIDIA Vera Rubin遞延？　ODM：原本放量就在1Q27",
        "sources": [
-        "gnews_d2"
+        "ic975"
        ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2454",
+       "name": "聯發科"
+      }
+     ]
+    },
+    {
+     "headline": "NVIDIA Vera Rubin遞延？ODM表示原本放量就在1Q27",
+     "titles": [
+      {
+       "title": "【DIGITIMES每日新聞】20261117-E：聯發科內部資源重心轉移　「ASIC事業群」漸成決策核心 / NVIDIA Vera Rubin遞延？　ODM：原本放量就在1Q27",
+       "sources": [
+        "ic975"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "群聯於SC26展示三大次世代儲存技術，突破AI運算瓶頸",
+     "titles": [
+      {
+       "title": "群聯於SC26展示三大次世代儲存技術　突破AI運算瓶頸",
+       "sources": [
+        "wapeople"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "8299",
+       "name": "群聯"
+      }
+     ]
+    },
+    {
+     "headline": "群聯推出太空專用SSD，布局太空軌道資料中心商機",
+     "titles": [
+      {
+       "title": "群聯推出太空專用SSD　布局太空軌道資料中心商機",
+       "sources": [
+        "wapeople"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "8299",
+       "name": "群聯"
+      }
+     ]
+    },
+    {
+     "headline": "AMD NPU獲Unsloth Desktop支援，加速百款代理式AI推論",
+     "titles": [
+      {
+       "title": "AMD NPU獲Unsloth Desktop支援　加速百款代理式AI推論",
+       "sources": [
+        "wapeople"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    }
+   ]
+  },
+  {
+   "topic": "半導體製程",
+   "items": [
+    {
+     "headline": "台積電評估跨足3D DRAM，分析與HBM技術差異及產業觀察",
+     "titles": [
+      {
+       "title": "台積電評估跨足 3D DRAM ：與 HBM 的技術差異、正反評估與產業觀察重點",
+       "sources": [
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2330",
+       "name": "台積電"
+      }
+     ]
+    },
+    {
+     "headline": "南韓政府召見輝達、AMD、英特爾，審查AI晶片供應鏈",
+     "titles": [
+      {
+       "title": "South Korean Government Summons Nvidia, AMD, Intel to Review AI Chip Supply Chain; HBM and Substrate Shortages Put Small Fabless Firms on Edge",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "旺宏第三季毛利率70%超越台積電，新產能全力攻eMMC",
+     "titles": [
+      {
+       "title": "2026.10.27 旺宏第三季毛利率70%，超越台積電！未來新產能全力攻eMMC產品",
+       "sources": [
+        "jov"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": [
+      {
+       "code": "2337",
+       "name": "旺宏"
       },
       {
-       "title": "KB證券：三星電子、SK海力士明年DRAM合約價看漲40%，記憶體榮景正式啟動",
-       "sources": [
-        "gnews_d2"
-       ]
+       "code": "2330",
+       "name": "台積電"
       }
-     ],
-     "n_sources": 1,
-     "codes": []
+     ]
     },
     {
-     "headline": "集邦：本季PC DRAM合約價季增13-18%，漲幅縮減",
-     "titles": [
-      {
-       "title": "集邦：本季PC DRAM合約價季增13-18% 漲幅縮減- 新聞",
-       "sources": [
-        "gnews_d2"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "南亞科3Q毛利率逼近86%，4Q會再成長，破除年底DRAM價格反轉迷思",
+     "headline": "南亞科3Q毛利率逼近86%，4Q再成長，破除年底反轉迷思",
      "titles": [
       {
        "title": "2026.10.12 南亞科3Q毛利率逼近86%，4Q會再成長，破除市場認為年底DRAM價格反轉迷思",
@@ -144,99 +223,38 @@
        "name": "南亞科"
       }
      ]
-    },
-    {
-     "headline": "記憶體跌到懷疑人生！法人曝4檔目標價卻勸「先等等」，揭明年1月再進場關鍵",
-     "titles": [
-      {
-       "title": "記憶體跌到懷疑人生！南亞科、華邦電…法人曝4檔目標價卻勸「先等等」 揭明年「1月再進場」關鍵 - 上市櫃",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "2408",
-       "name": "南亞科"
-      },
-      {
-       "code": "2344",
-       "name": "華邦電"
-      }
-     ]
-    },
-    {
-     "headline": "Coatue Management押注SK海力士股票，因HBM晶片需求加速",
-     "titles": [
-      {
-       "title": "Coatue Management Bets on SK hynix Stock as Demand for HBM Chips Accelerates",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "美光科技股票仍被低估？記憶體晶片漲價、HBM需求與週期性風險",
-     "titles": [
-      {
-       "title": "Why Is Micron Technology Stock Still Undervalued? Memory Chip Price Hikes, HBM Demand and Cyclical Risks",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "SK海力士透過HBM領導地位和創紀錄盈利主導AI記憶體超級循環",
-     "titles": [
-      {
-       "title": "SK hynix Inc. (NASDAQ: SKHY): Dominating the AI Memory Supercycle Through HBM Leadership and Record Earnings",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "南韓政府召見輝達、AMD、英特爾審查AI晶片供應鏈；HBM與基板短缺讓小型無晶圓廠緊張",
-     "titles": [
-      {
-       "title": "South Korean Government Summons Nvidia, AMD, Intel to Review AI Chip Supply Chain; HBM and Substrate Shortages Put Small Fabless Firms on Edge",
-       "sources": [
-        "google_news_us"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
     }
    ]
   },
   {
-   "topic": "光通訊",
+   "topic": "先進封裝",
    "items": [
     {
-     "headline": "看懂1.6T光模組缺貨，先看懂InP雷射與DSP",
+     "headline": "台積電供應鏈全解析，先進製程CoWoS、CoPoS十大產業鏈",
      "titles": [
       {
-       "title": "看懂 1.6T 光模組缺貨，先看懂這兩件事：InP 雷射與 DSP",
+       "title": "整理包／台積電供應鏈全解析！護國神山受惠股...先進製程 CoWoS、CoPoS 十大產業鏈一次看",
        "sources": [
-        "simpletechtrend"
+        "google_news",
+        "gnews_d2"
        ]
-      },
+      }
+     ],
+     "n_sources": 2,
+     "codes": [
       {
-       "title": "To Understand the 1.6T Optical Module Shortage, First Understand Two Chips: InP Lasers and DSPs",
+       "code": "2330",
+       "name": "台積電"
+      }
+     ]
+    },
+    {
+     "headline": "PBA推出多款先進封裝精密平台，助攻CoWoS與FOPLP技術",
+     "titles": [
+      {
+       "title": "PBA推出多款先進封裝精密平台 助攻CoWoS、CoPoS與FOPLP設備技術發展",
        "sources": [
-        "simpletechtrend"
+        "gnews_d2"
        ]
       }
      ],
@@ -249,14 +267,14 @@
  "stats": {
   "items_kept": 15,
   "items_dropped": 0,
-  "titles_used": 17,
+  "titles_used": 14,
   "titles_sent": 60
  },
  "coverage": [
   {
    "source": "cna",
    "fetched": 40,
-   "sent": 1,
+   "sent": 2,
    "cited": 0
   },
   {
@@ -275,13 +293,13 @@
    "source": "wapeople",
    "fetched": 28,
    "sent": 4,
-   "cited": 0
+   "cited": 3
   },
   {
    "source": "technews",
-   "fetched": 51,
-   "sent": 5,
-   "cited": 1
+   "fetched": 50,
+   "sent": 3,
+   "cited": 0
   },
   {
    "source": "eetimes",
@@ -297,20 +315,20 @@
   },
   {
    "source": "cnyes_intl",
-   "fetched": 146,
-   "sent": 1,
+   "fetched": 127,
+   "sent": 2,
    "cited": 1
   },
   {
    "source": "ctee",
    "fetched": 15,
-   "sent": 2,
+   "sent": 0,
    "cited": 0
   },
   {
    "source": "edn",
    "fetched": 20,
-   "sent": 0,
+   "sent": 3,
    "cited": 0
   },
   {
@@ -333,9 +351,9 @@
   },
   {
    "source": "ic975",
-   "fetched": 15,
+   "fetched": 17,
    "sent": 1,
-   "cited": 0
+   "cited": 2
   },
   {
    "source": "statementdog_pod",
@@ -352,7 +370,7 @@
   {
    "source": "hackernews",
    "fetched": 30,
-   "sent": 0,
+   "sent": 1,
    "cited": 0
   },
   {
@@ -371,7 +389,7 @@
    "source": "jov",
    "fetched": 7,
    "sent": 2,
-   "cited": 1
+   "cited": 2
   },
   {
    "source": "etime_cn",
@@ -388,12 +406,12 @@
   {
    "source": "iek_news",
    "fetched": 10,
-   "sent": 2,
+   "sent": 0,
    "cited": 0
   },
   {
    "source": "investor",
-   "fetched": 39,
+   "fetched": 45,
    "sent": 0,
    "cited": 0
   },
@@ -405,13 +423,13 @@
   },
   {
    "source": "newtalk_finance",
-   "fetched": 34,
+   "fetched": 44,
    "sent": 0,
    "cited": 0
   },
   {
    "source": "wallstreetcn",
-   "fetched": 61,
+   "fetched": 62,
    "sent": 0,
    "cited": 0
   },
@@ -461,7 +479,7 @@
    "source": "simpletechtrend",
    "fetched": 20,
    "sent": 5,
-   "cited": 2
+   "cited": 0
   },
   {
    "source": "tomshardware",
@@ -507,32 +525,32 @@
   },
   {
    "source": "google_news",
-   "fetched": 194,
+   "fetched": 137,
    "sent": 8,
-   "cited": 5
+   "cited": 3
   },
   {
    "source": "google_news_us",
-   "fetched": 131,
+   "fetched": 113,
    "sent": 4,
-   "cited": 4
+   "cited": 1
   },
   {
    "source": "google_news_jp",
-   "fetched": 59,
+   "fetched": 0,
    "sent": 0,
    "cited": 0
   },
   {
    "source": "telegram",
-   "fetched": 81,
+   "fetched": 82,
    "sent": 3,
    "cited": 1
   },
   {
    "source": "cnbc_yahoo",
-   "fetched": 94,
-   "sent": 0,
+   "fetched": 90,
+   "sent": 1,
    "cited": 0
   },
   {
@@ -567,8 +585,8 @@
   },
   {
    "source": "eccn",
-   "fetched": 12,
-   "sent": 0,
+   "fetched": 24,
+   "sent": 1,
    "cited": 0
   }
  ],
@@ -579,7 +597,7 @@
   },
   "eccn": {
    "status": "ok",
-   "n": 12
+   "n": 24
   }
  }
 }
