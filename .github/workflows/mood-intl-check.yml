@@ -1,0 +1,57 @@
+name: Mood intl MACD check (市場氛圍 國際 MACD 檢查)
+
+# 2026-11-25 市場氛圍擴充 Phase 1:PR 上用 Yahoo 真實資料跑一次 mood_intl.py,印出各指數各週期的 DIF% / 分位 / 狀態 / 投票,
+# 以及 consensus.py 整合後的整體標籤。只印不 commit(正式產出由 taifex-hist.yml、margin-share.yml 的 consensus.py 產生)。
+on:
+  pull_request:
+    paths:
+      - mood_intl.py
+      - consensus.py
+      - test_mood_intl.py
+      - .github/workflows/mood-intl-check.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests pytest
+      - name: Unit tests
+        run: python -m pytest -q test_mood_intl.py test_consensus_core.py
+      - name: Real data
+        run: |
+          python mood_intl.py
+          python - <<'PY'
+          import json, mood_intl as M
+          o = M.build()
+          for sym, e in o["symbols"].items():
+              for iv, x in e["intervals"].items():
+                  if x.get("ok"):
+                      st = (x.get("extremeStats") or {})
+                      print(sym, iv, x["date"], "close", x["close"], "DIF", x["dif"], "DEA", x["dea"], "HIST", x["hist"],
+                            "DIF%", x["difPct"], "pctl", x["pctl"], "n", x["n_hist"], x["zone"], x["state"],
+                            "prov" if x["provisional"] else "", "hot_n", st.get("hot", {}).get("n"), "cold_n", st.get("cold", {}).get("n"))
+                  else:
+                      print(sym, iv, "FAIL", x.get("error"))
+          print("size", len(json.dumps(o, ensure_ascii=False, separators=(",", ":"))))
+          PY
+      - name: Consensus integration (不寫檔)
+        run: |
+          python - <<'PY'
+          import consensus as C
+          out = C.build()
+          m = out["mood"]
+          print("label", m["label"], "hot", m["hot"], "cold", m["cold"])
+          for it in m.get("vote_items", []):
+              print(" ", it["key"], it["label"], it.get("zone"))
+          import json
+          print("consensus size", len(json.dumps(out, ensure_ascii=False, separators=(",", ":"))))
+          PY

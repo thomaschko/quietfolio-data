@@ -18,6 +18,7 @@ import os
 import sys
 
 import consensus_core as cc
+import mood_intl
 import margin_backfill as mb
 import margin_share_core as ms
 
@@ -314,6 +315,32 @@ def pullback(sr, chips_meta, top):
             "low_confidence": len((chips_meta or {}).get("weeks") or []) < 4}
 
 
+# ------------------------------------------------------------------ 市場氛圍擴充(Phase 1 + 5:國際 MACD)
+def add_intl_macd(m, base=".", builder=None):
+    """把台美日韓 MACD 併入 mood,並把「台股 MACD」「國際 MACD」兩票加進整體標籤。失敗只記錄,不影響原本指標。"""
+    prev = None
+    try:
+        with open(os.path.join(base, OUT), encoding="utf-8") as f:
+            prev = (json.load(f).get("mood") or {}).get("macd")
+    except (OSError, ValueError):
+        pass
+    try:
+        mi = (builder or mood_intl.build)(prev=prev)
+    except Exception as e:                       # noqa: BLE001
+        print("國際 MACD 失敗,沿用上一份:%r" % e)
+        mi = prev
+    if not mi:
+        return m
+    m["macd"] = mi
+    v = mi.get("votes") or {}
+    items = [{"key": x["key"], "label": x["label"], "zone": x["zone"]} for x in m["indicators"] if x["dir"] != 0]
+    items.append({"key": "tw_macd", "label": "台股 MACD(加權 週線)", "zone": v.get("twMacd"), "note": v.get("twMacd_note")})
+    items.append({"key": "intl_macd", "label": "國際 MACD(費半 / S&P / 日經 / 韓綜 週線 ≥ 3 同邊)", "zone": v.get("intlMacd")})
+    m["vote_items"] = items
+    m["label"], m["hot"], m["cold"] = cc.mood_label([x["zone"] for x in items])
+    return m
+
+
 # ------------------------------------------------------------------ 主流程
 def build(base="."):
     j = lambda p: os.path.join(base, p)
@@ -331,6 +358,7 @@ def build(base="."):
     cfg = cc.CONSENSUS_CFG
     out = {"generated": dt.datetime.now(TPE).isoformat(timespec="seconds"), "cfg": cfg, "notes": cc.NOTES}
     out["mood"] = mood(margin, index, taifex, insti, cls)
+    add_intl_macd(out["mood"], base)
     sr = stock_rows(margin, insti, cls, chips, cfg["window"])
     if sr:
         out["window"] = {"t": sr["t"], "t0": sr["t0"], "days": sr["days"]}
