@@ -20,7 +20,11 @@ taifex_hist.py — 期交所期貨 / 選擇權歷史與每日更新(2026-11-04,�
   pcr.csv        date,put_vol,call_vol,pc_vol_pct,put_oi,call_oi,pc_oi_pct
   large.csv      date,contract,month,trader_type,top5_buy,top5_sell,top10_buy,top10_sell,market_oi
   progress.json  已完成月份、每次執行紀錄
-結束碼:0 = 完成;2 = 被擋 / 錯誤頁而停止;4 = 連線中斷而停止。
+結束碼:0 = 完成;2 = 被擋 / 錯誤頁而停止;3 = 部分資料集伺服器暫時錯誤(5xx)而跳過,其餘照常;4 = 連線中斷而停止。
+2026-11-25:11/24 16:57 那次先抓 10 月、在 10 月的大額交易人遇到 HTTP 520(伺服器暫時錯誤)就整批停止,
+  11 月(含 11/24)完全沒抓 → 共識頁期貨指標停在 11/23。改成:(1) 本月 → 上月 → 回補舊月份,最新資料先抓;
+  (2) 5xx 等 SERVER_RETRY_WAIT 秒重抓 1 次,仍失敗只跳過該資料集(不標完成、下次再抓),其餘照常;
+  403 / 429 / 驗證碼 / robots 照舊立即停止。
 """
 import csv
 import datetime as dt
@@ -40,6 +44,7 @@ OUT_DIR = "taifex_hist"
 BASE = "https://www.taifex.com.tw/cht/3/"
 GAP = 3.0
 NET_RETRY_WAIT = 60
+SERVER_RETRY_WAIT = 20
 START = (2024, 8)
 TPE = dt.timezone(dt.timedelta(hours=8))
 
@@ -68,6 +73,11 @@ class Blocked(Exception):
 
 
 class NetError(Blocked):
+    pass
+
+
+class ServerError(Exception):
+    """5xx(伺服器暫時錯誤):不是被擋 → 只跳過這個資料集"""
     pass
 
 
@@ -130,6 +140,14 @@ class Http:
                 r = self._raw("POST", url, form)
             except requests.RequestException as e2:
                 raise NetError("連線中斷 %s(重抓 1 次仍失敗,第一次 %s):%s" % (type(e2).__name__, type(e).__name__, url))
+        if 500 <= r.status_code < 600:
+            self.sleep(SERVER_RETRY_WAIT)
+            try:
+                r = self._raw("POST", url, form)
+            except requests.RequestException as e:
+                raise ServerError("HTTP 5xx 後重抓連線中斷 %s:%s" % (type(e).__name__, url))
+            if 500 <= r.status_code < 600:
+                raise ServerError("HTTP %s(重抓 1 次仍失敗):%s" % (r.status_code, url))
         if r.status_code in (403, 429) or r.status_code != 200:
             raise Blocked("HTTP %s:%s" % (r.status_code, url))
         text = r.content.decode("cp950", errors="replace")
@@ -285,6 +303,8 @@ def run(http=None, out_dir=OUT_DIR, today=None, max_months=None, now=None):
     code = 0
     todo = [(y, m) for (y, m) in ms if (y, m) in recent or any(
         "%04d-%02d" % (y, m) not in prog["done"].get(ds, []) for ds, *_ in DATASETS)]
+    # 本月 → 上月 → 舊月份(由舊到新回補):最新資料先抓,後面出錯也不影響當天指標
+    todo.sort(key=lambda ym: (0, -(ym[0] * 12 + ym[1])) if ym in recent else (1, ym[0] * 12 + ym[1]))
     if max_months:
         todo = todo[:max_months]
     try:
@@ -295,14 +315,19 @@ def run(http=None, out_dir=OUT_DIR, today=None, max_months=None, now=None):
                 if key in prog["done"].get(ds, []) and (y, m) not in recent:
                     continue
                 rows = []
-                for v in values:
-                    form = {"queryStartDate": a.strftime("%Y/%m/%d"), "queryEndDate": b.strftime("%Y/%m/%d")}
-                    if ds == "fut_oi":
-                        form["down_type"] = "1"
-                    if pname:
-                        form[pname] = v
-                    text = http.post_csv(BASE + ep, form)
-                    rows += PARSERS[ds](text, v)
+                try:
+                    for v in values:
+                        form = {"queryStartDate": a.strftime("%Y/%m/%d"), "queryEndDate": b.strftime("%Y/%m/%d")}
+                        if ds == "fut_oi":
+                            form["down_type"] = "1"
+                        if pname:
+                            form[pname] = v
+                        text = http.post_csv(BASE + ep, form)
+                        rows += PARSERS[ds](text, v)
+                except ServerError as e:
+                    log.setdefault("skipped", []).append("%s %s:%s" % (key, ds, e))
+                    code = max(code, 3)
+                    continue
                 bad = []
                 if ds in ("fut_inst", "opt_inst"):
                     rows, bad = drop_unpublished(rows)
