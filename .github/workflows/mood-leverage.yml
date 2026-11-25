@@ -1,0 +1,106 @@
+name: Mood leverage (市場氛圍 國際槓桿資金)
+
+# 2026-11-25 市場氛圍擴充 Phase 2:FINRA(美)/ JPX(日)/ KOFIA(韓)融資餘額 → leverage_hist/*.csv、leverage_latest.json。
+# 第一次執行(沒有 CSV)自動回補 10 年;之後每天只抓最新。consensus.py(taifex-hist.yml 16:40、margin-share.yml)讀 CSV 併入 consensus.json。
+# PR 上只跑檢查(單元測試 + 真實資料回補 + 核對),不 commit。
+on:
+  schedule:
+    - cron: '20 7 * * 1-5'    # 台北 15:20(JPX 週二 16:00 JST = 台北 15:00 公布;KOFIA 前一日資料)
+    - cron: '50 12 * * 1-5'   # 台北 20:50(備援;GitHub 排程常延遲)
+  pull_request:
+    paths:
+      - mood_leverage.py
+      - test_mood_leverage.py
+      - consensus.py
+      - .github/workflows/mood-leverage.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: mood-leverage
+
+jobs:
+  leverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests openpyxl xlrd pytest
+
+      - name: Unit tests
+        run: python -m pytest -q test_mood_leverage.py test_mood_intl.py test_consensus_core.py
+
+      - name: Fetch
+        id: fetch
+        run: |
+          set +e
+          python mood_leverage.py
+          echo "rc=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Verify (只印,不擋)
+        if: always()
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import csv, datetime as dt, json, mood_leverage as L
+          R = lambda k: L.read_csv(".", k)
+          us, jp, mc, kr = R("US"), R("JP"), R("JP_MCAP"), R("KR")
+          print("US rows", len(us), us[:1], us[-3:])
+          print("JP rows", len(jp), "first", jp[:1], "last 8:")
+          for r in jp[-8:]:
+              print("   ", r)
+          ds = [L.to_date(r["date"]) for r in jp]
+          gaps = [(a.isoformat(), b.isoformat()) for a, b in zip(ds, ds[1:]) if (b - a).days > 7 and a.year >= 2016]
+          print("JP weekly gaps > 7 days since 2016:", len(gaps), gaps[:20])
+          print("JP_MCAP rows", len(mc), mc[-3:])
+          print("KR rows", len(kr), kr[:1], kr[-3:])
+          kd = [L.to_date(r["date"]) for r in kr]
+          kg = [(a.isoformat(), b.isoformat()) for a, b in zip(kd, kd[1:]) if (b - a).days > 5]
+          print("KR gaps > 5 days:", len(kg), kg[:20])
+          o = json.load(open("leverage_latest.json", encoding="utf-8"))
+          for k in ("US_FINRA", "JP", "KR"):
+              c = dict(o[k]); c.pop("spark", None)
+              print(k, json.dumps(c, ensure_ascii=False))
+          print("votes", json.dumps(o["votes"], ensure_ascii=False))
+          print("warnings", o.get("warnings"))
+          # 年增率獨立重算(pandas 以外的簡單算法):美國最後一個月 vs 12 個月前
+          a, b = float(us[-1]["debit_musd"]), float(us[-13]["debit_musd"])
+          print("US YoY check", us[-1]["month"], "vs", us[-13]["month"], round((a / b - 1) * 100, 2), "card", o["US_FINRA"].get("value"))
+          # 日本:最後一週 買残 ÷ 月底市值
+          j, m = jp[-1], [x for x in mc if x["month_end"] <= jp[-1]["date"]][-1]
+          print("JP ratio check", j["date"], m["month_end"], round(float(j["buy_myen"]) / float(m["mcap_myen"]) * 100, 4),
+                "card", o["JP"].get("value"), "creditRatio", round(float(j["buy_kshs"]) / float(j["sell_kshs"]), 2))
+          PY
+
+      - name: Consensus integration (不寫檔)
+        if: always()
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import json, consensus as C
+          m = {"indicators": [], "vote_items": []}
+          C.add_leverage(m, ".")
+          print("vote_items", m["vote_items"])
+          PY
+
+      - name: Commit
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          [ -d leverage_hist ] && git add leverage_hist
+          [ -f leverage_latest.json ] && git add leverage_latest.json
+          if git diff --cached --quiet; then echo "沒有變更"; else
+            git commit -q -m "Mood leverage update (rc=${{ steps.fetch.outputs.rc }})"
+            ok=0
+            for i in 1 2 3 4; do
+              git pull --rebase -q origin main && git push -q origin HEAD:main && ok=1 && break
+              sleep $((2**i))
+            done
+            [ $ok -eq 1 ] || exit 1
+          fi
+          [ "${{ steps.fetch.outputs.rc }}" = "0" ] || exit 1
