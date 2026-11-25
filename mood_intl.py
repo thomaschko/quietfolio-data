@@ -51,6 +51,7 @@ MOOD_INTL_CFG = {
     "vote_max_age_days": 10,         # 週線最後一根超過 10 天(抓取失敗沿用舊值)→ 不投票
     "near_band": 5,                  # 分位距門檻 ≤ 5 → 「接近」提示(不投票)
     "suspect_move": 8.0,             # 單日漲跌超過 8% → 標「資料可疑」,所在週不投票(審查 F7;不修正數值)
+    "suspect_move_sym": {"^SOX": 12.0},   # 費半波動大,崩跌期間 8% 以上屬常見 → 另設 12%
     "suspect_days": 30,
 }
 STATE_ZH = {"BULL_EXPAND": "多頭擴張", "BULL_FADE": "多頭收斂", "BEAR_FADE": "空頭收斂", "BEAR_EXPAND": "空頭擴張"}
@@ -260,6 +261,8 @@ def votes(macd_block, today, cfg=MOOD_INTL_CFG):
             return None, "暫缺"
         if w.get("fetch_failed"):
             return None, "抓取失敗"
+        if e.get("incomplete"):
+            return None, "盤中資料不完整"
         lc = w.get("lastClosed") or {"date": w["date"], "zone": w.get("zone")}
         mon = dt.date.fromisoformat(lc["date"])
         if (today - mon).days > cfg["vote_max_age_days"]:
@@ -357,6 +360,7 @@ def trim_intraday(raw, sym, now_utc, close_hhmm):
     if not rows:
         return True
     last_d, last_c = rows[-1]
+    gap = (now_local.date() - dt.date.fromisoformat(last_d)).days > 4    # 修剪後最後一個完整交易日離今天太遠 → Yahoo 缺前一日
     for iv, kf in (("1wk", week_key), ("1mo", month_key)):
         if (sym, iv) not in raw:
             continue
@@ -365,17 +369,19 @@ def trim_intraday(raw, sym, now_utc, close_hhmm):
             r = r[:-1] + [(r[-1][0], last_c)]
         elif r and kf(r[-1][0]) > kf(last_d):
             r = r[:-1]
+            gap = True
         raw[(sym, iv)] = (r, o)
-    return True
+    return "gap" if gap else True
 
 
-def suspect_days(daily_rows, cfg=MOOD_INTL_CFG):
-    """近 30 天單日漲跌超過 8% 的日子(審查 F7:只標示,不修正、不插補)"""
+def suspect_days(daily_rows, cfg=MOOD_INTL_CFG, sym=None):
+    """近 30 天單日漲跌超過門檻(預設 8%,費半 12%)的日子(審查 F7:只標示,不修正、不插補)"""
+    lim = (cfg.get("suspect_move_sym") or {}).get(sym, cfg["suspect_move"])
     out = []
     rows = daily_rows[-cfg["suspect_days"] - 1:]
     for (d0, c0), (d1, c1) in zip(rows, rows[1:]):
         chg = (c1 / c0 - 1) * 100 if c0 else 0
-        if abs(chg) > cfg["suspect_move"]:
+        if abs(chg) > lim:
             out.append({"date": d1, "chg": round(chg, 2)})
     return out
 
@@ -402,7 +408,8 @@ def build(session=None, prev=None, now_utc=None, sleep=time.sleep):
     for sym, name, mkt, close_hhmm in SYMBOLS:
         ent = {"name": name, "market": mkt, "intervals": {}, "intraday_trimmed": trimmed[sym]}
         if (sym, "1d") in raw:
-            ent["suspect"] = suspect_days(raw[(sym, "1d")][0])
+            ent["suspect"] = suspect_days(raw[(sym, "1d")][0], sym=sym)
+            ent["incomplete"] = trimmed[sym] == "gap"
         for iv in INTERVALS:
             if (sym, iv) in raw:
                 rows, off = raw[(sym, iv)]

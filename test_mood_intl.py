@@ -210,6 +210,22 @@ class TestAuditFixes(unittest.TestCase):
         self.assertTrue(M.trim_intraday(raw3, "^SOX", dt.datetime(2026, 11, 30, 15, 0, tzinfo=dt.timezone.utc), 1600))
         self.assertEqual(raw3[("^SOX", "1wk")][0], [("2026-11-23", 100.0)])
 
+    def test_trim_gap_marks_incomplete(self):
+        # 日經盤中(JST 09:37):今天被修剪後只剩 11/20(Yahoo 缺 11/24)→ 週線最後一根被丟 → 標 gap,不投票
+        off = 9 * 3600
+        now = dt.datetime(2026, 11, 25, 0, 37, tzinfo=dt.timezone.utc)
+        raw = {("^N225", "1d"): ([("2026-11-19", 1.0), ("2026-11-20", 1.0), ("2026-11-25", 2.0)], off),
+               ("^N225", "1wk"): ([("2026-11-16", 1.0), ("2026-11-23", 2.0)], off)}
+        self.assertEqual(M.trim_intraday(raw, "^N225", now, 1530), "gap")
+        b = {"^N225": {"incomplete": True, "intervals": {"1wk": {"ok": True, "date": "2026-11-16",
+                                                                  "lastClosed": {"date": "2026-11-16", "zone": "cold"}}}}}
+        self.assertEqual(M.votes(b, dt.date(2026, 11, 25))["intlMacd_detail"]["^N225"]["note"], "盤中資料不完整")
+
+    def test_suspect_threshold_sox(self):
+        rows = [("2026-11-20", 100.0), ("2026-11-23", 110.0)]
+        self.assertEqual(M.suspect_days(rows, sym="^SOX"), [])
+        self.assertEqual(len(M.suspect_days(rows, sym="^TWII")), 1)
+
     def test_suspect_days(self):
         rows = [("2026-11-20", 100.0), ("2026-11-23", 100.0), ("2026-11-24", 109.0), ("2026-11-25", 110.0)]
         self.assertEqual(M.suspect_days(rows), [{"date": "2026-11-24", "chg": 9.0}])

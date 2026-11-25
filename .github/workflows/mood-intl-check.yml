@@ -41,6 +41,9 @@ jobs:
                             "prov" if x["provisional"] else "", "hot_n", st.get("hot", {}).get("n"), "cold_n", st.get("cold", {}).get("n"))
                   else:
                       print(sym, iv, "FAIL", x.get("error"))
+          for sym, e in o["symbols"].items():
+              print("FLAGS", sym, "suspect", e.get("suspect"), "trimmed", e.get("intraday_trimmed"), "incomplete", e.get("incomplete"),
+                    "lastClosed", (e["intervals"].get("1wk") or {}).get("lastClosed"))
           print("size", len(json.dumps(o, ensure_ascii=False, separators=(",", ":"))))
           PY
       - name: Consensus integration (不寫檔)
