@@ -374,14 +374,28 @@ def trim_intraday(raw, sym, now_utc, close_hhmm):
     return "gap" if gap else True
 
 
-def suspect_days(daily_rows, cfg=MOOD_INTL_CFG, sym=None):
-    """近 30 天單日漲跌超過門檻(預設 8%,費半 12%)的日子(審查 F7:只標示,不修正、不插補)"""
+def official_twse_closes(path="margin_hist/index.csv"):
+    """證交所官方加權指數收盤(repo 既有資料,margin_backfill 產生)→ {date: close}"""
+    import csv
+    import os
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding="utf-8") as f:
+        return {r["date"]: float(r["close"]) for r in csv.DictReader(f) if r.get("market") == "twse" and r.get("close")}
+
+
+def suspect_days(daily_rows, cfg=MOOD_INTL_CFG, sym=None, official=None):
+    """近 30 天單日漲跌超過門檻(預設 8%,費半 12%)的日子(審查 F7:只標示,不修正、不插補)。
+    official = {date: close}(^TWII 用證交所官方收盤):Yahoo 與官方前後兩日都一致(差 < 0.1%)→ 視為真實波動,不標可疑
+    (2026-11-25:^TWII 11/24 +8.99% 經官方收盤證實為真)"""
     lim = (cfg.get("suspect_move_sym") or {}).get(sym, cfg["suspect_move"])
+    off = official or {}
+    ok = lambda d, c: d in off and abs(off[d] / c - 1) < 0.001
     out = []
     rows = daily_rows[-cfg["suspect_days"] - 1:]
     for (d0, c0), (d1, c1) in zip(rows, rows[1:]):
         chg = (c1 / c0 - 1) * 100 if c0 else 0
-        if abs(chg) > lim:
+        if abs(chg) > lim and not (ok(d0, c0) and ok(d1, c1)):
             out.append({"date": d1, "chg": round(chg, 2)})
     return out
 
@@ -408,7 +422,8 @@ def build(session=None, prev=None, now_utc=None, sleep=time.sleep):
     for sym, name, mkt, close_hhmm in SYMBOLS:
         ent = {"name": name, "market": mkt, "intervals": {}, "intraday_trimmed": trimmed[sym]}
         if (sym, "1d") in raw:
-            ent["suspect"] = suspect_days(raw[(sym, "1d")][0], sym=sym)
+            ent["suspect"] = suspect_days(raw[(sym, "1d")][0], sym=sym,
+                                          official=official_twse_closes() if sym == "^TWII" else None)
             ent["incomplete"] = trimmed[sym] == "gap"
         for iv in INTERVALS:
             if (sym, iv) in raw:

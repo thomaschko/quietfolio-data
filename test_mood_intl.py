@@ -226,6 +226,13 @@ class TestAuditFixes(unittest.TestCase):
         self.assertEqual(M.suspect_days(rows, sym="^SOX"), [])
         self.assertEqual(len(M.suspect_days(rows, sym="^TWII")), 1)
 
+    def test_suspect_confirmed_by_official(self):
+        rows = [("2026-11-23", 36811.89), ("2026-11-24", 40122.35)]
+        self.assertEqual(len(M.suspect_days(rows, sym="^TWII")), 1)
+        off = {"2026-11-23": 36811.89, "2026-11-24": 40122.35}
+        self.assertEqual(M.suspect_days(rows, sym="^TWII", official=off), [])     # 官方證實 → 不是可疑
+        self.assertEqual(len(M.suspect_days(rows, sym="^TWII", official={"2026-11-24": 39000.0})), 1)
+
     def test_suspect_days(self):
         rows = [("2026-11-20", 100.0), ("2026-11-23", 100.0), ("2026-11-24", 109.0), ("2026-11-25", 110.0)]
         self.assertEqual(M.suspect_days(rows), [{"date": "2026-11-24", "chg": 9.0}])
