@@ -2,15 +2,15 @@
  "date": "2026-11-25",
  "edition": "pm",
  "label": "晚報",
- "n_excluded": 17,
- "generated_at": "2026-11-25 04:34:20",
+ "n_excluded": 101,
+ "generated_at": "2026-11-25 17:59:07",
  "n_sources": 49,
  "n_sources_total": 53,
- "n_titles": 2448,
+ "n_titles": 2425,
  "n_relevant": 750,
  "provider": "groq:qwen3.8-27b",
  "fallback": false,
- "overview": "記憶體市場出現多空分歧，高盛預警2028年價格下跌，但三星與SK海力士合約價明年恐漲四成。AI基建持續推動光通訊瓶頸，InP雷射與DSP成為1.6T光模組缺貨關鍵。先進封裝與HBM產能布局加速，美光提前下單設備，群創搶攻CoWoS人才。",
+ "overview": "記憶體市場出現供需分歧訊號，高盛預警2028年價格恐跌兩成，但三星與SK海力士明年合約價仍看漲四成。AI先進封裝與矽光子設備需求持續強勁，光焱科技斥資擴產，華為展示五層混合鍵合技術。台股重挫破年線，外資賣超創下歷史第七大規模。",
  "sections": [
   {
    "topic": "記憶體",
@@ -29,15 +29,9 @@
        "sources": [
         "google_news"
        ]
-      },
-      {
-       "title": "高盛預警2028年DRAM、NAND、HBM價格全線下跌約20%",
-       "sources": [
-        "eccn"
-       ]
       }
      ],
-     "n_sources": 2,
+     "n_sources": 1,
      "codes": []
     },
     {
@@ -60,12 +54,12 @@
      "codes": []
     },
     {
-     "headline": "記憶體多頭全面反攻，DRAM、封測、HBM設備齊亮燈",
+     "headline": "集邦：本季PC DRAM合約價季增13-18%，漲幅縮減",
      "titles": [
       {
-       "title": "記憶體多頭全面反攻！DRAM、封測、HBM設備齊亮燈",
+       "title": "集邦：本季PC DRAM合約價季增13-18% 漲幅縮減- 新聞",
        "sources": [
-        "google_news"
+        "gnews_d2"
        ]
       }
      ],
@@ -86,12 +80,12 @@
      "codes": []
     },
     {
-     "headline": "SK海力士表示2027～2029年DRAM、HBM產能幾乎已被鎖定",
+     "headline": "記憶體股報價現分歧，DRAM明年續上行，NAND恐現跌價壓力",
      "titles": [
       {
-       "title": "台股產業快報 2026/11/1① AI半導體與關鍵零組件供需持續吃緊SK海力士表示，2027～2029年DRAM、HBM產能幾乎已被客戶需求鎖定，AI伺服器與",
+       "title": "記憶體股漲歸漲報價已現分歧DRAM明年續上行NAND恐現跌價壓力- 日報",
        "sources": [
-        "telegram"
+        "google_news"
        ]
       }
      ],
@@ -99,12 +93,12 @@
      "codes": []
     },
     {
-     "headline": "集邦：本季PC DRAM合約價季增13-18%，漲幅縮減",
+     "headline": "DDR4比DDR5貴三成，誰在主導這輪存储涨价？",
      "titles": [
       {
-       "title": "集邦：本季PC DRAM合約價季增13-18% 漲幅縮減- 新聞",
+       "title": "DDR4比DDR5贵三成：谁在主导这轮存储涨价？",
        "sources": [
-        "gnews_d2"
+        "etime_cn"
        ]
       }
      ],
@@ -112,58 +106,17 @@
      "codes": []
     },
     {
-     "headline": "旺宏因利基型記憶體需求疲軟，外資下修目標價59%至90元",
+     "headline": "存储芯片行情撕裂，DRAM吃香、NAND吃亏",
      "titles": [
       {
-       "title": "【即時新聞】最新外資報告大降評，旺宏因利基型記憶體需求疲軟，目標價下修59%至90元！",
+       "title": "存储芯片行情撕裂，为什么DRAM吃香、NAND吃亏？",
        "sources": [
-        "gnews_d2"
+        "etime_cn"
        ]
       }
      ],
      "n_sources": 1,
-     "codes": [
-      {
-       "code": "2337",
-       "name": "旺宏"
-      }
-     ]
-    },
-    {
-     "headline": "旺宏第三季毛利率70%超越台積電，新產能全力攻eMMC",
-     "titles": [
-      {
-       "title": "2026.10.27 旺宏第三季毛利率70%，超越台積電！未來新產能全力攻eMMC產品",
-       "sources": [
-        "jov"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "2337",
-       "name": "旺宏"
-      }
-     ]
-    },
-    {
-     "headline": "南亞科3Q毛利率逼近86%，4Q再成長，破除年底價格反轉迷思",
-     "titles": [
-      {
-       "title": "2026.10.12 南亞科3Q毛利率逼近86%，4Q會再成長，破除市場認為年底DRAM價格反轉迷思",
-       "sources": [
-        "jov"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": [
-      {
-       "code": "2408",
-       "name": "南亞科"
-      }
-     ]
+     "codes": []
     },
     {
      "headline": "DRAM現貨價低密度DDR4與DDR3上漲，市場橫盤",
@@ -179,12 +132,12 @@
      "codes": []
     },
     {
-     "headline": "DDR4比DDR5貴三成，主導這輪存储涨价",
+     "headline": "三星、SK海力士、美光面臨美國集體訴訟，被指操縱DRAM供應",
      "titles": [
       {
-       "title": "DDR4比DDR5贵三成：谁在主导这轮存储涨价？",
+       "title": "Samsung, SK hynix, Micron Face U.S. Class-Action Lawsuit Over Alleged DRAM Supply Manipulation",
        "sources": [
-        "etime_cn"
+        "trendforce"
        ]
       }
      ],
@@ -192,12 +145,12 @@
      "codes": []
     },
     {
-     "headline": "記憶體漲價衝擊印度手機市場，銷量暴跌22%",
+     "headline": "閃迪投資人交流會：NAND無下行風險，AI需求足以吸收供給",
      "titles": [
       {
-       "title": "記憶體漲價衝擊印手機市場，銷量暴跌 22%",
+       "title": "AI需求到底有多強？閃迪投資人交流會：NAND無下行風險 「這地方」足以吸收增加供給",
        "sources": [
-        "technews"
+        "cnyes_intl"
        ]
       }
      ],
@@ -205,7 +158,7 @@
      "codes": []
     },
     {
-     "headline": "Jedec更新LPDDR6規格，針對行動與AI記憶體效能",
+     "headline": "Jedec更新LPDDR6標準，針對行動與AI記憶體效能",
      "titles": [
       {
        "title": "Jedec updates LPDDR6 to address mobile and AI memory performance",
@@ -218,51 +171,72 @@
      "codes": []
     },
     {
-     "headline": "鈺創亮燈漲停，利基型記憶體族群買盤升溫",
+     "headline": "SK海力士股價自高點跌超60%，分析師對HBM前景看法分歧",
      "titles": [
       {
-       "title": "【12:02 即時新聞】鈺創(5351)亮燈漲停，利基型記憶體族群買盤升溫",
+       "title": "Is It a Good Time to Buy SK Hynix Stock? Shares Down Over 60% From Peak as Analysts Clash on HBM Boom Future",
        "sources": [
-        "gnews_d2"
-       ]
-      },
-      {
-       "title": "【11:55 即時新聞】鈺創(5351)股價走強，利基型記憶體營收動能獲關注",
-       "sources": [
-        "gnews_d2"
+        "google_news_us"
        ]
       }
      ],
      "n_sources": 1,
-     "codes": [
+     "codes": []
+    },
+    {
+     "headline": "Jensen Huang回歸緩解三星、SK海力士HBM不確定性",
+     "titles": [
       {
-       "code": "5351",
-       "name": "鈺創"
+       "title": "Jensen Huang’s return eases HBM uncertainty for Samsung, SK hynix",
+       "sources": [
+        "google_news_us"
+       ]
       }
-     ]
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "Amazon上修2026資本支出至2200億美元，主因記憶體漲價",
+     "titles": [
+      {
+       "title": "Amazon也上修了2026資本支出從2000億上修到2200億，主要也是記憶體漲價因素。Q2的自由現金流也轉負。AWS的營收成長加速至年增37%，營業利潤年增",
+       "sources": [
+        "telegram"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
     }
    ]
   },
   {
-   "topic": "光通訊",
+   "topic": "先進封裝",
    "items": [
     {
-     "headline": "Cisco稱最大瓶頸是光學，缺InP、DSP與光纖而非模組",
+     "headline": "華為將在ISSCC 2027展示五層混合鍵合HBM及3D堆疊技術",
      "titles": [
       {
-       "title": "Cisco Says Optics Is the Biggest Bottleneck: The Shortage Is InP, DSP and Fiber, Not Modules — 2026 W46 Industry Review",
+       "title": "Huawei working on five-layer hybrid bonding HBM chip technology",
        "sources": [
-        "simpletechtrend"
+        "google_news_us"
        ]
       },
       {
-       "title": "Cisco 說最大瓶頸是光學：缺的不是模組，是 InP、DSP 與光纖——2026 W46 產業週評",
+       "title": "華為將在 ISSCC 2027 展示五層混合鍵合 HBM、邏輯晶片 3D 堆疊等先進技術",
        "sources": [
-        "simpletechtrend"
+        "eccn"
+       ]
+      },
+      {
+       "title": "Huawei to introduce advanced HBM and mobile chip packaging techs in 2027",
+       "sources": [
+        "google_news_us"
        ]
       }
      ],
-     "n_sources": 1,
+     "n_sources": 2,
      "codes": []
     }
    ]
@@ -271,14 +245,14 @@
  "stats": {
   "items_kept": 15,
   "items_dropped": 0,
-  "titles_used": 20,
+  "titles_used": 19,
   "titles_sent": 60
  },
  "coverage": [
   {
    "source": "cna",
    "fetched": 40,
-   "sent": 1,
+   "sent": 2,
    "cited": 0
   },
   {
@@ -295,33 +269,33 @@
   },
   {
    "source": "wapeople",
-   "fetched": 28,
-   "sent": 1,
+   "fetched": 26,
+   "sent": 2,
    "cited": 0
   },
   {
    "source": "technews",
-   "fetched": 54,
-   "sent": 2,
-   "cited": 1
+   "fetched": 55,
+   "sent": 8,
+   "cited": 0
   },
   {
    "source": "eetimes",
    "fetched": 12,
-   "sent": 0,
+   "sent": 1,
    "cited": 0
   },
   {
    "source": "trendforce",
    "fetched": 20,
-   "sent": 1,
-   "cited": 1
+   "sent": 4,
+   "cited": 2
   },
   {
    "source": "cnyes_intl",
-   "fetched": 148,
-   "sent": 0,
-   "cited": 0
+   "fetched": 137,
+   "sent": 2,
+   "cited": 1
   },
   {
    "source": "ctee",
@@ -332,7 +306,7 @@
   {
    "source": "edn",
    "fetched": 20,
-   "sent": 0,
+   "sent": 2,
    "cited": 0
   },
   {
@@ -349,7 +323,7 @@
   },
   {
    "source": "aminext",
-   "fetched": 4,
+   "fetched": 8,
    "sent": 0,
    "cited": 0
   },
@@ -361,7 +335,7 @@
   },
   {
    "source": "statementdog_pod",
-   "fetched": 3,
+   "fetched": 2,
    "sent": 0,
    "cited": 0
   },
@@ -392,14 +366,14 @@
   {
    "source": "jov",
    "fetched": 7,
-   "sent": 2,
-   "cited": 2
+   "sent": 0,
+   "cited": 0
   },
   {
    "source": "etime_cn",
-   "fetched": 20,
+   "fetched": 19,
    "sent": 2,
-   "cited": 1
+   "cited": 2
   },
   {
    "source": "cyclesinvest",
@@ -415,25 +389,25 @@
   },
   {
    "source": "investor",
-   "fetched": 42,
+   "fetched": 55,
    "sent": 1,
    "cited": 0
   },
   {
    "source": "technice",
    "fetched": 10,
-   "sent": 1,
+   "sent": 0,
    "cited": 0
   },
   {
    "source": "newtalk_finance",
-   "fetched": 55,
+   "fetched": 70,
    "sent": 0,
    "cited": 0
   },
   {
    "source": "wallstreetcn",
-   "fetched": 68,
+   "fetched": 65,
    "sent": 0,
    "cited": 0
   },
@@ -458,7 +432,7 @@
   {
    "source": "etnews_kr",
    "fetched": 30,
-   "sent": 1,
+   "sent": 0,
    "cited": 0
   },
   {
@@ -482,8 +456,8 @@
   {
    "source": "simpletechtrend",
    "fetched": 20,
-   "sent": 5,
-   "cited": 2
+   "sent": 0,
+   "cited": 0
   },
   {
    "source": "tomshardware",
@@ -517,7 +491,7 @@
   },
   {
    "source": "gs_exchanges",
-   "fetched": 2,
+   "fetched": 1,
    "sent": 0,
    "cited": 0
   },
@@ -529,32 +503,32 @@
   },
   {
    "source": "google_news",
-   "fetched": 233,
-   "sent": 13,
+   "fetched": 284,
+   "sent": 11,
    "cited": 3
   },
   {
    "source": "google_news_us",
-   "fetched": 132,
-   "sent": 4,
-   "cited": 1
+   "fetched": 136,
+   "sent": 8,
+   "cited": 5
   },
   {
    "source": "google_news_jp",
-   "fetched": 58,
+   "fetched": 57,
    "sent": 0,
    "cited": 0
   },
   {
    "source": "telegram",
    "fetched": 82,
-   "sent": 2,
+   "sent": 3,
    "cited": 1
   },
   {
    "source": "cnbc_yahoo",
-   "fetched": 96,
-   "sent": 0,
+   "fetched": 92,
+   "sent": 1,
    "cited": 0
   },
   {
@@ -578,8 +552,8 @@
   {
    "source": "gnews_d2",
    "fetched": 99,
-   "sent": 25,
-   "cited": 7
+   "sent": 16,
+   "cited": 4
   },
   {
    "source": "fsemi",
@@ -589,8 +563,8 @@
   },
   {
    "source": "eccn",
-   "fetched": 16,
-   "sent": 1,
+   "fetched": 26,
+   "sent": 2,
    "cited": 1
   }
  ],
@@ -601,7 +575,7 @@
   },
   "eccn": {
    "status": "ok",
-   "n": 16
+   "n": 26
   }
  }
 }
