@@ -19,6 +19,7 @@ import sys
 
 import consensus_core as cc
 import mood_intl
+import mood_leverage
 import margin_backfill as mb
 import margin_share_core as ms
 
@@ -348,6 +349,27 @@ def add_intl_macd(m, base=".", builder=None):
     return m
 
 
+def add_leverage(m, base=".", today=None):
+    """Phase 2:美 / 日 / 韓 槓桿資金(mood_leverage.py 每日更新 leverage_hist/*.csv;這裡只讀檔,以今天日期重判過期)。
+    「國際槓桿」1 票 = 有效市場中 ≥ 2 個同邊。失敗只記錄,不影響原本指標。"""
+    try:
+        lev = mood_leverage.compute(base, today=today)
+    except Exception as e:                       # noqa: BLE001
+        print("國際槓桿計算失敗:%r" % e)
+        return m
+    m["leverage"] = lev
+    items = m.get("vote_items")
+    if items is None:
+        items = [{"key": x["key"], "label": x["label"], "zone": x["zone"]} for x in m["indicators"] if x["dir"] != 0]
+    items = [x for x in items if x["key"] != "intl_leverage"]
+    v = lev.get("votes") or {}
+    items.append({"key": "intl_leverage", "label": "國際槓桿(美 / 日 / 韓 有效市場 ≥ 2 同邊)",
+                  "zone": v.get("intlLeverage"), "note": v.get("note")})
+    m["vote_items"] = items
+    m["label"], m["hot"], m["cold"] = cc.mood_label([None if x.get("merged_with") else x["zone"] for x in items])
+    return m
+
+
 # ------------------------------------------------------------------ 主流程
 def build(base="."):
     j = lambda p: os.path.join(base, p)
@@ -366,6 +388,7 @@ def build(base="."):
     out = {"generated": dt.datetime.now(TPE).isoformat(timespec="seconds"), "cfg": cfg, "notes": cc.NOTES}
     out["mood"] = mood(margin, index, taifex, insti, cls)
     add_intl_macd(out["mood"], base)
+    add_leverage(out["mood"], base)
     sr = stock_rows(margin, insti, cls, chips, cfg["window"])
     if sr:
         out["window"] = {"t": sr["t"], "t0": sr["t0"], "days": sr["days"]}
