@@ -222,3 +222,88 @@ def test_consensus_add_leverage_adds_one_vote(tmp_path, monkeypatch):
     m2 = {"indicators": [], "vote_items": []}
     C.add_leverage(m2, str(tmp_path))                      # 失敗不影響
     assert "leverage" not in m2
+
+
+# ------------------------------------------------------------------ Phase 3:槓桿 ETF
+PS_HDR = "Date,ProShares Name,Ticker,NAV,Prior NAV,NAV Change (%),NAV Change ($),Shares Outstanding (000),Assets Under Management\n"
+
+
+def test_parse_proshares():
+    txt = PS_HDR + ("11/24/2026,ProShares UltraPro QQQ,TQQQ,46.1579,49.1029,-5.99761,-2.945,600200,27703971580\n"
+                    "11/23/2026,ProShares UltraPro QQQ,TQQQ,49.1029,40.7477,20.50472,8.3552,600950,29508387755\n")
+    out = L.parse_proshares(txt, "TQQQ")
+    assert [r["date"] for r in out] == ["2026-11-23", "2026-11-24"]
+    assert out[1]["aum"] == 27703971580 and out[1]["navchg_pct"] == -5.99761 and out[1]["key"] == "2026-11-24|TQQQ"
+    with pytest.raises(ValueError):
+        L.parse_proshares("Date,NAV\n1/1/2026,1\n", "TQQQ")
+
+
+def test_parse_direxion():
+    h = ('Direxion Daily Semiconductor Bull 3X ETF\nSOXL\nShares Outstanding:376800060\n\n\n'
+         '"TradeDate","AccountTicker","StockTicker"\n"11/24/2026 12:00:00 AM","SOXL","AMD"\n')
+    assert L.parse_direxion_holdings(h, "SOXL") == (D(2026, 11, 24), 376800060.0)
+    page = ('<div>NAV (Net Asset Value)</div> <span>$ 43.39</span> <p>As of Nov 23, 2026</p> 1 Day NAV change'
+            '<div>SOXS</div><div>NAV (Net Asset Value)</div> <span>$ 48.94</span> <p>As of Nov 23, 2026</p>')
+    assert L.parse_direxion_nav(page) == {"SOXL": (43.39, D(2026, 11, 23)), "SOXS": (48.94, D(2026, 11, 23))}
+    with pytest.raises(ValueError):
+        L.parse_direxion_nav("<p>nothing</p>")
+
+
+def test_etf_flows_split_invariant_and_suspect():
+    rows = [{"date": "d1", "aum": 100.0, "navchg_pct": None},
+            {"date": "d2", "aum": 110.0, "navchg_pct": 10.0},     # 純漲 10%,無申購(反分割也只動淨值與股數,AUM 不變)
+            {"date": "d3", "aum": 120.0, "navchg_pct": 0.0},      # 申購 10
+            {"date": "d4", "aum": 300.0, "navchg_pct": 0.0}]      # 單日 +150% → 可疑
+    fl, sus = L.etf_flows(rows)
+    assert fl["d2"] == pytest.approx(0.0, abs=1e-9) and fl["d3"] == pytest.approx(10.0) and sus == ["d4"]
+
+
+def _etf_rows(n, last_bull=None):
+    rows, d = [], D(2015, 1, 1)
+    for i in range(n):
+        for t, a in (("TQQQ", 100 + i % 30), ("UPRO", 50.0), ("SQQQ", 40.0), ("SPXU", 10.0)):
+            aum = last_bull if (last_bull and i == n - 1 and t == "TQQQ") else a
+            rows.append({"key": "%s|%s" % (d.isoformat(), t), "date": d.isoformat(), "ticker": t, "nav": 1,
+                         "shares_k": 1, "aum": aum, "navchg_pct": 0.0, "first_seen": "2026-11-25"})
+        d += dt.timedelta(days=1)
+    return rows
+
+
+def test_etf_series_ratio_and_flows():
+    ser, info, _ = L.etf_series(_etf_rows(30))
+    d, v = ser[0]
+    assert v == round(150 / 200 * 100, 3)
+    assert info["flowDays"] == 20 and info["bull_aum_b"] == round((100 + 29 + 50) / 1e9, 2)
+    # 缺一檔 → 不算
+    assert L.etf_series([r for r in _etf_rows(5) if r["ticker"] != "SPXU"])[0] == []
+
+
+def test_us_composite_four_cases():
+    ok = lambda z: {"ok": True, "stale": False, "pctl": 50.0, "zone": z}
+    bad = {"ok": False}
+    assert L.us_composite(ok("hot"), ok("hot"))["zone"] == "hot"            # 同邊
+    assert L.us_composite(ok("cold"), ok(None))["zone"] == "cold"           # 一邊極端、一邊正常
+    c = L.us_composite(ok("hot"), ok("cold"))                                # 方向相反
+    assert c["valid"] and c["zone"] is None and "相反" in c["note"]
+    c = L.us_composite(bad, ok("hot"))                                       # 只有一個有效
+    assert c["valid"] and c["zone"] == "hot" and "槓桿 ETF" in c["note"]
+    assert L.us_composite(bad, bad)["valid"] is False                       # 都無效
+
+
+def test_sox_card_accumulating_no_vote():
+    rows = []
+    for i, d in enumerate(["2026-11-24", "2026-11-25"]):
+        rows += [{"key": d + "|SOXL", "date": d, "ticker": "SOXL", "shares": 300 + i, "nav": 40, "nav_date": d},
+                 {"key": d + "|SOXS", "date": d, "ticker": "SOXS", "shares": 20, "nav": 50, "nav_date": d}]
+    c = L.sox_card(rows, D(2026, 11, 25), None)
+    assert c["ok"] and c["historyDays"] == 2 and c["pctl"] is None and c["vote"] is None
+    assert "累積中(2/250 日)" in c["note"] and c["value"] == round(301 * 40 / (301 * 40 + 20 * 50) * 100, 3)
+    assert "flow20Bull" not in c
+
+
+def test_compute_uses_etf_when_finra_missing(tmp_path):
+    _write(tmp_path, "ETF", _etf_rows(400, last_bull=10000.0))     # 最後一天多空比遠高於歷史 → hot
+    out = L.compute(str(tmp_path), D(2016, 2, 6), status={})
+    assert out["US_ETF"]["vote"] == "hot" and out["US_ETF"]["historyDays"] == 400
+    assert out["US_composite"]["zone"] == "hot" and out["votes"]["markets"]["US"] == "hot"
+    assert out["votes"]["valid"] == 1 and out["votes"]["intlLeverage"] is None

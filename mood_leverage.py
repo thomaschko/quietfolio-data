@@ -19,7 +19,9 @@ mood_leverage.py — 市場氛圍擴充 Phase 2:國際槓桿資金(v2026-11-25-m
      用資料日期算會在正常公布前就過期)。另設資料日期上限(美 80、日 20、韓 10 天)防止來源停更卻沒被發現。
   4. 輸出:歷史在 leverage_hist/*.csv,最新結果 leverage_latest.json;consensus.py 讀 CSV 重算(以當天日期判斷過期)後
      併入 consensus.json 的 mood.leverage(規格 Phase 6)。
-  5. 美國這次只用 FINRA;規格的「FINRA + 槓桿 ETF 合成」等 Phase 3 做完再加。
+  5. Phase 3(美國槓桿 ETF):投票用 ProShares TQQQ/UPRO vs SQQQ/SPXU(官網 2010 年起每日淨值、流通股數、AUM);
+     Direxion SOXL/SOXS 官網只有當日快照 → 自 2026-11-25 起每日累積,另卡只顯示、不投票(使用者 2026-11-25 決定)。
+     美國狀態 = FINRA 與 ETF 合成(規格 3.4)。20 日淨申購 = Σ(AUM_t − AUM_{t−1} ×(1 + 當日淨值報酬)),不受反分割影響。
 抓取:先讀 robots.txt,同一主機間隔 ≥ 3 秒,誠實 User-Agent;403 / 429 / 驗證碼 → 停止該來源。
 任何來源本次抓取失敗 → 該市場卡片「資料暫缺」、不參與投票(不用舊值硬算)。只描述,不構成買賣建議。
 """
@@ -34,7 +36,7 @@ import time
 from urllib import robotparser
 from urllib.parse import urljoin, urlsplit
 
-VERSION = "v2026-11-25-mood-lev"
+VERSION = "v2026-11-25-mood-lev-etf"
 HIST = "leverage_hist"
 LATEST = "leverage_latest.json"
 UA = "quietfolio-research/1.0 (read-only, low-frequency; github.com/thomaschko/quietfolio-data)"
@@ -49,18 +51,25 @@ KOFIA_OBJ = "STATSCU0100000070BO"
 
 LEV_CFG = {
     "years": 10,                                   # 歷史分位用最近 10 年
-    "min_hist": {"US": 60, "JP": 150, "KR": 500},  # 樣本不足 → 不給分位、不投票
-    "stale_seen_days": {"US": 50, "JP": 10, "KR": 4},   # 規格 staleAfterDays(以第一次抓到的日期起算)
-    "stale_data_days": {"US": 80, "JP": 20, "KR": 10},  # 資料日期本身的上限
+    "min_hist": {"US": 60, "JP": 150, "KR": 500, "ETF": 250},  # 樣本不足 → 不給分位、不投票
+    "stale_seen_days": {"US": 50, "JP": 10, "KR": 4, "ETF": 4},   # 規格 staleAfterDays(以第一次抓到的日期起算)
+    "stale_data_days": {"US": 80, "JP": 20, "KR": 10, "ETF": 10},  # 資料日期本身的上限
     "min_same": 2,                                 # 美 / 日 / 韓 有效市場中 ≥ 2 個同邊才算一票
-    "spark": {"US": 36, "JP": 52, "KR": 120},
+    "spark": {"US": 36, "JP": 52, "KR": 120, "ETF": 120},
+    "etf_flow_days": 20,                           # 20 日淨申購(只顯示)
+    "etf_suspect_move": 30.0,                      # 單日流通股數(扣除淨值變動後)變動 > 30% → 可疑,不採用
+    "etf_sox_min_days": 250,                       # SOXL/SOXS 自上線日累積,滿 250 日才給分位(只顯示,不投票)
+    "etf_keep_from": "2014-01-01",
     "overlap_tol_pct": 0.5,                        # 不同檔案重疊週的差異 > 0.5% → 記錄警告
 }
-FILES = {"US": "us_finra.csv", "JP": "jp_margin.csv", "JP_MCAP": "jp_mcap.csv", "KR": "kr_credit.csv"}
+FILES = {"US": "us_finra.csv", "JP": "jp_margin.csv", "JP_MCAP": "jp_mcap.csv", "KR": "kr_credit.csv",
+         "ETF": "us_lev_etf.csv", "SOX": "us_sox_etf.csv"}
 COLS = {"US": ["month", "debit_musd", "first_seen"],
         "JP": ["date", "sell_kshs", "sell_myen", "buy_kshs", "buy_myen", "src", "first_seen"],
         "JP_MCAP": ["month_end", "mcap_myen", "first_seen"],
-        "KR": ["date", "credit_mkrw", "kospi_mkrw", "kosdaq_mkrw", "first_seen"]}
+        "KR": ["date", "credit_mkrw", "kospi_mkrw", "kosdaq_mkrw", "first_seen"],
+        "ETF": ["key", "date", "ticker", "nav", "shares_k", "aum", "navchg_pct", "first_seen"],
+        "SOX": ["key", "date", "ticker", "shares", "nav", "nav_date", "first_seen"]}
 
 
 # ------------------------------------------------------------------ 共用
@@ -106,7 +115,16 @@ def to_date(x, datemode=0):
             return dt.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
         except ValueError:
             return None
-    return None
+    m = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{4})", s)
+    if m:
+        try:
+            return dt.date(int(m.group(3)), int(m.group(1)), int(m.group(2)))
+        except ValueError:
+            return None
+    try:
+        return dt.datetime.strptime(s[:12].strip(), "%b %d, %Y").date()
+    except ValueError:
+        return None
 
 
 def read_csv(base, key):
@@ -266,6 +284,52 @@ def parse_kofia(j):
     return sorted(out, key=lambda x: x["date"])
 
 
+ETF_BULL = ["TQQQ", "UPRO"]                      # 投票用:ProShares(官網有 2010 年起每日淨值與流通股數)
+ETF_BEAR = ["SQQQ", "SPXU"]
+SOX_BULL, SOX_BEAR = "SOXL", "SOXS"               # Direxion:官網只有當日快照 → 自上線日起每日累積,另卡只顯示
+
+
+def parse_proshares(text, ticker):
+    """ProShares {T}-historical_nav.csv → [{'date','ticker','nav','shares_k','aum','navchg_pct'}](由舊到新)"""
+    rows = list(csv.reader(io.StringIO(text)))
+    if not rows or "Shares Outstanding (000)" not in rows[0]:
+        raise ValueError("ProShares %s:欄位不符 %s" % (ticker, rows[0][:9] if rows else None))
+    h = {k: i for i, k in enumerate(rows[0])}
+    out = []
+    for r in rows[1:]:
+        if len(r) < len(h):
+            continue
+        d = to_date(r[h["Date"]])
+        if not d or r[h["Ticker"]].strip().upper() != ticker:
+            continue
+        nav, sh, aum = num(r[h["NAV"]]), num(r[h["Shares Outstanding (000)"]]), num(r[h["Assets Under Management"]])
+        if not nav or aum is None:
+            continue
+        out.append({"key": "%s|%s" % (d.isoformat(), ticker), "date": d.isoformat(), "ticker": ticker, "nav": nav,
+                    "shares_k": sh, "aum": aum, "navchg_pct": num(r[h["NAV Change (%)"]])})
+    if not out:
+        raise ValueError("ProShares %s:沒有資料" % ticker)
+    return sorted(out, key=lambda x: x["date"])
+
+
+def parse_direxion_holdings(text, ticker):
+    """Direxion holdings/{T}.csv → (資料日, 流通股數);第 3 行 'Shares Outstanding:N',表格 TradeDate 為資料日"""
+    m = re.search(r"Shares Outstanding:\s*([\d,\.]+)", text)
+    d = re.search(r'"(\d{1,2}/\d{1,2}/\d{4})[^"]*","%s"' % ticker, text)
+    if not m or not d:
+        raise ValueError("Direxion %s holdings 格式不符" % ticker)
+    return to_date(d.group(1)), num(m.group(1))
+
+
+def parse_direxion_nav(html):
+    """Direxion 多空合併產品頁 → {'SOXL': (nav, 日期), 'SOXS': (nav, 日期)}(頁面依序列出 Bull、Bear)"""
+    txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
+    hits = re.findall(r"NAV \(Net Asset Value\) \$ ?([\d,\.]+) As of ([A-Z][a-z]{2} \d{1,2}, \d{4})", txt)
+    if len(hits) < 2:
+        raise ValueError("Direxion 產品頁找不到兩檔 NAV(找到 %d)" % len(hits))
+    return {SOX_BULL: (num(hits[0][0]), to_date(hits[0][1])), SOX_BEAR: (num(hits[1][0]), to_date(hits[1][1]))}
+
+
 # ------------------------------------------------------------------ 指標計算(純函式)
 def yoy_series(points, lag_days=365, tol_days=10):
     """[(date, v)] → [(date, yoy%)];一年前 = 「≤ date − 365 天」的最後一筆,且距離不超過 tol_days"""
@@ -339,6 +403,114 @@ def card(mkt, series, today, seen, fetch_err, extra=None, cfg=LEV_CFG):
     return c
 
 
+def etf_flows(rows, cfg=LEV_CFG):
+    """單檔每日淨申購(美元)= AUM_t − AUM_{t−1} ×(1 + 當日淨值報酬)→ 不受反分割影響。
+    |淨申購| > AUM_{t−1} 的 30% → 可疑(規格 3.2),不採用並記錄 → ({date: flow}, [可疑日期])"""
+    out, sus, prev = {}, [], None
+    for r in rows:
+        if prev is not None and prev["aum"] and r.get("navchg_pct") is not None:
+            f = r["aum"] - prev["aum"] * (1 + r["navchg_pct"] / 100.0)
+            if abs(f) > prev["aum"] * cfg["etf_suspect_move"] / 100.0:
+                sus.append(r["date"])
+            else:
+                out[r["date"]] = f
+        prev = r
+    return out, sus
+
+
+def etf_series(rows, cfg=LEV_CFG):
+    """ProShares 4 檔 → ([(date, bullRatio%)], 最新一天的 {bull_aum, bear_aum, flow20Bull, flow20Bear}, 可疑)"""
+    by_t = {}
+    for r in rows:
+        x = {"date": r["date"], "aum": num(r["aum"]), "navchg_pct": num(r.get("navchg_pct"))}
+        by_t.setdefault(r["ticker"], []).append(x)
+    for t in by_t:
+        by_t[t].sort(key=lambda x: x["date"])
+    if any(t not in by_t for t in ETF_BULL + ETF_BEAR):
+        return [], None, []
+    aum = {t: {x["date"]: x["aum"] for x in by_t[t]} for t in by_t}
+    flows, sus = {}, []
+    for t in ETF_BULL + ETF_BEAR:
+        flows[t], s_ = etf_flows(by_t[t], cfg)
+        sus += ["%s %s" % (t, d) for d in s_]
+    dates = sorted(set.intersection(*[set(aum[t]) for t in ETF_BULL + ETF_BEAR]))
+    ser = []
+    for d in dates:
+        b = sum(aum[t][d] for t in ETF_BULL)
+        e = sum(aum[t][d] for t in ETF_BEAR)
+        if b + e > 0:
+            ser.append((to_date(d), round(b / (b + e) * 100, 3)))
+    if not ser:
+        return [], None, sus
+    last = dates[-cfg["etf_flow_days"]:]
+    side = lambda ts: round(sum(flows[t].get(d, 0.0) for t in ts for d in last) / 1e9, 3)
+    d = dates[-1]
+    info = {"bull_aum_b": round(sum(aum[t][d] for t in ETF_BULL) / 1e9, 2),
+            "bear_aum_b": round(sum(aum[t][d] for t in ETF_BEAR) / 1e9, 2),
+            "flow20Bull": side(ETF_BULL), "flow20Bear": side(ETF_BEAR), "flowDays": len(last),
+            "suspect": [x for x in sus if x.split()[1] >= last[0]]}
+    return ser, info, sus
+
+
+def sox_card(rows, today, fetch_err, cfg=LEV_CFG):
+    """SOXL / SOXS(自上線日累積,只顯示):AUM ≈ 流通股數 × 最近一筆淨值(淨值日可能比股數日早 1 天)"""
+    by = {}
+    for r in rows:
+        by.setdefault(r["date"], {})[r["ticker"]] = r
+    days = [d for d in sorted(by) if SOX_BULL in by[d] and SOX_BEAR in by[d]]
+    c = {"market": "US_SOX", "ok": False, "label": "美國 費半槓桿 ETF 多空比(SOXL / SOXS)", "unit": "%", "freq": "日",
+         "historyDays": len(days), "needDays": cfg["etf_sox_min_days"], "vote": None, "stale": False,
+         "note": None, "methodNote": "Direxion 官網只有當日快照,自 2026-11-25 起每日累積;只顯示、不投票"}
+    if not days:
+        c["note"] = "資料暫缺" + ("(%s)" % fetch_err if fetch_err else "")
+        return c
+    ser = []
+    for d in days:
+        b = num(by[d][SOX_BULL]["shares"]) * num(by[d][SOX_BULL]["nav"])
+        e = num(by[d][SOX_BEAR]["shares"]) * num(by[d][SOX_BEAR]["nav"])
+        ser.append((to_date(d), round(b / (b + e) * 100, 3), b, e))
+    d, v, b, e = ser[-1]
+    p = pctile(v, [x[1] for x in ser[:-1]], cfg["etf_sox_min_days"])
+    c.update({"ok": True, "asOf": d.isoformat(), "value": v, "pctl": p, "zone": zone(p),
+              "bull_aum_b": round(b / 1e9, 2), "bear_aum_b": round(e / 1e9, 2),
+              "spark": [x[1] for x in ser[-cfg["spark"]["ETF"]:]]})
+    if len(ser) > cfg["etf_flow_days"]:
+        win = days[-cfg["etf_flow_days"] - 1:]
+        fl = lambda t: round(sum((num(by[b2][t]["shares"]) - num(by[a][t]["shares"])) * num(by[b2][t]["nav"])
+                                 for a, b2 in zip(win, win[1:])) / 1e9, 3)
+        c["flow20Bull"], c["flow20Bear"] = fl(SOX_BULL), fl(SOX_BEAR)
+    if fetch_err:
+        c["note"] = "本次抓取失敗(%s);最新 %s" % (fetch_err, d.isoformat())
+        c["fetch_failed"] = True
+    elif (today - d).days > cfg["stale_data_days"]["ETF"]:
+        c["stale"] = True
+        c["note"] = "資料過期(最新 %s)" % d.isoformat()
+    elif p is None:
+        c["note"] = "累積中(%d/%d 日)" % (len(days), cfg["etf_sox_min_days"])
+    return c
+
+
+def valid_card(c):
+    return bool(c and c.get("ok") and not c.get("stale") and not c.get("fetch_failed") and c.get("pctl") is not None)
+
+
+def us_composite(finra, etf):
+    """規格 3.4:都有效 → 同邊取該邊、一邊極端一邊正常取極端、方向相反無方向;只有一個有效 → 用它;都無效 → 不參與"""
+    zs = [c["zone"] for c in (finra, etf) if valid_card(c)]
+    if not zs:
+        return {"valid": False, "zone": None, "note": "FINRA 與槓桿 ETF 都無效,美國不參與"}
+    if len(zs) == 1:
+        return {"valid": True, "zone": zs[0], "note": "只有%s有效" % ("FINRA" if valid_card(finra) else "槓桿 ETF")}
+    a, b = zs
+    if a == b:
+        z = a
+    elif a is None or b is None:
+        z = a or b
+    else:
+        z = None
+    return {"valid": True, "zone": z, "note": "FINRA 與槓桿 ETF 方向相反,無方向" if (a and b and a != b) else None}
+
+
 def compute(base=".", today=None, status=None, cfg=LEV_CFG):
     """讀 leverage_hist/*.csv → {'version', 'US_FINRA', 'JP', 'KR', 'votes'};status = 各來源本次抓取結果 {mkt: 錯誤字串或 None}"""
     today = today or (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=8)).date()
@@ -382,12 +554,27 @@ def compute(base=".", today=None, status=None, cfg=LEV_CFG):
                       "balance_tkrw": round(kr[-1][1] / 1e6, 2) if kr else None,
                       "methodNote": "韓國市值無免費來源,改用年增率(2026-11-25 決定)"})
 
-    zs = {"US": out["US_FINRA"]["vote"], "JP": out["JP"]["vote"], "KR": out["KR"]["vote"]}
-    valid = sum(1 for m in ("US_FINRA", "JP", "KR") if out[m]["ok"] and not out[m]["stale"]
-                and not out[m].get("fetch_failed") and out[m]["pctl"] is not None)
+    # Phase 3:美國槓桿 ETF(ProShares 4 檔投票用;SOXL / SOXS 另卡只顯示)
+    er = read_csv(base, "ETF")
+    ser, info, _ = etf_series(er, cfg)
+    eseen = {}
+    for r in er:
+        d = to_date(r["date"])
+        s_ = to_date(r.get("first_seen"))
+        if s_ and (d not in eseen or s_ > eseen[d]):
+            eseen[d] = s_
+    out["US_ETF"] = card("ETF", ser, today, eseen.get(ser[-1][0]) if ser else None, status.get("ETF"),
+                         dict({"metric": "bull_ratio", "label": "美國 槓桿 ETF 多空比", "unit": "%", "freq": "日",
+                               "tickers": {"bull": ETF_BULL, "bear": ETF_BEAR},
+                               "historyDays": len(ser),
+                               "methodNote": "看多 AUM ÷(看多 + 看空);ProShares TQQQ/UPRO vs SQQQ/SPXU"}, **(info or {})))
+    out["US_SOX"] = sox_card(read_csv(base, "SOX"), today, status.get("SOX"), cfg)
+    comp = us_composite(out["US_FINRA"], out["US_ETF"])
+    out["US_composite"] = comp
+    zs = {"US": comp["zone"], "JP": out["JP"]["vote"], "KR": out["KR"]["vote"]}
+    valid = int(comp["valid"]) + sum(1 for m in ("JP", "KR") if valid_card(out[m]))
     hot, cold = list(zs.values()).count("hot"), list(zs.values()).count("cold")
     v = "hot" if hot >= cfg["min_same"] else "cold" if cold >= cfg["min_same"] else None
-    out["US_composite"] = {"zone": zs["US"], "note": "目前只用 FINRA;槓桿 ETF(Phase 3)上線後合成"}
     out["votes"] = {"intlLeverage": v, "markets": zs, "valid": valid, "hot": hot, "cold": cold,
                     "note": None if valid >= cfg["min_same"] else "有效市場 < 2,無方向"}
     return out
@@ -528,6 +715,34 @@ def fetch_kr(f, start, end):
     return parse_kofia(r.json())
 
 
+PROSHARES_CSV = "https://accounts.profunds.com/etfdata/ByFund/%s-historical_nav.csv"
+DIREXION_HOLD = "https://www.direxion.com/holdings/%s.csv"
+DIREXION_PAGE = "https://www.direxion.com/product/daily-semiconductor-bull-bear-3x-etfs"
+
+
+def fetch_etf(f, keep_from=LEV_CFG["etf_keep_from"]):
+    out = []
+    for t in ETF_BULL + ETF_BEAR:
+        out += [r for r in parse_proshares(f.get(PROSHARES_CSV % t).text, t) if r["date"] >= keep_from]
+    return out
+
+
+def fetch_sox(f):
+    """→ 每檔一列:資料日 = holdings 的 TradeDate,淨值取產品頁(記下淨值日期)"""
+    navs = parse_direxion_nav(f.get(DIREXION_PAGE).text)
+    out = []
+    for t in (SOX_BULL, SOX_BEAR):
+        d, sh = parse_direxion_holdings(f.get(DIREXION_HOLD % t).text, t)
+        nav, nd = navs[t]
+        if not d or not sh or not nav:
+            raise ValueError("Direxion %s 資料不完整" % t)
+        if (d - nd).days > 5:
+            raise ValueError("Direxion %s 淨值日 %s 與股數日 %s 相差太多" % (t, nd, d))
+        out.append({"key": "%s|%s" % (d.isoformat(), t), "date": d.isoformat(), "ticker": t, "shares": sh, "nav": nav,
+                    "nav_date": nd.isoformat()})
+    return out
+
+
 def update(base=".", fetcher=None, today=None, backfill=None):
     """抓各來源、合併進 leverage_hist/*.csv、寫 fetch_status.json → (status, warnings)"""
     today = today or (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=8)).date()
@@ -571,7 +786,34 @@ def update(base=".", fetcher=None, today=None, backfill=None):
         write_csv(base, "KR", rows)
         return {"rows": len(rows), "added": n, "last": rows[-1]["date"]}
 
+    def etf():
+        old = read_csv(base, "ETF")
+        rows, n = merge(old, fetch_etf(f), "key", today, warn, "aum")
+        write_csv(base, "ETF", rows)
+        return {"rows": len(rows), "added": n, "last": max(r["date"] for r in rows)}
+
+    def sox():
+        old = read_csv(base, "SOX")
+        new = fetch_sox(f)
+        # 規格 3.2:單日流通股數變動 > 30% → 可疑,不採用(保留前一筆)
+        last = {}
+        for r in old:
+            if r["date"] < new[0]["date"]:
+                last[r["ticker"]] = r
+        keep = []
+        for r in new:
+            o = last.get(r["ticker"])
+            if o and num(o["shares"]) and abs(r["shares"] / num(o["shares"]) - 1) * 100 > LEV_CFG["etf_suspect_move"]:
+                warn.append("SOX %s %s 流通股數 %s → %s 變動 > 30%%,不採用" % (r["ticker"], r["date"], o["shares"], r["shares"]))
+                continue
+            keep.append(r)
+        rows, n = merge(old, keep, "key", today, warn, "shares")
+        write_csv(base, "SOX", rows)
+        return {"rows": len(rows), "added": n, "last": max(r["date"] for r in rows) if rows else None}
+
     run("US", us)
+    run("ETF", etf)
+    run("SOX", sox)
     run("JP", jp)
     run("JP_MCAP", jp_mcap)
     run("KR", kr)
@@ -592,7 +834,7 @@ def main(argv):
     out["warnings"] = warn[:30]
     with open(os.path.join(base, LATEST), "w", encoding="utf-8") as fh:
         json.dump(out, fh, ensure_ascii=False, indent=1)
-    for k in ("US_FINRA", "JP", "KR"):
+    for k in ("US_FINRA", "US_ETF", "US_SOX", "JP", "KR"):
         c = out[k]
         print(k, c.get("asOf"), "value", c.get("value"), "pctl", c.get("pctl"), "n", c.get("n_hist"), "zone", c.get("zone"),
               "vote", c.get("vote"), c.get("note") or "")

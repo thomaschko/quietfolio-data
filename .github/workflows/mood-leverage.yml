@@ -1,6 +1,6 @@
 name: Mood leverage (市場氛圍 國際槓桿資金)
 
-# 2026-11-25 市場氛圍擴充 Phase 2:FINRA(美)/ JPX(日)/ KOFIA(韓)融資餘額 → leverage_hist/*.csv、leverage_latest.json。
+# 2026-11-25 市場氛圍擴充 Phase 2 + 3:FINRA(美)/ JPX(日)/ KOFIA(韓)融資餘額、ProShares / Direxion 槓桿 ETF → leverage_hist/*.csv、leverage_latest.json。
 # 第一次執行(沒有 CSV)自動回補 10 年;之後每天只抓最新。consensus.py(taifex-hist.yml 16:40、margin-share.yml)讀 CSV 併入 consensus.json。
 # PR 上只跑檢查(單元測試 + 真實資料回補 + 核對),不 commit。
 on:
@@ -74,6 +74,22 @@ jobs:
           j, m = jp[-1], [x for x in mc if x["month_end"] <= jp[-1]["date"]][-1]
           print("JP ratio check", j["date"], m["month_end"], round(float(j["buy_myen"]) / float(m["mcap_myen"]) * 100, 4),
                 "card", o["JP"].get("value"), "creditRatio", round(float(j["buy_kshs"]) / float(j["sell_kshs"]), 2))
+          # Phase 3:ETF 多空比獨立重算(最新共同日期)+ AUM ≈ NAV × 股數 核對
+          et = R("ETF")
+          last = max(r["date"] for r in et)
+          day = {r["ticker"]: r for r in et if r["date"] == last}
+          a = lambda t: float(day[t]["aum"])
+          print("ETF rows", len(et), "first", min(r["date"] for r in et), "last", last, sorted(day))
+          print("ETF ratio check", last, round((a("TQQQ") + a("UPRO")) / sum(a(t) for t in ("TQQQ", "UPRO", "SQQQ", "SPXU")) * 100, 3),
+                "card", o["US_ETF"].get("value"), o["US_ETF"].get("asOf"))
+          for t, r in sorted(day.items()):
+              print("   ", t, "NAV", r["nav"], "shares(000)", r["shares_k"], "AUM", r["aum"],
+                    "NAV×shares/AUM", round(float(r["nav"]) * float(r["shares_k"]) * 1000 / float(r["aum"]), 4))
+          print("SOX rows", R("SOX"))
+          for k in ("US_ETF", "US_SOX"):
+              c = dict(o[k]); c.pop("spark", None)
+              print(k, json.dumps(c, ensure_ascii=False))
+          print("US_composite", o["US_composite"])
           PY
 
       - name: Consensus integration (不寫檔)
