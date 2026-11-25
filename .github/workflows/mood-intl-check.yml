@@ -1,0 +1,100 @@
+name: Mood intl MACD check (市場氛圍 國際 MACD 檢查)
+
+# 2026-11-25 市場氛圍擴充 Phase 1:PR 上用 Yahoo 真實資料跑一次 mood_intl.py,印出各指數各週期的 DIF% / 分位 / 狀態 / 投票,
+# 以及 consensus.py 整合後的整體標籤。只印不 commit(正式產出由 taifex-hist.yml、margin-share.yml 的 consensus.py 產生)。
+on:
+  pull_request:
+    paths:
+      - mood_intl.py
+      - consensus.py
+      - test_mood_intl.py
+      - .github/workflows/mood-intl-check.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests pytest pandas
+      - name: Unit tests
+        run: python -m pytest -q test_mood_intl.py test_consensus_core.py
+      - name: Real data
+        run: |
+          python mood_intl.py
+          python - <<'PY'
+          import json, mood_intl as M
+          o = M.build()
+          for sym, e in o["symbols"].items():
+              for iv, x in e["intervals"].items():
+                  if x.get("ok"):
+                      st = (x.get("extremeStats") or {})
+                      print(sym, iv, x["date"], "close", x["close"], "DIF", x["dif"], "DEA", x["dea"], "HIST", x["hist"],
+                            "DIF%", x["difPct"], "pctl", x["pctl"], "n", x["n_hist"], x["zone"], x["state"],
+                            "prov" if x["provisional"] else "", "hot_n", st.get("hot", {}).get("n"), "cold_n", st.get("cold", {}).get("n"))
+                  else:
+                      print(sym, iv, "FAIL", x.get("error"))
+          for sym, e in o["symbols"].items():
+              print("FLAGS", sym, "suspect", e.get("suspect"), "trimmed", e.get("intraday_trimmed"), "incomplete", e.get("incomplete"),
+                    "lastClosed", (e["intervals"].get("1wk") or {}).get("lastClosed"))
+          print("size", len(json.dumps(o, ensure_ascii=False, separators=(",", ":"))))
+          PY
+      - name: Verify (官方收盤比對 + 獨立 MACD 重算)
+        run: |
+          python - <<'PY'
+          import datetime as dt, requests, pandas as pd, mood_intl as M
+          s = requests.Session()
+          off = M.official_twse_closes()
+          rows, _ = M.fetch_chart(s, "^TWII", "1d")
+          y = dict(rows)
+          common = sorted(set(y) & set(off))[-250:]
+          diffs = [abs(y[d] / off[d] - 1) * 100 for d in common]
+          print("TWII daily vs official: n", len(common), "max diff %", round(max(diffs), 4), "days > 0.1%:",
+                [d for d in common if abs(y[d] / off[d] - 1) * 100 > 0.1][:10])
+          # 週線收盤 = 官方該週最後一個交易日收盤
+          wk, _ = M.fetch_chart(s, "^TWII", "1wk")
+          last = {}
+          for d in sorted(off):
+              last[M.week_key(d)] = off[d]
+          wd = [(d, c, last.get(M.week_key(d))) for d, c in wk[-30:] if M.week_key(d) in last]
+          print("TWII weekly vs official last-day close: n", len(wd), "max diff %",
+                round(max(abs(c / o - 1) * 100 for _, c, o in wd), 4))
+          # 獨立實作:pandas ewm(adjust=False)
+          for sym, *_ in M.SYMBOLS:
+              r, _ = M.fetch_chart(s, sym, "1wk")
+              cl = pd.Series([c for _, c in r])
+              dif = cl.ewm(span=12, adjust=False).mean() - cl.ewm(span=26, adjust=False).mean()
+              dea = dif.ewm(span=9, adjust=False).mean()
+              a, b, h = M.macd(list(cl))
+              print("MACD", sym, r[-1][0], "pandas DIF %.3f DEA %.3f HIST %.3f" % (dif.iloc[-1], dea.iloc[-1], dif.iloc[-1] - dea.iloc[-1]),
+                    "| ours %.3f %.3f %.3f" % (a[-1], b[-1], h[-1]),
+                    "| max abs diff over all bars %.2e" % max(abs(dif - pd.Series(a)).max(), abs(dea - pd.Series(b)).max()))
+              # 不同起始值(TradingView 等以 SMA 起始)的影響:前 26 根改 SMA 起始,看最後一根差多少
+              sma_seed = cl.copy(); 
+              f = cl.ewm(span=12, adjust=False).mean(); 
+              e12 = [None]*len(cl); e26 = [None]*len(cl)
+              e12[11] = cl[:12].mean(); e26[25] = cl[:26].mean()
+              for i in range(12, len(cl)): e12[i] = e12[i-1] + 2/13 * (cl[i] - e12[i-1])
+              for i in range(26, len(cl)): e26[i] = e26[i-1] + 2/27 * (cl[i] - e26[i-1])
+              dif2 = e12[-1] - e26[-1]
+              print("   SMA-seed DIF %.3f (vs ours %.3f, diff %.4f%%)" % (dif2, a[-1], abs(dif2 - a[-1]) / max(abs(a[-1]), 1e-9) * 100))
+          PY
+      - name: Consensus integration (不寫檔)
+        run: |
+          python - <<'PY'
+          import consensus as C
+          out = C.build()
+          m = out["mood"]
+          print("label", m["label"], "hot", m["hot"], "cold", m["cold"])
+          for it in m.get("vote_items", []):
+              print(" ", it["key"], it["label"], it.get("zone"))
+          import json
+          print("consensus size", len(json.dumps(out, ensure_ascii=False, separators=(",", ":"))))
+          PY
