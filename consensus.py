@@ -334,10 +334,17 @@ def add_intl_macd(m, base=".", builder=None):
     m["macd"] = mi
     v = mi.get("votes") or {}
     items = [{"key": x["key"], "label": x["label"], "zone": x["zone"]} for x in m["indicators"] if x["dir"] != 0]
-    items.append({"key": "tw_macd", "label": "台股 MACD(加權 週線)", "zone": v.get("twMacd"), "note": v.get("twMacd_note")})
-    items.append({"key": "intl_macd", "label": "國際 MACD(費半 / S&P / 日經 / 韓綜 週線 ≥ 3 同邊)", "zone": v.get("intlMacd")})
+    tw = {"key": "tw_macd", "label": "台股 MACD(加權 最近一根已收定週線)", "zone": v.get("twMacd"), "note": v.get("twMacd_note")}
+    # 2026-11-25 審查 F2:台股 MACD 與「加權指數 距 20 日高點」都來自台股近期價格 → 同邊時合併為一票,不重複計算
+    dd = next((x for x in items if x["key"] == "drawdown"), None)
+    if tw["zone"] and dd and dd["zone"] == tw["zone"]:
+        tw["merged_with"] = "drawdown"
+        tw["note"] = "與「加權指數 距 20 日高點」同向,合併為一票"
+    items.append(tw)
+    items.append({"key": "intl_macd", "label": "國際 MACD(美 / 日 / 韓 週線 ≥ 2 同邊;美 = 費半 + S&P 合成)",
+                  "zone": v.get("intlMacd")})
     m["vote_items"] = items
-    m["label"], m["hot"], m["cold"] = cc.mood_label([x["zone"] for x in items])
+    m["label"], m["hot"], m["cold"] = cc.mood_label([None if x.get("merged_with") else x["zone"] for x in items])
     return m
 
 

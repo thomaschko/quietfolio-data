@@ -164,5 +164,85 @@ class TestBuild(unittest.TestCase):
         self.assertEqual(m["label"], "中性")
 
 
+class TestAuditFixes(unittest.TestCase):
+    """2026-11-25 審查 F1–F8"""
+
+    def test_us_composite_four_cases(self):
+        self.assertEqual(M.us_composite("hot", "hot"), "hot")       # 同邊
+        self.assertEqual(M.us_composite("cold", None), "cold")      # 一邊極端、另一邊正常
+        self.assertIsNone(M.us_composite("hot", "cold"))           # 方向相反
+        self.assertIsNone(M.us_composite(None, None))
+
+    def test_votes_rules(self):
+        today = dt.date(2026, 11, 25)
+        mk = lambda z, d="2026-11-16", **kw: dict({"intervals": {"1wk": dict({"ok": True, "date": "2026-11-23", "zone": "hot",
+                                                                              "lastClosed": {"date": d, "zone": z}}, **kw)}})
+        b = {"^TWII": mk("cold"), "^SOX": mk("cold"), "^GSPC": mk(None), "^N225": mk(None), "^KS11": mk("cold")}
+        v = M.votes(b, today)
+        self.assertEqual(v["twMacd"], "cold")                      # 用已收定那根(cold),不是本週即時(hot)
+        self.assertEqual(v["intlMacd"], "cold")                    # 美(合成 cold)+ 韓 cold = 2
+        b["^KS11"] = mk("cold", fetch_failed="HTTP 503")
+        v = M.votes(b, today)
+        self.assertIsNone(v["intlMacd"])                           # F8:抓取失敗不投票
+        self.assertEqual(v["intlMacd_detail"]["^KS11"]["note"], "抓取失敗")
+        b["^TWII"]["suspect"] = [{"date": "2026-11-18", "chg": 9.0}]
+        v = M.votes(b, today)
+        self.assertIsNone(v["twMacd"])                             # F7:投票那週有可疑資料
+        self.assertEqual(v["twMacd_note"], "資料可疑")
+
+    def test_trim_intraday(self):
+        # 美東 10:20(台北 23:20):今天的日線是盤中價 → 丟掉;週線最後一根改用前一日收盤
+        off = -5 * 3600
+        now = dt.datetime(2026, 11, 25, 15, 20, tzinfo=dt.timezone.utc)
+        raw = {("^SOX", "1d"): ([("2026-11-23", 100.0), ("2026-11-24", 101.0), ("2026-11-25", 120.0)], off),
+               ("^SOX", "1wk"): ([("2026-11-16", 90.0), ("2026-11-23", 120.0)], off),
+               ("^SOX", "1mo"): ([("2026-10-01", 80.0), ("2026-11-01", 120.0)], off)}
+        self.assertTrue(M.trim_intraday(raw, "^SOX", now, 1600))
+        self.assertEqual(raw[("^SOX", "1d")][0][-1], ("2026-11-24", 101.0))
+        self.assertEqual(raw[("^SOX", "1wk")][0][-1], ("2026-11-23", 101.0))
+        self.assertEqual(raw[("^SOX", "1mo")][0][-1], ("2026-11-01", 101.0))
+        # 收盤後不修剪
+        raw2 = {("^SOX", "1d"): ([("2026-11-25", 120.0)], off)}
+        self.assertFalse(M.trim_intraday(raw2, "^SOX", now.replace(hour=22), 1600))
+        # 新的一週只有今天盤中 → 週線最後一根丟掉
+        raw3 = {("^SOX", "1d"): ([("2026-11-27", 100.0), ("2026-11-30", 130.0)], off),
+                ("^SOX", "1wk"): ([("2026-11-23", 100.0), ("2026-11-30", 130.0)], off)}
+        self.assertTrue(M.trim_intraday(raw3, "^SOX", dt.datetime(2026, 11, 30, 15, 0, tzinfo=dt.timezone.utc), 1600))
+        self.assertEqual(raw3[("^SOX", "1wk")][0], [("2026-11-23", 100.0)])
+
+    def test_suspect_days(self):
+        rows = [("2026-11-20", 100.0), ("2026-11-23", 100.0), ("2026-11-24", 109.0), ("2026-11-25", 110.0)]
+        self.assertEqual(M.suspect_days(rows), [{"date": "2026-11-24", "chg": 9.0}])
+
+    def test_tw_window_lag(self):
+        keys = ["2026-11-20", "2026-11-23", "2026-11-24"]
+        closes = [100.0, 110.0, 121.0]
+        self.assertAlmostEqual(M.tw_window(keys, closes, "2026-11-20", 1, lag=False), 0.10)
+        self.assertAlmostEqual(M.tw_window(keys, closes, "2026-11-20", 1, lag=True), 121 / 110 - 1)   # 從下一個台股交易日起算
+        self.assertIsNone(M.tw_window(keys, closes, "2026-11-24", 1, lag=True))
+
+    def test_base_and_last_closed(self):
+        rows = series(300)
+        now = dt.datetime(2030, 1, 1)
+        a = M.analyze(rows, "1wk", rows, now, 1330)
+        self.assertIn("base", a["extremeStats"])
+        self.assertEqual(a["extremeStats"]["base"]["n4"], 300 - 35 - 4)
+        self.assertEqual(a["lastClosed"]["date"], rows[-1][0])           # 已收定 → 最後一根
+        prov_now = dt.date.fromisoformat(rows[-1][0])
+        b = M.analyze(rows, "1wk", rows, dt.datetime(prov_now.year, prov_now.month, prov_now.day, 9, 0), 1330)
+        self.assertTrue(b["provisional"])
+        self.assertEqual(b["lastClosed"]["date"], rows[-2][0])           # 未收定 → 前一根
+
+    def test_tw_macd_merged_with_drawdown(self):
+        m = {"label": "中性", "hot": 0, "cold": 0, "indicators": [
+            {"key": "drawdown", "label": "距高點", "dir": 1, "zone": "cold"},
+            {"key": "breadth5", "label": "上漲家數", "dir": 1, "zone": "cold"}]}
+        mi = {"votes": {"twMacd": "cold", "intlMacd": None}, "symbols": {}}
+        C.add_intl_macd(m, base="/nonexistent", builder=lambda prev=None: mi)
+        self.assertEqual(m["cold"], 2)                             # 台股 MACD 與距高點同向 → 合併,只算 2 項
+        self.assertEqual(m["label"], "中性")
+        self.assertEqual(m["vote_items"][-2]["merged_with"], "drawdown")
+
+
 if __name__ == "__main__":
     unittest.main()
