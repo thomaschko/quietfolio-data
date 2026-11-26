@@ -269,6 +269,31 @@ def backtest(rows, cfg=FP_CONFIG):
             base["avgRet%d" % h] = round(sum(rs) / len(rs), 2)
             base["n%d" % h] = len(rs)
     out["_all"] = base
+    # 2026-11-26 依分數分組(目前 7 成以上是「分歧」,標籤回測資訊量少):≤ −門檻 / 中間 / ≥ +門檻
+    t = cfg["vote_threshold"]
+    groups = {"le": lambda s: s <= -t, "mid": lambda s: -t < s < t, "ge": lambda s: s >= t}
+    by = {}
+    for g, fn in groups.items():
+        s = {}
+        for h in cfg["bt_horizons"]:
+            rs = [r["ret%d" % h] for r in rows if r.get("score") is not None and fn(r["score"]) and r.get("ret%d" % h) is not None]
+            s["n%d" % h] = len(rs)
+            if len(rs) >= cfg["bt_min_n"]:
+                s["winRate%d" % h] = round(sum(1 for x in rs if x > 0) / len(rs) * 100, 1)
+                s["avgRet%d" % h] = round(sum(rs) / len(rs), 2)
+        s["status"] = "ok" if max(s.get("n%d" % h, 0) for h in cfg["bt_horizons"]) >= cfg["bt_min_n"] else "樣本不足"
+        by[g] = s
+    out["_byScore"] = by
+    # 各小票單獨回測(T+20),檢查哪一票有用
+    comp = {}
+    for k in ("v_fut", "v_spot", "v_opt", "v_retail"):
+        comp[k] = {}
+        for v in (-1, 0, 1):
+            rs = [r["ret20"] for r in rows if r.get(k) == v and r.get("ret20") is not None]
+            comp[k][str(v)] = {"n": len(rs), "winRate20": round(sum(1 for x in rs if x > 0) / len(rs) * 100, 1)
+                               if len(rs) >= cfg["bt_min_n"] else None,
+                               "avgRet20": round(sum(rs) / len(rs), 2) if len(rs) >= cfg["bt_min_n"] else None}
+    out["_byVote"] = comp
     return out
 
 
@@ -299,6 +324,18 @@ def diverge_detail(r):
     if pos and neg:
         return "%s偏多、%s偏空" % ("、".join(pos), "、".join(neg))
     return "條件未同時成立(%s)" % "、".join("%s%s" % (k, "+" if v > 0 else "−" if v < 0 else "0") for k, v in sides.items())
+
+
+def vote_notes(comp):
+    """各小票的回測是否「方向一致」:−1 之後 T+20 報酬低於 +1 之後才算有用;樣本不足不判斷"""
+    out = {}
+    for k, d in comp.items():
+        a, b = d.get("-1") or {}, d.get("1") or {}
+        if a.get("avgRet20") is None or b.get("avgRet20") is None:
+            out[k] = "樣本不足"
+        else:
+            out[k] = "方向一致" if a["avgRet20"] < b["avgRet20"] else "近一年回測方向相反"
+    return out
 
 
 def r1(x, n=0):
@@ -344,6 +381,8 @@ def payload(rows, cfg=FP_CONFIG):
         "caveats": caveats,
         "backtest": dict(cur_bt, label=lab),
         "backtestAll": bt,
+        "backtestByScore": bt.get("_byScore"), "backtestBase": bt.get("_all"),
+        "voteNotes": vote_notes(bt.get("_byVote") or {}),
         "spark": [x.get("score") for x in rows[-60:]],
         "history_days": sum(1 for x in rows if x.get("label")),
         "cfg": {k: FP_CONFIG[k] for k in ("vote_threshold", "arb_ratio", "basis_pct", "hedge_pct", "dF5_bear_pct",
