@@ -168,3 +168,14 @@ def test_fp_fetch_run_no_fill_on_missing(tmp_path):
     hold = FF.read(str(tmp_path / "fp_data" / "foreign_hold.csv"))
     assert list(spot) == ["2026-11-25"]                          # 沒資料的日子不寫、不補
     assert hold["2026-11-25"]["value"] == "120000" and "2026-10-30" in hold
+
+
+def test_backtest_by_score_and_vote_notes():
+    rows = ([{"label": "DIVERGE", "score": -3, "ret5": -1.0, "ret20": -2.0, "v_fut": -1, "v_retail": 1}] * 35
+            + [{"label": "DIVERGE", "score": 0, "ret5": 1.0, "ret20": 1.0, "v_fut": 0, "v_retail": 0}] * 35
+            + [{"label": "DIVERGE", "score": 3, "ret5": 2.0, "ret20": 5.0, "v_fut": 1, "v_retail": -1}] * 35)
+    bt = F.backtest(rows)
+    by = bt["_byScore"]
+    assert by["le"]["winRate20"] == 0.0 and by["ge"]["avgRet20"] == 5.0 and by["mid"]["n20"] == 35
+    notes = F.vote_notes(bt["_byVote"])
+    assert notes["v_fut"] == "方向一致" and notes["v_retail"] == "近一年回測方向相反" and notes["v_spot"] == "樣本不足"
