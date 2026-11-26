@@ -63,7 +63,36 @@ class TestParse(unittest.TestCase):
         self.assertEqual(r[1], ("2026-10-05", "TMF", "外資及陸資", "5000", "8000", "-3000", "-1500000", "-1000"))
 
     def test_opt_inst(self):
-        self.assertEqual(T.parse_opt_inst(OPT_INST)[0], ("2026-10-05", "CALL", "外資及陸資", "29248", "20486", "8762", "573696"))
+        self.assertEqual(T.parse_opt_inst(OPT_INST)[0], ("2026-10-05", "CALL", "外資及陸資", "29248", "20486", "8762", "573696",
+                                                         "1936557", "1362861"))
+
+    def test_fut_px_near_month_settle(self):
+        # 近月 = 一般時段、非價差、月份最小且有結算價;盤後(結算價 -)與價差列不算
+        self.assertEqual(T.parse_fut_px(FUT_DATA, "TMF"), [("2026-10-05", "TMF", "202610", "49954", "49944")])
+
+    def test_fut_px_skips_zero_settle_on_expiry_day(self):
+        txt = FUT_DATA.splitlines()[0] + "\n" + "2026/11/18,TX,202611  ,1,1,1,40100,0,0%,10,0,0,0,0,0,0,,一般,,\n" \
+            + "2026/11/18,TX,202612  ,1,1,1,40150,0,0%,10,40160,1000,0,0,0,0,,一般,,\n"
+        self.assertEqual(T.parse_fut_px(txt, "TX"), [("2026-11-18", "TX", "202612", "40150", "40160")])
+
+    def test_schema_change_resets_progress(self):
+        import tempfile, os, json
+        d = tempfile.mkdtemp()
+        with open(os.path.join(d, "opt_inst.csv"), "w", encoding="utf-8") as f:
+            f.write("date,cp,who,long_oi,short_oi,net_oi,net_oi_k\n2026-10-05,CALL,外資及陸資,1,2,-1,5\n")
+        with open(os.path.join(d, "progress.json"), "w", encoding="utf-8") as f:
+            json.dump({"done": {"opt_inst": ["2026-10"]}, "runs": []}, f)
+
+        class H:
+            count = net_retries = 0
+
+            def post_csv(self, url, form):
+                raise T.Blocked("stop")
+        code, log = T.run(H(), d, today=__import__("datetime").date(2026, 10, 31))
+        assert "opt_inst" in log["schema_reset"]
+        # 舊列讀得進來(新欄位空白),不會 KeyError
+        rows = T.read_csv(os.path.join(d, "opt_inst.csv"))
+        assert rows[0]["long_oi"] == "1"
 
     def test_fut_oi_sums_regular_session_months_only(self):
         self.assertEqual(T.parse_fut_oi(FUT_DATA, "TMF"), [("2026-10-05", "TMF", "69259")])   # 盤後、價差列不算

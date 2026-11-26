@@ -53,6 +53,7 @@ DATASETS = [
     ("fut_inst", "futContractsDateDown", "commodityId", ["TXF", "MXF", "TMF"]),
     ("opt_inst", "callsAndPutsDateDown", "commodityId", ["TXO"]),
     ("fut_oi", "futDataDown", "commodity_id", ["TX", "MTX", "TMF"]),
+    ("fut_px", "futDataDown", "commodity_id", ["TX"]),    # 2026-11-26 外資期權判讀:台指期近月結算價(基差)
     ("pcr", "pcRatioDown", None, [None]),
     ("large", "largeTraderFutDown", None, [None]),
 ]
@@ -60,7 +61,8 @@ FUT_CODE = {"TXF": "TX", "MXF": "MTX", "TMF": "TMF"}
 LARGE_KEEP = {"TX", "MTX", "TMF"}
 HEADERS = {
     "fut_inst": (["date", "contract", "who", "long_oi", "short_oi", "net_oi", "net_oi_k", "net_trade"], ["date", "contract", "who"]),
-    "opt_inst": (["date", "cp", "who", "long_oi", "short_oi", "net_oi", "net_oi_k"], ["date", "cp", "who"]),
+    "opt_inst": (["date", "cp", "who", "long_oi", "short_oi", "net_oi", "net_oi_k", "long_oi_k", "short_oi_k"], ["date", "cp", "who"]),
+    "fut_px": (["date", "contract", "month", "close", "settle"], ["date", "contract"]),
     "fut_oi": (["date", "contract", "total_oi"], ["date", "contract"]),
     "pcr": (["date", "put_vol", "call_vol", "pc_vol_pct", "put_oi", "call_oi", "pc_oi_pct"], ["date"]),
     "large": (["date", "contract", "month", "trader_type", "top5_buy", "top5_sell", "top10_buy", "top10_sell", "market_oi"],
@@ -197,8 +199,25 @@ def parse_fut_inst(text, commodity):
 
 
 def parse_opt_inst(text, commodity=None):
-    return [(iso(r[0]), r[2].upper(), r[3], _f(num(r[10])), _f(num(r[12])), _f(num(r[14])), _f(num(r[15])))
+    """2026-11-26 加存買方 / 賣方未平倉契約金額(千元,第 11、13 欄)→ 外資期權判讀的平均權利金"""
+    return [(iso(r[0]), r[2].upper(), r[3], _f(num(r[10])), _f(num(r[12])), _f(num(r[14])), _f(num(r[15])),
+             _f(num(r[11])), _f(num(r[13])))
             for r in rows_of(text) if len(r) >= 16]
+
+
+def parse_fut_px(text, commodity):
+    """futDataDown → 每日近月(一般時段、非價差、月份 YYYYMM 最小且有結算價)的收盤與結算價"""
+    best = {}
+    for r in rows_of(text):
+        if len(r) < 18 or r[1] != commodity or r[17] != "一般" or not re.fullmatch(r"\d{6}", r[2]):
+            continue
+        st = num(r[10])
+        if not st or st <= 0:            # 2026-11-26 驗證:結算日(第三個週三)到期月份結算價欄為 0 → 改用次月
+            continue
+        d = iso(r[0])
+        if d not in best or r[2] < best[d][0]:
+            best[d] = (r[2], num(r[6]), st)
+    return [(d, commodity, m, _f(c), _f(st)) for d, (m, c, st) in sorted(best.items())]
 
 
 def parse_fut_oi(text, commodity):
@@ -234,7 +253,8 @@ def drop_unpublished(rows, first_num=3):
     return [r for r in rows if r[0] not in bad], sorted(bad)
 
 
-PARSERS = {"fut_inst": parse_fut_inst, "opt_inst": parse_opt_inst, "fut_oi": parse_fut_oi, "pcr": parse_pcr, "large": parse_large}
+PARSERS = {"fut_inst": parse_fut_inst, "opt_inst": parse_opt_inst, "fut_oi": parse_fut_oi, "fut_px": parse_fut_px,
+           "pcr": parse_pcr, "large": parse_large}
 
 
 # ------------------------------------------------------------------ 儲存
@@ -247,7 +267,7 @@ def read_csv(path):
 
 def merge_csv(path, header, keys, rows, drop_dates=()):
     drop = set(drop_dates)
-    m = {tuple(r[k] for k in keys): [r[h] for h in header] for r in read_csv(path) if r["date"] not in drop}
+    m = {tuple(r[k] for k in keys): [r.get(h) or "" for h in header] for r in read_csv(path) if r["date"] not in drop}
     idx = [header.index(k) for k in keys]
     for r in rows:
         r = [str(x) for x in r]
@@ -298,6 +318,15 @@ def run(http=None, out_dir=OUT_DIR, today=None, max_months=None, now=None):
     except (OSError, ValueError):
         prog = {"done": {}, "runs": []}
     log = {"started": dt.datetime.now(TPE).isoformat(timespec="seconds"), "fetched": [], "rows": {}}
+    # 2026-11-26:CSV 欄位有新增(例如 opt_inst 加金額)→ 該資料集全部月份重抓
+    for ds, (header, _) in HEADERS.items():
+        p = os.path.join(out_dir, ds + ".csv")
+        if os.path.exists(p):
+            with open(p, encoding="utf-8") as f:
+                have = next(csv.reader(f), [])
+            if have and have != header:
+                prog["done"][ds] = []
+                log.setdefault("schema_reset", []).append(ds)
     ms = months(START, today)
     recent = set(ms[-2:])            # 本月、上月每次重抓(月中資料會增加)
     code = 0
@@ -318,7 +347,7 @@ def run(http=None, out_dir=OUT_DIR, today=None, max_months=None, now=None):
                 try:
                     for v in values:
                         form = {"queryStartDate": a.strftime("%Y/%m/%d"), "queryEndDate": b.strftime("%Y/%m/%d")}
-                        if ds == "fut_oi":
+                        if ds in ("fut_oi", "fut_px"):
                             form["down_type"] = "1"
                         if pname:
                             form[pname] = v

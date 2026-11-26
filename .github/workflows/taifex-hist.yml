@@ -36,6 +36,12 @@ jobs:
           python taifex_hist.py
           echo "rc=$?" >> "$GITHUB_OUTPUT"
 
+      - name: FP data (外資現貨 BFI82U / 持股 MI_QFIIS)
+        if: always()
+        continue-on-error: true
+        timeout-minutes: 30
+        run: python fp_fetch.py
+
       - name: Consensus (共識頁)
         if: always()
         continue-on-error: true
@@ -48,6 +54,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           [ -d taifex_hist ] && git add taifex_hist
           [ -f consensus.json ] && git add consensus.json
+          [ -d fp_data ] && git add fp_data
+          [ -f fp_history.csv ] && git add fp_history.csv
           if git diff --cached --quiet; then echo "沒有變更"; else
             git commit -q -m "TAIFEX history update (rc=${{ steps.fetch.outputs.rc }})"
             ok=0
