@@ -20,6 +20,7 @@ import sys
 import consensus_core as cc
 import mood_intl
 import mood_leverage
+import foreign_positioning
 import margin_backfill as mb
 import margin_share_core as ms
 
@@ -349,6 +350,26 @@ def add_intl_macd(m, base=".", builder=None):
     return m
 
 
+def add_foreign_positioning(m, base="."):
+    """外資期權綜合判讀(foreign_positioning.py):卡片 + 1 票(分數 ≤ −2 → 偏熱邊、≥ +2 → 過度看空邊)。失敗只記錄。"""
+    try:
+        fp, _ = foreign_positioning.compute(base)
+    except Exception as e:                       # noqa: BLE001
+        print("外資期權判讀失敗:%r" % e)
+        return m
+    m["foreignPositioning"] = fp
+    items = m.get("vote_items")
+    if items is None:
+        items = [{"key": x["key"], "label": x["label"], "zone": x["zone"]} for x in m["indicators"] if x["dir"] != 0]
+    items = [x for x in items if x["key"] != "foreign_pos"]
+    t = foreign_positioning.FP_CONFIG["vote_threshold"]
+    items.append({"key": "foreign_pos", "label": "外資期權判讀(分數 ≤ −%d → 偏熱邊、≥ +%d → 過度看空邊)" % (t, t),
+                  "zone": fp.get("vote_zone"), "note": None if fp.get("label") else "資料缺"})
+    m["vote_items"] = items
+    m["label"], m["hot"], m["cold"] = cc.mood_label([None if x.get("merged_with") else x["zone"] for x in items])
+    return m
+
+
 def add_leverage(m, base=".", today=None):
     """Phase 2:美 / 日 / 韓 槓桿資金(mood_leverage.py 每日更新 leverage_hist/*.csv;這裡只讀檔,以今天日期重判過期)。
     「國際槓桿」1 票 = 有效市場中 ≥ 2 個同邊。失敗只記錄,不影響原本指標。"""
@@ -389,6 +410,7 @@ def build(base="."):
     out["mood"] = mood(margin, index, taifex, insti, cls)
     add_intl_macd(out["mood"], base)
     add_leverage(out["mood"], base)
+    add_foreign_positioning(out["mood"], base)
     sr = stock_rows(margin, insti, cls, chips, cfg["window"])
     if sr:
         out["window"] = {"t": sr["t"], "t0": sr["t0"], "days": sr["days"]}

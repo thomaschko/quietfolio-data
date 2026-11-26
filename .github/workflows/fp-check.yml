@@ -1,0 +1,59 @@
+name: Foreign positioning check (外資期權判讀 檢查)
+
+# 2026-11-26 外資期權綜合判讀:PR 上用真實資料跑一次(期交所回補選擇權金額與結算價、TWSE 回補外資現貨與持股),
+# 印出驗收要求的版本、3 個歷史日期原始數字、各標籤歷史分布與回測。只印不 commit(正式產出由 taifex-hist.yml)。
+on:
+  pull_request:
+    paths:
+      - foreign_positioning.py
+      - fp_fetch.py
+      - taifex_hist.py
+      - test_foreign_positioning.py
+      - .github/workflows/fp-check.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests pytest
+      - name: Unit tests
+        run: python -m pytest -q test_foreign_positioning.py test_taifex_hist.py test_consensus_core.py test_mood_leverage.py
+      - name: TAIFEX backfill (選擇權金額、近月結算價)
+        run: python taifex_hist.py || true
+      - name: TWSE backfill (BFI82U、MI_QFIIS)
+        run: python fp_fetch.py || true
+      - name: Report
+        run: |
+          python foreign_positioning.py 2026-11-25 2026-07-15 2026-03-16 2026-11-18
+          python - <<'PY'
+          import csv
+          rows = list(csv.DictReader(open("fp_history.csv", encoding="utf-8")))
+          print("fp_history rows", len(rows))
+          for r in rows[-12:]:
+              print({k: r[k] for k in ("date", "F_net", "F_dir", "arb_ratio", "C_net", "P_net", "opt_dir", "spot_5d", "basis",
+                                       "hedge_ratio", "dF_5d_pct", "label", "score")})
+          import collections
+          print("label counts", collections.Counter(r["label"] for r in rows))
+          PY
+      - name: Consensus integration (不寫檔)
+        run: |
+          python - <<'PY'
+          import json, consensus as C
+          out = C.build()
+          m = out["mood"]
+          print("label", m["label"], m["hot"], m["cold"])
+          for it in m["vote_items"]:
+              print(" ", it["key"], it.get("zone"))
+          fp = m.get("foreignPositioning") or {}
+          print("FP", json.dumps({k: fp.get(k) for k in ("date", "label", "labelZh", "score", "votes", "vote_zone", "reasons", "diverge", "backtest")}, ensure_ascii=False))
+          print("consensus size", len(json.dumps(out, ensure_ascii=False, separators=(",", ":"))))
+          PY
