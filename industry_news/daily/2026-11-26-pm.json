@@ -2,109 +2,74 @@
  "date": "2026-11-26",
  "edition": "pm",
  "label": "晚報",
- "n_excluded": 16,
- "generated_at": "2026-11-26 03:52:18",
- "n_sources": 50,
+ "n_excluded": 90,
+ "generated_at": "2026-11-26 17:59:09",
+ "n_sources": 51,
  "n_sources_total": 53,
- "n_titles": 2511,
+ "n_titles": 2412,
  "n_relevant": 750,
  "provider": "groq:qwen3.8-27b",
  "fallback": false,
- "overview": "輝達CEO黃仁勳重掌公司，緩解HBM供應不確定性並帶動相關供應鏈信心。記憶體市場出現分歧，高盛預警2028年價格下跌，但短期內DRAM合約價仍因供需緊繃而看漲。光通訊領域聚焦1.6T模組缺貨，核心瓶頸在於InP雷射與DSP晶片，矽光子與CPO技術成為AI基建新焦點。",
+ "overview": "華為發表5層混合鍵合HBM技術挑戰韓廠，引發記憶體與先進封裝產業鏈關注。高盛預警2028年記憶體價格恐跌兩成，但短期內DRAM供需仍緊繃。台積電CoWoS外溢效應帶動封測廠擴產，AI基建持續推動光通訊與電力需求。",
  "sections": [
   {
-   "topic": "AI伺服器",
+   "topic": "記憶體",
    "items": [
     {
-     "headline": "黃仁勳重掌輝達，國安與晶片轉運等6大調查未歇",
+     "headline": "華為開發5層混合鍵合客製化HBM，挑戰三星與SK海力士",
      "titles": [
       {
-       "title": "黃仁勳重掌輝達　國安與晶片轉運等6大調查未歇",
+       "title": "華為新一代HBM曝光：接口寬度是HBM4兩倍，有望挑戰三星、海力士",
        "sources": [
-        "cna",
-        "iek_news"
+        "google_news"
        ]
-      }
-     ],
-     "n_sources": 2,
-     "codes": []
-    },
-    {
-     "headline": "輝達CEO回歸緩解三星、SK海力士HBM不確定性",
-     "titles": [
+      },
       {
-       "title": "Jensen Huang’s return eases HBM uncertainty for Samsung, SK hynix",
+       "title": "華為開發5層混合鍵合客製化HBM，向三星、SK海力士下戰帖",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "先進製程受阻改攻封裝 華為混合鍵合HBM論文引南韓警惕",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "Huawei Develops Custom HBM with 5-Layer Hybrid Bonding, Challenging Samsung and SK Hynix",
        "sources": [
         "google_news_us"
        ]
       },
       {
-       "title": "Jensen Huang Back at NVIDIA, HBM Sold Out | Chip Observer",
+       "title": "Huawei working on five-layer hybrid bonding HBM chip technology",
        "sources": [
         "google_news_us"
        ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "Amazon上修2026資本支出至2200億美元，主因記憶體漲價",
-     "titles": [
+      },
       {
-       "title": "Amazon也上修了2026資本支出從2000億上修到2200億，主要也是記憶體漲價因素。Q2的自由現金流也轉負。AWS的營收成長加速至年增37%，營業利潤年增",
+       "title": "China's Huawei Preparing to Unveil New HBM to Rival Samsung, SK Hynix",
        "sources": [
-        "telegram"
+        "google_news_us"
+       ]
+      },
+      {
+       "title": "Huawei to introduce advanced HBM and mobile chip packaging techs in 2027",
+       "sources": [
+        "google_news_us"
+       ]
+      },
+      {
+       "title": "華為、長鑫放大招！中國晶片論文首次突破100篇：3D堆疊和HBM成焦點",
+       "sources": [
+        "eccn"
        ]
       }
      ],
-     "n_sources": 1,
+     "n_sources": 3,
      "codes": []
     },
-    {
-     "headline": "Marvell上修成長預期，AI動能擴大至交換器與客製化晶片",
-     "titles": [
-      {
-       "title": "Marvell 對未來兩年的成長預期再度明顯上修，而且 AI 成長動能已經從光通訊 DSP，擴大到交換器、scale-up optics、CXL 與客製化晶片。",
-       "sources": [
-        "telegram"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "韓國政府召集Nvidia、AMD、英特爾盤點AI半導體供應鏈",
-     "titles": [
-      {
-       "title": "韓國政府召集Nvidia、AMD、英特爾盤點AI半導體供應鏈，HBM與基板缺料讓中小型IC設計業者「拉警報」",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "晶片戰場隱形冠軍：先進封裝需求背後設備軍備競賽",
-     "titles": [
-      {
-       "title": "晶片戰場的隱形冠軍：先進封裝需求背後，一場決定全球 AI 命脈的設備軍備競賽",
-       "sources": [
-        "technews"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    }
-   ]
-  },
-  {
-   "topic": "記憶體",
-   "items": [
     {
      "headline": "高盛預警2028年DRAM、NAND、HBM價格恐全面下跌兩成",
      "titles": [
@@ -125,7 +90,7 @@
      "codes": []
     },
     {
-     "headline": "三星、SK海力士DRAM合約價2027恐漲4成，供需緊繃",
+     "headline": "三星、SK海力士DRAM合約價2027恐漲4成，供需緊繃未解",
      "titles": [
       {
        "title": "DRAM合約價仍處高檔 研調指供需緊繃態勢未解",
@@ -163,22 +128,47 @@
      "codes": []
     },
     {
-     "headline": "華為研發五層混合鍵合HBM晶片技術",
+     "headline": "鎧俠攜手輝達部署SSD補足HBM容量，切入AI記憶體商機",
      "titles": [
       {
-       "title": "Huawei working on five-layer hybrid bonding HBM chip technology",
+       "title": "鎧俠攜手輝達啟動AI記憶體實證，以SSD補足HBM、股價大漲12%",
        "sources": [
-        "google_news_us"
+        "google_news"
        ]
       },
       {
-       "title": "華為將在 ISSCC 2027 展示五層混合鍵合 HBM、邏輯晶片 3D 堆疊等先進技術",
+       "title": "突破HBM容量限制鎧俠攜手輝達挑戰PB級記憶體| 全球財經| 全球",
        "sources": [
-        "eccn"
+        "google_news"
        ]
       },
       {
-       "title": "Huawei to introduce advanced HBM and mobile chip packaging techs in 2027",
+       "title": "鎧俠攜手Nvidia部署144台SSD，切入HBM空窗搶AI商機",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "突破HBM容量限制 鎧俠攜手輝達挑戰PB級記憶體",
+       "sources": [
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "美光加速新加坡與台灣HBM擴產，三星SK追趕戰添變數",
+     "titles": [
+      {
+       "title": "Micron新加坡HBM產線即將投產，台灣新廠工程停擺…三星、SK追趕戰添變數",
+       "sources": [
+        "google_news"
+       ]
+      },
+      {
+       "title": "Micron accelerates HBM expansion in Singapore and Taiwan",
        "sources": [
         "google_news_us"
        ]
@@ -188,12 +178,31 @@
      "codes": []
     },
     {
-     "headline": "SK海力士HBM混合鍵合設備擬敲定Besi",
+     "headline": "中國晶片論文突破百篇，3D堆疊與HBM成焦點",
      "titles": [
       {
-       "title": "不是韓美也不是韓華 SK海力士HBM混合鍵合設備擬敲定Besi",
+       "title": "China's memory giants have a record year as Huawei ships HBM without a named source",
        "sources": [
-        "google_news"
+        "google_news_us"
+       ]
+      },
+      {
+       "title": "華為、長鑫放大招！中國晶片論文首次突破100篇：3D堆疊和HBM成焦點",
+       "sources": [
+        "eccn"
+       ]
+      }
+     ],
+     "n_sources": 2,
+     "codes": []
+    },
+    {
+     "headline": "三星、SK海力士、美光遭美國集體訴訟，被指操縱DRAM供應",
+     "titles": [
+      {
+       "title": "Samsung, SK hynix, Micron Face U.S. Class-Action Lawsuit Over Alleged DRAM Supply Manipulation",
+       "sources": [
+        "trendforce"
        ]
       }
      ],
@@ -201,33 +210,7 @@
      "codes": []
     },
     {
-     "headline": "Micron新加坡HBM產線即將投產，台灣新廠工程停擺",
-     "titles": [
-      {
-       "title": "Micron新加坡HBM產線即將投產，台灣新廠工程停擺…三星、SK追趕戰添變數",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "記憶體股報價現分歧，DRAM明年續上行NAND恐跌價",
-     "titles": [
-      {
-       "title": "記憶體股漲歸漲報價已現分歧DRAM明年續上行NAND恐現跌價壓力- 日報",
-       "sources": [
-        "google_news"
-       ]
-      }
-     ],
-     "n_sources": 1,
-     "codes": []
-    },
-    {
-     "headline": "DDR4比DDR5貴三成，主導這輪存储涨价",
+     "headline": "DDR4價格高於DDR5三成，主導這輪存储漲價",
      "titles": [
       {
        "title": "DDR4比DDR5贵三成：谁在主导这轮存储涨价？",
@@ -240,7 +223,7 @@
      "codes": []
     },
     {
-     "headline": "DRAM現貨價低密度DDR4和DDR3上漲，市場橫盤",
+     "headline": "DRAM現貨價低密度DDR4與DDR3上漲，市場橫盤",
      "titles": [
       {
        "title": "Memory Spot Price Update: DRAM Spot Prices See Gains in Low-Density DDR4 and DDR3 Amid Sideways Market",
@@ -251,22 +234,74 @@
      ],
      "n_sources": 1,
      "codes": []
+    },
+    {
+     "headline": "記憶體股報價現分歧，DRAM明年續上行，NAND恐跌價",
+     "titles": [
+      {
+       "title": "記憶體股漲歸漲報價已現分歧DRAM明年續上行NAND恐現跌價壓力- 日報",
+       "sources": [
+        "google_news"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "SK海力士HBM開發主管獲選IEEE會士",
+     "titles": [
+      {
+       "title": "SK hynix VP who led HBM development named IEEE fellow",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "黃仁勳回歸緩解三星、SK海力士HBM不確定性",
+     "titles": [
+      {
+       "title": "Jensen Huang’s return eases HBM uncertainty for Samsung, SK hynix",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
+    },
+    {
+     "headline": "南韓晶片業押注新HBM，2035年AI Token效率提升百倍",
+     "titles": [
+      {
+       "title": "South Korea's Chip Sector Bets on 'New HBM' in Bid to Boost AI Token Efficiency 100-Fold by 2035",
+       "sources": [
+        "google_news_us"
+       ]
+      }
+     ],
+     "n_sources": 1,
+     "codes": []
     }
    ]
   }
  ],
  "stats": {
-  "items_kept": 15,
+  "items_kept": 14,
   "items_dropped": 0,
-  "titles_used": 21,
+  "titles_used": 28,
   "titles_sent": 60
  },
  "coverage": [
   {
    "source": "cna",
    "fetched": 40,
-   "sent": 1,
-   "cited": 1
+   "sent": 4,
+   "cited": 0
   },
   {
    "source": "moneydj",
@@ -283,31 +318,31 @@
   {
    "source": "wapeople",
    "fetched": 26,
-   "sent": 2,
+   "sent": 0,
    "cited": 0
   },
   {
    "source": "technews",
-   "fetched": 55,
-   "sent": 8,
-   "cited": 1
+   "fetched": 54,
+   "sent": 4,
+   "cited": 0
   },
   {
    "source": "eetimes",
    "fetched": 12,
-   "sent": 0,
+   "sent": 1,
    "cited": 0
   },
   {
    "source": "trendforce",
    "fetched": 20,
-   "sent": 1,
-   "cited": 1
+   "sent": 4,
+   "cited": 2
   },
   {
    "source": "cnyes_intl",
-   "fetched": 155,
-   "sent": 0,
+   "fetched": 138,
+   "sent": 3,
    "cited": 0
   },
   {
@@ -319,7 +354,7 @@
   {
    "source": "edn",
    "fetched": 20,
-   "sent": 0,
+   "sent": 3,
    "cited": 0
   },
   {
@@ -330,13 +365,13 @@
   },
   {
    "source": "semianalysis",
-   "fetched": 0,
+   "fetched": 1,
    "sent": 0,
    "cited": 0
   },
   {
    "source": "aminext",
-   "fetched": 8,
+   "fetched": 10,
    "sent": 0,
    "cited": 0
   },
@@ -379,12 +414,12 @@
   {
    "source": "jov",
    "fetched": 7,
-   "sent": 1,
+   "sent": 0,
    "cited": 0
   },
   {
    "source": "etime_cn",
-   "fetched": 19,
+   "fetched": 17,
    "sent": 2,
    "cited": 1
   },
@@ -397,13 +432,13 @@
   {
    "source": "iek_news",
    "fetched": 10,
-   "sent": 1,
-   "cited": 1
+   "sent": 0,
+   "cited": 0
   },
   {
    "source": "investor",
-   "fetched": 44,
-   "sent": 0,
+   "fetched": 59,
+   "sent": 1,
    "cited": 0
   },
   {
@@ -414,13 +449,13 @@
   },
   {
    "source": "newtalk_finance",
-   "fetched": 63,
+   "fetched": 58,
    "sent": 0,
    "cited": 0
   },
   {
    "source": "wallstreetcn",
-   "fetched": 60,
+   "fetched": 63,
    "sent": 0,
    "cited": 0
   },
@@ -469,7 +504,7 @@
   {
    "source": "simpletechtrend",
    "fetched": 20,
-   "sent": 5,
+   "sent": 1,
    "cited": 0
   },
   {
@@ -516,15 +551,15 @@
   },
   {
    "source": "google_news",
-   "fetched": 294,
-   "sent": 16,
-   "cited": 6
+   "fetched": 278,
+   "sent": 20,
+   "cited": 11
   },
   {
    "source": "google_news_us",
-   "fetched": 173,
-   "sent": 6,
-   "cited": 5
+   "fetched": 155,
+   "sent": 10,
+   "cited": 10
   },
   {
    "source": "google_news_jp",
@@ -534,13 +569,13 @@
   },
   {
    "source": "telegram",
-   "fetched": 80,
-   "sent": 3,
-   "cited": 2
+   "fetched": 81,
+   "sent": 2,
+   "cited": 0
   },
   {
    "source": "cnbc_yahoo",
-   "fetched": 97,
+   "fetched": 90,
    "sent": 0,
    "cited": 0
   },
@@ -565,7 +600,7 @@
   {
    "source": "gnews_d2",
    "fetched": 63,
-   "sent": 15,
+   "sent": 9,
    "cited": 3
   },
   {
@@ -576,9 +611,9 @@
   },
   {
    "source": "eccn",
-   "fetched": 15,
+   "fetched": 27,
    "sent": 1,
-   "cited": 1
+   "cited": 2
   }
  ],
  "extra_sources": {
@@ -588,7 +623,7 @@
   },
   "eccn": {
    "status": "ok",
-   "n": 15
+   "n": 27
   }
  }
 }
