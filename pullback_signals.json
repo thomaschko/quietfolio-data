@@ -1,18 +1,18 @@
 {
- "generated_at": "2026-11-26 01:55:46",
- "data_date": "2026-11-25",
+ "generated_at": "2026-11-27 00:58:11",
+ "data_date": "2026-11-26",
  "universe": "前200大(前60日平均成交值)",
  "universe_size": 200,
  "market_scan": {
   "上市": {
-   "scan_date": "2026-11-25",
-   "members": 144,
-   "scanned": 144
+   "scan_date": "2026-11-26",
+   "members": 145,
+   "scanned": 145
   },
   "上櫃": {
-   "scan_date": "2026-11-25",
-   "members": 56,
-   "scanned": 56
+   "scan_date": "2026-11-26",
+   "members": 55,
+   "scanned": 55
   }
  },
  "params": {
@@ -28,202 +28,47 @@
   "COOLDOWN": 5
  },
  "market": {
-  "index_date": "2026-11-24",
-  "drawdown_from_20d_high": 0.147,
+  "index_date": "2026-11-25",
+  "drawdown_from_20d_high": 0.1763,
   "market_stress": true
  },
  "backtest_note": "回測(2019–2026,前200大成交值股票池):扣成本後平均報酬為正,但與同一天在池內隨機買股、持有相同天數相比沒有顯著差異(樣本外 −0.42%,95% 信賴區間 −1.48%~+0.74%),報酬主要來自大盤急殺後的反彈。",
  "counts": {
-  "confirm": 0,
-  "noconfirm": 9,
-  "watch": 3
+  "confirm": 5,
+  "noconfirm": 4,
+  "watch": 0
  },
- "confirm": [],
- "noconfirm": [
+ "confirm": [
   {
    "code": "8299",
    "name": "群聯",
    "market": "上櫃",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 41,
-   "close": 1485.0,
-   "chg_today": -0.069,
-   "drawdown_3d_max": 0.2927,
-   "drawdown_today": 0.2756,
-   "vol_mult_max_3d": 2.06,
+   "signal_date": "2026-11-26",
+   "turnover_rank": 40,
+   "close": 1630.0,
+   "chg_today": 0.0976,
+   "drawdown_3d_max": 0.2756,
+   "drawdown_today": 0.1554,
+   "vol_mult_max_3d": 2.01,
    "cap_dates": [
     "2026-11-25"
    ],
-   "ref_high": 2050.0,
-   "trough_3d": 1450.0,
-   "target": 1810.0,
-   "stop": 1435.0
+   "ref_high": 1930.0,
+   "trough_3d": 1485.0,
+   "target": 1752.0,
+   "stop": 1351.0
   },
-  {
-   "code": "3017",
-   "name": "奇鋐",
-   "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 25,
-   "close": 2545.0,
-   "chg_today": -0.0212,
-   "drawdown_3d_max": 0.2644,
-   "drawdown_today": 0.1804,
-   "vol_mult_max_3d": 2.59,
-   "cap_dates": [
-    "2026-11-25"
-   ],
-   "ref_high": 3105.0,
-   "trough_3d": 2365.0,
-   "target": 2809.0,
-   "stop": 2173.5
-  },
-  {
-   "code": "2345",
-   "name": "智邦",
-   "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 35,
-   "close": 1475.0,
-   "chg_today": -0.0067,
-   "drawdown_3d_max": 0.2562,
-   "drawdown_today": 0.1595,
-   "vol_mult_max_3d": 2.21,
-   "cap_dates": [
-    "2026-11-25"
-   ],
-   "ref_high": 1755.0,
-   "trough_3d": 1350.0,
-   "target": 1593.0,
-   "stop": 1228.5
-  },
-  {
-   "code": "2890",
-   "name": "永豐金",
-   "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 132,
-   "close": 36.35,
-   "chg_today": -0.0991,
-   "drawdown_3d_max": 0.2183,
-   "drawdown_today": 0.2183,
-   "vol_mult_max_3d": 2.89,
-   "cap_dates": [
-    "2026-11-25"
-   ],
-   "ref_high": 46.5,
-   "trough_3d": 36.35,
-   "target": 42.44,
-   "stop": 32.55
-  },
-  {
-   "code": "2317",
-   "name": "鴻海",
-   "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 26,
-   "close": 206.5,
-   "chg_today": -0.0883,
-   "drawdown_3d_max": 0.1809,
-   "drawdown_today": 0.1773,
-   "vol_mult_max_3d": 2.0,
-   "cap_dates": [
-    "2026-11-25"
-   ],
-   "ref_high": 251.0,
-   "trough_3d": 206.0,
-   "target": 233.0,
-   "stop": 175.7
-  },
-  {
-   "code": "2892",
-   "name": "第一金",
-   "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 140,
-   "close": 36.95,
-   "chg_today": -0.0716,
-   "drawdown_3d_max": 0.1715,
-   "drawdown_today": 0.1715,
-   "vol_mult_max_3d": 3.32,
-   "cap_dates": [
-    "2026-11-25"
-   ],
-   "ref_high": 44.6,
-   "trough_3d": 36.95,
-   "target": 41.54,
-   "stop": 31.22
-  },
-  {
-   "code": "2330",
-   "name": "台積電",
-   "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 1,
-   "close": 2150.0,
-   "chg_today": -0.0359,
-   "drawdown_3d_max": 0.1629,
-   "drawdown_today": 0.1097,
-   "vol_mult_max_3d": 2.06,
-   "cap_dates": [
-    "2026-11-25"
-   ],
-   "ref_high": 2415.0,
-   "trough_3d": 2030.0,
-   "target": 2261.0,
-   "stop": 1690.5
-  },
-  {
-   "code": "2603",
-   "name": "長榮",
-   "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 77,
-   "close": 252.5,
-   "chg_today": -0.0175,
-   "drawdown_3d_max": 0.1457,
-   "drawdown_today": 0.0801,
-   "vol_mult_max_3d": 3.79,
-   "cap_dates": [
-    "2026-11-25"
-   ],
-   "ref_high": 274.5,
-   "trough_3d": 234.5,
-   "target": 258.5,
-   "stop": 192.15
-  },
-  {
-   "code": "3715",
-   "name": "定穎投控",
-   "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 141,
-   "close": 132.0,
-   "chg_today": -0.033,
-   "drawdown_3d_max": 0.1324,
-   "drawdown_today": 0.0801,
-   "vol_mult_max_3d": 2.98,
-   "cap_dates": [
-    "2026-11-25"
-   ],
-   "ref_high": 143.5,
-   "trough_3d": 124.5,
-   "target": 135.9,
-   "stop": 100.45
-  }
- ],
- "watch": [
   {
    "code": "6505",
    "name": "台塑化",
    "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 76,
-   "close": 80.6,
-   "chg_today": 0.0037,
-   "drawdown_3d_max": 0.2292,
-   "drawdown_today": 0.2175,
-   "vol_mult_max_3d": 3.53,
+   "signal_date": "2026-11-26",
+   "turnover_rank": 73,
+   "close": 85.9,
+   "chg_today": 0.0658,
+   "drawdown_3d_max": 0.2204,
+   "drawdown_today": 0.166,
+   "vol_mult_max_3d": 3.52,
    "cap_dates": [
     "2026-11-24"
    ],
@@ -233,50 +78,152 @@
    "stop": 72.1
   },
   {
-   "code": "2887",
-   "name": "台新新光金",
+   "code": "3017",
+   "name": "奇鋐",
    "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 89,
-   "close": 34.0,
-   "chg_today": -0.0634,
-   "drawdown_3d_max": 0.2217,
-   "drawdown_today": 0.1981,
-   "vol_mult_max_3d": 2.16,
+   "signal_date": "2026-11-26",
+   "turnover_rank": 23,
+   "close": 2795.0,
+   "chg_today": 0.0982,
+   "drawdown_3d_max": 0.1913,
+   "drawdown_today": 0.0969,
+   "vol_mult_max_3d": 2.59,
    "cap_dates": [
-    "2026-11-23"
+    "2026-11-25"
    ],
-   "ref_high": 42.4,
-   "trough_3d": 33.0,
-   "target": 38.64,
-   "stop": 29.68
+   "ref_high": 3095.0,
+   "trough_3d": 2545.0,
+   "target": 2875.0,
+   "stop": 2166.5
   },
   {
-   "code": "2891",
-   "name": "中信金",
+   "code": "2345",
+   "name": "智邦",
    "market": "上市",
-   "signal_date": "2026-11-25",
-   "turnover_rank": 80,
-   "close": 65.9,
-   "chg_today": -0.0572,
-   "drawdown_3d_max": 0.1893,
-   "drawdown_today": 0.1626,
-   "vol_mult_max_3d": 2.25,
+   "signal_date": "2026-11-26",
+   "turnover_rank": 32,
+   "close": 1620.0,
+   "chg_today": 0.0983,
+   "drawdown_3d_max": 0.1818,
+   "drawdown_today": 0.0,
+   "vol_mult_max_3d": 2.21,
    "cap_dates": [
-    "2026-11-23"
+    "2026-11-25"
    ],
-   "ref_high": 78.7,
-   "trough_3d": 63.8,
-   "target": 72.74,
-   "stop": 55.09
+   "ref_high": 1620.0,
+   "trough_3d": 1475.0,
+   "target": 1562.0,
+   "stop": 1134.0
+  },
+  {
+   "code": "2317",
+   "name": "鴻海",
+   "market": "上市",
+   "signal_date": "2026-11-26",
+   "turnover_rank": 26,
+   "close": 216.5,
+   "chg_today": 0.0484,
+   "drawdown_3d_max": 0.1773,
+   "drawdown_today": 0.1375,
+   "vol_mult_max_3d": 2.0,
+   "cap_dates": [
+    "2026-11-25"
+   ],
+   "ref_high": 251.0,
+   "trough_3d": 206.5,
+   "target": 233.2,
+   "stop": 175.7
   }
  ],
+ "noconfirm": [
+  {
+   "code": "1802",
+   "name": "台玻",
+   "market": "上市",
+   "signal_date": "2026-11-26",
+   "turnover_rank": 36,
+   "close": 59.7,
+   "chg_today": -0.0033,
+   "drawdown_3d_max": 0.2985,
+   "drawdown_today": 0.2985,
+   "vol_mult_max_3d": 2.14,
+   "cap_dates": [
+    "2026-11-25",
+    "2026-11-26"
+   ],
+   "ref_high": 85.1,
+   "trough_3d": 59.7,
+   "target": 74.94,
+   "stop": 59.57
+  },
+  {
+   "code": "2890",
+   "name": "永豐金",
+   "market": "上市",
+   "signal_date": "2026-11-26",
+   "turnover_rank": 129,
+   "close": 35.55,
+   "chg_today": -0.022,
+   "drawdown_3d_max": 0.2355,
+   "drawdown_today": 0.2355,
+   "vol_mult_max_3d": 3.73,
+   "cap_dates": [
+    "2026-11-25",
+    "2026-11-26"
+   ],
+   "ref_high": 46.5,
+   "trough_3d": 35.55,
+   "target": 42.12,
+   "stop": 32.55
+  },
+  {
+   "code": "2892",
+   "name": "第一金",
+   "market": "上市",
+   "signal_date": "2026-11-26",
+   "turnover_rank": 133,
+   "close": 36.65,
+   "chg_today": -0.0081,
+   "drawdown_3d_max": 0.1783,
+   "drawdown_today": 0.1783,
+   "vol_mult_max_3d": 3.33,
+   "cap_dates": [
+    "2026-11-25",
+    "2026-11-26"
+   ],
+   "ref_high": 44.6,
+   "trough_3d": 36.65,
+   "target": 41.42,
+   "stop": 31.22
+  },
+  {
+   "code": "2886",
+   "name": "兆豐金",
+   "market": "上市",
+   "signal_date": "2026-11-26",
+   "turnover_rank": 124,
+   "close": 48.25,
+   "chg_today": -0.0292,
+   "drawdown_3d_max": 0.1291,
+   "drawdown_today": 0.1291,
+   "vol_mult_max_3d": 3.29,
+   "cap_dates": [
+    "2026-11-25",
+    "2026-11-26"
+   ],
+   "ref_high": 55.4,
+   "trough_3d": 48.25,
+   "target": 52.54,
+   "stop": 38.78
+  }
+ ],
+ "watch": [],
  "data_quality": {
-  "usable": 1980,
-  "failed": 7,
+  "usable": 1982,
+  "failed": 6,
   "official_dates": {
-   "上市": "2026-11-25",
-   "上櫃": "2026-11-25"
+   "上市": "2026-11-26",
+   "上櫃": "2026-11-26"
   },
   "official_source": {
    "上市": "證交所MI_INDEX(指定日期)",
@@ -284,15 +231,15 @@
   },
   "yahoo_last_dates": {
    "上市": {
-    "2026-11-24": 1088
+    "2026-11-25": 1088
    },
    "上櫃": {
-    "2026-11-24": 887,
-    "2026-11-25": 5
+    "2026-11-25": 888,
+    "2026-11-26": 6
    }
   },
   "official_replaced": 6,
-  "official_appended": 1945,
+  "official_appended": 1959,
   "official_inserted": 0
  }
 }
