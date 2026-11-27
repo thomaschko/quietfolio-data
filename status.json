@@ -1,32 +1,54 @@
 {
  "version": "v2026-11-24-runstat",
- "generated": "2026-11-26T22:31:29+08:00",
- "freshness_checked_at": "2026-11-26 22:31",
- "triggers": 15,
+ "generated": "2026-11-27T22:31:23+08:00",
+ "freshness_checked_at": "2026-11-27 22:31",
+ "triggers": 16,
  "stale": [
+  {
+   "key": "mainforce",
+   "label": "最大分點排行",
+   "have": "2026-11-26",
+   "expected": "2026-11-27",
+   "note": null
+  },
   {
    "key": "pullback",
    "label": "急跌反轉",
-   "have": "2026-11-25",
-   "expected": "2026-11-26",
+   "have": "2026-11-26",
+   "expected": "2026-11-27",
    "note": null
   },
   {
    "key": "industrynews",
    "label": "產業新聞",
-   "have": "2026-11-26 17:59",
-   "expected": "2026-11-26 晚報",
+   "have": "2026-11-27 17:59",
+   "expected": "2026-11-27 晚報",
    "note": "今天已補跑過,等結果"
   }
  ],
- "warn": [],
+ "warn": [
+  {
+   "key": "intl_us",
+   "label": "國際排行 美股",
+   "have": "2026-11-25",
+   "expected": "2026-11-26",
+   "note": "不認得當地假日,只提醒"
+  },
+  {
+   "key": "groupflow",
+   "label": "族群金流",
+   "have": "2026-11-27 19:58",
+   "expected": "",
+   "note": "落後:us 2026-11-25"
+  }
+ ],
  "items": [
   {
    "key": "bias",
    "label": "乖離追蹤",
    "view": "bias",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1530,
    "fix": "updateQuietfolio",
@@ -39,8 +61,8 @@
    "key": "rank",
    "label": "排行榜(台股)",
    "view": "rank",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1700,
    "fix": "retryRunRankings",
@@ -53,8 +75,8 @@
    "key": "vix",
    "label": "市場氛圍 VIX",
    "view": "bias",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1700,
    "fix": null,
@@ -67,8 +89,8 @@
    "key": "screen",
    "label": "融資選股",
    "view": "screen",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1700,
    "fix": "runScreener",
@@ -81,8 +103,8 @@
    "key": "disloc",
    "label": "錯殺回檔",
    "view": "disloc",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1700,
    "fix": "runDislocation",
@@ -95,8 +117,8 @@
    "key": "newhigh",
    "label": "創新高",
    "view": "newhigh",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1700,
    "fix": "runNewHighLow",
@@ -109,8 +131,8 @@
    "key": "flowstrength",
    "label": "量價強度",
    "view": "flowstrength",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1700,
    "fix": "runFlowStrength",
@@ -124,8 +146,8 @@
    "label": "最大分點排行",
    "view": "mainforce",
    "have": "2026-11-26",
-   "expected": "2026-11-26",
-   "status": "ok",
+   "expected": "2026-11-27",
+   "status": "stale",
    "ready": 1800,
    "fix": "runMainForceRankingStart",
    "workflow": null,
@@ -137,8 +159,8 @@
    "key": "flowradar",
    "label": "金流雷達",
    "view": "flowradar",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1800,
    "fix": "dailyInstitutionalFlowPipeline",
@@ -151,8 +173,8 @@
    "key": "branchflow",
    "label": "券商分點",
    "view": "branchflow",
-   "have": "2026-11-26",
-   "expected": "2026-11-25",
+   "have": "2026-11-27",
+   "expected": "2026-11-26",
    "status": "ok",
    "ready": 1700,
    "fix": "runBranchFlow",
@@ -165,8 +187,8 @@
    "key": "activeetf",
    "label": "主動ETF",
    "view": "activeetf",
-   "have": "2026-11-26",
-   "expected": "2026-11-25",
+   "have": "2026-11-27",
+   "expected": "2026-11-26",
    "status": "ok",
    "ready": 900,
    "fix": "runActiveETFFlow",
@@ -179,8 +201,8 @@
    "key": "squeeze",
    "label": "糾結突破",
    "view": "squeeze",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 2000,
    "fix": "runSqueezeDaily",
@@ -193,8 +215,8 @@
    "key": "margindrop",
    "label": "融資增減",
    "view": "margindrop",
-   "have": "2026-11-26",
-   "expected": "2026-11-25",
+   "have": "2026-11-27",
+   "expected": "2026-11-26",
    "status": "ok",
    "ready": 2300,
    "fix": "runMarginDrop",
@@ -207,8 +229,8 @@
    "key": "pullback",
    "label": "急跌反轉",
    "view": "pullback",
-   "have": "2026-11-25",
-   "expected": "2026-11-26",
+   "have": "2026-11-26",
+   "expected": "2026-11-27",
    "status": "stale",
    "ready": 2200,
    "fix": null,
@@ -224,8 +246,8 @@
    "key": "themeradar",
    "label": "題材雷達",
    "view": "themeradar",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1930,
    "fix": null,
@@ -241,8 +263,8 @@
    "key": "digest",
    "label": "發酵雷達",
    "view": "digest",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1930,
    "fix": null,
@@ -258,8 +280,8 @@
    "key": "trend",
    "label": "趨勢題材",
    "view": "trend",
-   "have": "2026-11-26",
-   "expected": "2026-11-25",
+   "have": "2026-11-27",
+   "expected": "2026-11-26",
    "status": "ok",
    "ready": 2300,
    "fix": null,
@@ -272,8 +294,8 @@
    "key": "marginshare",
    "label": "融資占比",
    "view": "marginshare",
-   "have": "2026-11-25",
-   "expected": "2026-11-25",
+   "have": "2026-11-26",
+   "expected": "2026-11-26",
    "status": "ok",
    "ready": 2400,
    "fix": null,
@@ -286,8 +308,8 @@
    "key": "consensus",
    "label": "共識",
    "view": "consensus",
-   "have": "2026-11-25",
-   "expected": "2026-11-24",
+   "have": "2026-11-26",
+   "expected": "2026-11-25",
    "status": "ok",
    "ready": 2400,
    "fix": null,
@@ -300,8 +322,8 @@
    "key": "consensus_fut",
    "label": "共識・期貨/選擇權",
    "view": "consensus",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1800,
    "fix": null,
@@ -317,8 +339,8 @@
    "key": "foreign_pos",
    "label": "外資期權判讀",
    "view": "consensus",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1830,
    "fix": null,
@@ -334,8 +356,8 @@
    "key": "usearn",
    "label": "美股法說",
    "view": "usearn",
-   "have": "2026-11-26",
-   "expected": "2026-11-25",
+   "have": "2026-11-27",
+   "expected": "2026-11-26",
    "status": "ok",
    "ready": 2400,
    "fix": null,
@@ -348,8 +370,8 @@
    "key": "antifragile",
    "label": "反脆弱",
    "view": "antifragile",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 1800,
    "fix": null,
@@ -362,8 +384,8 @@
    "key": "industrynews",
    "label": "產業新聞",
    "view": "industrynews",
-   "have": "2026-11-26 17:59",
-   "expected": "2026-11-26 晚報",
+   "have": "2026-11-27 17:59",
+   "expected": "2026-11-27 晚報",
    "status": "stale",
    "ready": 1900,
    "workflow": [
@@ -378,8 +400,8 @@
    "key": "claudereport",
    "label": "Claude報告",
    "view": "claudereport",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "ready": 500,
    "note": "外部來源,不自動補跑"
@@ -389,8 +411,8 @@
    "label": "國際排行 美股",
    "view": "rank",
    "have": "2026-11-25",
-   "expected": "2026-11-25",
-   "status": "ok",
+   "expected": "2026-11-26",
+   "status": "warn",
    "note": "不認得當地假日,只提醒",
    "workflow": [
     "intl-rank.yml",
@@ -403,8 +425,8 @@
    "key": "intl_jp",
    "label": "國際排行 日股",
    "view": "rank",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "note": "不認得當地假日,只提醒",
    "workflow": [
@@ -418,8 +440,8 @@
    "key": "intl_kr",
    "label": "國際排行 韓股",
    "view": "rank",
-   "have": "2026-11-26",
-   "expected": "2026-11-26",
+   "have": "2026-11-27",
+   "expected": "2026-11-27",
    "status": "ok",
    "note": "不認得當地假日,只提醒",
    "workflow": [
@@ -433,10 +455,10 @@
    "key": "groupflow",
    "label": "族群金流",
    "view": "rank",
-   "have": "2026-11-26 19:58",
+   "have": "2026-11-27 19:58",
    "expected": "",
-   "status": "ok",
-   "note": "",
+   "status": "warn",
+   "note": "落後:us 2026-11-25",
    "workflow": [
     "intl-rank.yml",
     {
@@ -448,8 +470,8 @@
    "key": "dailyjson",
    "label": "GitHub daily.json",
    "view": "",
-   "have": "2026-11-26",
-   "expected": "2026-11-25",
+   "have": "2026-11-27",
+   "expected": "2026-11-26",
    "status": "ok",
    "ready": 2330,
    "fix": "pushDailyToGitHub",
@@ -457,224 +479,228 @@
    "safe": true
   }
  ],
- "fixes_last_check": [],
+ "fixes_last_check": [
+  {
+   "key": "mainforce",
+   "label": "最大分點排行",
+   "action": "1 分鐘後執行 runMainForceRankingStart(今天第 2 次)"
+  }
+ ],
  "runs": {
   "runRankings": {
-   "at": "2026-11-26 19:01",
+   "at": "2026-11-27 19:00",
    "ok": true,
-   "ms": 75706,
+   "ms": 217449,
    "err": null,
    "warn": null
   },
   "updateQuietfolio": {
-   "at": "2026-11-26 14:35",
+   "at": "2026-11-27 14:35",
    "ok": true,
-   "ms": 4582,
+   "ms": 7376,
    "err": null,
    "warn": null
   },
   "runScreener": {
-   "at": "2026-11-26 19:02",
+   "at": "2026-11-27 19:04",
    "ok": true,
-   "ms": 24347,
+   "ms": 27292,
    "err": null,
-   "warn": null
+   "warn": "Fri Nov 27 19:04:36 CST 2026 INFO: 3189 處理失敗：FinMind 用量超上限（600/hr） / Fri Nov 27 19:04:36 CST 2026 INFO: 2492 處理失敗：FinMind 用量超上限（600/hr）"
   },
   "runFlowStrength": {
-   "at": "2026-11-26 20:58",
+   "at": "2026-11-27 20:58",
    "ok": true,
-   "ms": 81956,
+   "ms": 62306,
    "err": null,
    "warn": null
   },
   "runMainForceRankingStart": {
-   "at": "2026-11-26 21:58",
-   "ok": true,
-   "ms": 289653,
-   "err": null,
-   "warn": "Thu Nov 26 22:03:45 CST 2026 INFO:   本批處理 200 檔（0 檔失敗），本批寫入 200 筆達門檻結果，累計進度 200/736"
+   "at": "2026-11-27 22:00",
+   "ok": null,
+   "running": true
   },
   "runNewHighLow": {
-   "at": "2026-11-26 19:59",
+   "at": "2026-11-27 19:59",
    "ok": true,
-   "ms": 131112,
+   "ms": 17131,
    "err": null,
    "warn": null
   },
   "runDislocation": {
-   "at": "2026-11-26 15:46",
+   "at": "2026-11-27 15:46",
    "ok": true,
-   "ms": 123199,
+   "ms": 109027,
    "err": null,
-   "warn": "Thu Nov 26 15:48:01 CST 2026 INFO:   ⚠ 未精算 434 檔（受 MAX_CANDIDATES／FinMind 額度限制，可能遺漏符合標的） / Thu Nov 26 15:48:38 CST 2026 INFO:   處理錯誤         ：0"
+   "warn": "Fri Nov 27 15:47:46 CST 2026 INFO:   ⚠ 未精算 381 檔（受 MAX_CANDIDATES／FinMind 額度限制，可能遺漏符合標的） / Fri Nov 27 15:48:23 CST 2026 INFO:   處理錯誤         ：0"
   },
   "runAntifragile": {
-   "at": "2026-11-26 16:57",
+   "at": "2026-11-27 16:57",
    "ok": true,
-   "ms": 82532,
+   "ms": 62830,
    "err": null,
    "warn": null
   },
   "dailyInstitutionalFlowPipeline": {
-   "at": "2026-11-26 17:00",
+   "at": "2026-11-27 17:00",
    "ok": true,
-   "ms": 14340,
+   "ms": 11883,
    "err": null,
-   "warn": "Thu Nov 26 17:00:54 CST 2026 INFO: TPEx 連線失敗: Timeout: https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&se=AL&t=D&d=115/11/ / Thu Nov 26 17:00:58 CST 2026 INFO:   ⚠ JSON過大，剛布局候選名單已裁減：上市 201→84，上櫃 113→48"
+   "warn": "Fri Nov 27 17:00:53 CST 2026 INFO:   ⚠ JSON過大，剛布局候選名單已裁減：上市 406→108，上櫃 113→32"
   },
   "pushChipDaily": {
-   "at": "2026-11-26 19:57",
+   "at": "2026-11-27 19:57",
    "ok": true,
-   "ms": 7298,
+   "ms": 12977,
    "err": null,
    "warn": null
   },
   "runActiveETFFlow": {
-   "at": "2026-11-26 21:32",
+   "at": "2026-11-27 21:32",
    "ok": true,
-   "ms": 8173,
+   "ms": 13139,
    "err": null,
    "warn": null
   },
   "runBranchFlow": {
-   "at": "2026-11-26 21:36",
+   "at": "2026-11-27 21:36",
    "ok": true,
-   "ms": 221314,
+   "ms": 258675,
    "err": null,
-   "warn": "Thu Nov 26 21:40:11 CST 2026 INFO:   本批處理 200 檔（0 檔失敗），本批命中 1959 筆追蹤席位紀錄，累計進度 200/738"
+   "warn": "Fri Nov 27 21:40:49 CST 2026 INFO:   本批處理 200 檔（0 檔失敗），本批命中 1899 筆追蹤席位紀錄，累計進度 200/693"
   },
   "runMarginDrop": {
-   "at": "2026-11-26 22:05",
+   "at": "2026-11-27 22:05",
    "ok": true,
-   "ms": 210497,
+   "ms": 118995,
    "err": null,
    "warn": null
   },
   "pushDailyToGitHub": {
-   "at": "2026-11-26 22:31",
+   "at": "2026-11-27 22:30",
    "ok": null,
    "running": true
   },
   "runSqueezeDaily": {
-   "at": "2026-11-26 19:01",
+   "at": "2026-11-27 19:01",
    "ok": true,
-   "ms": 163999,
+   "ms": 194544,
    "err": null,
-   "warn": "Thu Nov 26 19:01:20 CST 2026 INFO:   ⚠ 未精算 51 檔（受 MAX_CANDIDATES 限制，已依本月YoY排序優先精算較強者）"
+   "warn": "Fri Nov 27 19:01:15 CST 2026 INFO:   ⚠ 未精算 51 檔（受 MAX_CANDIDATES 限制，已依本月YoY排序優先精算較強者）"
   }
  },
  "af_last_run": {
-  "at": "2026-11-26 16:57",
-  "day": "2026-11-26",
+  "at": "2026-11-27 16:57",
+  "day": "2026-11-27",
   "source": "catchup",
   "stage": "done",
   "ok": true,
   "err": null,
   "tries": 2,
-  "data_date": "2026-11-26",
+  "data_date": "2026-11-27",
   "summary": {
-   "green": 120,
-   "yellow": 36,
-   "neutral": 179,
-   "fragile": 827,
-   "insufficient": 933,
+   "green": 163,
+   "yellow": 64,
+   "neutral": 326,
+   "fragile": 1136,
+   "insufficient": 406,
    "na": 56
   },
-  "stored_kb": 293,
+  "stored_kb": 340,
   "counts": {
-   "valuation": 1982,
+   "valuation": 1983,
    "highs": 1988,
-   "margin_date": "20261125",
-   "kb": 2036
+   "margin_date": "20261126",
+   "kb": 2016
   }
  },
  "hourly": {
-  "at": "2026-11-26 21:57",
-  "total_ms": 21573,
+  "at": "2026-11-27 21:58",
+  "total_ms": 46682,
   "steps": [
    {
     "fn": "runHourlyDailyJobs",
-    "ms": 112,
+    "ms": 240,
     "err": null
    },
    {
     "fn": "updatePullback",
-    "ms": 628,
+    "ms": 1315,
     "err": null
    },
    {
     "fn": "importClaudeReports",
-    "ms": 3032,
+    "ms": 21731,
     "err": null
    },
    {
     "fn": "updateIndustryNews",
-    "ms": 2186,
+    "ms": 1009,
     "err": null
    },
    {
     "fn": "updateIntlRank",
-    "ms": 836,
+    "ms": 856,
     "err": null
    },
    {
     "fn": "updateDigest",
-    "ms": 389,
+    "ms": 553,
     "err": null
    },
    {
     "fn": "updateEventThemeRadar",
-    "ms": 298,
+    "ms": 411,
     "err": null
    },
    {
     "fn": "chipRepushIfPartial",
-    "ms": 1,
+    "ms": 13,
     "err": null
    },
    {
     "fn": "intlRankEveningDispatch",
-    "ms": 3,
+    "ms": 2,
     "err": null
    },
    {
     "fn": "updateChipStructure",
-    "ms": 1231,
+    "ms": 2323,
     "err": null
    },
    {
     "fn": "updateMarginShare",
-    "ms": 1738,
+    "ms": 1991,
     "err": null
    },
    {
     "fn": "exportThemeNotes",
-    "ms": 679,
+    "ms": 2008,
     "err": null
    },
    {
     "fn": "updateThemePage",
-    "ms": 409,
+    "ms": 625,
     "err": null
    },
    {
     "fn": "resumeStuckJobChains",
-    "ms": 281,
+    "ms": 994,
     "err": null
    },
    {
     "fn": "antifragileCatchUp",
-    "ms": 19,
+    "ms": 23,
     "err": null
    },
    {
     "fn": "vixMoodCatchUp",
-    "ms": 169,
+    "ms": 127,
     "err": null
    },
    {
     "fn": "checkPageFreshness",
-    "ms": 9411,
+    "ms": 12378,
     "err": null
    }
   ]
