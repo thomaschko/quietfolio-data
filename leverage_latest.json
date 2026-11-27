@@ -1,6 +1,6 @@
 {
  "version": "v2026-11-25-mood-lev-etf",
- "today": "2026-11-27",
+ "today": "2026-11-28",
  "US_FINRA": {
   "market": "US",
   "ok": true,
@@ -138,7 +138,7 @@
   "ok": true,
   "stale": false,
   "vote": null,
-  "note": null,
+  "note": "資料暫缺(本次抓取失敗:Expecting value: line 1 column 1 (char 0);最新 2026-11-25)",
   "metric": "yoy",
   "label": "韓國 信用融資年增率",
   "unit": "%",
@@ -272,7 +272,8 @@
    -3.06,
    -3.3,
    -4.71
-  ]
+  ],
+  "fetch_failed": true
  },
  "US_ETF": {
   "market": "ETF",
@@ -437,20 +438,21 @@
   "label": "美國 費半槓桿 ETF 多空比(SOXL / SOXS)",
   "unit": "%",
   "freq": "日",
-  "historyDays": 1,
+  "historyDays": 2,
   "needDays": 250,
   "vote": null,
   "stale": false,
-  "note": "累積中(1/250 日)",
+  "note": "累積中(2/250 日)",
   "methodNote": "Direxion 官網只有當日快照,自 2026-11-25 起每日累積;只顯示、不投票",
-  "asOf": "2026-11-25",
-  "value": 90.054,
+  "asOf": "2026-11-27",
+  "value": 92.23,
   "pctl": null,
   "zone": null,
-  "bull_aum_b": 12.93,
-  "bear_aum_b": 1.43,
+  "bull_aum_b": 13.21,
+  "bear_aum_b": 1.11,
   "spark": [
-   90.054
+   90.054,
+   92.23
   ]
  },
  "US_composite": {
@@ -465,7 +467,7 @@
    "JP": null,
    "KR": null
   },
-  "valid": 3,
+  "valid": 2,
   "hot": 1,
   "cold": 0,
   "note": null
@@ -490,9 +492,9 @@
   "SOX": {
    "err": null,
    "info": {
-    "rows": 2,
-    "added": 0,
-    "last": "2026-11-25"
+    "rows": 4,
+    "added": 2,
+    "last": "2026-11-27"
    }
   },
   "JP": {
@@ -513,12 +515,8 @@
    }
   },
   "KR": {
-   "err": null,
-   "info": {
-    "rows": 2682,
-    "added": 0,
-    "last": "2026-11-25"
-   }
+   "err": "Expecting value: line 1 column 1 (char 0)",
+   "info": null
   }
  },
  "warnings": []
