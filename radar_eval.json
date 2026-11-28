@@ -4,16 +4,20 @@
  "metric": "配對標記日的平均超額報酬差(規則 − 只有關鍵字暴增,百分點),以標記日 bootstrap 95% 信賴區間",
  "rules": {
   "theme_cluster": {
-   "paired_dates": 20,
+   "paired_dates": 21,
    "min_dates": 30,
-   "mean_diff_pp": 1.98,
+   "mean_diff_pp": 2.34,
    "status": "樣本不足"
   },
   "source_diversity": {
-   "paired_dates": 29,
+   "paired_dates": 30,
    "min_dates": 30,
-   "mean_diff_pp": -2.72,
-   "status": "樣本不足"
+   "mean_diff_pp": -2.45,
+   "ci95_pp": [
+    -5.25,
+    -0.03
+   ],
+   "status": "較差"
   }
  }
 }
